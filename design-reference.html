@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 10x Toolkit — Course Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#06090F;
+  --panel:#0C121D;
+  --panel2:#101827;
+  --line:rgba(140,170,220,.13);
+  --gold:#F5B84B;
+  --cyan:#4FD8EB;
+  --text:#E9EEF7;
+  --dim:#8D99AD;
+  --faint:#5A6478;
+  --mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"]{
+  --void:#F4F7FB;
+  --panel:#FFFFFF;
+  --panel2:#EDF1F7;
+  --line:rgba(25,50,95,.14);
+  --gold:#B9820F;
+  --cyan:#0E8FA3;
+  --text:#141E2C;
+  --dim:#4E5D74;
+  --faint:#7C8AA0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{transition:background .35s,color .35s}
+/* theme toggle */
+#themeToggle{position:fixed;top:18px;right:18px;z-index:50;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:border-color .25s}
+#themeToggle:hover{border-color:var(--gold)}
+#themeToggle:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+#themeToggle .orb{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--cyan))}
+/* path selector */
+.pathsel{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:6px 0 34px;background:var(--panel)}
+.pathsel button{font-family:var(--mono);font-size:12px;letter-spacing:.1em;padding:12px 22px;background:transparent;border:none;color:var(--dim);cursor:pointer;transition:background .25s,color .25s}
+.pathsel button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.pathsel button.on{color:var(--void);font-weight:700}
+.pathsel button.on.eng{background:var(--gold)}
+.pathsel button.on.lead{background:var(--cyan)}
+.pathdesc{font-size:14px;color:var(--dim);margin:-22px 0 30px;font-family:var(--mono)}
+.pathpane{display:none}
+.pathpane.on{display:block}
+.path.lead::before{background:linear-gradient(180deg,var(--cyan),var(--gold))}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+::selection{background:rgba(245,184,75,.35)}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.eyebrow b{color:var(--gold);font-weight:500}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;line-height:1.08}
+section{position:relative;padding:96px 0}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+/* ============ HERO ============ */
+#hero{min-height:100vh;display:flex;align-items:center;padding:80px 0;position:relative}
+#orbit{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero-inner{position:relative;z-index:2;text-align:center;width:100%}
+.hero-inner .eyebrow{margin-bottom:22px}
+h1{font-size:clamp(44px,7.5vw,96px);font-weight:800;letter-spacing:-.02em}
+h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:26px auto 0;max-width:620px;color:var(--dim);font-size:18px}
+.sub em{color:var(--text);font-style:normal;font-weight:600}
+.duo{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:rgba(12,18,29,.7);backdrop-filter:blur(6px)}
+.chip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+.chip.gold i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.chip.cyan i{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.stats{display:flex;gap:0;justify-content:center;margin-top:58px;font-family:var(--mono)}
+.stat{padding:0 34px;border-left:1px solid var(--line)}
+.stat:first-child{border-left:none}
+.stat b{display:block;font-size:30px;font-weight:700;color:var(--text)}
+.stat span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.scrollcue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.2em;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* ============ SECTION HEADERS ============ */
+.shead{margin-bottom:52px}
+.shead h2{font-size:clamp(30px,4.4vw,48px);font-weight:700;letter-spacing:-.015em;margin-top:14px}
+.shead p{color:var(--dim);max-width:640px;margin-top:14px}
+
+/* ============ FLIGHT PATH / TRACKS ============ */
+.path{position:relative;padding-left:38px}
+.path::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold),var(--cyan))}
+.track{position:relative;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;transition:transform .25s,border-color .25s;opacity:0;transform:translateY(18px)}
+.track.vis{opacity:1;transform:translateY(0);transition:opacity .6s,transform .6s,border-color .25s}
+.track:hover{border-color:rgba(245,184,75,.45)}
+.track::before{content:'';position:absolute;left:-33px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:var(--void);border:2px solid var(--gold)}
+.track:nth-child(even)::before{border-color:var(--cyan)}
+.tnum{font-family:var(--mono);font-size:12px;color:var(--faint);min-width:60px}
+.tname{font-weight:600;font-size:17px;flex:1;min-width:220px}
+.tname small{display:block;font-weight:400;font-size:13.5px;color:var(--dim);margin-top:3px}
+.tmods{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap}
+.badges{display:flex;gap:6px}
+.bdg{width:10px;height:10px;border-radius:3px}
+.bdg.g{background:var(--gold)}.bdg.c{background:var(--cyan)}
+.track.grad{background:linear-gradient(120deg,rgba(245,184,75,.10),rgba(79,216,235,.10));border-color:rgba(245,184,75,.35)}
+.legend{display:flex;gap:22px;margin-bottom:26px;font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+
+/* ============ LESSON PREVIEW ============ */
+#lesson{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(79,216,235,.05),transparent)}
+.lesson-shell{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.lesson-bar{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel2);font-family:var(--mono);font-size:12px;color:var(--dim);flex-wrap:wrap}
+.lesson-bar .crumb b{color:var(--gold)}
+.pill{margin-left:auto;font-size:11px;padding:4px 12px;border-radius:999px;border:1px solid rgba(79,216,235,.4);color:var(--cyan)}
+.lesson-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.lcol{padding:34px}
+.lcol.left{border-right:1px solid var(--line)}
+.lcol h3{font-size:24px;font-weight:700;margin-bottom:8px}
+.lcol .lm{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px}
+.analogy{background:rgba(245,184,75,.07);border:1px solid rgba(245,184,75,.25);border-radius:12px;padding:18px 20px;margin:22px 0;font-size:14.5px}
+.analogy b{color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:8px}
+.lcol p{color:var(--dim);font-size:14.5px}
+.lcol p strong{color:var(--text)}
+/* animated context diagram */
+.ctxdiag{margin-top:24px}
+.ctxlabel{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-bottom:8px}
+.ctxbar{height:34px;border:1px solid var(--line);border-radius:9px;overflow:hidden;display:flex;background:#080D16}
+.tok{height:100%;animation:grow 9s ease-in-out infinite}
+.tok.sys{background:#2A3650;width:0;animation-name:g-sys}
+.tok.mem{background:var(--gold);opacity:.8;width:0;animation-name:g-mem}
+.tok.code{background:#3E7FA8;width:0;animation-name:g-code}
+.tok.chat{background:#6E5AAE;width:0;animation-name:g-chat}
+.tok.junk{background:#B0503C;width:0;animation-name:g-junk}
+@keyframes g-sys{0%{width:0}10%,100%{width:8%}}
+@keyframes g-mem{0%,10%{width:0}20%,100%{width:10%}}
+@keyframes g-code{0%,20%{width:0}38%,66%{width:26%}80%,100%{width:14%}}
+@keyframes g-chat{0%,38%{width:0}54%,66%{width:22%}80%,100%{width:9%}}
+@keyframes g-junk{0%,54%{width:0}66%{width:20%}80%,100%{width:0}}
+.compactflash{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-top:10px;opacity:0;animation:flash 9s ease-in-out infinite}
+@keyframes flash{0%,62%{opacity:0}68%,86%{opacity:1}94%,100%{opacity:0}}
+.ctxkey{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.ctxkey i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+/* terminal */
+.term{background:#04070D;border:1px solid var(--line);border-radius:12px;font-family:var(--mono);font-size:12.5px;line-height:1.75;overflow:hidden}
+.term-head{display:flex;gap:6px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.dot{width:10px;height:10px;border-radius:50%;background:#2A3650}
+.dot:first-child{background:#B0503C}.dot:nth-child(2){background:var(--gold)}.dot:nth-child(3){background:#3E9A6B}
+.term-body{padding:18px 20px;min-height:230px;white-space:pre-wrap;word-break:break-word;color:#B8C4D8}
+.term-body .p{color:var(--gold)}
+.term-body .ok{color:#5FD98F}
+.term-body .c{color:var(--cyan)}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--gold);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============ METRICS ============ */
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.mcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;position:relative;overflow:hidden}
+.mcard::after{content:'';position:absolute;inset:auto 0 0 0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+.mcard .mv{font-family:var(--mono);font-size:40px;font-weight:700;color:var(--text)}
+.mcard .mv small{font-size:18px;color:var(--dim)}
+.mcard .ml{font-weight:600;margin-top:6px}
+.mcard .md{color:var(--dim);font-size:13.5px;margin-top:8px}
+.mnote{margin-top:26px;color:var(--faint);font-size:13.5px;font-family:var(--mono)}
+
+/* ============ AI-DLC ARC ============ */
+#dlc .arc{background:linear-gradient(120deg,rgba(245,184,75,.08),rgba(79,216,235,.08));border:1px solid rgba(245,184,75,.3);border-radius:22px;padding:52px;display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}
+#dlc h2{font-size:clamp(26px,3.6vw,40px);font-weight:700;margin-top:12px}
+#dlc p{color:var(--dim);margin-top:16px;font-size:15.5px}
+#dlc p strong{color:var(--text)}
+.ladder{font-family:var(--mono);font-size:12.5px}
+.rung{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px dashed var(--line);color:var(--dim)}
+.rung:last-child{border-bottom:none;color:var(--text);font-weight:700}
+.rung .no{color:var(--faint);width:26px}
+.rung:last-child .no{color:var(--gold)}
+
+/* ============ FOOTER ============ */
+footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
+footer b{color:var(--gold);font-weight:500}
+
+@media(max-width:860px){
+  .lesson-body{grid-template-columns:1fr}
+  .lcol.left{border-right:none;border-bottom:1px solid var(--line)}
+  .mgrid{grid-template-columns:1fr}
+  #dlc .arc{grid-template-columns:1fr;padding:34px}
+  .stats{flex-wrap:wrap;gap:20px}
+  .stat{border-left:none;padding:0 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .track{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<button id="themeToggle" aria-pressed="false" aria-label="Switch to light mode"><span class="orb" aria-hidden="true"></span><span id="themeLabel">LIGHT MODE</span></button>
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <canvas id="orbit" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">A hands-on flight program · <b>varasrinivas.com</b></div>
+    <h1>The <span class="ten">10x</span> Toolkit</h1>
+    <p class="sub">Master <em>Claude Code</em> and <em>GitHub Copilot</em> on real repositories — a Spring Boot API and a React dashboard with real bugs planted inside. Analyze, debug, test, orchestrate agents, engineer context, and <em>measure the gain</em>.</p>
+    <div class="duo">
+      <span class="chip gold"><i></i>Claude Code path</span>
+      <span class="chip cyan"><i></i>GitHub Copilot path</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b data-count="12">0</b><span>tracks</span></div>
+      <div class="stat"><b data-count="56">0</b><span>modules</span></div>
+      <div class="stat"><b data-count="2">0</b><span>real repos</span></div>
+      <div class="stat"><b data-count="31">0</b><span>hands-on labs</span></div>
+    </div>
+  </div>
+  <div class="scrollcue">▼ SCROLL TO EXPLORE</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= FLIGHT PATH ================= -->
+<section id="tracks">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">The flight path</div>
+      <h2>Twelve tracks. One trajectory.</h2>
+      <p>Every track runs dual-path — the same lab twice, once per tool — on <span style="font-family:var(--mono);color:var(--text)">priorauth-api</span> (Spring Boot) and <span style="font-family:var(--mono);color:var(--text)">priorauth-web</span> (React).</p>
+    </div>
+    <div class="pathsel" role="tablist" aria-label="Choose your path">
+      <button class="eng on" id="btnEng" role="tab" aria-selected="true">◆ ENGINEER PATH</button>
+      <button class="lead" id="btnLead" role="tab" aria-selected="false">◆ LEADERSHIP PATH</button>
+    </div>
+    <div class="pathdesc" id="pathDesc">// 12 tracks · 56 modules · hands-on in both repos</div>
+    <div class="pathpane on" id="paneEng">
+    <div class="legend"><span><i style="background:var(--gold)"></i>Claude Code lab</span><span><i style="background:var(--cyan)"></i>Copilot lab</span></div>
+    <div class="path">
+      <div class="track"><span class="tnum">T-01</span><div class="tname">Foundations &amp; Setup<small>CLI, sessions, permission modes · VS Code + Visual Studio 2026, agent picker</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">T-02</span><div class="tname">Ways of Working: Vibe vs Spec<small>When to vibe, when to spec — and watching vibe coding break in real time</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">T-03</span><div class="tname">Reading &amp; Analyzing Code<small>Codebase onboarding, architecture mapping, Plan Mode &amp; the Plan agent</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">5 modules</span></div>
+      <div class="track"><span class="tnum">T-04</span><div class="tname">Autocomplete &amp; Inline Flow<small>Next edit suggestions, inline chat, multi-file edits — the Cursor-like layer</small></div><div class="badges"><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">T-05</span><div class="tname">Debugging<small>Agentic debug loops · Copilot Debugger agent validating fixes at runtime</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">6 modules</span></div>
+      <div class="track"><span class="tnum">T-06</span><div class="tname">Testing<small>JUnit + Testcontainers, React Testing Library, "did the test catch it?" drills</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">5 modules</span></div>
+      <div class="track"><span class="tnum">T-07</span><div class="tname">Context, Memory &amp; Agent Constitutions<small>CLAUDE.md · AGENTS.md · copilot-instructions.md · Claude memory discipline</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">5 modules</span></div>
+      <div class="track"><span class="tnum">T-08</span><div class="tname">The Token Economy<small>/compact vs /clear, context pollution, cost attribution, paying for every line</small></div><div class="badges"><span class="bdg g"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">T-09</span><div class="tname">Subagents, Skills &amp; Custom Agents<small>One SKILL.md, two tools — Copilot reads .claude/skills/ too</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">7 modules</span></div>
+      <div class="track"><span class="tnum">T-10</span><div class="tname">Workflows, Hooks &amp; MCP<small>Slash commands, lifecycle hooks, MCP servers, cloud &amp; background agents</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">5 modules</span></div>
+      <div class="track"><span class="tnum">T-11</span><div class="tname">Improving &amp; Measuring Productivity<small>DORA · SPACE · DX Core 4 · your own before/after baseline</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">3 modules</span></div>
+      <div class="track grad"><span class="tnum">T-12</span><div class="tname">Graduate Arc: AWS AI-DLC + Capstone<small>Tool mastery meets methodology — Mob Elaboration to Mob Construction, then ship a full feature both ways</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+    </div>
+    </div>
+    <div class="pathpane" id="paneLead">
+    <div class="legend"><span><i style="background:var(--cyan)"></i>Playbook lab</span><span><i style="background:var(--gold)"></i>Live-tool walkthrough</span></div>
+    <div class="path lead">
+      <div class="track"><span class="tnum">L-01</span><div class="tname">The Leader's Mental Model<small>What agents actually do all day · vibe vs spec as a risk lens, not a style choice</small></div><div class="badges"><span class="bdg g"></span></div><span class="tmods">3 modules</span></div>
+      <div class="track"><span class="tnum">L-02</span><div class="tname">The Adoption Playbook<small>Pilot squads, champions, enablement cadence — turning 2 power users into 200</small></div><div class="badges"><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">L-03</span><div class="tname">Governance &amp; Guardrails<small>Permission modes, MCP allowlists, review policy for AI-written code, IP &amp; security posture</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track"><span class="tnum">L-04</span><div class="tname">The Economics of Agents<small>Seats vs tokens, per-agent cost attribution, budgeting a team, the ROI narrative for your CFO</small></div><div class="badges"><span class="bdg g"></span></div><span class="tmods">3 modules</span></div>
+      <div class="track"><span class="tnum">L-05</span><div class="tname">Measuring Teams Honestly<small>DORA · SPACE · DX Core 4 at org level — and the vanity metrics to refuse</small></div><div class="badges"><span class="bdg c"></span></div><span class="tmods">4 modules</span></div>
+      <div class="track grad"><span class="tnum">L-06</span><div class="tname">Leading AI-DLC<small>Facilitating Mob Elaboration &amp; Mob Construction · restructuring the sprint around units of work</small></div><div class="badges"><span class="bdg g"></span><span class="bdg c"></span></div><span class="tmods">3 modules</span></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= LESSON PREVIEW ================= -->
+<section id="lesson">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">Inside a module</div>
+      <h2>Every lesson: an analogy, a living diagram, a real terminal.</h2>
+      <p>Sample below — Module 7.3, from the Context &amp; Memory track.</p>
+    </div>
+    <div class="lesson-shell">
+      <div class="lesson-bar">
+        <span class="crumb">T-07 / <b>M-7.3</b> · The Context Window Is a Budget</span>
+        <span class="pill">DUAL-PATH LAB</span>
+      </div>
+      <div class="lesson-body">
+        <div class="lcol left">
+          <div class="lm">Concept · 12 min</div>
+          <h3>Your agent packs a backpack, not a warehouse</h3>
+          <div class="analogy">
+            <b>Real-world analogy</b>
+            An astronaut on a spacewalk carries only what the mission needs. Every extra kilogram costs fuel. Your agent's context window works the same way — every stale file, every old stack trace you leave in the session is mass it hauls on every single turn.
+          </div>
+          <p><strong>Watch the window fill</strong> as a session runs: system prompt, then your CLAUDE.md memory, then code, then conversation — then the junk. When the debris crosses the line, <span style="font-family:var(--mono);color:var(--cyan)">/compact</span> fires and squeezes the session back to what matters.</p>
+          <div class="ctxdiag" aria-label="Animated diagram of a context window filling with tokens and being compacted">
+            <div class="ctxlabel"><span>CONTEXT WINDOW · 200K TOKENS</span><span>LIVE</span></div>
+            <div class="ctxbar">
+              <div class="tok sys"></div><div class="tok mem"></div><div class="tok code"></div><div class="tok chat"></div><div class="tok junk"></div>
+            </div>
+            <div class="compactflash">&gt; /compact — summarizing 41K tokens → 6K · debris jettisoned ✦</div>
+            <div class="ctxkey">
+              <span><i style="background:#2A3650"></i>system</span>
+              <span><i style="background:var(--gold)"></i>CLAUDE.md</span>
+              <span><i style="background:#3E7FA8"></i>code</span>
+              <span><i style="background:#6E5AAE"></i>conversation</span>
+              <span><i style="background:#B0503C"></i>debris</span>
+            </div>
+          </div>
+        </div>
+        <div class="lcol">
+          <div class="lm">Lab · Claude Code path</div>
+          <h3 style="font-size:19px">Fix the threshold bug — without drowning the window</h3>
+          <div class="term" aria-label="Simulated Claude Code terminal session">
+            <div class="term-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="term-body" id="termbody"></div>
+          </div>
+          <p style="margin-top:18px">Then switch paths: the same fix in Visual Studio with the <strong>Debugger agent</strong> validating against live runtime behavior. Two tools, one bug, one scoreboard.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= METRICS ================= -->
+<section id="metrics">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">Track 11 · Prove it</div>
+      <h2>If you can't measure it, it's a vibe.</h2>
+      <p>Week one, you baseline yourself on three tasks with no AI. In the final week, you re-run the same class of tasks with your full toolkit — and the course dashboard shows your personal delta.</p>
+    </div>
+    <div class="mgrid">
+      <div class="mcard"><div class="mv"><span data-count="43">0</span><small>%</small></div><div class="ml">Cycle-time delta</div><div class="md">Your before/after on scoped tasks — mapped to DORA lead time, not vanity acceptance rates.</div></div>
+      <div class="mcard"><div class="mv"><span data-count="5">0</span><small>-dim</small></div><div class="ml">SPACE self-scan</div><div class="md">Satisfaction, performance, activity, communication, efficiency — scored at weeks 1, 6, 12.</div></div>
+      <div class="mcard"><div class="mv"><span data-count="2">0</span><small>×/wk</small></div><div class="ml">Rework radar</div><div class="md">How often AI-written code gets rewritten within a week — the honest counterweight to speed.</div></div>
+    </div>
+    <div class="mnote">// numbers above are illustrative — yours get computed from your own lab runs</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= AI-DLC ARC ================= -->
+<section id="dlc">
+  <div class="wrap">
+    <div class="arc">
+      <div>
+        <div class="eyebrow">Graduate arc</div>
+        <h2>Then the method: AWS AI-DLC</h2>
+        <p>Tool skill without a method plateaus. Once you can wield subagents, skills, and context like instruments, the graduate arc drops you into <strong>AI-Driven Development Lifecycle</strong> ceremonies — Mob Elaboration to turn intent into units of work, Mob Construction to build them with your agents as crew — culminating in a capstone: ship one full feature (API endpoint → React screen → tests → PR) <strong>twice, once per tool</strong>, and defend the diff.</p>
+      </div>
+      <div class="ladder">
+        <div class="rung"><span class="no">01</span>Master the instruments</div>
+        <div class="rung"><span class="no">02</span>Engineer the context</div>
+        <div class="rung"><span class="no">03</span>Orchestrate the crew</div>
+        <div class="rung"><span class="no">04</span>Adopt the method</div>
+        <div class="rung"><span class="no">→</span>Ship. Measure. Repeat.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  DESIGN PREVIEW · BUILT WITH <b>CLAUDE CODE</b> · PRIOR AUTH PORTAL TEACHING REPOS · © 2026 VARA SRINIVAS
+</footer>
+
+<script>
+/* ---------- Orbit hero: two agents orbiting the codebase ---------- */
+(function(){
+  const c=document.getElementById('orbit');if(!c)return;
+  const ctx=c.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w,h,t=0;
+  const stars=[];
+  function size(){w=c.width=c.offsetWidth*devicePixelRatio;h=c.height=c.offsetHeight*devicePixelRatio;
+    stars.length=0;for(let i=0;i<110;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.3+.2,p:Math.random()*6.28});}
+  size();addEventListener('resize',size);
+  const trailG=[],trailC=[];
+  function pos(phase,rx,ry){const cx=w/2,cy=h/2;return{x:cx+Math.cos(phase)*rx,y:cy+Math.sin(phase)*ry};}
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    /* stars */
+    const light=document.documentElement.dataset.theme==='light';
+    const starRGB=light?'70,95,140':'180,200,235';
+    for(const s of stars){const a=.25+.35*Math.abs(Math.sin(t*.008+s.p));
+      ctx.fillStyle=`rgba(${starRGB},${a})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}
+    const rx=Math.min(w*.34,420*devicePixelRatio),ry=rx*.42;
+    /* core: the codebase */
+    const cx=w/2,cy=h/2,pulse=1+.05*Math.sin(t*.03);
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,60*devicePixelRatio*pulse);
+    const coreRGB=light?'20,30,44':'233,238,247';
+    g.addColorStop(0,`rgba(${coreRGB},.10)`);g.addColorStop(1,`rgba(${coreRGB},0)`);
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,60*devicePixelRatio*pulse,0,6.28);ctx.fill();
+    ctx.strokeStyle=light?'rgba(40,70,120,.28)':'rgba(140,170,220,.22)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,6.28);ctx.stroke();
+    /* agents */
+    const pg=pos(t*.012,rx,ry),pc=pos(t*.012+Math.PI,rx,ry);
+    trailG.push(pg);trailC.push(pc);
+    if(trailG.length>60){trailG.shift();trailC.shift();}
+    function trail(arr,rgb){for(let i=0;i<arr.length;i++){const a=i/arr.length*.35;
+      ctx.fillStyle=`rgba(${rgb},${a})`;ctx.beginPath();ctx.arc(arr[i].x,arr[i].y,2.4*devicePixelRatio*(i/arr.length),0,6.28);ctx.fill();}}
+    trail(trailG,'245,184,75');trail(trailC,'79,216,235');
+    function body(p,color){ctx.shadowBlur=26*devicePixelRatio;ctx.shadowColor=color;
+      ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,5*devicePixelRatio,0,6.28);ctx.fill();ctx.shadowBlur=0;}
+    body(pg,'#F5B84B');body(pc,'#4FD8EB');
+    t++;
+    if(!reduce)requestAnimationFrame(draw);
+  }
+  draw();
+  if(reduce){t=140;draw();}
+})();
+
+/* ---------- Count-up stats ---------- */
+(function(){
+  const els=document.querySelectorAll('[data-count]');
+  const io=new IntersectionObserver(en=>{en.forEach(e=>{
+    if(!e.isIntersecting||e.target.dataset.done)return;
+    e.target.dataset.done=1;
+    const end=+e.target.dataset.count,dur=1200,t0=performance.now();
+    (function step(now){const p=Math.min((now-t0)/dur,1);
+      e.target.textContent=Math.round(end*(1-Math.pow(1-p,3)));
+      if(p<1)requestAnimationFrame(step);})(t0);
+  });},{threshold:.4});
+  els.forEach(el=>io.observe(el));
+})();
+
+/* ---------- Track reveal ---------- */
+(function(){
+  const io=new IntersectionObserver(en=>{en.forEach((e,i)=>{
+    if(e.isIntersecting){e.target.style.transitionDelay=(e.target.dataset.i*40)+'ms';e.target.classList.add('vis');}
+  });},{threshold:.15});
+  document.querySelectorAll('.track').forEach((el,i)=>{el.dataset.i=i;io.observe(el);});
+})();
+
+/* ---------- Terminal typing loop ---------- */
+(function(){
+  const el=document.getElementById('termbody');if(!el)return;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const script=[
+    {t:'$ claude\n',c:''},
+    {t:'> Approvals over 0.85 confidence are being denied.\n  Find the bug in ApprovalService. Read only —\n  plan before you touch anything.\n\n',c:'p'},
+    {t:'⏺ Reading ApprovalService.java, ApprovalPolicy.java…\n',c:'c'},
+    {t:'⏺ Found it: line 47 uses  score > THRESHOLD\n  spec says inclusive —  score >= THRESHOLD\n\n',c:''},
+    {t:'⏺ Plan: 1-line fix + boundary test at exactly 0.85\n',c:'c'},
+    {t:'> approve\n\n',c:'p'},
+    {t:'✓ ApprovalServiceTest.boundaryCase PASSED\n✓ 34 existing tests PASSED · context used: 12K',c:'ok'}
+  ];
+  if(reduce){el.innerHTML=script.map(s=>`<span class="${s.c}">${s.t}</span>`).join('');return;}
+  let si=0,ci=0;
+  function type(){
+    if(si>=script.length){setTimeout(()=>{el.innerHTML='';si=0;ci=0;type();},5000);return;}
+    const seg=script[si];
+    if(ci===0){seg.span=document.createElement('span');seg.span.className=seg.c;el.appendChild(seg.span);}
+    seg.span.textContent=seg.t.slice(0,++ci);
+    if(ci>=seg.t.length){si++;ci=0;setTimeout(type,seg.c==='p'?500:260);}
+    else setTimeout(type,seg.c==='p'?26:9);
+  }
+  type();
+})();
+
+/* ---------- Theme toggle ---------- */
+(function(){
+  const btn=document.getElementById('themeToggle'),lbl=document.getElementById('themeLabel');
+  btn.addEventListener('click',()=>{
+    const light=document.documentElement.dataset.theme==='light';
+    document.documentElement.dataset.theme=light?'':'light';
+    lbl.textContent=light?'LIGHT MODE':'DARK MODE';
+    btn.setAttribute('aria-pressed',String(!light));
+    btn.setAttribute('aria-label',light?'Switch to light mode':'Switch to dark mode');
+  });
+})();
+
+/* ---------- Path selection ---------- */
+(function(){
+  const eng=document.getElementById('btnEng'),lead=document.getElementById('btnLead');
+  const pEng=document.getElementById('paneEng'),pLead=document.getElementById('paneLead');
+  const desc=document.getElementById('pathDesc');
+  function activate(pane){
+    const isEng=pane==='eng';
+    eng.classList.toggle('on',isEng);lead.classList.toggle('on',!isEng);
+    eng.setAttribute('aria-selected',isEng);lead.setAttribute('aria-selected',!isEng);
+    pEng.classList.toggle('on',isEng);pLead.classList.toggle('on',!isEng);
+    desc.textContent=isEng
+      ?'// 12 tracks · 56 modules · hands-on in both repos'
+      :'// 6 tracks · 21 modules · for EMs, directors & principal-in-charge roles — no coding required';
+    document.querySelectorAll('.pathpane.on .track').forEach((el,i)=>{
+      el.classList.remove('vis');
+      setTimeout(()=>{el.style.transitionDelay=(i*40)+'ms';el.classList.add('vis');},30);
+    });
+  }
+  eng.addEventListener('click',()=>activate('eng'));
+  lead.addEventListener('click',()=>activate('lead'));
+})();
+</script>
+</body>
+</html>
