@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 10x Toolkit — Course Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#06090F;
+  --panel:#0C121D;
+  --panel2:#101827;
+  --line:rgba(140,170,220,.13);
+  --gold:#F5B84B;
+  --cyan:#4FD8EB;
+  --text:#E9EEF7;
+  --dim:#8D99AD;
+  --faint:#5A6478;
+  --mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"]{
+  --void:#F4F7FB;
+  --panel:#FFFFFF;
+  --panel2:#EDF1F7;
+  --line:rgba(25,50,95,.14);
+  --gold:#B9820F;
+  --cyan:#0E8FA3;
+  --text:#141E2C;
+  --dim:#4E5D74;
+  --faint:#7C8AA0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;transition:background .35s,color .35s}
+::selection{background:rgba(245,184,75,.35)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.eyebrow b{color:var(--gold);font-weight:500}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;line-height:1.08}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+/* theme toggle */
+#themeToggle{position:fixed;top:18px;right:18px;z-index:50;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:border-color .25s}
+#themeToggle:hover{border-color:var(--gold)}
+#themeToggle .orb{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--cyan))}
+
+/* ============ HERO (condensed) ============ */
+#hero{padding:96px 0 64px;text-align:center}
+h1{font-size:clamp(40px,6.5vw,80px);font-weight:800;letter-spacing:-.02em;margin-top:20px}
+h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:22px auto 0;max-width:600px;color:var(--dim);font-size:17px}
+.sub em{color:var(--text);font-style:normal;font-weight:600}
+.duo{display:flex;gap:14px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.chip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+.chip.gold i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.chip.cyan i{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.stats{display:flex;gap:0;justify-content:center;margin-top:44px;font-family:var(--mono)}
+.stat{padding:0 34px;border-left:1px solid var(--line)}
+.stat:first-child{border-left:none}
+.stat b{display:block;font-size:30px;font-weight:700;color:var(--text)}
+.stat span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+/* ============ PATH SELECTOR ============ */
+#course{padding:72px 0 96px}
+.pathsel{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:6px 0 34px;background:var(--panel)}
+.pathsel button{font-family:var(--mono);font-size:12px;letter-spacing:.1em;padding:12px 22px;background:transparent;border:none;color:var(--dim);cursor:pointer;transition:background .25s,color .25s}
+.pathsel button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.pathsel button.on{color:var(--void);font-weight:700}
+.pathsel button.on.eng{background:var(--gold)}
+.pathsel button.on.lead{background:var(--cyan)}
+.pathdesc{font-size:14px;color:var(--dim);margin:-22px 0 30px;font-family:var(--mono)}
+
+/* ============ TRACK LIST ============ */
+.path{position:relative;padding-left:38px}
+.path::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold),var(--cyan))}
+.path.lead::before{background:linear-gradient(180deg,var(--cyan),var(--gold))}
+.track{position:relative;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;transition:transform .25s,border-color .25s,opacity .6s;opacity:0;transform:translateY(18px)}
+.track.vis{opacity:1;transform:translateY(0)}
+.track:hover{border-color:rgba(245,184,75,.45)}
+.track::before{content:'';position:absolute;left:-33px;top:31px;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:var(--void);border:2px solid var(--gold)}
+.track:nth-child(even)::before{border-color:var(--cyan)}
+.track.grad{background:linear-gradient(120deg,rgba(245,184,75,.10),rgba(79,216,235,.10));border-color:rgba(245,184,75,.35)}
+.thead{width:100%;display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:20px 24px;background:none;border:none;cursor:pointer;text-align:left}
+.tnum{font-family:var(--mono);font-size:12px;color:var(--faint);min-width:60px}
+.tname{font-weight:600;font-size:17px;flex:1;min-width:220px;font-family:'Instrument Sans',sans-serif}
+.tname small{display:block;font-weight:400;font-size:13.5px;color:var(--dim);margin-top:3px}
+.tmods{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap}
+.badges{display:flex;gap:6px}
+.bdg{width:10px;height:10px;border-radius:3px}
+.bdg.g{background:var(--gold)}.bdg.c{background:var(--cyan)}
+.chev{font-family:var(--mono);font-size:12px;color:var(--faint);transition:transform .25s}
+.thead[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.tbody{border-top:1px solid var(--line);padding:14px 24px 18px}
+.empty{font-family:var(--mono);font-size:12px;color:var(--faint);padding:6px 0}
+.modrow{width:100%;display:flex;align-items:center;gap:14px;padding:11px 12px;margin:2px 0;background:none;border:none;border-radius:9px;cursor:pointer;text-align:left;font-size:14.5px}
+.modrow:hover{background:var(--panel2)}
+.modrow .mid{font-family:var(--mono);font-size:11.5px;color:var(--faint);min-width:52px}
+.modrow .mtitle{flex:1}
+.modrow .mmin{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.modrow .donedot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--faint)}
+.modrow.done .donedot{background:var(--gold);border-color:var(--gold)}
+.legend{display:flex;gap:22px;margin-bottom:26px;font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+
+/* ============ MODULE VIEW (skeleton — renders once MODS has entries) ============ */
+#module{padding:72px 0 96px}
+.backbtn{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;margin-bottom:26px}
+.backbtn:hover{border-color:var(--gold)}
+.lesson-shell{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.lesson-bar{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel2);font-family:var(--mono);font-size:12px;color:var(--dim);flex-wrap:wrap}
+.lesson-bar .crumb b{color:var(--gold)}
+.pill{margin-left:auto;font-size:11px;padding:4px 12px;border-radius:999px;border:1px solid rgba(79,216,235,.4);color:var(--cyan)}
+.pill.nv{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.lesson-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.lcol{padding:34px}
+.lcol.left{border-right:1px solid var(--line)}
+.lcol h3{font-size:24px;font-weight:700;margin-bottom:8px}
+.lcol .lm{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px}
+.analogy{background:rgba(245,184,75,.07);border:1px solid rgba(245,184,75,.25);border-radius:12px;padding:18px 20px;margin:22px 0;font-size:14.5px}
+.analogy b{color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:8px}
+.lcol p{color:var(--dim);font-size:14.5px}
+.lcol p strong{color:var(--text)}
+.vismount{margin-top:24px}
+.vispending{font-family:var(--mono);font-size:12px;color:var(--faint);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center}
+.labtabs{display:flex;gap:8px;margin-bottom:18px}
+.labtabs button{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.labtabs button.on.a{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+.labtabs button.on.b{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700}
+.labsteps{margin:14px 0 0 20px;color:var(--dim);font-size:14.5px}
+.labsteps li{margin-bottom:10px}
+.checklist{list-style:none;margin-top:14px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:14.5px;color:var(--dim);cursor:pointer}
+.checklist input{margin-top:5px;accent-color:var(--gold)}
+.quiz{margin-top:14px}
+.quiz .qq{font-size:14.5px;font-weight:600;margin:14px 0 8px}
+.quiz .qopt{display:block;width:100%;text-align:left;font-size:14px;padding:9px 14px;margin:5px 0;background:var(--panel2);border:1px solid var(--line);border-radius:9px;cursor:pointer;color:var(--dim)}
+.quiz .qopt.correct{border-color:var(--gold);color:var(--text)}
+.quiz .qopt.wrong{border-color:#B0503C;opacity:.7}
+.sectionlabel{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-top:28px}
+.completebtn{margin-top:26px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;padding:11px 20px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.completebtn.done{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+
+footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
+footer b{color:var(--gold);font-weight:500}
+
+@media(max-width:860px){
+  .lesson-body{grid-template-columns:1fr}
+  .lcol.left{border-right:none;border-bottom:1px solid var(--line)}
+  .stats{flex-wrap:wrap;gap:20px}
+  .stat{border-left:none;padding:0 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .track{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<button id="themeToggle" aria-pressed="false" aria-label="Switch to light mode"><span class="orb" aria-hidden="true"></span><span id="themeLabel">LIGHT MODE</span></button>
+
+<header id="hero">
+  <div class="wrap">
+    <div class="eyebrow">A hands-on flight program · <b>varasrinivas.com</b></div>
+    <h1>The <span class="ten">10x</span> Toolkit</h1>
+    <p class="sub">Master <em>Claude Code</em> and <em>GitHub Copilot</em> on real prior-authorization repositories — analyze, debug, test, orchestrate agents, engineer context, and <em>measure the gain</em>.</p>
+    <div class="duo">
+      <span class="chip gold"><i></i>Claude Code path</span>
+      <span class="chip cyan"><i></i>GitHub Copilot path</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stTracks">0</b><span>tracks</span></div>
+      <div class="stat"><b id="stMods">0</b><span>modules</span></div>
+      <div class="stat"><b id="stBuilt">0</b><span>built</span></div>
+      <div class="stat"><b id="stDone">0</b><span>completed</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<main id="course">
+  <div class="wrap">
+    <div class="pathsel" role="tablist" aria-label="Choose your path">
+      <button class="eng on" id="btnEng" role="tab" aria-selected="true" aria-controls="trackList">◆ ENGINEER PATH</button>
+      <button class="lead" id="btnLead" role="tab" aria-selected="false" aria-controls="trackList">◆ LEADERSHIP PATH</button>
+    </div>
+    <div class="pathdesc" id="pathDesc"></div>
+    <div class="legend" id="legend"></div>
+    <div class="path" id="trackList" role="tabpanel"></div>
+  </div>
+</main>
+
+<!-- Module detail view — skeleton; populated by renderModule() once MODS has entries -->
+<section id="module" hidden>
+  <div class="wrap">
+    <button class="backbtn" id="backBtn">← ALL TRACKS</button>
+    <div class="lesson-shell">
+      <div class="lesson-bar">
+        <span class="crumb" id="modCrumb"></span>
+        <span id="modMeta"></span>
+        <span class="pill nv" id="modNV" hidden>NEEDS VERIFICATION</span>
+        <span class="pill" id="modPill"></span>
+      </div>
+      <div class="lesson-body">
+        <div class="lcol left">
+          <div class="lm" id="modConceptLabel">Concept</div>
+          <h3 id="modTitle"></h3>
+          <div class="analogy" id="modAnalogy"></div>
+          <div id="modBody"></div>
+          <div class="vismount" id="modVisual"></div>
+        </div>
+        <div class="lcol">
+          <div class="lm">Lab</div>
+          <div class="labtabs" id="labTabs"></div>
+          <div id="labBody"></div>
+          <div class="sectionlabel" id="checkLabel" hidden>Checklist</div>
+          <ul class="checklist" id="modChecklist"></ul>
+          <div class="sectionlabel" id="quizLabel" hidden>Quiz</div>
+          <div class="quiz" id="modQuiz"></div>
+          <button class="completebtn" id="completeBtn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  THE <b>10X TOOLKIT</b> · PRIOR AUTH PORTAL TEACHING REPOS · © 2026 VARA SRINIVAS
+</footer>
+
+<script>
+/* =====================================================================
+   MODS — one object per module. Built one per session; see BLUEPRINT.md.
+   Schema:
+   { id, path:'eng'|'lead', track,            // e.g. 'M-1.1', 'eng', 'T-01'
+     title, minutes, lastVerified,            // lastVerified: 'YYYY-MM-DD'
+     needsVerification,                       // optional, true if claims unchecked
+     concept:{analogy, body},                 // analogy card + HTML prose
+     visual:{type, componentId},              // ANIM-xx | SIM-xx | TERM-xx per VISUALS.md
+     labA:{title, steps:[...]},               // Claude Code lab (gold)
+     labB:{title, steps:[...]},               // Copilot lab (cyan) — see dual-path rule
+     checklist:[...], quiz:[{q, options:[...], answer}] }
+   ===================================================================== */
+const MODS = [];
+
+const TRACKS = {
+  eng: [
+    {id:'T-01',name:'Foundations & Setup',tag:'CLI, sessions, permission modes · VS Code + Visual Studio 2026, agent picker',mods:4,tools:'gc'},
+    {id:'T-02',name:'Ways of Working: Vibe vs Spec',tag:'When to vibe, when to spec — and watching vibe coding break in real time',mods:4,tools:'gc'},
+    {id:'T-03',name:'Reading & Analyzing Code',tag:'Codebase onboarding, architecture mapping, Plan Mode & the Plan agent',mods:5,tools:'gc'},
+    {id:'T-04',name:'Autocomplete & Inline Flow',tag:'Next edit suggestions, inline chat, multi-file edits — the Cursor-like layer',mods:4,tools:'c'},
+    {id:'T-05',name:'Debugging',tag:'Agentic debug loops · Copilot Debugger agent validating fixes at runtime',mods:6,tools:'gc'},
+    {id:'T-06',name:'Testing',tag:'JUnit + Testcontainers, React Testing Library, "did the test catch it?" drills',mods:5,tools:'gc'},
+    {id:'T-07',name:'Context, Memory & Agent Constitutions',tag:'CLAUDE.md · AGENTS.md · copilot-instructions.md · Claude memory discipline',mods:5,tools:'gc'},
+    {id:'T-08',name:'The Token Economy',tag:'/compact vs /clear, context pollution, cost attribution, paying for every line',mods:4,tools:'g'},
+    {id:'T-09',name:'Subagents, Skills & Custom Agents',tag:'One SKILL.md, two tools — Copilot reads .claude/skills/ too',mods:7,tools:'gc'},
+    {id:'T-10',name:'Workflows, Hooks & MCP',tag:'Slash commands, lifecycle hooks, MCP servers, cloud & background agents',mods:5,tools:'gc'},
+    {id:'T-11',name:'Improving & Measuring Productivity',tag:'DORA · SPACE · DX Core 4 · your own before/after baseline',mods:3,tools:'gc'},
+    {id:'T-12',name:'Graduate Arc: AWS AI-DLC + Capstone',tag:'Tool mastery meets methodology — Mob Elaboration to Mob Construction, then ship a full feature both ways',mods:4,tools:'gc',grad:true}
+  ],
+  lead: [
+    {id:'L-01',name:"The Leader's Mental Model",tag:'What agents actually do all day · vibe vs spec as a risk lens, not a style choice',mods:3,tools:'g'},
+    {id:'L-02',name:'The Adoption Playbook',tag:'Pilot squads, champions, enablement cadence — turning 2 power users into 200',mods:4,tools:'c'},
+    {id:'L-03',name:'Governance & Guardrails',tag:'Permission modes, MCP allowlists, review policy for AI-written code, IP & security posture',mods:4,tools:'gc'},
+    {id:'L-04',name:'The Economics of Agents',tag:'Seats vs tokens, per-agent cost attribution, budgeting a team, the ROI narrative for your CFO',mods:3,tools:'g'},
+    {id:'L-05',name:'Measuring Teams Honestly',tag:'DORA · SPACE · DX Core 4 at org level — and the vanity metrics to refuse',mods:4,tools:'c'},
+    {id:'L-06',name:'Leading AI-DLC',tag:'Facilitating Mob Elaboration & Mob Construction · restructuring the sprint around units of work',mods:3,tools:'gc',grad:true}
+  ]
+};
+
+const PATH_DESC = {
+  eng:'// 12 tracks · 56 modules · hands-on in both repos',
+  lead:'// 6 tracks · 21 modules · for EMs, directors & principal-in-charge roles — no coding required'
+};
+const LEGENDS = {
+  eng:[['var(--gold)','Claude Code lab'],['var(--cyan)','Copilot lab']],
+  lead:[['var(--cyan)','Playbook lab'],['var(--gold)','Live-tool walkthrough']]
+};
+
+/* ---------- Visual factory (VISUALS.md contract; registry fills as modules ship) ---------- */
+const VISUALS = {}; // componentId -> function(mountEl, opts)
+function renderVisual(componentId, mountEl, opts){
+  const fn = VISUALS[componentId];
+  if(fn){ fn(mountEl, opts||{}); return; }
+  mountEl.innerHTML = '<div class="vispending">◈ ' + esc(componentId||'visual') + ' — in production</div>';
+}
+
+/* ---------- Progress store ---------- */
+const KEY = 'tenx-progress';
+function loadState(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+function saveState(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+const state = Object.assign({theme:'', path:'eng', done:{}}, loadState());
+if(!state.done) state.done = {};
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function modsFor(path, trackId){ return MODS.filter(m => m.path === path && (!trackId || m.track === trackId)); }
+function doneCount(path){ return modsFor(path).filter(m => state.done[m.id]).length; }
+
+/* ---------- Hero stats (computed, per active path) ---------- */
+function renderStats(){
+  const tracks = TRACKS[state.path];
+  document.getElementById('stTracks').textContent = tracks.length;
+  document.getElementById('stMods').textContent = tracks.reduce((n,t) => n + t.mods, 0);
+  document.getElementById('stBuilt').textContent = modsFor(state.path).length;
+  document.getElementById('stDone').textContent = doneCount(state.path);
+}
+
+/* ---------- Track list ---------- */
+function renderTracks(){
+  const list = document.getElementById('trackList');
+  list.className = 'path' + (state.path === 'lead' ? ' lead' : '');
+  document.getElementById('pathDesc').textContent = PATH_DESC[state.path];
+  document.getElementById('legend').innerHTML = LEGENDS[state.path]
+    .map(([c,l]) => '<span><i style="background:' + c + '"></i>' + esc(l) + '</span>').join('');
+  list.innerHTML = '';
+  TRACKS[state.path].forEach((t,i) => {
+    const built = modsFor(state.path, t.id);
+    const done = built.filter(m => state.done[m.id]).length;
+    const card = document.createElement('div');
+    card.className = 'track' + (t.grad ? ' grad' : '');
+    const badges = (t.tools.includes('g') ? '<span class="bdg g"></span>' : '')
+                 + (t.tools.includes('c') ? '<span class="bdg c"></span>' : '');
+    const count = built.length + '/' + t.mods + ' built' + (done ? ' · ' + done + ' done' : '');
+    card.innerHTML =
+      '<button class="thead" aria-expanded="false">' +
+        '<span class="tnum">' + esc(t.id) + '</span>' +
+        '<span class="tname">' + esc(t.name) + '<small>' + esc(t.tag) + '</small></span>' +
+        '<span class="badges">' + badges + '</span>' +
+        '<span class="tmods">' + count + '</span>' +
+        '<span class="chev" aria-hidden="true">▶</span>' +
+      '</button>' +
+      '<div class="tbody" hidden></div>';
+    const head = card.querySelector('.thead');
+    const body = card.querySelector('.tbody');
+    head.addEventListener('click', () => {
+      const open = head.getAttribute('aria-expanded') === 'true';
+      head.setAttribute('aria-expanded', String(!open));
+      body.hidden = open;
+      if(!open) renderModuleList(t, body);
+    });
+    list.appendChild(card);
+    setTimeout(() => card.classList.add('vis'), 30 + i*40);
+  });
+}
+
+function renderModuleList(track, el){
+  const built = modsFor(state.path, track.id);
+  if(!built.length){
+    el.innerHTML = '<div class="empty">0 of ' + track.mods + ' modules · in production</div>';
+    return;
+  }
+  el.innerHTML = '';
+  built.forEach(m => {
+    const row = document.createElement('button');
+    row.className = 'modrow' + (state.done[m.id] ? ' done' : '');
+    row.innerHTML =
+      '<span class="donedot" aria-hidden="true"></span>' +
+      '<span class="mid">' + esc(m.id) + '</span>' +
+      '<span class="mtitle">' + esc(m.title) + '</span>' +
+      '<span class="mmin">' + esc(m.minutes) + ' min</span>';
+    row.addEventListener('click', () => openModule(m));
+    el.appendChild(row);
+  });
+  const missing = track.mods - built.length;
+  if(missing > 0){
+    el.insertAdjacentHTML('beforeend', '<div class="empty">' + missing + ' more in production</div>');
+  }
+}
+
+/* ---------- Module view (skeleton; exercised once MODS has entries) ---------- */
+function openModule(mod){
+  document.getElementById('course').hidden = true;
+  document.getElementById('module').hidden = false;
+  renderModule(mod);
+  window.scrollTo({top:0});
+}
+function closeModule(){
+  document.getElementById('module').hidden = true;
+  document.getElementById('course').hidden = false;
+  renderTracks(); renderStats();
+}
+function renderModule(mod){
+  document.getElementById('modCrumb').innerHTML = esc(mod.track) + ' / <b>' + esc(mod.id) + '</b> · ' + esc(mod.title);
+  document.getElementById('modMeta').textContent = (mod.minutes || '—') + ' min · verified ' + (mod.lastVerified || '—');
+  document.getElementById('modNV').hidden = !mod.needsVerification;
+  const dual = mod.labA && mod.labB;
+  document.getElementById('modPill').textContent = dual ? 'DUAL-PATH LAB' : (mod.labA ? 'CLAUDE-LED' : mod.labB ? 'COPILOT-LED' : 'PLAYBOOK');
+  document.getElementById('modConceptLabel').textContent = 'Concept · ' + (mod.minutes || '—') + ' min';
+  document.getElementById('modTitle').textContent = mod.title;
+  const an = document.getElementById('modAnalogy');
+  if(mod.concept && mod.concept.analogy){ an.hidden = false; an.innerHTML = '<b>Real-world analogy</b>' + mod.concept.analogy; }
+  else an.hidden = true;
+  document.getElementById('modBody').innerHTML = (mod.concept && mod.concept.body) || '';
+  const vm = document.getElementById('modVisual');
+  vm.innerHTML = '';
+  if(mod.visual && mod.visual.componentId) renderVisual(mod.visual.componentId, vm, mod.visual);
+  renderLabs(mod);
+  renderChecklist(mod);
+  renderQuiz(mod);
+  const btn = document.getElementById('completeBtn');
+  function paint(){ const d = !!state.done[mod.id]; btn.className = 'completebtn' + (d ? ' done' : ''); btn.textContent = d ? '✓ COMPLETED' : 'MARK COMPLETE'; }
+  btn.onclick = () => { state.done[mod.id] = !state.done[mod.id]; if(!state.done[mod.id]) delete state.done[mod.id]; saveState(); paint(); };
+  paint();
+}
+function renderLabs(mod){
+  const tabs = document.getElementById('labTabs');
+  const body = document.getElementById('labBody');
+  tabs.innerHTML = ''; body.innerHTML = '';
+  const labs = [];
+  if(mod.labA) labs.push({key:'a', label:'◆ CLAUDE CODE', lab:mod.labA});
+  if(mod.labB) labs.push({key:'b', label:'◆ COPILOT', lab:mod.labB});
+  if(!labs.length){ tabs.hidden = true; return; }
+  tabs.hidden = false;
+  function show(entry){
+    tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.key === entry.key));
+    const steps = (entry.lab.steps || []).map(s => '<li>' + s + '</li>').join('');
+    body.innerHTML = '<h3 style="font-size:19px">' + esc(entry.lab.title || '') + '</h3>'
+                   + (steps ? '<ol class="labsteps">' + steps + '</ol>' : '');
+  }
+  labs.forEach((entry,i) => {
+    const b = document.createElement('button');
+    b.className = entry.key; b.dataset.key = entry.key; b.textContent = entry.label;
+    b.addEventListener('click', () => show(entry));
+    tabs.appendChild(b);
+    if(i === 0) show(entry);
+  });
+}
+function renderChecklist(mod){
+  const el = document.getElementById('modChecklist');
+  const items = mod.checklist || [];
+  document.getElementById('checkLabel').hidden = !items.length;
+  el.innerHTML = items.map(c => '<li><label><input type="checkbox"> <span>' + c + '</span></label></li>').join('');
+}
+function renderQuiz(mod){
+  const el = document.getElementById('modQuiz');
+  const qs = mod.quiz || [];
+  document.getElementById('quizLabel').hidden = !qs.length;
+  el.innerHTML = '';
+  qs.forEach(q => {
+    const div = document.createElement('div');
+    div.innerHTML = '<div class="qq">' + esc(q.q) + '</div>';
+    (q.options || []).forEach((opt,i) => {
+      const b = document.createElement('button');
+      b.className = 'qopt'; b.textContent = opt;
+      b.addEventListener('click', () => {
+        div.querySelectorAll('.qopt').forEach((o,j) => {
+          o.disabled = true;
+          if(j === q.answer) o.classList.add('correct');
+          else if(o === b) o.classList.add('wrong');
+        });
+      });
+      div.appendChild(b);
+    });
+    el.appendChild(div);
+  });
+}
+
+/* ---------- Theme toggle ---------- */
+(function(){
+  const btn = document.getElementById('themeToggle'), lbl = document.getElementById('themeLabel');
+  function apply(){
+    const light = state.theme === 'light';
+    document.documentElement.dataset.theme = light ? 'light' : '';
+    lbl.textContent = light ? 'DARK MODE' : 'LIGHT MODE';
+    btn.setAttribute('aria-pressed', String(light));
+    btn.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+  }
+  btn.addEventListener('click', () => { state.theme = state.theme === 'light' ? '' : 'light'; saveState(); apply(); });
+  apply();
+})();
+
+/* ---------- Path selection ---------- */
+(function(){
+  const eng = document.getElementById('btnEng'), lead = document.getElementById('btnLead');
+  function activate(path){
+    state.path = path; saveState();
+    const isEng = path === 'eng';
+    eng.classList.toggle('on', isEng); lead.classList.toggle('on', !isEng);
+    eng.setAttribute('aria-selected', String(isEng)); lead.setAttribute('aria-selected', String(!isEng));
+    closeModuleIfOpen();
+    renderTracks(); renderStats();
+  }
+  function closeModuleIfOpen(){
+    if(!document.getElementById('module').hidden){
+      document.getElementById('module').hidden = true;
+      document.getElementById('course').hidden = false;
+    }
+  }
+  eng.addEventListener('click', () => activate('eng'));
+  lead.addEventListener('click', () => activate('lead'));
+  document.getElementById('backBtn').addEventListener('click', closeModule);
+  activate(state.path === 'lead' ? 'lead' : 'eng');
+})();
+</script>
+</body>
+</html>
