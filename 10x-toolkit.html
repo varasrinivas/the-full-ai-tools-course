@@ -128,6 +128,8 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .lcol p{color:var(--dim);font-size:14.5px;margin-bottom:12px}
 .lcol p strong{color:var(--text)}
 .lcol code,.labsteps code{font-family:var(--mono);font-size:.92em;color:var(--text)}
+.lcol a,.labsteps a,footer a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+.lcol a:hover,.labsteps a:hover,footer a:hover{text-decoration-color:var(--gold)}
 .vismount{margin-top:24px}
 .vispending{font-family:var(--mono);font-size:12px;color:var(--faint);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center}
 .labtabs{display:flex;gap:8px;margin-bottom:18px}
@@ -261,7 +263,7 @@ footer b{color:var(--gold);font-weight:500}
 </section>
 
 <footer>
-  THE <b>10X TOOLKIT</b> · PRIOR AUTH PORTAL TEACHING REPOS · © 2026 VARA SRINIVAS
+  THE <b>10X TOOLKIT</b> · PRIOR AUTH PORTAL TEACHING REPOS · <a href="https://github.com/varasrinivas/the-full-ai-tools-course" target="_blank" rel="noopener">GITHUB</a> · © 2026 VARA SRINIVAS
 </footer>
 
 <script>
@@ -288,37 +290,37 @@ const MODS = [
         '<p><strong>The spectrum.</strong> Ghost text completes the line you are typing. Chat answers questions. An <strong>agent</strong> reads files, edits code, and runs commands in a loop. The difference is not intelligence — it is agency.</p>' +
         '<p><strong>One agent turn</strong> has four phases: gather context → plan → act with tools → verify. Every module after this one is about making that loop cheaper, safer, or faster.</p>' +
         '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Edit, and Agent modes in VS Code and Visual Studio 2026. Cursor is an AI-native IDE: Tab autocomplete in the editor, an Agent panel on <code>Ctrl/Cmd+I</code>, and a Plan Mode that thinks before it touches anything. Same missions, three cockpits — you will fly every mission in all of them.</p>' +
-        '<p><strong>The territory.</strong> Prior authorization: requests move SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW. A confidence score of <strong>0.85 or higher auto-approves — the threshold is inclusive</strong>. <code>priorauth-api</code> decides; <code>priorauth-web</code> displays. Both repos ship with real bugs planted for later tracks.</p>' +
+        '<p><strong>The territory.</strong> Prior authorization: requests move SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW. A confidence score of <strong>0.85 or higher auto-approves — the threshold is inclusive</strong>. <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> decides; <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> displays. Both repos ship with real bugs planted for later tracks.</p>' +
         '<p><strong>Your job</strong> from here on: intent, context, review. You are the bouncer, not the typist.</p>'
     },
     visual:{type:'sim', componentId:'SIM-01', mode:'tour'},
     labA:{
       title:'Repo tour — Claude Code',
       steps:[
-        'In a terminal at the <code>priorauth-api</code> root, run <code>claude</code>. You should see the interactive session start.',
+        'Clone <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a>. In a terminal at the repo root, run <code>claude</code>. You should see the interactive session start.',
         'Ask: <em>“Give me a ten-line tour of this repo — what are the main packages and what does each own?”</em> You should see the controller / service / repository / model layout named.',
         'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold cited.',
-        'Open a second terminal at <code>priorauth-web</code>, run <code>claude</code>, and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
+        'Clone <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a>, open a second terminal at its root, run <code>claude</code>, and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
         'End both sessions with <code>/exit</code>. Success: all three answers surfaced without you opening a single file by hand.'
       ]
     },
     labB:{
       title:'Repo tour — Copilot Chat',
       steps:[
-        'Open the <code>priorauth-api</code> folder in VS Code with Copilot enabled. Open Copilot Chat and set the mode to <strong>Ask</strong>.',
+        'Open the <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> folder in VS Code with Copilot enabled. Open Copilot Chat and set the mode to <strong>Ask</strong>.',
         'Ask with workspace context: <em>“@workspace what are the main packages and what does each own?”</em> You should see the same package map as the Claude Code lab.',
         'Ask: <em>“@workspace where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and <code>&gt;= 0.85</code>.',
-        'Open <code>priorauth-web</code> in a new window and ask which component displays the confidence score. You should see <code>ConfidenceGauge</code>.',
+        'Open <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> in a new window and ask which component displays the confidence score. You should see <code>ConfidenceGauge</code>.',
         'Write one sentence: which cockpit you preferred for reading a strange codebase, and why. Success: same three answers as the Claude Code lab.'
       ]
     },
     labC:{
       title:'Repo tour — Cursor',
       steps:[
-        'Open the <code>priorauth-api</code> folder in Cursor and let codebase indexing finish (watch the status bar) — this is what powers repo-wide answers.',
+        'Open the <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> folder in Cursor and let codebase indexing finish (watch the status bar) — this is what powers repo-wide answers.',
         'Open the Agent panel with <code>Ctrl+I</code> (<code>Cmd+I</code> on Mac). Ask: <em>“Give me a ten-line tour of this repo — what are the main packages and what does each own?”</em> You should see the controller / service / repository / model layout named.',
         'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold cited. Tip: hit <code>Shift+Tab</code> to flip into Plan Mode when you want a guarantee nothing gets edited while you explore.',
-        'Open <code>priorauth-web</code> in Cursor and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
+        'Open <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> in Cursor and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
         'Note one difference you felt versus the other two cockpits — indexing speed, answer style, context handling. Success: same three answers as labs A and B.'
       ]
     },

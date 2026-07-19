@@ -10,6 +10,7 @@ Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (
 - 2026-07-19 — Hero stats are computed from TRACKS/MODS per active path (tracks · modules · built · completed), not hardcoded.
 - 2026-07-19 — Cursor added as a full third path (labC on every hands-on module). Accent: purple #6E5AAE from the reference palette (white text for AA) — no invented colors. Reduced-path tracks: T-04 Copilot+Cursor-led, T-08 stays Claude-led with a three-way cost comparison in M-8.4.
 - 2026-07-19 — New modules from the Cursor expansion: M-2.5 (tool-fit scenario drills), L-1.4 (the fleet decision — tool per use case, for leaders), M-12.5 (bonus capstone: agent-driven migration of both repos from clinical PA to pharmacy PA — target fixed in REPO-SPECS.md). Counts now 58 eng / 22 lead.
+- 2026-07-19 — Course repo published to github.com/varasrinivas/the-full-ai-tools-course. Lab repo references now link to github.com/varasrinivas/priorauth-api and /priorauth-web — these 404 until the teaching repos are pushed (tracked under Needs verification).
 - 2026-07-19 — Tool-fit guidance table added to BLUEPRINT.md (editorial defaults, e.g. Cursor for rapid UI work, Claude Code for long-horizon backend/agentic work, Copilot for GitHub-native team flow); every module that recommends a tool must cite it and re-verify via /refresh-module.
 ## Needs verification
 - M-1.1: lab success checks ("you should see ApprovalService / ConfidenceGauge") are authored from REPO-SPECS.md, not verified runs — priorauth-api and priorauth-web are not scaffolded yet. Re-run both labs and clear `needsVerification` once the repos exist.
@@ -20,6 +21,7 @@ Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (
   - Checklist color line adds purple = Cursor.
   - NOT adopted: "Ask mode" in Cursor (widely described in third-party guides) is not in current official docs — current modes are Agent and Plan — so the lab deliberately avoids it.
   - needsVerification stays true: unchanged reason (teaching repos not scaffolded); lastVerified already 2026-07-19.
+- M-1.1 lab links to github.com/varasrinivas/priorauth-api and /priorauth-web are dead until those repos are created and pushed — re-check when the teaching repos ship.
 - Remaining tool-fit table claims still editorial/unverified against official Cursor docs: "Cursor best for rapid UI iteration", Cursor Tab vs Copilot next-edit ranking, Composer naming, .cursor/rules *.mdc format. Verify when M-2.5 or T-04 is built.
 ## Recordings needed
 - (none)
