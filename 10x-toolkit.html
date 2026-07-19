@@ -123,8 +123,9 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .lcol .lm{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px}
 .analogy{background:rgba(245,184,75,.07);border:1px solid rgba(245,184,75,.25);border-radius:12px;padding:18px 20px;margin:22px 0;font-size:14.5px}
 .analogy b{color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:8px}
-.lcol p{color:var(--dim);font-size:14.5px}
+.lcol p{color:var(--dim);font-size:14.5px;margin-bottom:12px}
 .lcol p strong{color:var(--text)}
+.lcol code,.labsteps code{font-family:var(--mono);font-size:.92em;color:var(--text)}
 .vismount{margin-top:24px}
 .vispending{font-family:var(--mono);font-size:12px;color:var(--faint);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center}
 .labtabs{display:flex;gap:8px;margin-bottom:18px}
@@ -144,6 +145,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sectionlabel{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-top:28px}
 .completebtn{margin-top:26px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;padding:11px 20px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .completebtn.done{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+
+/* ============ SIM-01: PA Pipeline Map ============ */
+.sim01{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim01 .simhead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim01 .simflow{display:flex;gap:8px;align-items:stretch}
+.sim01 .simcol{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sim01 .simarrow{align-self:center;color:var(--faint);font-size:11px}
+.sim01 .simstage{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--panel);cursor:pointer;text-align:center;min-height:74px}
+.sim01 .simstage.sel{border-color:var(--text)}
+.sim01 .simstage .sl{font-size:9.5px;letter-spacing:.1em;color:var(--dim);display:block}
+.sim01 .simstage .sc{font-size:15px;font-weight:700;color:var(--text)}
+.sim01 .simstage.out-approved{border-left:3px solid #3E9A6B}
+.sim01 .simstage.out-queue{border-left:3px solid #3E7FA8}
+.sim01 .simstage.out-denied{border-left:3px solid #B0503C}
+.sim01 .cards{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;min-height:16px;margin-top:5px}
+.sim01 .simcard{font-size:9px;padding:1px 5px;border-radius:5px;border:1px solid var(--line);color:var(--dim);background:var(--panel2);transition:opacity .3s}
+.sim01 .simcard.star{border-color:var(--text);color:var(--text);font-weight:700}
+.sim01 .siminfo{margin-top:12px;font-size:12px;line-height:1.6;color:var(--dim);border-top:1px dashed var(--line);padding-top:10px;font-family:'Instrument Sans',sans-serif}
+.sim01 .siminfo b{color:var(--text)}
+.sim01 .siminfo .rel{display:block;margin-top:4px;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.sim01 .simfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+.sim01 .simnote{font-size:10.5px;color:var(--faint)}
+.sim01 .simreset{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim01 .simreset:hover{border-color:var(--gold)}
+@media(max-width:560px){.sim01 .simflow{flex-direction:column}.sim01 .simarrow{transform:rotate(90deg);align-self:center}}
 
 footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
 footer b{color:var(--gold);font-weight:500}
@@ -247,7 +273,58 @@ footer b{color:var(--gold);font-weight:500}
      labB:{title, steps:[...]},               // Copilot lab (cyan) — see dual-path rule
      checklist:[...], quiz:[{q, options:[...], answer}] }
    ===================================================================== */
-const MODS = [];
+const MODS = [
+  {
+    id:'M-1.1', path:'eng', track:'T-01', title:'Meet your crew', minutes:25,
+    lastVerified:'2026-07-19', needsVerification:true,
+    concept:{
+      analogy:'Autocomplete is autopilot trim — it steadies a maneuver you are already flying. An agent is a crew member you brief from mission control: you state the intent, it flies a leg of the mission with real instruments — reading files, running tests, editing code — and reports back for your go / no-go.',
+      body:
+        '<p><strong>The spectrum.</strong> Ghost text completes the line you are typing. Chat answers questions. An <strong>agent</strong> reads files, edits code, and runs commands in a loop. The difference is not intelligence — it is agency.</p>' +
+        '<p><strong>One agent turn</strong> has four phases: gather context → plan → act with tools → verify. Every module after this one is about making that loop cheaper, safer, or faster.</p>' +
+        '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Edit, and Agent modes in VS Code and Visual Studio 2026. Same missions, different cockpits — you will fly every mission in both.</p>' +
+        '<p><strong>The territory.</strong> Prior authorization: requests move SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW. A confidence score of <strong>0.85 or higher auto-approves — the threshold is inclusive</strong>. <code>priorauth-api</code> decides; <code>priorauth-web</code> displays. Both repos ship with real bugs planted for later tracks.</p>' +
+        '<p><strong>Your job</strong> from here on: intent, context, review. You are the bouncer, not the typist.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-01', mode:'tour'},
+    labA:{
+      title:'Repo tour — Claude Code',
+      steps:[
+        'In a terminal at the <code>priorauth-api</code> root, run <code>claude</code>. You should see the interactive session start.',
+        'Ask: <em>“Give me a ten-line tour of this repo — what are the main packages and what does each own?”</em> You should see the controller / service / repository / model layout named.',
+        'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold cited.',
+        'Open a second terminal at <code>priorauth-web</code>, run <code>claude</code>, and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
+        'End both sessions with <code>/exit</code>. Success: all three answers surfaced without you opening a single file by hand.'
+      ]
+    },
+    labB:{
+      title:'Repo tour — Copilot Chat',
+      steps:[
+        'Open the <code>priorauth-api</code> folder in VS Code with Copilot enabled. Open Copilot Chat and set the mode to <strong>Ask</strong>.',
+        'Ask with workspace context: <em>“@workspace what are the main packages and what does each own?”</em> You should see the same package map as the Claude Code lab.',
+        'Ask: <em>“@workspace where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and <code>&gt;= 0.85</code>.',
+        'Open <code>priorauth-web</code> in a new window and ask which component displays the confidence score. You should see <code>ConfidenceGauge</code>.',
+        'Write one sentence: which cockpit you preferred for reading a strange codebase, and why. Success: same three answers as the Claude Code lab.'
+      ]
+    },
+    checklist:[
+      'I can name the four phases of one agent turn.',
+      'I can walk the pipeline statuses and say what happens at exactly 0.85.',
+      'Both tools pointed me to <code>ApprovalService</code> without me opening files.',
+      'I know which color means which tool: gold = Claude Code, cyan = Copilot.'
+    ],
+    quiz:[
+      {q:'A PA request scores exactly 0.85. What happens to it?',
+       options:['Routed to manual review','Auto-approved — the threshold is inclusive','Denied','Depends on the payer'], answer:1},
+      {q:'Order the four phases of one agent turn.',
+       options:['plan → act → context → verify','context → plan → act → verify','act → verify → plan → context','context → act → plan → verify'], answer:1},
+      {q:'You want a one-line null check completed as you type. Which layer?',
+       options:['Agent mode','Chat','Ghost text (autocomplete)','A subagent'], answer:2},
+      {q:'Which requests land in the manual review queue?',
+       options:['All denied requests','Eligible requests scoring below 0.85','Requests missing CPT codes','Every request from a new payer'], answer:1}
+    ]
+  }
+];
 
 const TRACKS = {
   eng: [
@@ -290,6 +367,109 @@ function renderVisual(componentId, mountEl, opts){
   if(fn){ fn(mountEl, opts||{}); return; }
   mountEl.innerHTML = '<div class="vispending">◈ ' + esc(componentId||'visual') + ' — in production</div>';
 }
+
+/* ---------- SIM-01 · PA Pipeline Map (spec: VISUALS.md) ---------- */
+VISUALS['SIM-01'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NODES = [
+    {key:'intake',   label:'INTAKE',          sub:'SUBMITTED',        out:'',         desc:'A provider submits the PA request — payer, CPT code, clinicals. Nothing is judged yet.', tracks:['T-01','T-04']},
+    {key:'elig',     label:'ELIGIBILITY',     sub:'coverage rules',   out:'',         desc:'Coverage and payer rules run. Requests that never qualify are denied here; the rest continue as ELIGIBLE.', tracks:['T-03','T-06']},
+    {key:'review',   label:'CLINICAL REVIEW', sub:'ML score',         out:'',         desc:'The confidence score decides: score >= 0.85 auto-approves — the threshold is inclusive. Below it, a human gets the case.', tracks:['T-05','T-07']},
+    {key:'approved', label:'AUTO-APPROVED',   sub:'score >= 0.85',    out:'approved', desc:'Approved with no human touch — the pipeline working as designed.', tracks:['T-08','T-10']},
+    {key:'queue',    label:'MANUAL QUEUE',    sub:'score < 0.85',     out:'queue',    desc:'Eligible but under threshold — a reviewer decides. The capstone initiative: cut this queue 20%.', tracks:['T-09','T-11','T-12']},
+    {key:'denied',   label:'DENIED',          sub:'with reason code', out:'denied',   desc:'Failed eligibility or denied on review. Every denial carries a reason code the UI must explain.', tracks:['T-02','T-06']}
+  ];
+  const DECK = [
+    {cpt:'97110', score:'0.92', elig:true},
+    {cpt:'70553', score:'0.61', elig:true},
+    {cpt:'29881', score:'0.85', elig:true, star:true},
+    {cpt:'97110', score:'—',    elig:false},
+    {cpt:'70553', score:'0.88', elig:true},
+    {cpt:'29881', score:'0.79', elig:true},
+    {cpt:'97110', score:'0.97', elig:true},
+    {cpt:'70553', score:'—',    elig:false}
+  ];
+  function routeOf(c){
+    if(!c.elig) return ['intake','elig','denied'];
+    return parseFloat(c.score) >= 0.85 ? ['intake','elig','review','approved'] : ['intake','elig','review','queue'];
+  }
+  function stageHtml(n){
+    return '<div class="simcol">' +
+      '<button class="simstage' + (n.out ? ' out-' + n.out : '') + '" data-key="' + n.key + '" aria-pressed="false">' +
+        '<span class="sl">' + esc(n.label) + '</span>' +
+        '<span class="sc" data-count="' + n.key + '">0</span>' +
+        '<span class="sl">' + esc(n.sub) + '</span>' +
+        '<span class="cards" data-cards="' + n.key + '"></span>' +
+      '</button>' +
+    '</div>';
+  }
+  mount.innerHTML =
+    '<div class="sim01" aria-label="Interactive prior-authorization pipeline map">' +
+      '<div class="simhead"><span>PA PIPELINE MAP · 8-REQUEST SAMPLE</span><span data-live>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="simflow">' +
+        stageHtml(NODES[0]) + '<span class="simarrow" aria-hidden="true">▶</span>' +
+        stageHtml(NODES[1]) + '<span class="simarrow" aria-hidden="true">▶</span>' +
+        stageHtml(NODES[2]) + '<span class="simarrow" aria-hidden="true">▶</span>' +
+        '<div class="simcol">' +
+          NODES.slice(3).map(n =>
+            '<button class="simstage out-' + n.out + '" data-key="' + n.key + '" aria-pressed="false">' +
+              '<span class="sl">' + esc(n.label) + '</span>' +
+              '<span class="sc" data-count="' + n.key + '">0</span>' +
+              '<span class="sl">' + esc(n.sub) + '</span>' +
+              '<span class="cards" data-cards="' + n.key + '"></span>' +
+            '</button>').join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="siminfo" data-info>Click a stage to see what happens there — and which tracks train it.</div>' +
+      '<div class="simfoot">' +
+        '<span class="simnote">What to notice: the 29881 request scoring exactly 0.85 lands in AUTO-APPROVED — the threshold is inclusive.</span>' +
+        '<button class="simreset" data-reset>RESET ▸</button>' +
+      '</div>' +
+    '</div>';
+  const info = mount.querySelector('[data-info]');
+  const live = mount.querySelector('[data-live]');
+  let cards, spawned, timer = null;
+  function paint(){
+    NODES.forEach(n => {
+      const here = cards.filter(c => c.pos >= 0 && c.route[c.pos] === n.key);
+      mount.querySelector('[data-count="' + n.key + '"]').textContent = here.length;
+      mount.querySelector('[data-cards="' + n.key + '"]').innerHTML = here.map(c =>
+        '<span class="simcard' + (c.star ? ' star' : '') + '">' + esc(c.cpt) + '·' + esc(c.score) + '</span>').join('');
+    });
+  }
+  function step(){
+    let moving = false;
+    cards.forEach(c => { if(c.pos >= 0 && c.pos < c.route.length - 1){ c.pos++; moving = true; } });
+    if(spawned < cards.length){ cards[spawned].pos = 0; spawned++; moving = true; }
+    paint();
+    if(!moving){ clearInterval(timer); timer = null; live.textContent = 'DONE'; }
+  }
+  function reset(){
+    if(timer) clearInterval(timer);
+    cards = DECK.map(c => Object.assign({pos:-1, route:routeOf(c)}, c));
+    spawned = 0;
+    if(reduce){
+      cards.forEach(c => { c.pos = c.route.length - 1; });
+      spawned = cards.length;
+      live.textContent = 'STATIC';
+      paint();
+      return;
+    }
+    live.textContent = 'LIVE';
+    paint();
+    timer = setInterval(step, 900);
+  }
+  mount.querySelectorAll('.simstage').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const n = NODES.find(x => x.key === btn.dataset.key);
+      mount.querySelectorAll('.simstage').forEach(b => { b.classList.toggle('sel', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
+      const rel = n.tracks.map(id => { const t = TRACKS.eng.find(x => x.id === id); return t ? id + ' ' + t.name : id; }).join(' · ');
+      info.innerHTML = '<b>' + esc(n.label) + '</b> — ' + esc(n.desc) + '<span class="rel">Trained in: ' + esc(rel) + '</span>';
+    });
+  });
+  mount.querySelector('[data-reset]').addEventListener('click', reset);
+  reset();
+};
 
 /* ---------- Progress store ---------- */
 const KEY = 'tenx-progress';
