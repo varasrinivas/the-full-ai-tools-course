@@ -3,7 +3,7 @@
 Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
 | ID | Status | lastVerified | Notes |
 |----|--------|--------------|-------|
-| M-1.1 | ⚠ validated 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass (schema, dual-path, domain, SIM-01 mount + reduced-motion, both themes, standalone). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
+| M-1.1 | ⚠ validated + Cursor retrofit 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass; now TRI-PATH (labC added). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
 ## Decisions log
 - 2026-07-19 — Player shell scaffolded as a lean player (condensed hero + functional course area); marketing-only preview sections (orbit canvas, lesson preview, metrics, AI-DLC arc) intentionally not carried into the player.
 - 2026-07-19 — Progress persistence: single localStorage key `tenx-progress` → `{theme, path, done:{modId:true}}`, try/catch-guarded.
@@ -14,7 +14,12 @@ Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (
 ## Needs verification
 - M-1.1: lab success checks ("you should see ApprovalService / ConfidenceGauge") are authored from REPO-SPECS.md, not verified runs — priorauth-api and priorauth-web are not scaffolded yet. Re-run both labs and clear `needsVerification` once the repos exist.
 - M-1.1 tool claims WERE verified 2026-07-19 against current docs: Claude Code (`claude` REPL, /help /clear /exit, VS Code extension + JetBrains plugin names) and Copilot (Ask/Edit/Agent modes, @workspace context in VS Code, agent mode in Visual Studio 2026).
-- M-1.1 predates the tri-path rule — needs a Cursor retrofit in a future session: labC (repo tour in Cursor), a Cursor sentence in the "Your crew" beat, and Cursor capability claims verified against current docs. Until then it renders as DUAL-PATH LAB.
-- Tool-fit table claims (Cursor best for UI iteration, Cursor Tab vs Copilot next-edit, Cursor codebase index, .cursor/rules, Composer/Agent naming) are editorial and NOT yet verified against current Cursor docs — verify when M-2.5, T-04, or the first labC is built.
+- ~~M-1.1 Cursor retrofit~~ DONE 2026-07-19 (labC + crew beat + checklist; renders TRI-PATH LAB). Refresh changelog:
+  - Crew beat now names Cursor (AI-native IDE; Agent panel Ctrl/Cmd+I; Plan Mode) — verified against cursor.com/docs 2026-07-19.
+  - labC added: Cursor repo tour using Agent panel (Ctrl/Cmd+I) and Plan Mode via Shift+Tab — both verified against cursor.com/docs. Codebase-indexing-on-open wording corroborated by multiple 2026 guides; official docs confirm codebase search tooling.
+  - Checklist color line adds purple = Cursor.
+  - NOT adopted: "Ask mode" in Cursor (widely described in third-party guides) is not in current official docs — current modes are Agent and Plan — so the lab deliberately avoids it.
+  - needsVerification stays true: unchanged reason (teaching repos not scaffolded); lastVerified already 2026-07-19.
+- Remaining tool-fit table claims still editorial/unverified against official Cursor docs: "Cursor best for rapid UI iteration", Cursor Tab vs Copilot next-edit ranking, Composer naming, .cursor/rules *.mdc format. Verify when M-2.5 or T-04 is built.
 ## Recordings needed
 - (none)

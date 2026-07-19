@@ -287,7 +287,7 @@ const MODS = [
       body:
         '<p><strong>The spectrum.</strong> Ghost text completes the line you are typing. Chat answers questions. An <strong>agent</strong> reads files, edits code, and runs commands in a loop. The difference is not intelligence — it is agency.</p>' +
         '<p><strong>One agent turn</strong> has four phases: gather context → plan → act with tools → verify. Every module after this one is about making that loop cheaper, safer, or faster.</p>' +
-        '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Edit, and Agent modes in VS Code and Visual Studio 2026. Same missions, different cockpits — you will fly every mission in both.</p>' +
+        '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Edit, and Agent modes in VS Code and Visual Studio 2026. Cursor is an AI-native IDE: Tab autocomplete in the editor, an Agent panel on <code>Ctrl/Cmd+I</code>, and a Plan Mode that thinks before it touches anything. Same missions, three cockpits — you will fly every mission in all of them.</p>' +
         '<p><strong>The territory.</strong> Prior authorization: requests move SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW. A confidence score of <strong>0.85 or higher auto-approves — the threshold is inclusive</strong>. <code>priorauth-api</code> decides; <code>priorauth-web</code> displays. Both repos ship with real bugs planted for later tracks.</p>' +
         '<p><strong>Your job</strong> from here on: intent, context, review. You are the bouncer, not the typist.</p>'
     },
@@ -312,11 +312,21 @@ const MODS = [
         'Write one sentence: which cockpit you preferred for reading a strange codebase, and why. Success: same three answers as the Claude Code lab.'
       ]
     },
+    labC:{
+      title:'Repo tour — Cursor',
+      steps:[
+        'Open the <code>priorauth-api</code> folder in Cursor and let codebase indexing finish (watch the status bar) — this is what powers repo-wide answers.',
+        'Open the Agent panel with <code>Ctrl+I</code> (<code>Cmd+I</code> on Mac). Ask: <em>“Give me a ten-line tour of this repo — what are the main packages and what does each own?”</em> You should see the controller / service / repository / model layout named.',
+        'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold cited. Tip: hit <code>Shift+Tab</code> to flip into Plan Mode when you want a guarantee nothing gets edited while you explore.',
+        'Open <code>priorauth-web</code> in Cursor and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
+        'Note one difference you felt versus the other two cockpits — indexing speed, answer style, context handling. Success: same three answers as labs A and B.'
+      ]
+    },
     checklist:[
       'I can name the four phases of one agent turn.',
       'I can walk the pipeline statuses and say what happens at exactly 0.85.',
       'Both tools pointed me to <code>ApprovalService</code> without me opening files.',
-      'I know which color means which tool: gold = Claude Code, cyan = Copilot.'
+      'I know which color means which tool: gold = Claude Code, cyan = Copilot, purple = Cursor.'
     ],
     quiz:[
       {q:'A PA request scores exactly 0.85. What happens to it?',
