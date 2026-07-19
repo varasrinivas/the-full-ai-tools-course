@@ -1,26 +1,42 @@
 # The 10x Toolkit — Course Blueprint v1.0
 
-**Working title:** The 10x Toolkit: Claude Code & GitHub Copilot for Working Engineers
+**Working title:** The 10x Toolkit: Claude Code, GitHub Copilot & Cursor for Working Engineers
 **Author:** Vara Srinivas · varasrinivas.com
 **Domain anchor:** Prior Auth Portal (healthcare prior-authorization pipeline)
 **Teaching repos:** `priorauth-api` (Spring Boot 3.x) · `priorauth-web` (React 18 + Vite) — see REPO-SPECS.md
 **Delivery:** Single-file HTML course player (existing ecosystem pattern: MODS array, track filters, progress persistence, mobile-first). Dark theme default with light toggle. Dual audience: Engineer Path + Leadership Path selectable at top of player.
-**Design reference:** `10x-toolkit-preview.html` (token system, orbit hero, dual gold/cyan accent = Claude Code/Copilot).
+**Design reference:** `10x-toolkit-preview.html` (token system, orbit hero, gold/cyan/purple accents = Claude Code/Copilot/Cursor; purple #6E5AAE comes from the reference palette).
 **Visuals:** every module embeds at least one animated diagram, simulation, or terminal replay — see VISUALS.md for component specs. All visuals use prior-auth vocabulary (PA requests, confidence scores, payers, CPT codes, denial reasons).
 **Currency:** every module carries a `lastVerified` date. Feature claims re-checked via /refresh-module (see .claude/commands/).
 
 ---
 
-## Dual-path rule
+## Tri-path rule
 
-Every hands-on module ships two labs on the same task:
+Every hands-on module ships the same task once per tool:
 - **Path A (gold):** Claude Code — CLI or IDE extension
 - **Path B (cyan):** GitHub Copilot — VS Code and/or Visual Studio 2026 (call out IDE where they differ)
-Where a capability exists in only one tool, the module says so explicitly and teaches the nearest equivalent workflow in the other.
+- **Path C (purple):** Cursor — Tab, Composer/Agent, `.cursor/rules`
+Where a capability does not exist in every tool, the module says so explicitly and teaches the nearest equivalent workflow. Reduced-path tracks: **T-04 is Copilot+Cursor-led** (Claude Code has no autocomplete layer); **T-08 is Claude-led** (with a three-way cost-model comparison in M-8.4).
 
 ---
 
-# ENGINEER PATH — 12 tracks · 56 modules
+## Tool-fit guidance (v1 — editorial defaults; re-verify per module at build time)
+
+| Scenario | Reach for | Why (course position) |
+|---|---|---|
+| Rapid UI iteration in priorauth-web — components, styling, layout passes | **Cursor** | Tab + Composer are strongest at fast, visual, multi-file frontend edits |
+| Long multi-step backend work in priorauth-api — refactors, debug loops, test-driven fixes | **Claude Code** | Plan Mode, subagents, hooks, checkpoints are built for long-horizon agentic work |
+| GitHub-native team flow — issue → PR, code review, org policy, Visual Studio shops | **Copilot** | Cloud agents, PR surface, enterprise controls, VS 2026 integration |
+| Flow-state line-by-line coding | **Cursor Tab**, Copilot next-edit close second | Claude Code has no autocomplete layer |
+| Onboarding to a strange codebase | Any — compared head-to-head in T-03 | Claude Plan Mode vs Copilot Plan agent vs Cursor codebase index |
+| Headless / CI / scripted agent runs | **Claude Code** | First-class headless & background modes |
+
+Any module that recommends a tool cites this table; the claim gets re-verified via /refresh-module before lastVerified is bumped.
+
+---
+
+# ENGINEER PATH — 12 tracks · 58 modules
 
 ## T-01 Foundations & Setup (4)
 - M-1.1 Meet your crew — what agentic coding actually is; tour of both repos; the PA Pipeline map (SIM-01)
@@ -28,11 +44,12 @@ Where a capability exists in only one tool, the module says so explicitly and te
 - M-1.3 Copilot in VS Code & Visual Studio 2026 — chat vs agent mode, agent picker, model selection, tool confirmations, multi-file diff & checkpoints
 - M-1.4 First flight — same 15-minute task in both tools ("add a `deniedAt` timestamp to Denial entity"), side-by-side debrief
 
-## T-02 Ways of Working: Vibe vs Spec (4)
+## T-02 Ways of Working: Vibe vs Spec (5)
 - M-2.1 Vibe coding: when it works — 10-minute denial-reasons chart widget in priorauth-web, no spec
 - M-2.2 Where vibe breaks — same widget + auth + error handling; watch drift and rework live (SIM-02 race)
-- M-2.3 Spec-driven development — short spec for the auto-approve threshold feature; Plan Mode (Claude) & Plan agent (Copilot, saves to .copilot/plans/) as spec-lite
+- M-2.3 Spec-driven development — short spec for the auto-approve threshold feature; Plan Mode (Claude), Plan agent (Copilot, saves to .copilot/plans/) & Cursor plan-first Composer as spec-lite
 - M-2.4 The decision rubric — cost-of-wrong × lifespan of code; prototype=vibe, production=spec
+- M-2.5 Pick your tool — scenario drills: apply the tool-fit table to 12 real PA tasks (UI tweak, service refactor, test gen, PR flow, prototype); defend the choice; compare cost & speed
 
 ## T-03 Reading & Analyzing Code (5)
 - M-3.1 Onboarding to a strange codebase — "explain this repo" prompts that work; architecture map of priorauth-api
@@ -41,9 +58,9 @@ Where a capability exists in only one tool, the module says so explicitly and te
 - M-3.4 Tracing a request — follow one PA request from controller → service → repository with agent assistance
 - M-3.5 Finding the smell — agent-assisted discovery of the N+1 query in ClaimHistoryService (BUG-API-03)
 
-## T-04 Autocomplete & Inline Flow (4) — the Cursor-like layer
-- M-4.1 Ghost text mastery — completions, partial accepts, when to type vs Tab (ANIM-07)
-- M-4.2 Next edit suggestions — Copilot hopping to the related change across files
+## T-04 Autocomplete & Inline Flow (4) — Copilot + Cursor led (Claude Code exempt)
+- M-4.1 Ghost text mastery — completions, partial accepts, when to type vs Tab; Copilot & Cursor Tab side by side (ANIM-07)
+- M-4.2 Next edit suggestions — Copilot NES & Cursor Tab hopping to the related change across files
 - M-4.3 Inline chat & quick edits — Ctrl+I flows, scoped selections, commit-message generation
 - M-4.4 Autocomplete vs agent — decision drill: 12 real tasks, pick the right layer, compare cost & speed
 
@@ -96,20 +113,22 @@ Where a capability exists in only one tool, the module says so explicitly and te
 - M-11.2 Frameworks that survive contact — DORA, SPACE, DX Core 4; what AI changes and what it doesn't; vanity metrics to refuse (acceptance rate ≠ productivity)
 - M-11.3 Your delta — re-run task class with full toolkit; personal dashboard (ANIM-11); improvement playbook: instruction files first, then workflows, then agents
 
-## T-12 Graduate Arc: AWS AI-DLC + Capstone (4)
+## T-12 Graduate Arc: AWS AI-DLC + Capstone (5)
 - M-12.1 From tools to method — AI-DLC in one hour: intent → units of work; where each tool skill slots into the lifecycle
 - M-12.2 Mob Elaboration — turn "reduce manual review queue by 20%" into units of work, agent-facilitated
 - M-12.3 Mob Construction — build the units with agents as crew; human as bouncer, not typist
-- M-12.4 Capstone — ship one full feature (new API endpoint → React screen → tests → PR) twice, once per tool; defend the diff; final metrics read-out (ANIM-12)
+- M-12.4 Capstone — ship one full feature (new API endpoint → React screen → tests → PR) three times, once per tool; defend the diff; final metrics read-out (ANIM-12)
+- M-12.5 Bonus capstone — the domain migration: agent-driven port of both repos from clinical PA to pharmacy PA (NDC codes, formulary tiers, PBM payers — see REPO-SPECS.md); spec-first, any tool on deck per the tool-fit table; defend the diff, measure the effort
 
 ---
 
-# LEADERSHIP PATH — 6 tracks · 21 modules (no coding required)
+# LEADERSHIP PATH — 6 tracks · 22 modules (no coding required)
 
-## L-01 The Leader's Mental Model (3)
+## L-01 The Leader's Mental Model (4)
 - L-1.1 What agents actually do all day — a shift-length in the life of an engineer+agent pair; watch, don't type
 - L-1.2 Vibe vs spec as a risk lens — where AI-written code belongs on your risk register
 - L-1.3 The instruction file is the asset — why CLAUDE.md/AGENTS.md quality predicts team ROI
+- L-1.4 The fleet decision — which tool for which use case: UI-heavy squads vs platform teams vs GitHub-native orgs; standardize vs allow choice; the tool-fit table read as a manager, not a fan
 
 ## L-02 The Adoption Playbook (4)
 - L-2.1 Pilot design — picking the first squad, the first repo, the first win
@@ -148,7 +167,7 @@ Each module = one object in the MODS array:
 { id, path: 'eng'|'lead', track, title, minutes, lastVerified,
   concept: {analogy, body},          // real-world analogy card + prose
   visual: {type, componentId},       // ANIM-xx | SIM-xx | TERM-xx per VISUALS.md
-  labA: {...}, labB: {...},          // dual-path labs (eng path)
+  labA: {...}, labB: {...}, labC: {...},   // tri-path labs (eng path): Claude Code / Copilot / Cursor
   checklist: [...], quiz: [...] }
 ```
 

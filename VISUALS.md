@@ -23,9 +23,9 @@ All components: vanilla JS + SVG/canvas, no libraries, embedded in the single-fi
 | ANIM-12 | AI-DLC Ceremony Flow | Intent card ("cut manual review queue 20%") explodes into units of work (Mob Elaboration), agents pick them up (Mob Construction), converge into a PR node. | M-12.1–12.4, L-6.1 |
 
 ## Terminal replays (TERM-xx)
-Typing-animation component replaying trimmed real Claude Code sessions (recorded during repo build). One per Claude Code lab. Speed control ×1/×2/skip. Copilot labs instead use annotated screenshot strips (VS/VS Code UI doesn't fake honestly in HTML) with step-highlight animation.
+Typing-animation component replaying trimmed real Claude Code sessions (recorded during repo build). One per Claude Code lab. Speed control ×1/×2/skip. Copilot and Cursor labs instead use annotated screenshot strips (their IDE UIs don't fake honestly in HTML) with step-highlight animation.
 
 ## Shared conventions
-- Gold = Claude Code, cyan = Copilot, everywhere.
+- Gold = Claude Code, cyan = Copilot, purple #6E5AAE = Cursor — everywhere. Purple comes from the reference palette (no invented colors); pair it with white text for AA.
 - Every sim has a one-line "what to notice" caption and a reset button.
 - Max one heavy canvas per viewport; sims below the fold lazy-init on IntersectionObserver.

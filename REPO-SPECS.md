@@ -65,6 +65,9 @@ src/
 
 ---
 
+## Bonus capstone target (M-12.5) — domain migration
+The bonus capstone ports both repos from clinical prior auth to **pharmacy prior authorization (PBM)**. Same pipeline shape, new vocabulary: NDC codes replace CPT codes, eligibility adds formulary-tier and days-supply checks, payers become PBMs (CaremarkRx-like "ScriptGuard"). `AUTO_APPROVE_THRESHOLD` semantics unchanged (score **>= 0.85** inclusive). Detailed specs get elaborated when T-12 is planned — this section only fixes the target domain so earlier modules can foreshadow it.
+
 ## Build order (Claude Code sessions)
 1. Scaffold priorauth-api green (all tests passing), then plant bugs via dedicated commits tagged `plant/BUG-API-xx` (git history becomes teaching material — students can diff the plant).
 2. Same for priorauth-web.

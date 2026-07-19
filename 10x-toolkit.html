@@ -17,6 +17,7 @@
   --text:#E9EEF7;
   --dim:#8D99AD;
   --faint:#5A6478;
+  --purple:#6E5AAE;
   --mono:'JetBrains Mono',monospace;
 }
 [data-theme="light"]{
@@ -59,6 +60,7 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .chip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
 .chip.gold i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .chip.cyan i{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.chip.purple i{background:var(--purple);box-shadow:0 0 10px var(--purple)}
 .stats{display:flex;gap:0;justify-content:center;margin-top:44px;font-family:var(--mono)}
 .stat{padding:0 34px;border-left:1px solid var(--line)}
 .stat:first-child{border-left:none}
@@ -92,7 +94,7 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .tmods{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap}
 .badges{display:flex;gap:6px}
 .bdg{width:10px;height:10px;border-radius:3px}
-.bdg.g{background:var(--gold)}.bdg.c{background:var(--cyan)}
+.bdg.g{background:var(--gold)}.bdg.c{background:var(--cyan)}.bdg.p{background:var(--purple)}
 .chev{font-family:var(--mono);font-size:12px;color:var(--faint);transition:transform .25s}
 .thead[aria-expanded="true"] .chev{transform:rotate(90deg)}
 .tbody{border-top:1px solid var(--line);padding:14px 24px 18px}
@@ -132,6 +134,7 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .labtabs button{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .labtabs button.on.a{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
 .labtabs button.on.b{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700}
+.labtabs button.on.c{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
 .labsteps{margin:14px 0 0 20px;color:var(--dim);font-size:14.5px}
 .labsteps li{margin-bottom:10px}
 .checklist{list-style:none;margin-top:14px}
@@ -194,10 +197,11 @@ footer b{color:var(--gold);font-weight:500}
   <div class="wrap">
     <div class="eyebrow">A hands-on flight program · <b>varasrinivas.com</b></div>
     <h1>The <span class="ten">10x</span> Toolkit</h1>
-    <p class="sub">Master <em>Claude Code</em> and <em>GitHub Copilot</em> on real prior-authorization repositories — analyze, debug, test, orchestrate agents, engineer context, and <em>measure the gain</em>.</p>
+    <p class="sub">Master <em>Claude Code</em>, <em>GitHub Copilot</em>, and <em>Cursor</em> on real prior-authorization repositories — analyze, debug, test, orchestrate agents, engineer context, and <em>measure the gain</em>.</p>
     <div class="duo">
       <span class="chip gold"><i></i>Claude Code path</span>
       <span class="chip cyan"><i></i>GitHub Copilot path</span>
+      <span class="chip purple"><i></i>Cursor path</span>
     </div>
     <div class="stats">
       <div class="stat"><b id="stTracks">0</b><span>tracks</span></div>
@@ -270,7 +274,8 @@ footer b{color:var(--gold);font-weight:500}
      concept:{analogy, body},                 // analogy card + HTML prose
      visual:{type, componentId},              // ANIM-xx | SIM-xx | TERM-xx per VISUALS.md
      labA:{title, steps:[...]},               // Claude Code lab (gold)
-     labB:{title, steps:[...]},               // Copilot lab (cyan) — see dual-path rule
+     labB:{title, steps:[...]},               // Copilot lab (cyan)
+     labC:{title, steps:[...]},               // Cursor lab (purple) — see tri-path rule
      checklist:[...], quiz:[{q, options:[...], answer}] }
    ===================================================================== */
 const MODS = [
@@ -328,21 +333,21 @@ const MODS = [
 
 const TRACKS = {
   eng: [
-    {id:'T-01',name:'Foundations & Setup',tag:'CLI, sessions, permission modes · VS Code + Visual Studio 2026, agent picker',mods:4,tools:'gc'},
-    {id:'T-02',name:'Ways of Working: Vibe vs Spec',tag:'When to vibe, when to spec — and watching vibe coding break in real time',mods:4,tools:'gc'},
-    {id:'T-03',name:'Reading & Analyzing Code',tag:'Codebase onboarding, architecture mapping, Plan Mode & the Plan agent',mods:5,tools:'gc'},
-    {id:'T-04',name:'Autocomplete & Inline Flow',tag:'Next edit suggestions, inline chat, multi-file edits — the Cursor-like layer',mods:4,tools:'c'},
-    {id:'T-05',name:'Debugging',tag:'Agentic debug loops · Copilot Debugger agent validating fixes at runtime',mods:6,tools:'gc'},
-    {id:'T-06',name:'Testing',tag:'JUnit + Testcontainers, React Testing Library, "did the test catch it?" drills',mods:5,tools:'gc'},
-    {id:'T-07',name:'Context, Memory & Agent Constitutions',tag:'CLAUDE.md · AGENTS.md · copilot-instructions.md · Claude memory discipline',mods:5,tools:'gc'},
+    {id:'T-01',name:'Foundations & Setup',tag:'CLI, sessions, permission modes · VS Code + Visual Studio 2026 · Cursor setup',mods:4,tools:'gcp'},
+    {id:'T-02',name:'Ways of Working: Vibe vs Spec',tag:'When to vibe, when to spec, which tool for which scenario — and watching vibe coding break live',mods:5,tools:'gcp'},
+    {id:'T-03',name:'Reading & Analyzing Code',tag:'Codebase onboarding, architecture mapping, Plan Mode, Plan agent & Cursor codebase index',mods:5,tools:'gcp'},
+    {id:'T-04',name:'Autocomplete & Inline Flow',tag:'Cursor Tab & Copilot next-edit, inline chat, multi-file edits — the autocomplete layer',mods:4,tools:'cp'},
+    {id:'T-05',name:'Debugging',tag:'Agentic debug loops · Copilot Debugger agent validating fixes at runtime',mods:6,tools:'gcp'},
+    {id:'T-06',name:'Testing',tag:'JUnit + Testcontainers, React Testing Library, "did the test catch it?" drills',mods:5,tools:'gcp'},
+    {id:'T-07',name:'Context, Memory & Agent Constitutions',tag:'CLAUDE.md · AGENTS.md · copilot-instructions.md · .cursor/rules · memory discipline',mods:5,tools:'gcp'},
     {id:'T-08',name:'The Token Economy',tag:'/compact vs /clear, context pollution, cost attribution, paying for every line',mods:4,tools:'g'},
-    {id:'T-09',name:'Subagents, Skills & Custom Agents',tag:'One SKILL.md, two tools — Copilot reads .claude/skills/ too',mods:7,tools:'gc'},
-    {id:'T-10',name:'Workflows, Hooks & MCP',tag:'Slash commands, lifecycle hooks, MCP servers, cloud & background agents',mods:5,tools:'gc'},
-    {id:'T-11',name:'Improving & Measuring Productivity',tag:'DORA · SPACE · DX Core 4 · your own before/after baseline',mods:3,tools:'gc'},
-    {id:'T-12',name:'Graduate Arc: AWS AI-DLC + Capstone',tag:'Tool mastery meets methodology — Mob Elaboration to Mob Construction, then ship a full feature both ways',mods:4,tools:'gc',grad:true}
+    {id:'T-09',name:'Subagents, Skills & Custom Agents',tag:'One SKILL.md, many tools — Copilot reads .claude/skills/ too',mods:7,tools:'gcp'},
+    {id:'T-10',name:'Workflows, Hooks & MCP',tag:'Slash commands, lifecycle hooks, MCP servers, cloud & background agents',mods:5,tools:'gcp'},
+    {id:'T-11',name:'Improving & Measuring Productivity',tag:'DORA · SPACE · DX Core 4 · your own before/after baseline',mods:3,tools:'gcp'},
+    {id:'T-12',name:'Graduate Arc: AWS AI-DLC + Capstone',tag:'Mob Elaboration to Mob Construction, ship a feature three ways — bonus: the pharmacy-PA domain migration',mods:5,tools:'gcp',grad:true}
   ],
   lead: [
-    {id:'L-01',name:"The Leader's Mental Model",tag:'What agents actually do all day · vibe vs spec as a risk lens, not a style choice',mods:3,tools:'g'},
+    {id:'L-01',name:"The Leader's Mental Model",tag:'What agents do all day · vibe vs spec as a risk lens · which tool for which use case',mods:4,tools:'g'},
     {id:'L-02',name:'The Adoption Playbook',tag:'Pilot squads, champions, enablement cadence — turning 2 power users into 200',mods:4,tools:'c'},
     {id:'L-03',name:'Governance & Guardrails',tag:'Permission modes, MCP allowlists, review policy for AI-written code, IP & security posture',mods:4,tools:'gc'},
     {id:'L-04',name:'The Economics of Agents',tag:'Seats vs tokens, per-agent cost attribution, budgeting a team, the ROI narrative for your CFO',mods:3,tools:'g'},
@@ -352,11 +357,11 @@ const TRACKS = {
 };
 
 const PATH_DESC = {
-  eng:'// 12 tracks · 56 modules · hands-on in both repos',
-  lead:'// 6 tracks · 21 modules · for EMs, directors & principal-in-charge roles — no coding required'
+  eng:'// 12 tracks · 58 modules · hands-on in both repos, three tools',
+  lead:'// 6 tracks · 22 modules · for EMs, directors & principal-in-charge roles — no coding required'
 };
 const LEGENDS = {
-  eng:[['var(--gold)','Claude Code lab'],['var(--cyan)','Copilot lab']],
+  eng:[['var(--gold)','Claude Code lab'],['var(--cyan)','Copilot lab'],['var(--purple)','Cursor lab']],
   lead:[['var(--cyan)','Playbook lab'],['var(--gold)','Live-tool walkthrough']]
 };
 
@@ -505,7 +510,8 @@ function renderTracks(){
     const card = document.createElement('div');
     card.className = 'track' + (t.grad ? ' grad' : '');
     const badges = (t.tools.includes('g') ? '<span class="bdg g"></span>' : '')
-                 + (t.tools.includes('c') ? '<span class="bdg c"></span>' : '');
+                 + (t.tools.includes('c') ? '<span class="bdg c"></span>' : '')
+                 + (t.tools.includes('p') ? '<span class="bdg p"></span>' : '');
     const count = built.length + '/' + t.mods + ' built' + (done ? ' · ' + done + ' done' : '');
     card.innerHTML =
       '<button class="thead" aria-expanded="false">' +
@@ -569,8 +575,10 @@ function renderModule(mod){
   document.getElementById('modCrumb').innerHTML = esc(mod.track) + ' / <b>' + esc(mod.id) + '</b> · ' + esc(mod.title);
   document.getElementById('modMeta').textContent = (mod.minutes || '—') + ' min · verified ' + (mod.lastVerified || '—');
   document.getElementById('modNV').hidden = !mod.needsVerification;
-  const dual = mod.labA && mod.labB;
-  document.getElementById('modPill').textContent = dual ? 'DUAL-PATH LAB' : (mod.labA ? 'CLAUDE-LED' : mod.labB ? 'COPILOT-LED' : 'PLAYBOOK');
+  const nLabs = ['labA','labB','labC'].filter(k => mod[k]).length;
+  document.getElementById('modPill').textContent =
+    nLabs >= 3 ? 'TRI-PATH LAB' : nLabs === 2 ? 'DUAL-PATH LAB' :
+    mod.labA ? 'CLAUDE-LED' : mod.labB ? 'COPILOT-LED' : mod.labC ? 'CURSOR-LED' : 'PLAYBOOK';
   document.getElementById('modConceptLabel').textContent = 'Concept · ' + (mod.minutes || '—') + ' min';
   document.getElementById('modTitle').textContent = mod.title;
   const an = document.getElementById('modAnalogy');
@@ -595,6 +603,7 @@ function renderLabs(mod){
   const labs = [];
   if(mod.labA) labs.push({key:'a', label:'◆ CLAUDE CODE', lab:mod.labA});
   if(mod.labB) labs.push({key:'b', label:'◆ COPILOT', lab:mod.labB});
+  if(mod.labC) labs.push({key:'c', label:'◆ CURSOR', lab:mod.labC});
   if(!labs.length){ tabs.hidden = true; return; }
   tabs.hidden = false;
   function show(entry){
