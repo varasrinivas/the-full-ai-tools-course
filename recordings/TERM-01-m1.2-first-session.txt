@@ -1,0 +1,26 @@
+# TERM-01 recording — M-1.2 "Claude Code CLI"
+# Captured: 2026-07-19 · Claude Code v2.1.215 · Windows 10 (PowerShell)
+# Method: real CLI runs, no fabrication.
+#   - `claude --version` run verbatim.
+#   - Q&A: `claude -p "<question>" --tools "Read,Glob,Grep"` executed in a minimal
+#     priorauth-api stand-in (ApprovalService.java + PriorAuthRequest.java authored
+#     from REPO-SPECS.md; the real teaching repo is not scaffolded yet). Response
+#     below is the verbatim model output; the replay in the player trims the final
+#     context-notes paragraph for length (marked [TRIMMED IN REPLAY]).
+#   - Interactive-only mechanics (Shift+Tab cycling, /clear, double-Esc rewind menu)
+#     cannot be captured headlessly; the player shows them as annotation cards,
+#     NOT as terminal output.
+# Re-record against the real priorauth-api once it is scaffolded.
+
+$ claude --version
+2.1.215 (Claude Code)
+
+$ claude -p "Where does the auto-approve decision live in this repo, and what exactly is the rule?" --tools "Read,Glob,Grep"
+The auto-approve decision lives in `src\main\java\com\priorauth\service\ApprovalService.java` — specifically the `process` method at `ApprovalService.java:17-23`.
+
+The rule is a single confidence-score threshold:
+
+- The threshold is the constant `AUTO_APPROVE_THRESHOLD = 0.85` at `ApprovalService.java:15`.
+- `process` reads the ML confidence score from the request (`request.getConfidenceScore()`). If the score is **greater than or equal to 0.85**, it returns `"AUTO_APPROVED"`; otherwise it returns `"MANUAL_REVIEW"`. The comparison is explicitly inclusive — a score of exactly 0.85 auto-approves, per the comment on the constant.
+
+[TRIMMED IN REPLAY] A couple of context notes: the class Javadoc says this logic only applies to requests that are already `ELIGIBLE` (the status lifecycle in `PriorAuthRequest.java:8` is SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW), and nothing in this service produces a `DENIED` outcome — below-threshold requests always go to manual review rather than being denied. The payer and CPT code fields on the request play no role in the decision; it's purely the score.

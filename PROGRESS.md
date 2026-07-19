@@ -1,9 +1,10 @@
 # PROGRESS.md — 10x Toolkit build log
 ## Status board
-Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
+Engineer path: 2/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
 | ID | Status | lastVerified | Notes |
 |----|--------|--------------|-------|
 | M-1.1 | ⚠ validated + Cursor retrofit 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass; now TRI-PATH (labC added). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
+| M-1.2 | ⚠ validated 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | TRI-PATH. All 30 automated checks pass (jsdom harness: schema, mount, reduced-motion, themes, no console errors). TERM-01 replay ships from a real recorded capture. ⚠ same reason as M-1.1: lab success-checks await the repo scaffold; then clear needsVerification and flip to ✅ |
 ## Decisions log
 - 2026-07-19 — Player shell scaffolded as a lean player (condensed hero + functional course area); marketing-only preview sections (orbit canvas, lesson preview, metrics, AI-DLC arc) intentionally not carried into the player.
 - 2026-07-19 — Progress persistence: single localStorage key `tenx-progress` → `{theme, path, done:{modId:true}}`, try/catch-guarded.
@@ -14,6 +15,9 @@ Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (
 - 2026-07-19 — deploy.ps1 added (local AWS CLI only, no GitHub Actions by design — no account details in the repo). Uploads the player as both 10x-toolkit.html and index.html with no-cache; optional CloudFront invalidation via DistributionId in gitignored deploy.config.json. Dry-run verified.
 - 2026-07-19 — Course repo published to github.com/varasrinivas/the-full-ai-tools-course. Lab repo references now link to github.com/varasrinivas/priorauth-api and /priorauth-web — these 404 until the teaching repos are pushed (tracked under Needs verification).
 - 2026-07-19 — Tool-fit guidance table added to BLUEPRINT.md (editorial defaults, e.g. Cursor for rapid UI work, Claude Code for long-horizon backend/agentic work, Copilot for GitHub-native team flow); every module that recommends a tool must cite it and re-verify via /refresh-module.
+- 2026-07-19 — TERM-01 recording policy set by example: real captures only, per CLAUDE.md. `claude --version` run verbatim; the Q&A is a real headless `claude -p` run against a minimal priorauth-api stand-in authored from REPO-SPECS.md (raw capture + method notes in recordings/TERM-01-m1.2-first-session.txt). Interactive-only mechanics (Shift+Tab, /clear, rewind menu) render as visually-distinct annotation cards, never as fake terminal text. Re-record against the real repo when it ships.
+- 2026-07-19 — Module validation now includes an automated jsdom runtime pass (boot player, open module, exercise visual + labs + quiz, reduced-motion and theme passes, zero-window-error assertion). Harness lives in the session scratchpad, not the repo — rebuild per session if wanted.
+
 ## Needs verification
 - M-1.1: lab success checks ("you should see ApprovalService / ConfidenceGauge") are authored from REPO-SPECS.md, not verified runs — priorauth-api and priorauth-web are not scaffolded yet. Re-run both labs and clear `needsVerification` once the repos exist.
 - M-1.1 tool claims WERE verified 2026-07-19 against current docs: Claude Code (`claude` REPL, /help /clear /exit, VS Code extension + JetBrains plugin names) and Copilot (Ask/Edit/Agent modes, @workspace context in VS Code, agent mode in Visual Studio 2026).
@@ -25,5 +29,10 @@ Engineer path: 1/58 built · Leadership path: 0/22 · Player shell: scaffolded (
   - needsVerification stays true: unchanged reason (teaching repos not scaffolded); lastVerified already 2026-07-19.
 - M-1.1 lab links to github.com/varasrinivas/priorauth-api and /priorauth-web are dead until those repos are created and pushed — re-check when the teaching repos ship.
 - Remaining tool-fit table claims still editorial/unverified against official Cursor docs: "Cursor best for rapid UI iteration", Cursor Tab vs Copilot next-edit ranking, Composer naming, .cursor/rules *.mdc format. Verify when M-2.5 or T-04 is built.
+- M-1.2: lab success checks reference the not-yet-scaffolded priorauth-api (same blocker as M-1.1). Tool claims WERE all verified 2026-07-19 against current docs:
+  - Claude Code (code.claude.com/docs): install methods (native installer + npm), permission modes incl. Shift+Tab cycle default → acceptEdits → plan, checkpoints (/rewind, double-Esc, restore code/conversation/both), --continue/--resume, /help + /clear, VS Code extension + JetBrains (beta) plugin. CLI behavior additionally confirmed live on v2.1.215.
+  - Copilot (code.visualstudio.com): "Restore Checkpoint" label verbatim; restores files AND rolls conversation back; checkpoints on by default (chat.checkpoints.enabled); New Chat = own context window.
+  - Cursor (cursor.com/docs): "Restore Checkpoint" label verbatim; restores FILES ONLY (no documented conversation rollback — module teaches this contrast); new tab Ctrl/Cmd+T = fresh context (side chats deliberately inherit — module says "new tab", not "new chat"). "Composer" naming confirmed stale — avoided in course copy.
+
 ## Recordings needed
-- (none)
+- TERM-01 (M-1.2): current capture is real but ran against a minimal stand-in (recordings/TERM-01-m1.2-first-session.txt has full method notes). Re-record against the real priorauth-api once scaffolded, then update the frames in the TERM-01 factory.

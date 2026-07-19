@@ -25,6 +25,10 @@ All components: vanilla JS + SVG/canvas, no libraries, embedded in the single-fi
 ## Terminal replays (TERM-xx)
 Typing-animation component replaying trimmed real Claude Code sessions (recorded during repo build). One per Claude Code lab. Speed control ×1/×2/skip. Copilot and Cursor labs instead use annotated screenshot strips (their IDE UIs don't fake honestly in HTML) with step-highlight animation.
 
+| ID | Name | Source & behavior | Modules |
+|----|------|-------------------|---------|
+| TERM-01 | First Session Replay | Real capture (v2.1.215, 2026-07-19) in `recordings/TERM-01-m1.2-first-session.txt`: `claude --version` + headless `-p` Q&A citing ApprovalService and the inclusive >= 0.85 rule. Interactive-only mechanics (Shift+Tab, /clear, rewind menu) render as annotation cards, never as fake terminal output. Re-record when the real priorauth-api ships. | M-1.2 |
+
 ## Shared conventions
 - Gold = Claude Code, cyan = Copilot, purple #6E5AAE = Cursor — everywhere. Purple comes from the reference palette (no invented colors); pair it with white text for AA.
 - Every sim has a one-line "what to notice" caption and a reset button.

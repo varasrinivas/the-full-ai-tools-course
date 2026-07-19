@@ -176,6 +176,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim01 .simreset:hover{border-color:var(--gold)}
 @media(max-width:560px){.sim01 .simflow{flex-direction:column}.sim01 .simarrow{transform:rotate(90deg);align-self:center}}
 
+/* ============ TERM-01: First Session Replay ============ */
+.term01{border:1px solid var(--line);border-radius:12px;background:var(--panel2);font-family:var(--mono);overflow:hidden}
+.term01 .thbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:10.5px;color:var(--faint);letter-spacing:.12em}
+.term01 .thbar .dot{width:9px;height:9px;border-radius:50%;background:var(--faint);opacity:.5}
+.term01 .thbar .dot.g{background:var(--gold);opacity:1}
+.term01 .thbar .rec{margin-left:auto}
+.term01 .tscroll{padding:16px 18px;font-size:12.5px;line-height:1.7;min-height:220px;max-height:340px;overflow-y:auto}
+.term01 .tline{color:var(--text);word-break:break-word}
+.term01 .tline .tp{color:var(--gold);font-weight:700}
+.term01 .tcaret{display:inline-block;width:7px;height:14px;vertical-align:-2px;background:var(--gold)}
+.term01 .tout{white-space:pre-wrap;word-break:break-word;color:var(--dim);margin:6px 0 14px;font-family:var(--mono)}
+.term01 .tnote{border:1px dashed var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:6px 0 14px;color:var(--dim);font-family:'Instrument Sans',sans-serif;font-size:13px}
+.term01 .tnote b,.term01 .tnote code{color:var(--text)}
+.term01 .tfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+.term01 .tnote-cap{font-size:10.5px;color:var(--faint)}
+.term01 .tctl{display:flex;gap:6px}
+.term01 .tctl button{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.term01 .tctl button:hover{border-color:var(--gold)}
+.term01 .tctl button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+
 footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
 footer b{color:var(--gold);font-weight:500}
 
@@ -340,6 +360,67 @@ const MODS = [
       {q:'Which requests land in the manual review queue?',
        options:['All denied requests','Eligible requests scoring below 0.85','Requests missing CPT codes','Every request from a new payer'], answer:1}
     ]
+  },
+  {
+    id:'M-1.2', path:'eng', track:'T-01', title:'Claude Code CLI', minutes:30,
+    lastVerified:'2026-07-19', needsVerification:true,
+    concept:{
+      analogy:'Permission modes are supervision levels for a new clinician on the PA review floor. Day one, the attending co-signs every order — that is default mode, asking first. Chart review during rounds is read-only — Plan Mode. Routine refills run on standing orders — accept edits. Full unsupervised authority exists too, but only in a sealed training ward, never on live patients — bypass. And checkpoints are the chart audit trail: any order rolls back to the last co-signed state.',
+      body:
+        '<p><strong>The session is the unit of work.</strong> Run <code>claude</code> in a terminal and you open a conversation with a live context window. One task per session is the discipline. Leave and come back with <code>claude --continue</code> (most recent session in this directory) or <code>claude --resume</code> (pick any session by name).</p>' +
+        '<p><strong>Housekeeping.</strong> <code>/help</code> shows what the session can do. <code>/clear</code> starts a fresh context — use it every time you switch tasks. Stale context is not just clutter: you pay for it in tokens and answer quality, which is the whole of T-08.</p>' +
+        '<p><strong>Permission modes.</strong> Default asks before every edit and command. Accept edits auto-approves file changes. Plan Mode is read-only — the agent explores and proposes, touches nothing. Bypass skips all prompts and belongs only in isolated sandboxes. <strong>Shift+Tab cycles default → accept edits → plan.</strong> Pick the mode by cost-of-wrong, not by convenience.</p>' +
+        '<p><strong>Checkpoints.</strong> Claude Code checkpoints automatically before each prompt. Double-tap <code>Esc</code> or type <code>/rewind</code> to restore the code, the conversation, or both. Failed experiments become cheap — which changes how boldly you can let the agent work.</p>' +
+        '<p><strong>Beyond the terminal.</strong> The same engine runs as the Claude Code extension in VS Code and the (beta) plugin for JetBrains IDEs — and headless via <code>claude -p</code> for scripts, which is exactly how the replay on this page was recorded.</p>'
+    },
+    visual:{type:'term', componentId:'TERM-01'},
+    labA:{
+      title:'Sessions, modes & rewind — Claude Code',
+      steps:[
+        'Install Claude Code (native installer or <code>npm install -g @anthropic-ai/claude-code</code> — see code.claude.com/docs). Run <code>claude --version</code>. You should see a version number; this module was verified on 2.1.215.',
+        'In your <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> clone, run <code>claude</code>. Type <code>/help</code> — you should see the slash-command list, including <code>/clear</code> and <code>/rewind</code>.',
+        'Ask: <em>“Which service decides auto-approval, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold.',
+        'Type <code>/clear</code>, then ask: <em>“What were we just discussing?”</em> It should not know — the context is genuinely fresh.',
+        'Press <strong>Shift+Tab</strong> until the indicator shows <strong>plan</strong>. Ask it to map the approval flow end to end. You should get the analysis with zero edit prompts — read-only.',
+        'Shift+Tab back to default. Ask for a one-line comment on <code>ApprovalService</code> and approve the edit. Now double-tap <strong>Esc</strong> (or <code>/rewind</code>) and restore the code. Run <code>git diff</code> — you should see a clean tree.',
+        '<code>/exit</code>, then <code>claude --continue</code>. You should see the same conversation resume. Success: you cycled three modes, wiped a context, and rolled back an edit without touching git.'
+      ]
+    },
+    labB:{
+      title:'The equivalents — Copilot',
+      steps:[
+        'Open <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> in VS Code and open Copilot Chat in <strong>Agent</strong> mode. The <strong>New Chat</strong> (+) button is the <code>/clear</code> equivalent — each session gets its own context window.',
+        'Ask the agent to add a one-line comment to <code>ApprovalService.java</code> and accept the change.',
+        'Hover over your previous request in the chat and click <strong>Restore Checkpoint</strong> (checkpoints are on by default). You should see the file revert <em>and</em> the conversation roll back to that point.',
+        'Write the mapping in one line each: permission prompts ↔ tool confirmations; <code>/rewind</code> ↔ Restore Checkpoint. There is no read-only Plan-Mode switch here — that gap is covered by the Plan agent in M-3.3. Success: file reverted, and you can name what each Claude Code concept maps to.'
+      ]
+    },
+    labC:{
+      title:'The equivalents — Cursor',
+      steps:[
+        'Open <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> in Cursor and open the Agent panel (<code>Ctrl/Cmd+I</code>). A <strong>new tab</strong> (<code>Ctrl/Cmd+T</code>) is the <code>/clear</code> equivalent — fresh conversation, its own context. (Side chats are different: they inherit context on purpose.)',
+        'Hit <strong>Shift+Tab</strong> to enter Plan Mode — the read-only exploration equivalent you already used in M-1.1.',
+        'Back in Agent: ask for a one-line comment on <code>ApprovalService.java</code>, accept it, then click <strong>Restore Checkpoint</strong> on the previous request. You should see the file revert.',
+        'Contrast with the other two cockpits: Cursor’s restore reverts <em>files only</em> — the conversation keeps going — and checkpoints are local and ephemeral, so git stays the real safety net. Success: file reverted, and you can say exactly what Cursor’s checkpoints do <em>not</em> roll back.'
+      ]
+    },
+    checklist:[
+      'I can start, clear, and resume a session (<code>claude</code>, <code>/clear</code>, <code>--continue</code>).',
+      'I can name the three modes Shift+Tab cycles — and where bypass is (and is not) defensible.',
+      'I rewound a checkpoint and verified the rollback with <code>git diff</code>.',
+      'I can say what each tool’s Restore Checkpoint rolls back — and why git is still the only permanent record.',
+      'I know Claude Code also runs in VS Code, JetBrains IDEs, and headless with <code>-p</code>.'
+    ],
+    quiz:[
+      {q:'You finished the denial-reasons widget; the next task is unrelated payer config, same terminal. Right move?',
+       options:['Keep going — accumulated context always helps','/clear — one task, one fresh context','/rewind to the first checkpoint','Exit and start a new terminal window'], answer:1},
+      {q:'You want the agent to map priorauth-api’s approval flow with a guarantee nothing gets edited. Which mode?',
+       options:['Accept edits','Bypass permissions','Plan Mode','Default'], answer:2},
+      {q:'The agent’s last three edits to ApprovalService went sideways. Cheapest recovery?',
+       options:['git reset --hard and re-clone','Retype the task and hope','Rewind to the checkpoint before the edits','/clear — it resets the files too'], answer:2},
+      {q:'When is bypass-permissions mode defensible?',
+       options:['Never, under any circumstances','In an isolated sandbox where nothing valuable is at risk','Whenever you are watching the terminal closely','On the PA repos, once you trust the agent'], answer:1}
+    ]
   }
 ];
 
@@ -486,6 +567,84 @@ VISUALS['SIM-01'] = function(mount, opts){
   });
   mount.querySelector('[data-reset]').addEventListener('click', reset);
   reset();
+};
+
+/* ---------- TERM-01 · First Session Replay (spec: VISUALS.md) ----------
+   Source: recordings/TERM-01-m1.2-first-session.txt (real capture, v2.1.215,
+   2026-07-19). Interactive-only mechanics render as annotation cards ('note'),
+   never as terminal output. */
+VISUALS['TERM-01'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = [
+    {t:'cmd', text:'claude --version'},
+    {t:'out', text:'2.1.215 (Claude Code)'},
+    {t:'cmd', text:'claude -p "Where does the auto-approve decision live in this repo, and what exactly is the rule?" --tools "Read,Glob,Grep"'},
+    {t:'out', text:
+      'The auto-approve decision lives in `src\\main\\java\\com\\priorauth\\service\\ApprovalService.java` — specifically the `process` method at `ApprovalService.java:17-23`.\n\n' +
+      'The rule is a single confidence-score threshold:\n\n' +
+      '- The threshold is the constant `AUTO_APPROVE_THRESHOLD = 0.85` at `ApprovalService.java:15`.\n' +
+      '- `process` reads the ML confidence score from the request (`request.getConfidenceScore()`). If the score is **greater than or equal to 0.85**, it returns `"AUTO_APPROVED"`; otherwise it returns `"MANUAL_REVIEW"`. The comparison is explicitly inclusive — a score of exactly 0.85 auto-approves, per the comment on the constant.'},
+    {t:'note', html:'<b>Interactive session (annotation — not replayed output):</b> run <code>claude</code> with no flags for the live REPL. There, <code>/help</code> lists commands, <code>/clear</code> starts a fresh context, <b>Shift+Tab</b> cycles default → accept edits → plan, and double-tap <b>Esc</b> (or <code>/rewind</code>) opens the checkpoint menu.'}
+  ];
+  mount.innerHTML =
+    '<div class="term01" aria-label="Recorded Claude Code session replay">' +
+      '<div class="thbar"><span class="dot g"></span><span class="dot"></span><span class="dot"></span>' +
+        '<span>PRIORAUTH-API · CLAUDE CODE</span><span class="rec">RECORDED 2026-07-19 · v2.1.215</span></div>' +
+      '<div class="tscroll" data-scroll></div>' +
+      '<div class="tfoot">' +
+        '<span class="tnote-cap">What to notice: a real session cites <b>ApprovalService</b> and the inclusive &gt;= 0.85 rule. Trimmed; full capture in /recordings.</span>' +
+        '<div class="tctl">' +
+          '<button data-speed="1" aria-pressed="true">×1</button>' +
+          '<button data-speed="2" aria-pressed="false">×2</button>' +
+          '<button data-skip>SKIP</button>' +
+          '<button data-replay>REPLAY ▸</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const scroll = mount.querySelector('[data-scroll]');
+  let speed = 1, timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms / speed)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frameHtml(f, partialCmd){
+    if(f.t === 'cmd') return '<div class="tline"><span class="tp">$</span> ' + esc(partialCmd != null ? partialCmd : f.text) + (partialCmd != null ? '<span class="tcaret"></span>' : '') + '</div>';
+    if(f.t === 'out') return '<div class="tout">' + esc(f.text) + '</div>';
+    return '<div class="tnote">' + f.html + '</div>';
+  }
+  function renderUpTo(n, partialCmd){
+    scroll.innerHTML = FRAMES.slice(0, n).map(f => frameHtml(f)).join('') +
+      (partialCmd != null ? frameHtml(FRAMES[n], partialCmd) : '');
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+  function renderAll(){ stop(); renderUpTo(FRAMES.length); }
+  function play(){
+    stop();
+    if(reduce){ renderAll(); return; }
+    let i = 0;
+    (function next(){
+      if(i >= FRAMES.length) return;
+      const f = FRAMES[i];
+      if(f.t === 'cmd'){
+        let ch = 0;
+        (function type(){
+          renderUpTo(i, f.text.slice(0, ch));
+          if(ch < f.text.length){ ch += 2; later(type, 40); }
+          else { i++; renderUpTo(i); later(next, 500); }
+        })();
+      } else {
+        i++; renderUpTo(i);
+        later(next, f.t === 'out' ? 1400 : 600);
+      }
+    })();
+  }
+  mount.querySelectorAll('[data-speed]').forEach(b => {
+    b.addEventListener('click', () => {
+      speed = +b.dataset.speed;
+      mount.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  mount.querySelector('[data-skip]').addEventListener('click', renderAll);
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- Progress store ---------- */
