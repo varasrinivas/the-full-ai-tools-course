@@ -15,7 +15,8 @@ Single-file HTML course player + kickoff specs for "The 10x Toolkit" (Claude Cod
 
 ## Commands
 - Preview: open 10x-toolkit.html directly (no build step)
-- Validate: /validate-module <id> (checks schema, links, both labs, visual mount, theme pass)
+- Validate: /validate-module <id> (checks schema, links, all labs, visual mount, theme pass)
+- Deploy: .\deploy.ps1 (uploads 10x-toolkit.html + index.html copy to the learning.varasrinivas.com S3 bucket; add -DryRun to preview). NO credentials in the repo — AWS auth is local CLI config; per-machine overrides go in deploy.config.json (gitignored, see deploy.config.example.json)
 
 ## Style
 - Module prose: direct, second person, no filler. One real-world analogy per module, load-bearing not decorative.

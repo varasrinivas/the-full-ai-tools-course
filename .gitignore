@@ -1,0 +1,6 @@
+# per-machine deploy settings (profile, CloudFront distribution id) — never commit
+deploy.config.json
+
+# local verification artifacts
+.playwright-mcp/
+*.png
