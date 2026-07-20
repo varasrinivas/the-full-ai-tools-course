@@ -360,13 +360,13 @@ footer b{color:var(--gold);font-weight:500}
 const MODS = [
   {
     id:'M-1.1', path:'eng', track:'T-01', title:'Meet your crew', minutes:25,
-    lastVerified:'2026-07-19', needsVerification:true,
+    lastVerified:'2026-07-21', needsVerification:true,
     concept:{
       analogy:'Autocomplete is autopilot trim — it steadies a maneuver you are already flying. An agent is a crew member you brief from mission control: you state the intent, it flies a leg of the mission with real instruments — reading files, running tests, editing code — and reports back for your go / no-go.',
       body:
         '<p><strong>The spectrum.</strong> Ghost text completes the line you are typing. Chat answers questions. An <strong>agent</strong> reads files, edits code, and runs commands in a loop. The difference is not intelligence — it is agency.</p>' +
         '<p><strong>One agent turn</strong> has four phases: gather context → plan → act with tools → verify. Every module after this one is about making that loop cheaper, safer, or faster.</p>' +
-        '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Edit, and Agent modes in VS Code and Visual Studio 2026. Cursor is an AI-native IDE: Tab autocomplete in the editor, an Agent panel on <code>Ctrl/Cmd+I</code>, and a Plan Mode that thinks before it touches anything. Same missions, three cockpits — you will fly every mission in all of them.</p>' +
+        '<p><strong>Your crew.</strong> Claude Code is CLI-first: start it with <code>claude</code> in a terminal, or use the VS Code extension / JetBrains plugin. GitHub Copilot is IDE-first: Ask, Plan, and Agent in the agents dropdown — in VS Code and Visual Studio 2026. Cursor is an AI-native IDE: Tab autocomplete in the editor and an Agent panel on <code>Ctrl/Cmd+I</code> with the same Ask / Plan / Agent trio. Same missions, three cockpits — you will fly every mission in all of them.</p>' +
         '<p><strong>The territory.</strong> Prior authorization: requests move SUBMITTED → ELIGIBLE → AUTO_APPROVED | DENIED | MANUAL_REVIEW. A confidence score of <strong>0.85 or higher auto-approves — the threshold is inclusive</strong>. <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> decides; <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> displays. Both repos ship with real bugs planted for later tracks.</p>' +
         '<p><strong>Your job</strong> from here on: intent, context, review. You are the bouncer, not the typist.</p>'
     },
@@ -384,9 +384,9 @@ const MODS = [
     labB:{
       title:'Repo tour — Copilot Chat',
       steps:[
-        'Open the <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> folder in VS Code with Copilot enabled. Open Copilot Chat and set the mode to <strong>Ask</strong>.',
-        'Ask with workspace context: <em>“@workspace what are the main packages and what does each own?”</em> You should see the same package map as the Claude Code lab.',
-        'Ask: <em>“@workspace where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and <code>&gt;= 0.85</code>.',
+        'Open the <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> folder in VS Code with Copilot enabled. Open Copilot Chat and pick <strong>Ask</strong> in the agents dropdown.',
+        'Ask: <em>“#codebase what are the main packages and what does each own?”</em> (Context is gathered automatically; <code>#codebase</code> forces the repo-wide search.) You should see the same package map as the Claude Code lab.',
+        'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and <code>&gt;= 0.85</code>.',
         'Open <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> in a new window and ask which component displays the confidence score. You should see <code>ConfidenceGauge</code>.',
         'Write one sentence: which cockpit you preferred for reading a strange codebase, and why. Success: same three answers as the Claude Code lab.'
       ]
