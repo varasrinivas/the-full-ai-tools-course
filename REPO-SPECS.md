@@ -42,29 +42,31 @@ Boot 4.1 supersedes the original "3.x" line (Vara's scaffold decision, 2026-07-2
 
 ---
 
-## Repo 2: `priorauth-web` — React 18, Vite, TypeScript
+## Repo 2: `priorauth-web` — React 19, Vite 8, TypeScript 6 (BUILT 2026-07-20)
 
-Structure:
+Structure (as built):
 ```
 src/
   pages/       Dashboard, RequestDetail, SubmitRequest, ReviewQueue
   components/  RequestTable, StatusBadge, DenialReasonsChart, ConfidenceGauge
   hooks/       usePriorAuthStatus, usePriorAuthForm, useReviewQueue
-  api/         client.ts (fetch wrapper against priorauth-api)
-  test/        Vitest + React Testing Library (~20 passing tests)
+  api/         client.ts (typed fetch wrapper; AUTO_APPROVE_THRESHOLD + meetsThreshold live here)
+  test/        Vitest + React Testing Library (20 passing on lab/start, 26 on the green root commit)
 ```
+React 19 supersedes the original "React 18" line (same newest-stable precedent as the API's Boot 4.1). Also on board: React Router 7, oxlint, dev-server /api proxy to :8080 (verified against the live API).
 
-### Planted defects
+### Planted defects (each plant is a tagged commit: `plant/BUG-WEB-xx` — diff the tag)
 | ID | Location | Defect | Used in |
 |----|----------|--------|---------|
-| BUG-WEB-01 | RequestTable | Slow re-render: unmemoized row mapping + inline handlers; visible jank at 500 rows | M-5.6 |
-| BUG-WEB-02 | usePriorAuthStatus | Stale closure: polling interval captures initial status, never sees updates | M-5.5 |
-| BUG-WEB-03 | usePriorAuthForm | Validation hook (CPT format, payer required) has zero tests | M-6.3 |
-| BUG-WEB-04 | ConfidenceGauge | Renders 0.85 as "below threshold" — mirror of BUG-API-01 on the UI side; fixed in capstone |
+| BUG-WEB-01 | RequestTable | Slow re-render: memoized Row component flattened away — unmemoized row mapping + inline handlers; visible jank at the 500-request seed | M-5.6 |
+| BUG-WEB-02 | usePriorAuthStatus | Stale closure: the fetch promise is hoisted out of the interval ("reuse one request per mount"), so every tick re-awaits the same first response — status never updates; the transition-pinning test was deleted in the plant commit | M-5.5 |
+| BUG-WEB-03 | usePriorAuthForm | Validation hook (CPT format, payer required, score range) has zero tests — they were deleted in the plant commit ("ahead of the planned validation rework") | M-6.3 |
+| BUG-WEB-04 | ConfidenceGauge | `score > AUTO_APPROVE_THRESHOLD` renders 0.85 as "below threshold" — UI mirror of BUG-API-01 (the shared `meetsThreshold` helper still exists, bypassed); boundary test deleted in the plant commit; fixed in capstone |
 
 ### Deliberate design choices
-- DenialReasonsChart is the vibe-coding target in T-02 (rebuilt from scratch both ways).
-- One component intentionally over-abstracted (ReviewQueue) for "simplify this" labs.
+- DenialReasonsChart is the vibe-coding target in T-02 (rebuilt from scratch both ways) — pure SVG, no chart library.
+- ReviewQueue intentionally over-abstracted (generic ConfigurableTable + ColumnSpec/RowAdapter with exactly one consumer) for "simplify this" labs.
+- `main` frozen at the planted HEAD; labs branch from `lab/start` (same commit).
 
 ---
 
