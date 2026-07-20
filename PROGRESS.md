@@ -1,11 +1,12 @@
 # PROGRESS.md — 10x Toolkit build log
 ## Status board
-Engineer path: 3/59 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
+Engineer path: 4/59 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
 | ID | Status | lastVerified | Notes |
 |----|--------|--------------|-------|
 | M-1.1 | ⚠ validated + Cursor retrofit 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass; now TRI-PATH (labC added). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
 | M-1.2 | ⚠ validated 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | TRI-PATH. All 30 automated checks pass (jsdom harness: schema, mount, reduced-motion, themes, no console errors). TERM-01 replay ships from a real recorded capture. ⚠ same reason as M-1.1: lab success-checks await the repo scaffold; then clear needsVerification and flip to ✅ |
 | M-1.3 | ⚠ validated 2026-07-20 — labs unrunnable until repos exist | 2026-07-20 | TRI-PATH. 33 automated checks pass (jsdom harness incl. live + reduced-motion animation passes). ANIM-13 lanes match the CURRENT VS Code picker (Agent/Plan/Ask — Edit mode deprecated). ⚠ same repo-scaffold blocker as M-1.1/M-1.2 |
+| M-1.4 | ⚠ validated 2026-07-21 — primary lab path awaits repos (own-repo substitute allowed) | 2026-07-21 | TRI-PATH prelude ("day zero"). 34 automated checks pass. /init behavior additionally verified LIVE (headless run in the scratchpad stand-in: analyzed code, drafted CLAUDE.md incl. the inclusive rule from a code comment, write gated by permissions). ANIM-14 built. ⚠ softest blocker of the four: labs runnable today on any non-AI repo |
 ## Decisions log
 - 2026-07-19 — Player shell scaffolded as a lean player (condensed hero + functional course area); marketing-only preview sections (orbit canvas, lesson preview, metrics, AI-DLC arc) intentionally not carried into the player.
 - 2026-07-19 — Progress persistence: single localStorage key `tenx-progress` → `{theme, path, done:{modId:true}}`, try/catch-guarded.
@@ -37,7 +38,11 @@ Engineer path: 3/59 built · Leadership path: 0/22 · Player shell: scaffolded (
   - NOT adopted: "Ask mode" in Cursor (widely described in third-party guides) is not in current official docs — current modes are Agent and Plan — so the lab deliberately avoids it.
   - needsVerification stays true: unchanged reason (teaching repos not scaffolded); lastVerified already 2026-07-19.
 - M-1.1 lab links to github.com/varasrinivas/priorauth-api and /priorauth-web are dead until those repos are created and pushed — re-check when the teaching repos ship.
-- Remaining tool-fit table claims still editorial/unverified against official Cursor docs: "Cursor best for rapid UI iteration", Cursor Tab vs Copilot next-edit ranking, Composer naming, .cursor/rules *.mdc format. Verify when M-2.5 or T-04 is built.
+- Remaining tool-fit table claims still editorial/unverified against official Cursor docs: "Cursor best for rapid UI iteration", Cursor Tab vs Copilot next-edit ranking. Verify when M-2.5 or T-04 is built. ~~Composer naming~~ (resolved 2026-07-20: stale, avoided) · ~~.cursor/rules *.mdc format~~ (resolved 2026-07-21: VERIFIED — `.cursor/rules/` with `.mdc` files, generated via /create-rule).
+- M-1.4: primary lab path references the not-yet-scaffolded priorauth-api (own-repo substitute keeps labs runnable). Tool claims WERE all verified 2026-07-21:
+  - Claude Code /init (code.claude.com/docs): scans structure/build/test/conventions, drafts root CLAUDE.md, improves rather than overwrites, consumes existing AGENTS.md/.cursorrules; Claude Code reads ONLY CLAUDE.md natively (AGENTS.md via `@AGENTS.md` import). Corroborated by a live headless /init run.
+  - Copilot (code.visualstudio.com): chat `/init` generates .github/copilot-instructions.md (old "Generate Workspace Instructions" naming is stale); `chat.useAgentsMdFile` stable+default (VS Code reads AGENTS.md and even CLAUDE.md); VS 2026 instructions file is opt-in (Tools > Options) with /generateInstructions; VS 2026 does NOT read AGENTS.md.
+  - Cursor (cursor.com/docs): `.cursor/rules/*.mdc`, generated via `/create-rule` (old "/Generate Cursor Rules" naming is stale); reads AGENTS.md root+subdirs as a simple alternative; no tool recommends AGENTS.md as primary → module leads with native files.
 - M-1.2: lab success checks reference the not-yet-scaffolded priorauth-api (same blocker as M-1.1). Tool claims WERE all verified 2026-07-19 against current docs:
   - Claude Code (code.claude.com/docs): install methods (native installer + npm), permission modes incl. Shift+Tab cycle default → acceptEdits → plan, checkpoints (/rewind, double-Esc, restore code/conversation/both), --continue/--resume, /help + /clear, VS Code extension + JetBrains (beta) plugin. CLI behavior additionally confirmed live on v2.1.215.
   - Copilot (code.visualstudio.com): "Restore Checkpoint" label verbatim; restores files AND rolls conversation back; checkpoints on by default (chat.checkpoints.enabled); New Chat = own context window.

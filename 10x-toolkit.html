@@ -220,6 +220,39 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim13 .areplay:hover{border-color:var(--cyan)}
 @media(max-width:560px){.anim13 .alanes{flex-direction:column}}
 
+/* ============ ANIM-14: One Repo, Three Constitutions ============ */
+.anim14{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim14 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim14 .arepo{position:relative;overflow:hidden;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;text-align:center;font-size:11px;color:var(--dim);margin-bottom:12px;opacity:0;transition:opacity .4s}
+.anim14 .arepo.on{opacity:1}
+.anim14 .arepo b{color:var(--text);font-weight:500}
+.anim14 .arepo .bare{display:block;font-size:9.5px;letter-spacing:.12em;color:var(--faint);margin-top:3px}
+.anim14 .scan{position:absolute;top:0;bottom:0;width:34%;background:linear-gradient(90deg,transparent,rgba(245,184,75,.16),transparent);transform:translateX(-140%);pointer-events:none}
+.anim14 .arepo.scanning .scan{transition:transform 1.1s ease-in-out;transform:translateX(340%)}
+.anim14 .afiles{display:flex;gap:10px}
+.anim14 .afile{flex:1;min-width:0;border:1px solid var(--line);border-top:3px solid var(--faint);border-radius:10px;background:var(--panel);padding:10px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.anim14 .afile.on{opacity:1;transform:none}
+.anim14 .afile.g{border-top-color:var(--gold)}
+.anim14 .afile.c{border-top-color:var(--cyan)}
+.anim14 .afile.p{border-top-color:var(--purple)}
+.anim14 .fname{font-size:10px;letter-spacing:.06em;color:var(--text);padding-bottom:7px;border-bottom:1px dashed var(--line);margin-bottom:7px;word-break:break-all}
+.anim14 .fline{font-size:10px;line-height:1.5;color:var(--dim);padding:3px 0;opacity:0;transition:opacity .35s}
+.anim14 .fline.on{opacity:1}
+.anim14 .fline.you{color:var(--text);border-left:3px solid currentColor;padding-left:7px;margin-top:4px}
+.anim14 .fline.you::before{content:'YOU SIGN';display:block;font-size:8px;letter-spacing:.16em;color:var(--faint)}
+.anim14 .afile.g .fline.you{border-left-color:var(--gold)}
+.anim14 .afile.c .fline.you{border-left-color:var(--cyan)}
+.anim14 .afile.p .fline.you{border-left-color:var(--purple)}
+.anim14 .aprompt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:12px;font-size:11px;color:var(--dim);opacity:0;transition:opacity .5s}
+.anim14 .aprompt.on{opacity:1}
+.anim14 .aprompt .q{color:var(--text)}
+.anim14 .aprompt .ans{margin-left:auto;font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid #3E9A6B;color:#3E9A6B;white-space:nowrap}
+.anim14 .afoot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+.anim14 .anote{font-size:10.5px;color:var(--faint)}
+.anim14 .areplay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim14 .areplay:hover{border-color:var(--gold)}
+@media(max-width:560px){.anim14 .afiles{flex-direction:column}}
+
 footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
 footer b{color:var(--gold);font-weight:500}
 
@@ -505,6 +538,66 @@ const MODS = [
       {q:'A 2025 tutorial says “switch to Edit mode for multi-file changes.” What do you do?',
        options:['Follow it — Edit is still the multi-file mode','Recognize it is stale: Edit is deprecated and agent mode does multi-file edits now','Use Edit in Visual Studio 2026 only','File a bug against VS Code'], answer:1}
     ]
+  },
+  {
+    id:'M-1.4', path:'eng', track:'T-01', title:'Day zero: make it an AI repo', minutes:30,
+    lastVerified:'2026-07-21', needsVerification:true,
+    concept:{
+      analogy:'A bare repo is a locum clinician&rsquo;s first shift with no protocol binder — highly skilled, but they will guess your forms, your payer quirks, and your threshold. Day zero is writing the binder. The generators are scribes who draft it by walking the floor: fast, and mostly right. But the scribe writes down what the floor <em>does</em>, not what it <em>should</em> do — and only you know the difference. You sign the binder.',
+      body:
+        '<p><strong>Why bare repos underperform.</strong> Without an instruction file, every session re-derives your layout, your build commands, your conventions — and guesses wrong exactly where it is expensive. Worse: a generator documents what the code <em>does</em>. If the code carries a planted <code>&gt;</code> where the business rule says <code>&gt;=</code>, the draft constitution inherits the bug.</p>' +
+        '<p><strong>The constitution files.</strong> Claude Code reads <code>CLAUDE.md</code>. Copilot reads <code>.github/copilot-instructions.md</code> repo-wide. Cursor reads rules in <code>.cursor/rules/</code> (<code>.mdc</code> files). There is also <code>AGENTS.md</code>, the cross-tool option: VS Code and Cursor read it natively, Claude Code pulls it in via an <code>@AGENTS.md</code> import, Visual Studio 2026 does not read it at all — the full cross-tool story is M-7.2.</p>' +
+        '<p><strong>Day-zero generation.</strong> In Claude Code, <code>/init</code> scans the repo and drafts <code>CLAUDE.md</code> — it improves an existing file rather than overwriting, and folds in any <code>AGENTS.md</code> or legacy rules it finds. In VS Code, the chat command is <em>also</em> <code>/init</code>, producing <code>.github/copilot-instructions.md</code>. In Cursor, type <code>/create-rule</code> in Agent. Three scribes, one repo.</p>' +
+        '<p><strong>What earns a line on day zero.</strong> Build and test commands, the layout, naming conventions — and the domain constants no generator can know: <strong>a score of 0.85 or higher auto-approves; the threshold is inclusive</strong>. That line is yours. Everything else must pay rent, a discipline T-07 turns into policy.</p>' +
+        '<p><strong>Why our repos stay bare.</strong> You will work T-02 through T-06 on bare clones on purpose, then build real constitutions in T-07 and feel the difference. Today&rsquo;s labs run on a <em>disposable copy</em> — or any non-AI repo of your own.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-14'},
+    labA:{
+      title:'/init and the signature — Claude Code',
+      steps:[
+        'Make a disposable copy: clone <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> into <code>priorauth-api-day0</code> (or use any non-AI repo you own). Keep your real clone untouched.',
+        'Run <code>claude</code> in the copy, then <code>/init</code>. Approve the write when asked. You should see a <code>CLAUDE.md</code> appear at the repo root.',
+        'Read it like a reviewer. It should have found the build/test commands and the controller/service/repository/model layout on its own.',
+        'Now find what it could <em>not</em> know: check what it says (or does not say) about the approval rule. The code cannot tell it the business intent — this is where drafts go wrong.',
+        'Sign it: add the line <em>“A score &gt;= 0.85 auto-approves — the threshold is inclusive.”</em>',
+        '<code>/clear</code>, then ask: <em>“What happens to a request scoring exactly 0.85?”</em> You should see your signed rule cited — no files opened.',
+        'Delete the copy and confirm the real clone still has no <code>CLAUDE.md</code>. Success: a generated-then-signed constitution, and a bare real clone kept bare on purpose.'
+      ]
+    },
+    labB:{
+      title:'/init for Copilot',
+      steps:[
+        'Open the same disposable copy in VS Code. In Copilot Chat, type <code>/init</code>. You should see <code>.github/copilot-instructions.md</code> generated (instruction files are on by default).',
+        'Review, then sign the same threshold line into it.',
+        'Start a New Chat and ask the exactly-0.85 question. You should see the rule cited without file spelunking.',
+        'One noticing: VS Code also reads <code>AGENTS.md</code> — and even <code>CLAUDE.md</code> — as instruction sources; Visual Studio 2026 reads neither (its instructions file is opt-in under Tools &gt; Options). The cross-tool play comes in M-7.2. Success: same three answers as labA, different constitution.'
+      ]
+    },
+    labC:{
+      title:'/create-rule for Cursor',
+      steps:[
+        'Open the disposable copy in Cursor. In Agent, type <code>/create-rule</code> and describe what you want: <em>“project conventions and the auto-approve threshold rule.”</em> You should get a rule file under <code>.cursor/rules/</code> (an <code>.mdc</code> file).',
+        'Sign the threshold line into the rule.',
+        'Open a fresh tab (<code>Ctrl/Cmd+T</code>) and ask the exactly-0.85 question. You should see your rule cited.',
+        'One noticing: Cursor also reads <code>AGENTS.md</code> (root and subfolders) as a simpler alternative to rules. Success: three tools, three native constitutions, one signed rule in each — and you can name all three files from memory.'
+      ]
+    },
+    checklist:[
+      'I generated an instruction file in all three tools from a repo that had none.',
+      'I can name each tool&rsquo;s native file and its generation command (<code>/init</code>, <code>/init</code>, <code>/create-rule</code>).',
+      'I caught something the generator could not know — and signed it into the constitution.',
+      'My real priorauth clones are still bare, and I can say why (T-07 measures the before/after).'
+    ],
+    quiz:[
+      {q:'Which file does Claude Code&rsquo;s /init draft?',
+       options:['AGENTS.md','.github/copilot-instructions.md','CLAUDE.md','.cursor/rules/init.mdc'], answer:2},
+      {q:'The generated file documents “score &gt; 0.85 auto-approves” because that is what the (buggy) code does. What now?',
+       options:['Trust it — generators read the code','Correct it to &gt;= inclusive before signing: generators document what code does, owners sign what it should do','Delete the file and write everything by hand','File the constitution as-is and fix it in T-07'], answer:1},
+      {q:'Which is Copilot&rsquo;s repo-wide instructions file?',
+       options:['.github/copilot-instructions.md','copilot.md at the repo root','.vscode/instructions.json','settings.json'], answer:0},
+      {q:'Why do the course&rsquo;s teaching repos stay bare until T-07?',
+       options:['Instruction files slow the tools down','Legal review of the constitutions is pending','So the before/after of instruction files is measured, not folklore','They ship with AGENTS.md instead'], answer:2}
+    ]
   }
 ];
 
@@ -779,6 +872,61 @@ VISUALS['ANIM-13'] = function(mount, opts){
     const order = [];
     LANES.forEach((l,li) => l.steps.forEach((s,si) => order.push({el:mount.querySelector('[data-step="' + li + '-' + si + '"]'), at:400 + li*300 + si*700})));
     order.forEach(o => timers.push(setTimeout(() => o.el.classList.add('on'), o.at)));
+  }
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- ANIM-14 · One Repo, Three Constitutions (spec: VISUALS.md) ---------- */
+VISUALS['ANIM-14'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FILES = [
+    {cls:'g', name:'CLAUDE.md', gen:['## Build & test: mvn test','## Layout: controller / service / repository / model'], you:'Score >= 0.85 auto-approves — the threshold is INCLUSIVE'},
+    {cls:'c', name:'.github/copilot-instructions.md', gen:['Build with mvn test before proposing a PR','Layers: controller → service → repository'], you:'0.85 exactly AUTO-APPROVES (>= — inclusive)'},
+    {cls:'p', name:'.cursor/rules/', gen:['Run mvn test to verify changes','Keep decisions in the service layer'], you:'Threshold 0.85 is inclusive: >= auto-approves'}
+  ];
+  mount.innerHTML =
+    '<div class="anim14" aria-label="Diagram: a bare repo gains instruction files for Claude Code, Copilot, and Cursor">' +
+      '<div class="ahead"><span>DAY ZERO · ONE REPO, THREE CONSTITUTIONS</span><span data-live>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="arepo" data-repo><span class="scan"></span><b>priorauth-api</b> — controller · service · repository · model' +
+        '<span class="bare">NO INSTRUCTION FILES — every session starts from zero</span></div>' +
+      '<div class="afiles">' +
+        FILES.map((f,fi) =>
+          '<div class="afile ' + f.cls + '" data-file="' + fi + '">' +
+            '<div class="fname">' + esc(f.name) + '</div>' +
+            f.gen.map((l,li) => '<div class="fline" data-line="' + fi + '-' + li + '">' + esc(l) + '</div>').join('') +
+            '<div class="fline you" data-you="' + fi + '">' + esc(f.you) + '</div>' +
+          '</div>').join('') +
+      '</div>' +
+      '<div class="aprompt" data-prompt><span class="q">“What happens at a score of exactly 0.85?”</span>' +
+        '<span class="ans">AUTO_APPROVED — your signed rule, cited</span></div>' +
+      '<div class="afoot">' +
+        '<span class="anote">What to notice: generators document what the code <em>does</em> — only you know what it <em>should</em> do. The threshold line is yours to sign.</span>' +
+        '<button class="areplay" data-replay>REPLAY ▸</button>' +
+      '</div>' +
+    '</div>';
+  const repo = mount.querySelector('[data-repo]');
+  const allOn = ['[data-file]','[data-line]','[data-you]','[data-prompt]'];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+  function setAll(on){
+    repo.classList.toggle('on', on); repo.classList.remove('scanning');
+    allOn.forEach(sel => mount.querySelectorAll(sel).forEach(el => el.classList.toggle('on', on)));
+  }
+  function play(){
+    stop();
+    if(reduce){ setAll(true); return; }
+    setAll(false);
+    later(() => repo.classList.add('on'), 200);
+    later(() => repo.classList.add('scanning'), 500);
+    FILES.forEach((f,fi) => {
+      later(() => mount.querySelector('[data-file="' + fi + '"]').classList.add('on'), 1500 + fi*350);
+      f.gen.forEach((l,li) =>
+        later(() => mount.querySelector('[data-line="' + fi + '-' + li + '"]').classList.add('on'), 2100 + fi*350 + li*380));
+      later(() => mount.querySelector('[data-you="' + fi + '"]').classList.add('on'), 3900 + fi*250);
+    });
+    later(() => mount.querySelector('[data-prompt]').classList.add('on'), 5100);
   }
   mount.querySelector('[data-replay]').addEventListener('click', play);
   play();
