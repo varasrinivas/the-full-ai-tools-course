@@ -196,6 +196,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .term01 .tctl button:hover{border-color:var(--gold)}
 .term01 .tctl button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
 
+/* ============ ANIM-13: Copilot Mode Spectrum ============ */
+.anim13{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim13 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim13 .ahead b{color:var(--cyan);font-weight:500}
+.anim13 .atask{border:1px solid rgba(79,216,235,.4);border-radius:8px;padding:8px 12px;text-align:center;font-size:11.5px;color:var(--text);margin-bottom:12px}
+.anim13 .atask .tl{display:block;font-size:9.5px;letter-spacing:.12em;color:var(--faint);margin-bottom:2px}
+.anim13 .alanes{display:flex;gap:10px}
+.anim13 .alane{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px;display:flex;flex-direction:column;gap:8px}
+.anim13 .alname{font-size:10.5px;letter-spacing:.14em;color:var(--cyan);text-align:center;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.anim13 .astep{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:10.5px;line-height:1.5;color:var(--dim);opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+.anim13 .astep.on{opacity:1;transform:none}
+.anim13 .astep b{color:var(--text);font-weight:500}
+.anim13 .astep.gate{border-color:var(--cyan);border-style:dashed;color:var(--text)}
+.anim13 .astep.gate::before{content:'⛬ SIGN-OFF GATE';display:block;font-size:8.5px;letter-spacing:.14em;color:var(--cyan);margin-bottom:3px}
+.anim13 .astep.ckpt{border-left:3px solid var(--cyan)}
+.anim13 .astep .diff{color:var(--faint)}
+.anim13 .astep .add{color:#3E9A6B}
+.anim13 .astep .del{color:#B0503C}
+.anim13 .afoot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+.anim13 .anote{font-size:10.5px;color:var(--faint)}
+.anim13 .areplay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim13 .areplay:hover{border-color:var(--cyan)}
+@media(max-width:560px){.anim13 .alanes{flex-direction:column}}
+
 footer{padding:64px 0 80px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
 footer b{color:var(--gold);font-weight:500}
 
@@ -421,6 +445,66 @@ const MODS = [
       {q:'When is bypass-permissions mode defensible?',
        options:['Never, under any circumstances','In an isolated sandbox where nothing valuable is at risk','Whenever you are watching the terminal closely','On the PA repos, once you trust the agent'], answer:1}
     ]
+  },
+  {
+    id:'M-1.3', path:'eng', track:'T-01', title:'Copilot in VS Code & Visual Studio 2026', minutes:30,
+    lastVerified:'2026-07-20', needsVerification:true,
+    concept:{
+      analogy:'Ask, Plan, and Agent are three counters at the payer&rsquo;s office. Ask is the information desk — it answers anything about the case file and touches nothing. Plan is the pre-service workup — a reviewer walks the file and writes the exact steps on paper, but files nothing. Agent is the case manager — takes the file across departments, stops at every sign-off gate for your signature, and stamps a restore point after each step. Pick the counter by cost-of-wrong, not by queue length.',
+      body:
+        '<p><strong>One Copilot, two cockpits.</strong> The same brain runs in VS Code and in Visual Studio 2026. Most of what you learn transfers; where the surfaces differ, this module says so explicitly instead of letting you discover it mid-task.</p>' +
+        '<p><strong>The spectrum.</strong> In VS Code&rsquo;s Chat view, the <strong>agents dropdown</strong> offers three built-ins: <strong>Ask</strong> answers questions and edits nothing (try it: <em>&ldquo;what happens to a request scoring exactly 0.85?&rdquo;</em> — auto-approved, the <code>&gt;= 0.85</code> threshold is inclusive); <strong>Plan</strong> explores read-only and writes the workup; <strong>Agent</strong> edits files and runs commands in a loop. If a tutorial tells you to use <em>Edit mode</em>, it is stale — Edit was deprecated in early 2026, and agent mode does multi-file edits now.</p>' +
+        '<p><strong>The pickers.</strong> The <strong>model picker</strong> sits in the chat input: which models you see depends on your plan, and <em>Auto</em> lets Copilot choose per request — the big-model-to-plan, fast-model-to-grind economics land in T-08. The same agents dropdown also hosts <strong>custom agents</strong> (<code>.agent.md</code> files); building one is M-9.6.</p>' +
+        '<p><strong>The safety rails.</strong> Before terminal commands and other consequential tools, the agent stops for your approval — and you choose the scope: single use, this session, this workspace, or always. Behind that sit three permission modes — <strong>Default Approvals</strong>, <strong>Bypass Approvals</strong>, <strong>Autopilot</strong> — the same supervision ladder you met in M-1.2, wearing different badges. Every edit lands as a reviewable diff: <strong>Keep</strong> or <strong>Undo</strong>, per edit, per file, or all at once; <strong>Restore Checkpoint</strong> rolls back the files <em>and</em> the conversation.</p>' +
+        '<p><strong>Visual Studio 2026.</strong> Agent mode is there (mode dropdown in the Chat window), plus built-in agents like <code>@debug</code>, <code>@profiler</code>, <code>@test</code>. Checkpoints restore with a <strong>Restore</strong> link but there is no stepwise undo/redo; changes collect in a <strong>Total changes</strong> list; approval scopes speak of the <em>solution</em> rather than the workspace, and the approval controls are coarser — no Autopilot, no auto-approve settings.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-13'},
+    labA:{
+      title:'The equivalents — Claude Code',
+      steps:[
+        'Write the three-line mapping in your notes: Copilot Ask/Plan ↔ Claude Code <strong>Plan Mode</strong> (read-only); <strong>Default Approvals</strong> ↔ default mode&rsquo;s ask-first prompts; <strong>Autopilot</strong> ↔ the accept-edits/bypass end of Shift+Tab. You should be able to defend each line.',
+        'In a session in your <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> clone, run <code>/model</code> with no arguments — you should see a model picker; switch models mid-session and back. This is the model-picker equivalent.',
+        'Ask the same denial-copy question you will use in the Copilot lab, in Plan Mode. Note the recovery mapping: Copilot&rsquo;s Restore Checkpoint ↔ <code>/rewind</code>, which can restore code, conversation, or both. Success: mapping written, model switched, and you can say which tool&rsquo;s restore is the most granular.'
+      ]
+    },
+    labB:{
+      title:'The three counters — Copilot',
+      steps:[
+        'Open <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> in VS Code with Copilot. In the Chat view, open the <strong>agents dropdown</strong> — you should see <strong>Agent</strong>, <strong>Plan</strong>, and <strong>Ask</strong> (no Edit: it is deprecated).',
+        'In <strong>Ask</strong>: <em>“Where does the denial-reason copy shown to providers live?”</em> You should get an explanation and no edit offer.',
+        'In <strong>Plan</strong>: <em>“Plan a change to the denial-reason wording for missing CPT codes.”</em> You should get a written plan naming files — and <code>git status</code> should show a clean tree.',
+        'Switch to <strong>Agent</strong> and have it execute the plan. When it asks to run a command, read the approval choices before clicking — single use, session, workspace, always. Approve for <em>this session</em>.',
+        'Review the changed files in the Chat view: <strong>Keep</strong> the wording change, <strong>Undo</strong> anything extra. You should be able to act per file, not just all-or-nothing.',
+        'Hover over the Agent request and click <strong>Restore Checkpoint</strong>. You should see the files revert and the conversation roll back. Then open the <strong>model picker</strong> in the chat input — note your current model and the <em>Auto</em> option.',
+        'Visual Studio 2026 (optional): repeat the Agent step there — mode dropdown in the Chat window, <strong>Total changes</strong> list, <strong>Restore</strong> next to the checkpoint, and approval scopes that say <em>solution</em>. Success: you drove all three counters, chose an approval scope deliberately, and unwound the whole thing.'
+      ]
+    },
+    labC:{
+      title:'The equivalents — Cursor',
+      steps:[
+        'Open <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> in Cursor. In the Agent panel, open the <strong>mode picker</strong> at the top of the input — you should see <strong>Agent</strong>, <strong>Plan</strong>, and <strong>Ask</strong> (Shift+Tab cycles them). Same trio, third cockpit.',
+        'Open the <strong>model picker</strong> next to it — note the <em>Auto</em> option (Cursor picks the model per request) and cycle models with <code>Ctrl+/</code>.',
+        'In Agent, make the same denial-copy edit and accept it. Then click <strong>Restore Checkpoint</strong> on the previous request — the files revert, but the conversation keeps going: Cursor&rsquo;s restore is files-only, the contrast you learned in M-1.2.',
+        'Success: you can name the Ask/Plan/Agent trio in all three tools — and say which tool&rsquo;s checkpoint restore rolls back the least.'
+      ]
+    },
+    checklist:[
+      'I can pick Ask, Plan, or Agent by cost-of-wrong, in any of the three tools.',
+      'I approved a tool with a deliberate scope — and can say when “always” is the wrong answer.',
+      'I reviewed a multi-file change with <code>Keep</code>/<code>Undo</code>, per file.',
+      'I restored a checkpoint and know exactly what rolls back in each tool.',
+      'I know why tutorials that say “Edit mode” are stale, and what replaced it.'
+    ],
+    quiz:[
+      {q:'You want EligibilityService explained with zero chance of an edit. Which counter?',
+       options:['Agent','Plan','Ask','Autopilot'], answer:2},
+      {q:'Agent mode wants to run mvn test. What happens before it executes?',
+       options:['It runs silently — tests are read-only','Copilot switches to Ask mode','A confirmation appears and you choose the approval scope','It is always blocked in agent mode'], answer:2},
+      {q:'An Agent request touched four files and went sideways. Cheapest full recovery?',
+       options:['Undo one file and hope','Restore Checkpoint on that request — files and conversation roll back','/clear the conversation','Disable Copilot and revert by hand'], answer:1},
+      {q:'A 2025 tutorial says “switch to Edit mode for multi-file changes.” What do you do?',
+       options:['Follow it — Edit is still the multi-file mode','Recognize it is stale: Edit is deprecated and agent mode does multi-file edits now','Use Edit in Visual Studio 2026 only','File a bug against VS Code'], answer:1}
+    ]
   }
 ];
 
@@ -643,6 +727,59 @@ VISUALS['TERM-01'] = function(mount, opts){
     });
   });
   mount.querySelector('[data-skip]').addEventListener('click', renderAll);
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- ANIM-13 · Copilot Mode Spectrum (spec: VISUALS.md) ----------
+   Abstract behavior diagram — deliberately NO fake IDE chrome or screenshots. */
+VISUALS['ANIM-13'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LANES = [
+    {name:'ASK', steps:[
+      {h:'reads the workspace', d:'walks DenialController and the copy source'},
+      {h:'answers', d:'explains where denial-reason text lives — <b>no files touched</b>'}
+    ]},
+    {name:'PLAN', steps:[
+      {h:'explores read-only', d:'maps every surface the denial copy touches'},
+      {h:'writes the workup', d:'numbered steps, files named — <b>nothing edited yet</b>'},
+      {h:'hands off', d:'you approve the plan; Agent executes it'}
+    ]},
+    {name:'AGENT', steps:[
+      {h:'works the file', d:'reads, decides, starts editing'},
+      {gate:true, h:'wants to run the test suite', d:'you approve — single use, this session, or always'},
+      {h:'edits across files', d:'<span class="diff">DenialController.java <span class="add">+2</span> <span class="del">−1</span> · denial-reasons.ts <span class="add">+4</span></span> — <b>Keep / Undo</b> per file'},
+      {ckpt:true, h:'checkpoint dropped', d:'every request is restorable — files and conversation'}
+    ]}
+  ];
+  mount.innerHTML =
+    '<div class="anim13" aria-label="Diagram: the same prior-auth task in Copilot Ask, Plan, and Agent modes">' +
+      '<div class="ahead"><span>COPILOT MODE SPECTRUM · <b>SAME TASK, THREE COUNTERS</b></span><span data-live>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="atask"><span class="tl">THE TASK</span>Update the denial-reason copy shown to providers</div>' +
+      '<div class="alanes">' +
+        LANES.map((l,li) =>
+          '<div class="alane"><div class="alname">' + esc(l.name) + '</div>' +
+            l.steps.map((s,si) =>
+              '<div class="astep' + (s.gate ? ' gate' : '') + (s.ckpt ? ' ckpt' : '') + '" data-step="' + li + '-' + si + '"><b>' + s.h + '</b><br>' + s.d + '</div>'
+            ).join('') +
+          '</div>').join('') +
+      '</div>' +
+      '<div class="afoot">' +
+        '<span class="anote">What to notice: only the Agent lane crosses sign-off gates — and every request drops a restorable checkpoint.</span>' +
+        '<button class="areplay" data-replay>REPLAY ▸</button>' +
+      '</div>' +
+    '</div>';
+  const steps = [...mount.querySelectorAll('.astep')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ steps.forEach(s => s.classList.add('on')); return; }
+    steps.forEach(s => s.classList.remove('on'));
+    const order = [];
+    LANES.forEach((l,li) => l.steps.forEach((s,si) => order.push({el:mount.querySelector('[data-step="' + li + '-' + si + '"]'), at:400 + li*300 + si*700})));
+    order.forEach(o => timers.push(setTimeout(() => o.el.classList.add('on'), o.at)));
+  }
   mount.querySelector('[data-replay]').addEventListener('click', play);
   play();
 };

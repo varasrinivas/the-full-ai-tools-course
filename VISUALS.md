@@ -21,6 +21,7 @@ All components: vanilla JS + SVG/canvas, no libraries, embedded in the single-fi
 | ANIM-10 | Memory Hierarchy | Three stacked cards: user-level → project-level → directory-level CLAUDE.md, framed as hospital policy → department policy → this procedure; a prompt beam passes through and picks lines up. | M-7.1 |
 | ANIM-11 | Personal Delta Dashboard | Gauges animate from week-1 baseline to final-week values (cycle time, rework, tests-per-feature). Data injected from the student's own logged lab times. | M-11.3, L-5.4 |
 | ANIM-12 | AI-DLC Ceremony Flow | Intent card ("cut manual review queue 20%") explodes into units of work (Mob Elaboration), agents pick them up (Mob Construction), converge into a PR node. | M-12.1–12.4, L-6.1 |
+| ANIM-13 | Copilot Mode Spectrum | Same PA task ("update denial-reason copy") flows down three lanes — Ask answers only; Plan writes a read-only workup; Agent crosses sign-off gates (tool confirmations with scope), shows Keep/Undo diffs, drops checkpoint markers. Lanes match the current agents dropdown (Agent/Plan/Ask — Edit mode deprecated, verified 2026-07-20). Abstract behavior diagram by design: no fake IDE chrome or fabricated screenshots. | M-1.3 |
 
 ## Terminal replays (TERM-xx)
 Typing-animation component replaying trimmed real Claude Code sessions (recorded during repo build). One per Claude Code lab. Speed control ×1/×2/skip. Copilot and Cursor labs instead use annotated screenshot strips (their IDE UIs don't fake honestly in HTML) with step-highlight animation.

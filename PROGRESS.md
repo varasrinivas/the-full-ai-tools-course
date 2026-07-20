@@ -1,10 +1,11 @@
 # PROGRESS.md — 10x Toolkit build log
 ## Status board
-Engineer path: 2/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
+Engineer path: 3/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
 | ID | Status | lastVerified | Notes |
 |----|--------|--------------|-------|
 | M-1.1 | ⚠ validated + Cursor retrofit 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass; now TRI-PATH (labC added). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
 | M-1.2 | ⚠ validated 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | TRI-PATH. All 30 automated checks pass (jsdom harness: schema, mount, reduced-motion, themes, no console errors). TERM-01 replay ships from a real recorded capture. ⚠ same reason as M-1.1: lab success-checks await the repo scaffold; then clear needsVerification and flip to ✅ |
+| M-1.3 | ⚠ validated 2026-07-20 — labs unrunnable until repos exist | 2026-07-20 | TRI-PATH. 33 automated checks pass (jsdom harness incl. live + reduced-motion animation passes). ANIM-13 lanes match the CURRENT VS Code picker (Agent/Plan/Ask — Edit mode deprecated). ⚠ same repo-scaffold blocker as M-1.1/M-1.2 |
 ## Decisions log
 - 2026-07-19 — Player shell scaffolded as a lean player (condensed hero + functional course area); marketing-only preview sections (orbit canvas, lesson preview, metrics, AI-DLC arc) intentionally not carried into the player.
 - 2026-07-19 — Progress persistence: single localStorage key `tenx-progress` → `{theme, path, done:{modId:true}}`, try/catch-guarded.
@@ -17,6 +18,10 @@ Engineer path: 2/58 built · Leadership path: 0/22 · Player shell: scaffolded (
 - 2026-07-19 — Tool-fit guidance table added to BLUEPRINT.md (editorial defaults, e.g. Cursor for rapid UI work, Claude Code for long-horizon backend/agentic work, Copilot for GitHub-native team flow); every module that recommends a tool must cite it and re-verify via /refresh-module.
 - 2026-07-19 — TERM-01 recording policy set by example: real captures only, per CLAUDE.md. `claude --version` run verbatim; the Q&A is a real headless `claude -p` run against a minimal priorauth-api stand-in authored from REPO-SPECS.md (raw capture + method notes in recordings/TERM-01-m1.2-first-session.txt). Interactive-only mechanics (Shift+Tab, /clear, rewind menu) render as visually-distinct annotation cards, never as fake terminal text. Re-record against the real repo when it ships.
 - 2026-07-19 — Module validation now includes an automated jsdom runtime pass (boot player, open module, exercise visual + labs + quiz, reduced-motion and theme passes, zero-window-error assertion). Harness lives in the session scratchpad, not the repo — rebuild per session if wanted.
+
+- 2026-07-20 — Copilot vocabulary shifted under us (verified against code.visualstudio.com): "chat modes" are now **agents** picked from the **agents dropdown** (built-ins: Agent, Plan, Ask); **Edit mode is deprecated** (hidden by default since v1.110, removed from v1.126) — never teach it as current; custom chat modes renamed **custom agents** (`.agent.md`, was `.chatmode.md`); approval UX is scope-based (single use/session/workspace/always) with permission modes **Default Approvals / Bypass Approvals / Autopilot**; edit review labels are literally **Keep / Undo**. M-1.3 is built on this vocabulary; earlier-written copy must be swept (see Needs verification).
+- 2026-07-20 — Cursor's official docs now list **Agent / Plan / Ask** modes (cursor.com/docs/agent/modes) — supersedes the 2026-07-19 note that Ask wasn't in official docs. Also verified: Cursor model picker + Auto option; Max Mode is legacy, don't teach it.
+- 2026-07-20 — ANIM-13 approach: Copilot visuals are abstract behavior diagrams (lanes, gates, checkpoint markers) — VISUALS.md's no-fake-IDE-chrome rule applied; screenshot strips deferred until real IDE captures exist.
 
 ## Needs verification
 - M-1.1: lab success checks ("you should see ApprovalService / ConfidenceGauge") are authored from REPO-SPECS.md, not verified runs — priorauth-api and priorauth-web are not scaffolded yet. Re-run both labs and clear `needsVerification` once the repos exist.
@@ -33,6 +38,9 @@ Engineer path: 2/58 built · Leadership path: 0/22 · Player shell: scaffolded (
   - Claude Code (code.claude.com/docs): install methods (native installer + npm), permission modes incl. Shift+Tab cycle default → acceptEdits → plan, checkpoints (/rewind, double-Esc, restore code/conversation/both), --continue/--resume, /help + /clear, VS Code extension + JetBrains (beta) plugin. CLI behavior additionally confirmed live on v2.1.215.
   - Copilot (code.visualstudio.com): "Restore Checkpoint" label verbatim; restores files AND rolls conversation back; checkpoints on by default (chat.checkpoints.enabled); New Chat = own context window.
   - Cursor (cursor.com/docs): "Restore Checkpoint" label verbatim; restores FILES ONLY (no documented conversation rollback — module teaches this contrast); new tab Ctrl/Cmd+T = fresh context (side chats deliberately inherit — module says "new tab", not "new chat"). "Composer" naming confirmed stale — avoided in course copy.
+
+- M-1.3: lab success checks reference the not-yet-scaffolded priorauth-api (same blocker as M-1.1/M-1.2). Tool claims WERE all verified 2026-07-20: VS Code agents dropdown (Agent/Plan/Ask), Edit-mode deprecation, model picker (names kept generic — offerings vary by plan; Auto exists), custom agents `.agent.md`, approval scopes + Default Approvals/Bypass Approvals/Autopilot, Keep/Undo review; VS 2026 agent mode, @debug/@profiler/@test built-ins, Restore checkpoints (no stepwise undo/redo), Total changes list, solution-scoped Allow, coarser approval controls; Claude Code /model (live-confirmed picker + aliases); Cursor mode picker Agent/Plan/Ask + model picker/Auto/Ctrl+/. Exact VS Code approval BUTTON label is deliberately not hard-coded (current docs don't pin one) — module teaches scope choices instead.
+- **M-1.1 is now stale on two claims** (found during M-1.3 verification 2026-07-20): its crew beat teaches Copilot as "Ask, Edit, and Agent modes in VS Code" (Edit deprecated; picker is now the agents dropdown with Agent/Plan/Ask), and its 2026-07-19 note "Ask mode not in current official Cursor docs" is superseded (Agent/Plan/Ask now official). Run /refresh-module M-1.1 next session; do not silently edit.
 
 ## Recordings needed
 - TERM-01 (M-1.2): current capture is real but ran against a minimal stand-in (recordings/TERM-01-m1.2-first-session.txt has full method notes). Re-record against the real priorauth-api once scaffolded, then update the frames in the TERM-01 factory.
