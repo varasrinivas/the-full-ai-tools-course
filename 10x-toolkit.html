@@ -360,7 +360,7 @@ footer b{color:var(--gold);font-weight:500}
 const MODS = [
   {
     id:'M-1.1', path:'eng', track:'T-01', title:'Meet your crew', minutes:25,
-    lastVerified:'2026-07-21', needsVerification:true,
+    lastVerified:'2026-07-20',
     concept:{
       analogy:'Autocomplete is autopilot trim — it steadies a maneuver you are already flying. An agent is a crew member you brief from mission control: you state the intent, it flies a leg of the mission with real instruments — reading files, running tests, editing code — and reports back for your go / no-go.',
       body:
@@ -376,7 +376,7 @@ const MODS = [
       steps:[
         'Clone <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a>. In a terminal at the repo root, run <code>claude</code>. You should see the interactive session start.',
         'Ask: <em>“Give me a ten-line tour of this repo — what are the main packages and what does each own?”</em> You should see the controller / service / repository / model layout named.',
-        'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold cited.',
+        'Ask: <em>“Where does the auto-approve decision live, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the 0.85 threshold cited — and don&rsquo;t be surprised if the agent flags that the code&rsquo;s comparison and its own javadoc disagree at the boundary. Remember that observation: it is a planted bug you will hunt in T-05. The <em>business</em> rule is inclusive: <code>&gt;= 0.85</code> auto-approves.',
         'Clone <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a>, open a second terminal at its root, run <code>claude</code>, and ask: <em>“Which component displays the confidence score for a request?”</em> You should see <code>ConfidenceGauge</code>.',
         'End both sessions with <code>/exit</code>. Success: all three answers surfaced without you opening a single file by hand.'
       ]
@@ -420,7 +420,7 @@ const MODS = [
   },
   {
     id:'M-1.2', path:'eng', track:'T-01', title:'Claude Code CLI', minutes:30,
-    lastVerified:'2026-07-19', needsVerification:true,
+    lastVerified:'2026-07-20',
     concept:{
       analogy:'Permission modes are supervision levels for a new clinician on the PA review floor. Day one, the attending co-signs every order — that is default mode, asking first. Chart review during rounds is read-only — Plan Mode. Routine refills run on standing orders — accept edits. Full unsupervised authority exists too, but only in a sealed training ward, never on live patients — bypass. And checkpoints are the chart audit trail: any order rolls back to the last co-signed state.',
       body:
@@ -436,7 +436,7 @@ const MODS = [
       steps:[
         'Install Claude Code (native installer or <code>npm install -g @anthropic-ai/claude-code</code> — see code.claude.com/docs). Run <code>claude --version</code>. You should see a version number; this module was verified on 2.1.215.',
         'In your <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> clone, run <code>claude</code>. Type <code>/help</code> — you should see the slash-command list, including <code>/clear</code> and <code>/rewind</code>.',
-        'Ask: <em>“Which service decides auto-approval, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the inclusive <code>&gt;= 0.85</code> threshold.',
+        'Ask: <em>“Which service decides auto-approval, and what exactly is the rule?”</em> You should see <code>ApprovalService</code> and the 0.85 threshold — likely with a note that the code and its javadoc disagree at the boundary. That contradiction is a planted bug for T-05; the business rule is inclusive: <code>&gt;= 0.85</code>.',
         'Type <code>/clear</code>, then ask: <em>“What were we just discussing?”</em> It should not know — the context is genuinely fresh.',
         'Press <strong>Shift+Tab</strong> until the indicator shows <strong>plan</strong>. Ask it to map the approval flow end to end. You should get the analysis with zero edit prompts — read-only.',
         'Shift+Tab back to default. Ask for a one-line comment on <code>ApprovalService</code> and approve the edit. Now double-tap <strong>Esc</strong> (or <code>/rewind</code>) and restore the code. Run <code>git diff</code> — you should see a clean tree.',
@@ -481,7 +481,7 @@ const MODS = [
   },
   {
     id:'M-1.3', path:'eng', track:'T-01', title:'Copilot in VS Code & Visual Studio 2026', minutes:30,
-    lastVerified:'2026-07-20', needsVerification:true,
+    lastVerified:'2026-07-20',
     concept:{
       analogy:'Ask, Plan, and Agent are three counters at the payer&rsquo;s office. Ask is the information desk — it answers anything about the case file and touches nothing. Plan is the pre-service workup — a reviewer walks the file and writes the exact steps on paper, but files nothing. Agent is the case manager — takes the file across departments, stops at every sign-off gate for your signature, and stamps a restore point after each step. Pick the counter by cost-of-wrong, not by queue length.',
       body:
@@ -541,7 +541,7 @@ const MODS = [
   },
   {
     id:'M-1.4', path:'eng', track:'T-01', title:'Day zero: make it an AI repo', minutes:30,
-    lastVerified:'2026-07-21', needsVerification:true,
+    lastVerified:'2026-07-20',
     concept:{
       analogy:'A bare repo is a locum clinician&rsquo;s first shift with no protocol binder — highly skilled, but they will guess your forms, your payer quirks, and your threshold. Day zero is writing the binder. The generators are scribes who draft it by walking the floor: fast, and mostly right. But the scribe writes down what the floor <em>does</em>, not what it <em>should</em> do — and only you know the difference. You sign the binder.',
       body:
@@ -558,9 +558,9 @@ const MODS = [
         'Make a disposable copy: clone <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> into <code>priorauth-api-day0</code> (or use any non-AI repo you own). Keep your real clone untouched.',
         'Run <code>claude</code> in the copy, then <code>/init</code>. Approve the write when asked. You should see a <code>CLAUDE.md</code> appear at the repo root.',
         'Read it like a reviewer. It should have found the build/test commands and the controller/service/repository/model layout on its own.',
-        'Now find what it could <em>not</em> know: check what it says (or does not say) about the approval rule. The code cannot tell it the business intent — this is where drafts go wrong.',
+        'Now find what it could <em>not</em> know: check what it says (or does not say) about the approval rule. A sharp generator may even notice the code contradicts its own comments — but it cannot know which side is the business truth. Only you know that.',
         'Sign it: add the line <em>“A score &gt;= 0.85 auto-approves — the threshold is inclusive.”</em>',
-        '<code>/clear</code>, then ask: <em>“What happens to a request scoring exactly 0.85?”</em> You should see your signed rule cited — no files opened.',
+        '<code>/clear</code>, then ask: <em>“What happens to a request scoring exactly 0.85?”</em> You should see your signed rule cited as the authority — the agent may even point at the exact line of code that violates it.',
         'Delete the copy and confirm the real clone still has no <code>CLAUDE.md</code>. Success: a generated-then-signed constitution, and a bare real clone kept bare on purpose.'
       ]
     },
