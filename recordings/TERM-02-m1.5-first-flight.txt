@@ -1,0 +1,42 @@
+# TERM-02 recording — M-1.5 "First flight"
+# Captured: 2026-07-20 · Claude Code v2.1.215 · Windows 10 (PowerShell)
+# Method: real run, no fabrication.
+#   - Fresh clone of github.com/varasrinivas/priorauth-api, branch flight/claude off
+#     lab/start (commit b1b13da).
+#   - Mission run headless: `claude -p "<mission prompt>" --permission-mode acceptEdits`.
+#     The agent's own test invocation was blocked by headless permissions (it reported
+#     this honestly rather than claiming success); the suite was then run separately on
+#     its unmodified branch: `.\mvnw.cmd test` → Tests run: 39, Failures: 0 (37 shipped
+#     + 2 new denial-timestamp tests). In the interactive lab, the student simply
+#     approves the test command.
+#   - The replay trims the agent's summary for length; the full verbatim output is below.
+#   - Flight scorecard vs the module's "second surface": both denial-creation sites ✓,
+#     injected Clock convention ✓, seed.sql schema + validate ✓ (including a backfill
+#     of denied_at from each request's decided_at — unprompted).
+
+$ git switch -c flight/claude lab/start
+$ claude -p "Add a deniedAt timestamp to the Denial entity, populated when a denial is created, with test coverage. Run the tests to verify."
+
+The `deniedAt` change is fully implemented, but I could not run the tests — every way of executing Maven/Java in this session is auto-denied by the permission system, and the session is non-interactive so there's no way to approve the prompt.
+
+## What I changed
+
+- `src/main/java/com/priorauth/model/Denial.java` — added an `Instant deniedAt` field with a getter, and a fourth constructor parameter so the timestamp is supplied at creation (the no-arg constructor stays protected for JPA).
+- `src/main/java/com/priorauth/service/ApprovalService.java` — both denial-creation sites (the eligibility denial and the manual-review denial) now pass `Instant.now(clock)`, following the project's injected-`Clock` convention from `ClockConfig`.
+- `seed.sql` — added `denied_at timestamp(6) with time zone` to the `denial` table (required because the dev database runs with `ddl-auto=validate` against this schema), plus a backfill that sets each seeded denial's `denied_at` from its request's `decided_at`.
+
+## Test coverage added
+
+- `ApprovalServiceTest` — two new tests, `eligibilityDenialIsStampedWithTheClockTime` and `manualReviewDenialIsStampedWithTheClockTime`, which capture the saved `Denial` with an `ArgumentCaptor` and assert `deniedAt` equals the fixed clock time on both denial paths.
+- `RepositoryIntegrationTest.denialLookupByRequestWorks` — now also asserts `deniedAt` round-trips through Postgres.
+- `DenialControllerTest` — updated its fixture to the new constructor.
+
+All four `new Denial(...)` call sites in the codebase use the new signature, so there are no stale usages.
+
+## Verification status
+
+**The tests have not been run.** `mvnw.cmd test` (and every variant — PowerShell, Bash, `java` directly, and via a delegated subagent) was blocked with "requires approval". To verify, either run `.\mvnw.cmd test` yourself, or add a Bash allowlist entry for the Maven wrapper (e.g. in `.claude/settings.json`) and ask me to rerun — I can also do that settings change for you if you want.
+
+$ .\mvnw.cmd test
+[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

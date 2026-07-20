@@ -598,6 +598,65 @@ const MODS = [
       {q:'Why do the course&rsquo;s teaching repos stay bare until T-07?',
        options:['Instruction files slow the tools down','Legal review of the constitutions is pending','So the before/after of instruction files is measured, not folklore','They ship with AGENTS.md instead'], answer:2}
     ]
+  },
+  {
+    id:'M-1.5', path:'eng', track:'T-01', title:'First flight', minutes:45,
+    lastVerified:'2026-07-20',
+    concept:{
+      analogy:'A check ride is not about whether you can fly — it is the same circuit flown in three aircraft, and the value is the debrief afterward: what each cockpit did <em>for</em> you, what it did <em>to</em> you, and what you only notice when you compare logbooks. The landing is expected. The logbook is the deliverable.',
+      body:
+        '<p><strong>The mission.</strong> One production-shaped change, given to all three tools in exactly the same words: <em>&ldquo;Add a <code>deniedAt</code> timestamp to the Denial entity, populated when a denial is created, with test coverage.&rdquo;</em> About fifteen minutes per flight. The <code>Denial</code> entity ships without that field on purpose — this module is why. (Domain precision while you are in there: denials come from eligibility failures and manual review. A score below the inclusive <code>&gt;= 0.85</code> threshold is <em>not</em> a denial — it only routes to the queue.)</p>' +
+        '<p><strong>Why the same task three times.</strong> You are not crowning a winner. You are observing defaults: what each tool reads before it edits, what it asks before it acts, what it touches beyond the file you named. Identical prompts make the differences mean something.</p>' +
+        '<p><strong>This task has a second surface.</strong> A &ldquo;complete&rdquo; change here is bigger than the entity file — and the labs will not tell you how. Fly first. The debrief below reveals it, and the interesting question is never <em>whether the task passed</em>, but <em>which flights found the rest of it on their own</em>.</p>' +
+        '<p><strong>The debrief protocol.</strong> Four columns per flight, written down, with real numbers: minutes to green tests · files touched · questions the agent asked · surprises. This table is your personal baseline — M-11.1 measures your improvement against it, so honest numbers now pay off later.</p>' +
+        '<p><strong>Branch hygiene.</strong> One branch per tool off <code>lab/start</code>: <code>flight/claude</code>, <code>flight/copilot</code>, <code>flight/cursor</code>. Keep all three. The three-way <code>git diff</code> is the debrief evidence.</p>' +
+        '<p><strong>The debrief reveal</strong> (read after all three flights): the complete change has three more parts than the prompt named. <code>Denial</code> is created in <em>two</em> places in <code>ApprovalService</code> — an eligibility denial and a manual-review denial. The timestamp should come from the injected <code>Clock</code>, not a scattered <code>now()</code>. And the schema is owned by <code>seed.sql</code> with <code>ddl-auto=validate</code> — so an entity-only change passes the tests (they use create-drop) yet fails the running app at startup with a missing-column validation error. Which of your three flights found each part? That answer is worth more than the diff.</p>'
+    },
+    visual:{type:'term', componentId:'TERM-02'},
+    labA:{
+      title:'Flight one — Claude Code',
+      steps:[
+        'In your <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a> clone: <code>git switch -c flight/claude lab/start</code>. Start a timer.',
+        'Run <code>claude</code> in default permission mode and give the mission prompt verbatim: <em>&ldquo;Add a deniedAt timestamp to the Denial entity, populated when a denial is created, with test coverage. Run the tests to verify.&rdquo;</em>',
+        'Approve the edits and commands you agree with — and note every question it asks you. You should end with <code>./mvnw test</code> green.',
+        'Stop the timer. Fill your debrief row: minutes · files touched (<code>git diff --stat</code>) · questions asked · surprises. Commit the branch. Success: tests green and <code>deniedAt</code> populated when denials are created.'
+      ]
+    },
+    labB:{
+      title:'Flight two — Copilot',
+      steps:[
+        '<code>git switch -c flight/copilot lab/start</code>, open in VS Code, pick <strong>Agent</strong> in the agents dropdown. Timer on.',
+        'Same prompt, word for word. Review the changed files with <strong>Keep</strong>/<strong>Undo</strong> — per file, not all-or-nothing.',
+        'Run the tests (agent or terminal) until green. Note every confirmation it requested and what it read before editing.',
+        'Debrief row, commit the branch. Success: tests green, same definition as flight one.'
+      ]
+    },
+    labC:{
+      title:'Flight three — Cursor',
+      steps:[
+        '<code>git switch -c flight/cursor lab/start</code>, open in Cursor, Agent panel (<code>Ctrl/Cmd+I</code>). Timer on.',
+        'Same prompt, word for word. Accept what you agree with — <strong>Restore Checkpoint</strong> is your undo if a step goes sideways.',
+        'Tests green, debrief row, commit the branch.',
+        'Now the real work: <code>git diff flight/claude flight/copilot</code> (and each vs <code>flight/cursor</code>). Read the module&rsquo;s debrief reveal and score each flight: two creation sites? the Clock? the seed.sql schema? Success: a filled three-row table and an answer to &ldquo;which change would I actually ship?&rdquo;'
+      ]
+    },
+    checklist:[
+      'I flew all three tools with the identical prompt and a running timer.',
+      'Tests are green on three branches, all kept for the diff.',
+      'My debrief table has real numbers, not vibes.',
+      'I can name the second surface of this task — and which flight(s) found each part.',
+      'I know this table is my M-11.1 baseline.'
+    ],
+    quiz:[
+      {q:'What is the point of flying the same task in three tools?',
+       options:['Finding the fastest tool to standardize on','Observing each tool&rsquo;s defaults to build your own baseline','Proving agents produce identical code','Practice typing the same prompt'], answer:1},
+      {q:'Your branch&rsquo;s tests are green, but the running app would fail at startup. Why is that possible here?',
+       options:['Testcontainers is flaky','Tests build their own schema (create-drop) while the dev database is owned by seed.sql with ddl-auto=validate — an entity-only change leaves the schema behind','Spring caches the old entity','It is not possible — green tests mean the app runs'], answer:1},
+      {q:'Where should <code>deniedAt</code> get its value?',
+       options:['A database column default','The injected Clock at both denial-creation sites in ApprovalService','LocalDateTime.now() wherever convenient','The frontend sends it'], answer:1},
+      {q:'Claude touched five files, Copilot touched two. The right reaction?',
+       options:['Five files is over-engineering — prefer two','Two files is lazy — prefer five','Diff both, decide which change is actually complete, record it — file count alone means nothing','Re-run both until they agree'], answer:2}
+    ]
   }
 ];
 
@@ -928,6 +987,84 @@ VISUALS['ANIM-14'] = function(mount, opts){
     });
     later(() => mount.querySelector('[data-prompt]').classList.add('on'), 5100);
   }
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- TERM-02 · First Flight Replay (spec: VISUALS.md) ----------
+   Source: recordings/TERM-02-m1.5-first-flight.txt (real capture, v2.1.215,
+   2026-07-20, against the real repo). Reuses the .term01 styles. */
+VISUALS['TERM-02'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = [
+    {t:'cmd', text:'git switch -c flight/claude lab/start'},
+    {t:'cmd', text:'claude -p "Add a deniedAt timestamp to the Denial entity, populated when a denial is created, with test coverage. Run the tests to verify."'},
+    {t:'out', text:
+      '## What I changed\n\n' +
+      '- `src/main/java/com/priorauth/model/Denial.java` — added an `Instant deniedAt` field with a getter, and a fourth constructor parameter so the timestamp is supplied at creation (the no-arg constructor stays protected for JPA).\n' +
+      '- `src/main/java/com/priorauth/service/ApprovalService.java` — both denial-creation sites (the eligibility denial and the manual-review denial) now pass `Instant.now(clock)`, following the project\'s injected-`Clock` convention from `ClockConfig`.\n' +
+      '- `seed.sql` — added `denied_at timestamp(6) with time zone` to the `denial` table (required because the dev database runs with `ddl-auto=validate` against this schema), plus a backfill that sets each seeded denial\'s `denied_at` from its request\'s `decided_at`.'},
+    {t:'cmd', text:'.\\mvnw.cmd test'},
+    {t:'out', text:'[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0\n[INFO] BUILD SUCCESS'},
+    {t:'note', html:'<b>Debrief this flight like yours:</b> both denial-creation sites ✓ · injected <code>Clock</code> ✓ · <code>seed.sql</code> schema found unprompted ✓ (with a backfill from <code>decided_at</code>). One honest wrinkle kept in the full recording: run headless for this capture, the agent could not execute the test command itself — it said so plainly instead of claiming success. Your interactive flight will just ask you to approve <code>mvnw test</code>.'}
+  ];
+  mount.innerHTML =
+    '<div class="term01" aria-label="Recorded first-flight session replay">' +
+      '<div class="thbar"><span class="dot g"></span><span class="dot"></span><span class="dot"></span>' +
+        '<span>FLIGHT/CLAUDE · PRIORAUTH-API</span><span class="rec">RECORDED 2026-07-20 · v2.1.215</span></div>' +
+      '<div class="tscroll" data-scroll></div>' +
+      '<div class="tfoot">' +
+        '<span class="tnote-cap">What to notice: the prompt named one file — the agent found <b>six</b>, including the schema. Trimmed; full capture in /recordings.</span>' +
+        '<div class="tctl">' +
+          '<button data-speed="1" aria-pressed="true">×1</button>' +
+          '<button data-speed="2" aria-pressed="false">×2</button>' +
+          '<button data-skip>SKIP</button>' +
+          '<button data-replay>REPLAY ▸</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const scroll = mount.querySelector('[data-scroll]');
+  let speed = 1, timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms / speed)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frameHtml(f, partialCmd){
+    if(f.t === 'cmd') return '<div class="tline"><span class="tp">$</span> ' + esc(partialCmd != null ? partialCmd : f.text) + (partialCmd != null ? '<span class="tcaret"></span>' : '') + '</div>';
+    if(f.t === 'out') return '<div class="tout">' + esc(f.text) + '</div>';
+    return '<div class="tnote">' + f.html + '</div>';
+  }
+  function renderUpTo(n, partialCmd){
+    scroll.innerHTML = FRAMES.slice(0, n).map(f => frameHtml(f)).join('') +
+      (partialCmd != null ? frameHtml(FRAMES[n], partialCmd) : '');
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+  function renderAll(){ stop(); renderUpTo(FRAMES.length); }
+  function play(){
+    stop();
+    if(reduce){ renderAll(); return; }
+    let i = 0;
+    (function next(){
+      if(i >= FRAMES.length) return;
+      const f = FRAMES[i];
+      if(f.t === 'cmd'){
+        let ch = 0;
+        (function type(){
+          renderUpTo(i, f.text.slice(0, ch));
+          if(ch < f.text.length){ ch += 2; later(type, 40); }
+          else { i++; renderUpTo(i); later(next, 500); }
+        })();
+      } else {
+        i++; renderUpTo(i);
+        later(next, f.t === 'out' ? 1600 : 600);
+      }
+    })();
+  }
+  mount.querySelectorAll('[data-speed]').forEach(b => {
+    b.addEventListener('click', () => {
+      speed = +b.dataset.speed;
+      mount.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  mount.querySelector('[data-skip]').addEventListener('click', renderAll);
   mount.querySelector('[data-replay]').addEventListener('click', play);
   play();
 };

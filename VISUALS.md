@@ -29,6 +29,7 @@ Typing-animation component replaying trimmed real Claude Code sessions (recorded
 
 | ID | Name | Source & behavior | Modules |
 |----|------|-------------------|---------|
+| TERM-02 | First Flight Replay | Real recorded headless run of M-1.5's actual mission against the real repo (source: recordings/TERM-02-m1.5-first-flight.txt): mission prompt → trimmed real agent summary (files it chose) → real `mvnw test` green tail → annotation card with the debrief questions. Reuses the .term01 styles; same honesty rules (annotations never fake output). | M-1.5 |
 | TERM-01 | First Session Replay | Real capture (v2.1.215, 2026-07-19) in `recordings/TERM-01-m1.2-first-session.txt`: `claude --version` + headless `-p` Q&A citing ApprovalService and the inclusive >= 0.85 rule. Interactive-only mechanics (Shift+Tab, /clear, rewind menu) render as annotation cards, never as fake terminal output. Re-record when the real priorauth-api ships. | M-1.2 |
 
 ## Shared conventions
