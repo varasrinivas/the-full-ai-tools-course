@@ -9,33 +9,36 @@ Domain constants (appear everywhere, including CLAUDE.md):
 
 ---
 
-## Repo 1: `priorauth-api` — Spring Boot 3.x, Java 21, Maven
+## Repo 1: `priorauth-api` — Spring Boot 4.1, Java 21, Maven (BUILT 2026-07-20)
 
-Structure:
+Structure (as built):
 ```
 src/main/java/com/priorauth/
   controller/  PriorAuthController, DenialController
-  service/     ApprovalService, EligibilityService, ClaimHistoryService, NotificationService
-  repository/  PriorAuthRequestRepo, ClaimRepo, DenialRepo (Spring Data JPA)
-  model/       PriorAuthRequest, Claim, Denial, Payer
-  config/      SecurityConfig (basic), OpenAPI
-src/test/java/ ... (JUnit 5, Testcontainers Postgres, ~34 passing tests)
-docker-compose.yml (Postgres 16), seed.sql (500 realistic PA requests)
+  service/     ApprovalService, EligibilityService, ClaimHistoryService,
+               NotificationService (+ NotificationGateway/LoggingNotificationGateway)
+  repository/  PriorAuthRequestRepo, ClaimRepo, DenialRepo, PayerRepo (Spring Data JPA)
+  model/       PriorAuthRequest, Claim, Denial, Payer, RequestStatus
+  config/      SecurityConfig (permissive teaching posture), ClockConfig
+src/test/java/ ... (JUnit 5, Testcontainers Postgres; 37 passing on lab/start, 41 on the green root commit)
+docker-compose.yml (postgres:16-bookworm — keeps legacy tz aliases), seed.sql (500 PA requests, 435 claims, 111 denials, 13 rows scoring exactly 0.85)
 ```
+Boot 4.1 supersedes the original "3.x" line (Vara's scaffold decision, 2026-07-20). No OpenAPI config in v1 — add later if a module needs it. Tests pin `user.timezone=UTC` via surefire.
 
-### Planted defects
+### Planted defects (each plant is a tagged commit: `plant/BUG-API-xx` — diff the tag)
 | ID | Location | Defect | Used in |
 |----|----------|--------|---------|
-| BUG-API-01 | ApprovalService:47 | `score > THRESHOLD` should be `>=` — 0.85-exactly requests wrongly routed to manual review | M-5.2, M-5.3, SIM-04, preview terminal |
-| BUG-API-02 | EligibilityServiceTest | Flaky: asserts on `LocalDate.now()` window; fails near month boundaries | M-5.4 |
-| BUG-API-03 | ClaimHistoryService | N+1: loads Claims per request in a loop instead of a join fetch; 500-row seed makes it measurably slow | M-3.5, M-5.6 |
-| BUG-API-04 | NotificationService | Zero test coverage + a swallowed exception (`catch (Exception e) {}`) hiding failed denial notifications | M-6.1, M-6.2 |
-| BUG-API-05 | DenialController | Returns 200 with empty body instead of 404 for unknown denial id | M-6.5 (test-first fixes it) |
+| BUG-API-01 | ApprovalService:99 | `score > AUTO_APPROVE_THRESHOLD` should be `>=` — 0.85-exactly requests (13 in seed) wrongly routed to manual review | M-5.2, M-5.3, SIM-04, preview terminal |
+| BUG-API-02 | EligibilityServiceTest `eligibilityDoesNotDependOnWhenInTheMonthTheCheckRuns` | Flaky: asserts `LocalDate.now().plusDays(3)` is the same month — fails the last ~3 days of every month | M-5.4 |
+| BUG-API-03 | ClaimHistoryService.historyFor | N+1: loads claims per patient in a loop instead of the batch `findByPatientRefIn` query (which still exists, unused — and the class javadoc still promises ONE query); visible on /api/requests/review-queue/context with the 500-row seed | M-3.5, M-5.6 |
+| BUG-API-04 | NotificationService | Swallowed exception (`catch (Exception e) { /* best effort */ }`) hiding failed denial notifications + its tests deleted in the same commit (zero coverage); class javadoc still says "must never fail silently" | M-6.1, M-6.2 |
+| BUG-API-05 | DenialController.get | Returns 200 with empty body instead of 404 for unknown denial id; the 404 test was deleted in the plant commit | M-6.5 (test-first fixes it) |
 
 ### Deliberate design choices
-- One overly long method (`ApprovalService.process`, ~80 lines) for refactoring labs.
-- Inconsistent naming in DenialRepo (teachable via conventions in CLAUDE.md).
-- No CLAUDE.md / AGENTS.md at start — students create them in T-07 and feel the before/after.
+- One long narrated method (`ApprovalService.process` — eligibility → history context → threshold, with a "resist tidying it" note) for refactoring labs.
+- Inconsistent naming in DenialRepo (`findByReasonCode` vs `fetchForRequest`) — teachable via conventions in CLAUDE.md.
+- No CLAUDE.md / AGENTS.md at start — students create them in T-07 and feel the before/after (M-1.4 uses a disposable copy).
+- `main` frozen at the planted HEAD; labs branch from `lab/start` (same commit).
 
 ---
 
