@@ -36,13 +36,14 @@ Any module that recommends a tool cites this table; the claim gets re-verified v
 
 ---
 
-# ENGINEER PATH — 12 tracks · 58 modules
+# ENGINEER PATH — 12 tracks · 59 modules
 
-## T-01 Foundations & Setup (4)
+## T-01 Foundations & Setup (5)
 - M-1.1 Meet your crew — what agentic coding actually is; tour of both repos; the PA Pipeline map (SIM-01)
 - M-1.2 Claude Code CLI — install, sessions, /clear, /help, permission modes, checkpoints, IDE extension
 - M-1.3 Copilot in VS Code & Visual Studio 2026 — chat vs agent mode, agent picker, model selection, tool confirmations, multi-file diff & checkpoints
-- M-1.4 First flight — same 15-minute task in both tools ("add a `deniedAt` timestamp to Denial entity"), side-by-side debrief
+- M-1.4 Day zero: make it an AI repo — start from a bare non-AI repo and AI-enable it three ways (claude /init → CLAUDE.md; Copilot instructions file; Cursor rules); done on a disposable copy — the teaching repos deliberately stay bare until T-07 so the before/after lands
+- M-1.5 First flight — same 15-minute task in both tools ("add a `deniedAt` timestamp to Denial entity"), side-by-side debrief
 
 ## T-02 Ways of Working: Vibe vs Spec (5)
 - M-2.1 Vibe coding: when it works — 10-minute denial-reasons chart widget in priorauth-web, no spec

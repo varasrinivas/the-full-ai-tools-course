@@ -1,6 +1,6 @@
 # PROGRESS.md — 10x Toolkit build log
 ## Status board
-Engineer path: 3/58 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
+Engineer path: 3/59 built · Leadership path: 0/22 · Player shell: scaffolded (2026-07-19)
 | ID | Status | lastVerified | Notes |
 |----|--------|--------------|-------|
 | M-1.1 | ⚠ validated + Cursor retrofit 2026-07-19 — labs unrunnable until repos exist | 2026-07-19 | All checks pass; now TRI-PATH (labC added). ⚠ only because lab success-checks await priorauth-api/web scaffold; then clear needsVerification and flip to ✅ |
@@ -22,6 +22,8 @@ Engineer path: 3/58 built · Leadership path: 0/22 · Player shell: scaffolded (
 - 2026-07-20 — Copilot vocabulary shifted under us (verified against code.visualstudio.com): "chat modes" are now **agents** picked from the **agents dropdown** (built-ins: Agent, Plan, Ask); **Edit mode is deprecated** (hidden by default since v1.110, removed from v1.126) — never teach it as current; custom chat modes renamed **custom agents** (`.agent.md`, was `.chatmode.md`); approval UX is scope-based (single use/session/workspace/always) with permission modes **Default Approvals / Bypass Approvals / Autopilot**; edit review labels are literally **Keep / Undo**. M-1.3 is built on this vocabulary; earlier-written copy must be swept (see Needs verification).
 - 2026-07-20 — Cursor's official docs now list **Agent / Plan / Ask** modes (cursor.com/docs/agent/modes) — supersedes the 2026-07-19 note that Ask wasn't in official docs. Also verified: Cursor model picker + Auto option; Max Mode is legacy, don't teach it.
 - 2026-07-20 — ANIM-13 approach: Copilot visuals are abstract behavior diagrams (lanes, gates, checkpoint markers) — VISUALS.md's no-fake-IDE-chrome rule applied; screenshot strips deferred until real IDE captures exist.
+
+- 2026-07-20 — Prelude module added at Vara's request: M-1.4 "Day zero: make it an AI repo" (bare non-AI repo → claude /init CLAUDE.md, Copilot instructions file, Cursor rules). Placement after tool setup (M-1.2/M-1.3) so labs run immediately; old First flight renumbered M-1.5. Counts now 59 eng / 22 lead. Labs run on a DISPOSABLE copy — the teaching repos stay bare until T-07 by design (REPO-SPECS), so the prelude teaches mechanics and T-07 keeps the before/after payoff. Plan approved 2026-07-20 (analogy: locum clinician + protocol binder; visual: new ANIM-14 "One Repo, Three Constitutions"; labs on disposable clone with own-repo substitute allowed); build next session via /build-module M-1.4.
 
 ## Needs verification
 - M-1.1: lab success checks ("you should see ApprovalService / ConfidenceGauge") are authored from REPO-SPECS.md, not verified runs — priorauth-api and priorauth-web are not scaffolded yet. Re-run both labs and clear `needsVerification` once the repos exist.
