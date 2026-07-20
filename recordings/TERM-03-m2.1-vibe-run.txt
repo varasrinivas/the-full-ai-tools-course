@@ -1,0 +1,39 @@
+# TERM-03 recording — M-2.1 "Vibe coding: when it works"
+# Captured: 2026-07-20 · Claude Code v2.1.215 · Windows 10 (PowerShell)
+# Method: real run, no fabrication.
+#   - Fresh clone of github.com/varasrinivas/priorauth-web, branch vibe/chart-claude
+#     off lab/start (commit 93f67f8).
+#   - Mission run headless, verbatim, one sentence, zero clarifications answered:
+#     `claude -p "Add a widget to the dashboard showing denials by reason as a chart.
+#     Make it look good." --permission-mode acceptEdits`
+#   - Elapsed: 4.1 minutes wall clock. Agent's own test invocation was blocked by
+#     headless permissions (reported honestly below); suite then run separately on its
+#     unmodified working tree: npm run build green, `npm test` → 21 passed (20 shipped
+#     + 1 the agent added). In the interactive lab the student just approves commands.
+#   - Vibe scorecard: chose EXTEND over new (rewrote the scaffold SVG chart as an
+#     HTML/CSS bar list); preserved aria-label + data-reason hooks; kept a
+#     prefers-reduced-motion guard; updated the test its markup change broke. Careful
+#     work — and still: sorting tiebreaks, truncation, percentages were all ITS
+#     choices. No spec existed. That is the vibe contract.
+#   - The replay trims the summary; full verbatim output below.
+
+$ git switch -c vibe/chart-claude lab/start
+$ claude -p "Add a widget to the dashboard showing denials by reason as a chart. Make it look good."
+
+The redesign is complete. A note on verification: every attempt to run the test suite (`npm test`, `npx vitest`, direct `node` invocation, lint) was blocked by the permission system, and this session has no one to approve commands — so I could not execute the tests. I instead hand-verified each test against the new markup; please run `npm test` to confirm.
+
+## What changed
+
+The denials-by-reason widget existed as a bare scaffold (flat red SVG bars, cramped mono labels, no context). I rebuilt it into a proper chart, keeping the no-chart-library approach:
+
+- **`src/components/DenialReasonsChart.tsx`** — rewritten as an HTML/CSS bar list (handles text truncation and hover far better than SVG). Each row shows the reason code as a small mono chip, the human-readable reason text, and a right-aligned count with its share of total (e.g. `9 75%`), above a rounded bar on a quiet track. Bars stay single-hue (one measure = one color, per dataviz practice), sorted descending with an alphabetical tiebreak, with a `title` tooltip per row and a footnote totaling the denials. The `Denials by reason code` aria-label and `data-reason` attributes are preserved.
+- **`src/pages/Dashboard.tsx`** — the aggregation now keeps a representative `reasonText` per reason code (the API returned it but the scaffold discarded it), so the chart can show readable labels instead of just codes.
+- **`src/index.css`** — new chart styles: gradient bars (`#d0705a → var(--bad)`) on faint tracks, hover brightening, a scale-in animation guarded by `prefers-reduced-motion`, a dashed-border empty state, and a card treatment (panel background, border, radius) for the dashboard sidebar so the widget sits in a proper panel.
+- **`src/test/DenialReasonsChart.test.tsx`** — the "widest first" test now queries `[data-reason]` divs and compares percentage widths instead of SVG `rect` attributes, plus a new test covering reason text, share percentages, and the total footnote. The Dashboard test needed no changes.
+
+Nothing is committed — the working tree has the changes ready for you to review and test.
+
+$ npm run build
+✓ built in 663ms
+$ npm test
+Tests  21 passed (21)

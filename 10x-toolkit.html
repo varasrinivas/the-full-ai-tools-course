@@ -657,6 +657,62 @@ const MODS = [
       {q:'Claude touched five files, Copilot touched two. The right reaction?',
        options:['Five files is over-engineering — prefer two','Two files is lazy — prefer five','Diff both, decide which change is actually complete, record it — file count alone means nothing','Re-run both until they agree'], answer:2}
     ]
+  },
+  {
+    id:'M-2.1', path:'eng', track:'T-02', title:'Vibe coding: when it works', minutes:35,
+    lastVerified:'2026-07-20',
+    concept:{
+      analogy:'The whiteboard sketch in a utilization-review meeting. You draw the queue chart in marker in thirty seconds; nobody audits the ink; its whole job is to be seen, spark a decision, and get erased. Vibe code is marker ink. The sin is never the sketching — it is laminating the whiteboard and calling it the dashboard.',
+      body:
+        '<p><strong>What vibe coding actually is.</strong> Prompt, accept, look, re-prompt. No spec, no deep review — the output is judged by eye, in the browser, right now. Named honestly and without sneering: this is a real mode of work, and today you do it on purpose.</p>' +
+        '<p><strong>When it legitimately wins.</strong> Prototypes, spikes, one-off visuals, feeling out a codebase. The pattern underneath: cost-of-wrong near zero, lifespan measured in hours. (M-2.4 turns that instinct into a rubric; a denial-reasons widget for tomorrow&rsquo;s demo qualifies — the <code>&gt;= 0.85</code> inclusive threshold rule never does.)</p>' +
+        '<p><strong>The ten-minute mission.</strong> One sentence, verbatim, in each tool: <em>&ldquo;Add a widget to the dashboard showing denials by reason as a chart. Make it look good.&rdquo;</em> Hard timebox. If the agent asks a clarifying question, your only allowed answer is <em>&ldquo;your call.&rdquo;</em> That refusal is what makes it vibe. Extend-the-existing-chart or build-new are both authentic outcomes — note which yours chose.</p>' +
+        '<p><strong>&ldquo;Looks right&rdquo; is the contract.</strong> In the recorded run, the agent worked <em>carefully</em> — kept the accessibility hooks, guarded reduced motion, even fixed the test its markup change broke. And still: the sort order, the truncation, the percentages were all its own choices, because no spec existed to choose them. You verified presence, by eye. Nothing else. That is fine — as long as the code dies young. M-2.2 adds auth and error handling to this exact widget, and you watch the thrash live (SIM-02).</p>' +
+        '<p><strong>Keep the receipts.</strong> Commit every vibe branch. M-2.2&rsquo;s rework counter starts from yours, and your M-11.1 baseline wants the timestamps. Throwaway code, kept evidence.</p>'
+    },
+    visual:{type:'term', componentId:'TERM-03'},
+    labA:{
+      title:'Ten-minute vibe — Claude Code',
+      steps:[
+        'Prep once for all three flights: in <a href="https://github.com/varasrinivas/priorauth-api" target="_blank" rel="noopener"><code>priorauth-api</code></a>, <code>docker compose up -d</code> and <code>./mvnw spring-boot:run</code>. In your <a href="https://github.com/varasrinivas/priorauth-web" target="_blank" rel="noopener"><code>priorauth-web</code></a> clone: <code>npm install</code>, then <code>git switch -c vibe/chart-claude lab/start</code> and <code>npm run dev</code>.',
+        'Ten-minute timer on. Run <code>claude</code> and give the mission sentence verbatim — and if it asks anything, answer only <em>&ldquo;your call.&rdquo;</em>',
+        'Watch the dashboard at <code>localhost:5173</code>. Accept when it looks right. You should see a denial-reasons chart with real seeded codes (<code>CPT-002</code>, <code>REV-001</code>) before the timer sounds.',
+        'Commit the branch. Log one line: extend or new · minutes · what you did <em>not</em> verify. Success: visible widget inside the timebox, receipts committed.'
+      ]
+    },
+    labB:{
+      title:'Ten-minute vibe — Copilot',
+      steps:[
+        '<code>git switch -c vibe/chart-copilot lab/start</code>, VS Code, <strong>Agent</strong> in the agents dropdown. Timer on.',
+        'Same sentence, verbatim. Only answer: <em>&ldquo;your call.&rdquo;</em> Keep/Undo by eye — this module, the eye is the whole review.',
+        'Dashboard check at <code>localhost:5173</code>, commit, one-line log. Success: same definition as flight one.'
+      ]
+    },
+    labC:{
+      title:'Ten-minute vibe — Cursor',
+      steps:[
+        '<code>git switch -c vibe/chart-cursor lab/start</code>, Cursor Agent panel (<code>Ctrl/Cmd+I</code>). Timer on.',
+        'Same sentence, verbatim; <em>&ldquo;your call&rdquo;</em> to any question. Accept by eye.',
+        'Dashboard check, commit, one-line log. Then compare the three widgets in the browser side by side: three unspecced charts, three different sets of silent decisions. List three decisions the tools made that no human ever requested — that list is M-2.2&rsquo;s ammunition. Success: three committed vibe branches and your three-decision list.'
+      ]
+    },
+    checklist:[
+      'I shipped a visible denial-reasons widget inside ten minutes in all three tools.',
+      'I answered zero clarifying questions with anything but &ldquo;your call.&rdquo;',
+      'I can name what &ldquo;accepted by eye&rdquo; left unverified — and three decisions the agents made unasked.',
+      'All three vibe branches are committed. The receipts survive the sketch.',
+      'I know exactly which module detonates this widget.'
+    ],
+    quiz:[
+      {q:'Which task is the legitimate vibe candidate?',
+       options:['Changing the auto-approve threshold rule','A throwaway payer-mix chart for tomorrow&rsquo;s demo','The provider auth flow','Migrating the seed data schema'], answer:1},
+      {q:'You accepted the widget because it looked right. What did you actually verify?',
+       options:['Its boundary behavior and error handling','That it renders and looks right — presence by eye, no properties','The test suite covers it','The agent&rsquo;s choices matched the spec'], answer:1},
+      {q:'Demo is tomorrow morning; the vibe chart works; there are no tests. Right move?',
+       options:['Merge to main tonight — it works','Demo from the vibe branch and never merge it un-hardened','Stay up writing tests for throwaway code','Cancel the demo'], answer:1},
+      {q:'Why commit a branch you expect to throw away?',
+       options:['Git hygiene is a habit','In case the demo goes well','Receipts: M-2.2 measures rework against it and your baseline wants the timestamps','So CI runs on it'], answer:2}
+    ]
   }
 ];
 
@@ -1015,6 +1071,84 @@ VISUALS['TERM-02'] = function(mount, opts){
       '<div class="tscroll" data-scroll></div>' +
       '<div class="tfoot">' +
         '<span class="tnote-cap">What to notice: the prompt named one file — the agent found <b>six</b>, including the schema. Trimmed; full capture in /recordings.</span>' +
+        '<div class="tctl">' +
+          '<button data-speed="1" aria-pressed="true">×1</button>' +
+          '<button data-speed="2" aria-pressed="false">×2</button>' +
+          '<button data-skip>SKIP</button>' +
+          '<button data-replay>REPLAY ▸</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const scroll = mount.querySelector('[data-scroll]');
+  let speed = 1, timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms / speed)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frameHtml(f, partialCmd){
+    if(f.t === 'cmd') return '<div class="tline"><span class="tp">$</span> ' + esc(partialCmd != null ? partialCmd : f.text) + (partialCmd != null ? '<span class="tcaret"></span>' : '') + '</div>';
+    if(f.t === 'out') return '<div class="tout">' + esc(f.text) + '</div>';
+    return '<div class="tnote">' + f.html + '</div>';
+  }
+  function renderUpTo(n, partialCmd){
+    scroll.innerHTML = FRAMES.slice(0, n).map(f => frameHtml(f)).join('') +
+      (partialCmd != null ? frameHtml(FRAMES[n], partialCmd) : '');
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+  function renderAll(){ stop(); renderUpTo(FRAMES.length); }
+  function play(){
+    stop();
+    if(reduce){ renderAll(); return; }
+    let i = 0;
+    (function next(){
+      if(i >= FRAMES.length) return;
+      const f = FRAMES[i];
+      if(f.t === 'cmd'){
+        let ch = 0;
+        (function type(){
+          renderUpTo(i, f.text.slice(0, ch));
+          if(ch < f.text.length){ ch += 2; later(type, 40); }
+          else { i++; renderUpTo(i); later(next, 500); }
+        })();
+      } else {
+        i++; renderUpTo(i);
+        later(next, f.t === 'out' ? 1600 : 600);
+      }
+    })();
+  }
+  mount.querySelectorAll('[data-speed]').forEach(b => {
+    b.addEventListener('click', () => {
+      speed = +b.dataset.speed;
+      mount.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  mount.querySelector('[data-skip]').addEventListener('click', renderAll);
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- TERM-03 · Vibe Run Replay (spec: VISUALS.md) ----------
+   Source: recordings/TERM-03-m2.1-vibe-run.txt (real capture, v2.1.215,
+   2026-07-20, against the real priorauth-web). Reuses the .term01 styles. */
+VISUALS['TERM-03'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = [
+    {t:'cmd', text:'git switch -c vibe/chart-claude lab/start'},
+    {t:'cmd', text:'claude -p "Add a widget to the dashboard showing denials by reason as a chart. Make it look good."'},
+    {t:'out', text:
+      '## What changed\n\n' +
+      '- `src/components/DenialReasonsChart.tsx` — rewritten as an HTML/CSS bar list. Each row shows the reason code as a small mono chip, the human-readable reason text, and a right-aligned count with its share of total. Bars stay single-hue, sorted descending with an alphabetical tiebreak.\n' +
+      '- `src/pages/Dashboard.tsx` — the aggregation now keeps a representative `reasonText` per reason code (the API returned it but the scaffold discarded it).\n' +
+      '- `src/index.css` — gradient bars on faint tracks, hover brightening, a scale-in animation guarded by `prefers-reduced-motion`, a card treatment for the sidebar.\n' +
+      '- `src/test/DenialReasonsChart.test.tsx` — the "widest first" test updated to the new markup, plus a new test for reason text and share percentages.'},
+    {t:'out', text:'elapsed: 4.1 min\n$ npm run build\n✓ built in 663ms\n$ npm test\nTests  21 passed (21)'},
+    {t:'note', html:'<b>What did YOU verify here?</b> Presence — by eye. The agent worked carefully (kept the aria hooks, guarded reduced motion, fixed the test it broke) — and still chose the sort order, the truncation, the percentages itself, because <em>no spec existed to choose them</em>. That contract is fine for marker ink. M-2.2 asks this widget to live — watch what happens.'}
+  ];
+  mount.innerHTML =
+    '<div class="term01" aria-label="Recorded vibe-coding session replay">' +
+      '<div class="thbar"><span class="dot g"></span><span class="dot"></span><span class="dot"></span>' +
+        '<span>VIBE/CHART-CLAUDE · PRIORAUTH-WEB</span><span class="rec">RECORDED 2026-07-20 · 4.1 MIN</span></div>' +
+      '<div class="tscroll" data-scroll></div>' +
+      '<div class="tfoot">' +
+        '<span class="tnote-cap">What to notice: one sentence, no spec, 4.1 minutes to a working widget. Trimmed; full capture in /recordings.</span>' +
         '<div class="tctl">' +
           '<button data-speed="1" aria-pressed="true">×1</button>' +
           '<button data-speed="2" aria-pressed="false">×2</button>' +

@@ -29,6 +29,7 @@ Typing-animation component replaying trimmed real Claude Code sessions (recorded
 
 | ID | Name | Source & behavior | Modules |
 |----|------|-------------------|---------|
+| TERM-03 | Vibe Run Replay | Real recorded vibe mission against the real priorauth-web (source: recordings/TERM-03-m2.1-vibe-run.txt): one-sentence prompt → trimmed real output (extend-vs-new decision, files) → real elapsed/build/test tail (4.1 min, 21/21) → annotation on the "accepted by eye" contract. Reuses .term01 styles. | M-2.1 |
 | TERM-02 | First Flight Replay | Real recorded headless run of M-1.5's actual mission against the real repo (source: recordings/TERM-02-m1.5-first-flight.txt): mission prompt → trimmed real agent summary (files it chose) → real `mvnw test` green tail → annotation card with the debrief questions. Reuses the .term01 styles; same honesty rules (annotations never fake output). | M-1.5 |
 | TERM-01 | First Session Replay | Real capture (v2.1.215, 2026-07-19) in `recordings/TERM-01-m1.2-first-session.txt`: `claude --version` + headless `-p` Q&A citing ApprovalService and the inclusive >= 0.85 rule. Interactive-only mechanics (Shift+Tab, /clear, rewind menu) render as annotation cards, never as fake terminal output. Re-record when the real priorauth-api ships. | M-1.2 |
 
