@@ -1,5 +1,6 @@
 {
-  "Bucket": "learning.varasrinivas.com",
+  "Bucket": "learnings.varasrinivas.com",
+  "Prefix": "the-full-ai-course",
   "AwsProfile": "",
   "DistributionId": ""
 }
