@@ -1,0 +1,102 @@
+M-2.3 SPEC PLAN RUN — method notes + raw capture
+=================================================
+Recorded: 2026-07-21 · Claude Code v2.1.216 (headless)
+Repo: fresh clone of github.com/varasrinivas/priorauth-api @ lab/start (b1b13da)
+Spec: SPEC-threshold.md written into the clone root first (text is verbatim in
+module M-2.3, labA step 1). BUG-API-01 (`>` at ApprovalService.java:99) is
+planted at this HEAD — the run was NOT told about it.
+
+Command (verbatim):
+  claude -p "Read SPEC-threshold.md. Produce an implementation plan for this
+  spec: files to change, the exact decision-rule change, migration and seed
+  impact, and the full test list. Flag anything in the current code that
+  conflicts with the spec. Do not write any code." --permission-mode plan
+
+Elapsed: 268s (4.5 min) · exit 0
+Post-run `git status --porcelain`: only `?? SPEC-threshold.md` (the file we
+wrote) — ZERO agent edits. Plan-mode read-only claim proven.
+
+Honest wrinkles (kept, not trimmed):
+- Headless plan mode has no interactive approval gate: the agent noted
+  ExitPlanMode wasn't available and printed the plan instead, ALSO writing the
+  full plan to ~/.claude/plans/read-spec-threshold-md-produce-an-dazzling-pnueli.md
+  (12 KB). Interactive Plan Mode ends at an approve/steer prompt; headless ends
+  at a document. TERM-04 annotates this rather than faking a prompt.
+- The plan treats the `>`→`>=` fix as IN scope because spec AC3 forces it
+  ("Spec AC3 forces this fix") — the lab's gate move (stop, don't implement)
+  is what protects the plant for T-05, not the plan itself.
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+`ExitPlanMode` isn't available in this session's toolset (I searched the deferred-tool registry), so I'll close out by presenting the plan directly. The full plan is written to `C:\Users\vara\.claude\plans\read-spec-threshold-md-produce-an-dazzling-pnueli.md`. Here's the summary:
+
+## Implementation plan: per-payer auto-approve threshold override
+
+### The headline conflict you should know about
+The current decision rule at `src/main/java/com/priorauth/service/ApprovalService.java:99` is `if (score > AUTO_APPROVE_THRESHOLD)` — **strict**, not inclusive. That contradicts the class's own javadoc ("the threshold is INCLUSIVE"), the approval log message (which prints `score {} >= {}`), the comment on `PriorAuthRequest.confidenceScore:34`, and the seed data (rows at exactly 0.85 are `AUTO_APPROVED`, e.g. `seed.sql:45` and `seed.sql:113`). Today a request scoring exactly 0.85 wrongly routes to MANUAL_REVIEW. Spec AC3 forces this fix, and no existing test pins the boundary — which is why the bug survives.
+
+### Exact decision-rule change (ApprovalService, Stage 3)
+- `score > AUTO_APPROVE_THRESHOLD` becomes `score >= effectiveThreshold(request.getPayer())`
+- New private helper: payer's `autoApproveThreshold` (converted to double) when non-null, else the global `AUTO_APPROVE_THRESHOLD = 0.85` (which stays unchanged — out of scope). Two semantic changes in one line: inclusive boundary, and per-payer resolution. Log messages get the effective threshold.
+
+### Files to change
+- `model/Payer.java` — add nullable `BigDecimal autoApproveThreshold` (`@Column(precision=3, scale=2)`, `@DecimalMin("0.50") @DecimalMax("0.99")`), getter, and a new 3-arg constructor overload (keeping the existing 2-arg one used by tests).
+- `service/ApprovalService.java` — rule change above + javadoc update.
+- `service/EligibilityService.java` — add the new seed payer to the hardcoded `COVERED` map (see below).
+- `seed.sql` — schema + data (see below).
+- `model/PriorAuthRequest.java:34` and `README.md` — comment/doc touch-ups.
+- Tests: `ApprovalServiceTest`, `RepositoryIntegrationTest`.
+- **No controller changes** — there's no payer write endpoint, and `PriorAuthControllerTest` mocks the approval service.
+
+### Migration and seed impact
+There is **no migration framework** (no Flyway/Liquibase in `pom.xml`). The dev schema is owned by `seed.sql` via docker-entrypoint-initdb.d with `ddl-auto=validate`; tests generate schema from entities (`create-drop`). So the "migration" is:
+- Add `auto_approve_threshold numeric(3,2) check (auto_approve_threshold between 0.50 and 0.99)` to `create table payer` — the check constraint satisfies AC4 for direct-SQL writes; Bean Validation on the entity (fires at Hibernate flush) covers in-app writes, which is the only "write time" that exists since there's no payer API.
+- Rollout requires `docker compose down -v && docker compose up -d` (initdb only runs on a fresh volume; without `-v`, startup fails schema validation).
+- **Seed data (AC5):** add a *new* payer `ATLAS` with override 0.75, plus a request at exactly 0.75 marked `AUTO_APPROVED` (and optionally 0.74 → `MANUAL_REVIEW`). Giving MERIDIAN or NORTHSTAR an override would contradict their existing history — both have MANUAL_REVIEW rows at 0.84 and AUTO_APPROVED rows at 0.85, so no override ≠ 0.85 is consistent. Consequence: ATLAS must be added to `EligibilityService.COVERED`, or all its requests deny with `PAYER-001` before reaching the threshold stage. Also note `seed.sql:2` says "regenerate rather than hand-editing," but no generator exists in the repo — hand-editing is the pragmatic path.
+
+### Full test list
+`ApprovalServiceTest` (unit, eligibility mocked):
+1. `scoreExactlyAtGlobalThresholdAutoApproves` — 0.85, no override → AUTO_APPROVED (**fails against current code**; pins the fix)
+2. `scoreJustBelowGlobalThresholdRoutesToManualReview` — 0.84 → MANUAL_REVIEW
+3. `scoreExactlyAtPayerOverrideAutoApproves` — override 0.75, score 0.75 → AUTO_APPROVED
+4. `scoreBelowPayerOverrideRoutesToManualReview` — override 0.75, score 0.74 → MANUAL_REVIEW
+5. `stricterPayerOverrideBeatsGlobal` — override 0.95, score 0.90 → MANUAL_REVIEW (override replaces, not loosens)
+6. `missingOverrideFallsBackToGlobal` — null override, 0.86 → AUTO_APPROVED
+
+`RepositoryIntegrationTest` (real Postgres; use `saveAndFlush` since validation fires at flush):
+
+7. Override round-trips through Postgres (0.75)
+8. Range boundaries 0.50 and 0.99 both accepted (inclusive ends)
+9. 0.49 rejected at write (`ConstraintViolationException`)
+10. 1.00 rejected at write
+11. Payer without override still persists (NULL)
+
+### Verification
+`./mvnw test` (new test #1 must fail before the fix, pass after); fresh `docker compose down -v && up -d` to prove entity↔seed DDL agreement under `validate`; optional smoke: POST `ATLAS`/0.75 → AUTO_APPROVED, 0.74 → MANUAL_REVIEW, `MERIDIAN`/0.85 → AUTO_APPROVED.
+
+No code was written. The plan file is ready for approval — say the word and I'll implement it.
+---META--- exit=0 elapsed=268s
+
+VERBATIM SPEC (SPEC-threshold.md as given to the agent)
+-------------------------------------------------------
+# Spec: per-payer auto-approve threshold override
+
+## Intent
+Some payers negotiate stricter or looser auto-approval. Allow an optional
+per-payer threshold that overrides the global auto-approve threshold.
+
+## Acceptance criteria
+1. Payer gains an optional `autoApproveThreshold` (nullable decimal).
+2. Decision rule: a request auto-approves when confidenceScore >= effective
+   threshold (inclusive). Effective threshold = the payer's override when
+   present, otherwise the global 0.85.
+3. A request scoring exactly the effective threshold auto-approves
+   (inclusive boundary).
+4. An override outside 0.50–0.99 (inclusive) is rejected at write time.
+5. Seed data: at least one payer with an override, and one request scoring
+   exactly that override.
+6. Tests: boundary at the global 0.85, boundary at a payer override,
+   missing override falls back to global.
+
+## Out of scope
+Changing the global threshold value; any UI; authentication.

@@ -813,6 +813,63 @@ const MODS = [
       {q:'Fifteen minutes into the thrash — the right move?',
        options:['Re-prompt with more detail and let it run again','Revert everything and write the code by hand','Ask a different tool the same sentence','Stop and write the half-page spec that answers what the agent has been forced to invent'], answer:3}
     ]
+  },
+  {
+    id:'M-2.3', path:'eng', track:'T-02', title:'Spec-driven development', minutes:40,
+    lastVerified:'2026-07-21',
+    concept:{
+      analogy:'A prior authorization request is the spec pattern your whole domain already runs on: written criteria, boundary cases decided in advance, and a reviewer who approves the plan of care before anything irreversible happens. Nobody submits &ldquo;make the patient better &mdash; your call&rdquo; to a payer. M-2.2 was treat-first, bill-later; this module fills in the PA form first &mdash; ten minutes of paperwork that exists precisely because irreversible work is the expensive kind to get wrong.',
+      body:
+        '<p><strong>Twenty-four lines is a spec.</strong> Intent, six acceptance criteria, an out-of-scope line &mdash; that is the whole of <code>SPEC-threshold.md</code>, the document this module drives through all three tools: an optional per-payer override of the auto-approve threshold, where a request auto-approves when its confidence score is <b>&gt;= the effective threshold (inclusive)</b> &mdash; the payer&rsquo;s override when present, else the global 0.85. What makes it load-bearing is not length; it is that every criterion is checkable: an exact boundary (&ldquo;a request scoring exactly the effective threshold auto-approves&rdquo;), a validation range, a named fallback. M-2.2&rsquo;s mission had none of these &mdash; that was the point. This one leaves nothing for the agent to invent.</p>' +
+        '<p><strong>The plan is a gate, not a formality.</strong> Plan mode reads the codebase with read-only tools and produces an artifact you approve, steer, or strike line-items from &mdash; <em>before</em> a single edit exists. Contrast M-2.2: the vibe run&rsquo;s first observable output was changed files. Here the first output is a document arguing with you. The recorded run took 4.5 minutes and ended with <code>git status --porcelain</code> showing zero agent edits &mdash; the read-only claim, proven on this repo.</p>' +
+        '<p><strong>A good plan checks the spec against reality &mdash; and reality lost.</strong> The recorded plan opened with what it called the headline conflict: <code>ApprovalService.java:99</code> gates on strict <code>&gt;</code>, contradicting the class&rsquo;s own javadoc (&ldquo;the threshold is INCLUSIVE&rdquo;), the log line that prints <code>&gt;=</code>, and seed rows auto-approved at exactly 0.85 &mdash; &ldquo;no existing test pins the boundary &mdash; which is why the bug survives.&rdquo; Nobody told it to look. The spec&rsquo;s exact-boundary criterion gave the read a concrete question to ask, and the code answered wrong. It kept going: the new seed payer must also join <code>EligibilityService</code>&rsquo;s covered map or every one of its requests dies at eligibility before reaching the threshold stage; there is no migration framework, so &ldquo;schema change&rdquo; means <code>seed.sql</code> plus a fresh database volume. Consequences, surfaced while edits were still free.</p>' +
+        '<p><strong>Same gate, three tools.</strong> Claude Code: Shift+Tab into <b>Plan Mode</b> (headless: <code>--permission-mode plan</code>; the plan also lands in <code>~/.claude/plans/</code>). Copilot&rsquo;s <b>Plan</b> agent splits by IDE &mdash; in VS Code the plan lives in session memory (<code>/memories/session/plan.md</code>, cleared when the conversation ends); in Visual Studio it is a durable repo file, <code>.copilot/plans/plan-{title}.md</code>, with an <b>Implement plan</b> handoff. Cursor: Shift+Tab to <b>Plan Mode</b> &mdash; a Markdown plan with editable to-dos, saved to your home directory unless you <b>Save to workspace</b>, and a <b>Build</b> button you are not going to press today. No spec on hand? Plan-first is spec-lite: the plan becomes the document you argue with. For long-horizon backend work like this, the tool-fit table&rsquo;s default is Claude Code.</p>' +
+        '<p><strong>What the spec bought.</strong> M-2.2&rsquo;s rework signature was 24 minus-lines of the agent&rsquo;s own fresh code; a plan-gated run&rsquo;s is ~0, because the reversals happen in the plan, where striking a decision costs one edit to a document. And notice what the gate is for: this plan folds the <code>&gt;</code>&rarr;<code>&gt;=</code> repair into the feature &mdash; the spec&rsquo;s boundary criterion forces it. At the gate that becomes <em>your</em> scope decision, made consciously: this course defers the fix to T-05, where it is the star. Vibe made the same class of choice for you in M-2.2 and told nobody. When the paperwork is worth buying at all &mdash; cost of being wrong times lifespan of the code &mdash; is M-2.4.</p>'
+    },
+    visual:{type:'term', componentId:'TERM-04'},
+    labA:{
+      title:'Drive the spec through Plan Mode — Claude Code',
+      steps:[
+        'Fresh clone: <code>git clone -b lab/start https://github.com/varasrinivas/priorauth-api</code>. Write <code>SPEC-threshold.md</code> in the repo root: intent (optional per-payer auto-approve override); acceptance criteria &mdash; payer gains a nullable <code>autoApproveThreshold</code>; auto-approve when score <b>&gt;= effective threshold (inclusive)</b>, effective = payer override else global 0.85; a score exactly at the effective threshold auto-approves; overrides outside 0.50&ndash;0.99 rejected at write time; seed one payer with an override plus a request exactly at it; boundary tests at 0.85, at an override, and for the missing-override fallback; out of scope &mdash; the global value, UI, auth. (Verbatim file: /recordings/m23-spec-plan-run.txt.)',
+        'Run <code>claude</code>, press <b>Shift+Tab</b> until the mode reads <b>plan</b>, and give the mission verbatim: <em>&ldquo;Read SPEC-threshold.md. Produce an implementation plan for this spec: files to change, the exact decision-rule change, migration and seed impact, and the full test list. Flag anything in the current code that conflicts with the spec. Do not write any code.&rdquo;</em>',
+        'Read the plan like a reviewer, not a fan. You should see it cite <code>ApprovalService.java:99</code> &mdash; the strict <code>&gt;</code> that contradicts the spec (and the code&rsquo;s own javadoc and log line). Reference run: 4.5 min; it also caught that the seed payer must join <code>EligibilityService</code>&rsquo;s covered map and that no migration framework exists. If yours missed the conflict, record that &mdash; the recording is a reference, not a guarantee.',
+        'The gate move: do <b>not</b> approve. Strike one line-item out loud &mdash; the <code>&gt;</code>&rarr;<code>&gt;=</code> repair, deferred to T-05 where you&rsquo;ll fix it properly &mdash; then run <code>git status --porcelain</code>: nothing but your spec file. A 4.5-minute read just told you your codebase disagrees with its own policy, for free.',
+        'Log two lines for your M-11.1 baseline: what the plan caught that you did not know, and rework so far: 0. Success: the plan cites the decision line and the boundary tests, the conflict is flagged (or its absence recorded), and the working tree is clean.'
+      ]
+    },
+    labB:{
+      title:'The Plan agent — Copilot (VS Code vs Visual Studio)',
+      steps:[
+        'VS Code on the same clone + spec: pick <b>Plan</b> in the agents dropdown (or type <code>/plan</code>), add <code>#codebase</code>, give the same mission verbatim.',
+        'Review the plan, then find where it lives: run <b>Chat: Show Memory Files</b> &rarr; <code>plan.md</code> &mdash; session memory, cleared when the conversation ends. Visual Studio differs: a durable repo file <code>.copilot/plans/plan-{title}.md</code> (save path under Tools &gt; Options), which you could commit for a teammate. Decide which persistence your team actually needs.',
+        'Decline the handoff (<b>start the implementation</b> in VS Code, <b>Implement plan</b> in Visual Studio). Success: a reviewable plan, the spec-vs-code conflict flagged (or recorded missing), zero edits.'
+      ]
+    },
+    labC:{
+      title:'Plan Mode as spec-lite — Cursor, then the debrief',
+      steps:[
+        'Cursor on the same clone + spec: <b>Shift+Tab</b> to <b>Plan Mode</b>, same mission verbatim. It may ask clarifying questions first &mdash; notice how often the spec already answers them.',
+        'You get a Markdown plan with editable to-dos. Edit it like a document: delete the to-do that repairs <code>&gt;</code>&rarr;<code>&gt;=</code> (deferred to T-05), keep the boundary tests. Note where the plan saved &mdash; home directory by default; <b>Save to workspace</b> keeps it with the repo.',
+        'Do <b>not</b> press <b>Build</b>. Debrief across all three: which plan caught the conflict unprompted? Which artifact would you commit for a teammate? Success: three finished plans, three clean working trees, and both answers in your log.'
+      ]
+    },
+    checklist:[
+      'I wrote the 24-line spec before any tool touched the clone &mdash; every criterion checkable.',
+      'I ran all three plan modes to a finished plan and stopped at the gate: <code>git status --porcelain</code> clean, three times.',
+      'My plan flagged the strict-<code>&gt;</code> conflict with the spec&rsquo;s inclusive boundary &mdash; or I recorded that it didn&rsquo;t.',
+      'I can name one consequence a plan surfaced that I had not considered (covered-map coupling, no migration framework, fresh-volume rollout).',
+      'I know where each tool&rsquo;s plan artifact lives &mdash; and which ones survive the session.'
+    ],
+    quiz:[
+      {q:'The recorded plan found the strict-<code>&gt;</code> conflict in 4.5 minutes without being told to look for it. What made it findable?',
+       options:['Plan Mode reads more files than agent mode','The model is better at Java than React','The spec stated an exact, checkable boundary &mdash; the read had a concrete question to ask the code, and the code answered wrong','Luck: the file happened to be small'], answer:2},
+      {q:'The plan folds an unrequested repair (<code>&gt;</code>&rarr;<code>&gt;=</code>) into the feature because the spec&rsquo;s boundary criterion forces it. The taught move at the gate?',
+       options:['Approve &mdash; plans know best','Make it a conscious scope decision: keep it, strike it, or defer it &mdash; the gate exists so scope changes are decisions, not side effects','Rewrite the spec so the conflict disappears','Abandon the plan and vibe it'], answer:1},
+      {q:'Which plan artifact lands inside your repository by default, ready to commit?',
+       options:['VS Code Plan agent &mdash; /memories/session/plan.md','Cursor Plan Mode&rsquo;s default save location','Claude Code headless &mdash; ~/.claude/plans/','Visual Studio Plan agent &mdash; .copilot/plans/plan-{title}.md'], answer:3},
+      {q:'M-2.2 measured rework 24; the plan-gated run measured ~0. Where did the rework go?',
+       options:['The model improved between sessions','Into the plan &mdash; reversing a decision there costs one edit to a document instead of churn on working code','The threshold task was easier than the auth task','Nowhere; it will show up later regardless'], answer:1}
+    ]
   }
 ];
 
@@ -1404,6 +1461,98 @@ VISUALS['SIM-02'] = function(mount, opts){
   el.scrub.addEventListener('input', () => { stop(); t = +el.scrub.value; el.live.textContent = 'SCRUB'; paint(); });
   el.auth.addEventListener('change', play);
   mount.querySelector('[data-s2replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- TERM-04 · Spec Plan Replay (spec: VISUALS.md) ----------
+   Real recorded headless Plan Mode run against priorauth-api lab/start
+   (source: recordings/m23-spec-plan-run.txt, 2026-07-21, v2.1.216, 4.5 min,
+   zero agent edits). Frames are trimmed from the real transcript — never
+   fabricated. Reuses .term01 styles. */
+VISUALS['TERM-04'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = [
+    {t:'cmd', text:'cat SPEC-threshold.md'},
+    {t:'out', text:
+      '# Spec: per-payer auto-approve threshold override\n\n' +
+      'Auto-approve when confidenceScore >= effective threshold (inclusive);\n' +
+      'effective = the payer\'s override when present, else the global 0.85.\n' +
+      'A request scoring exactly the effective threshold auto-approves.\n' +
+      'Overrides outside 0.50-0.99 rejected at write time. [...]\n\n' +
+      '(24 lines total: intent, 6 acceptance criteria, out-of-scope.)'},
+    {t:'cmd', text:'claude -p "Read SPEC-threshold.md. Produce an implementation plan for this spec: files to change, the exact decision-rule change, migration and seed impact, and the full test list. Flag anything in the current code that conflicts with the spec. Do not write any code." --permission-mode plan'},
+    {t:'out', text:
+      '### The headline conflict you should know about\n' +
+      'The current decision rule at src/main/java/com/priorauth/service/ApprovalService.java:99 is `if (score > AUTO_APPROVE_THRESHOLD)` — strict, not inclusive. That contradicts the class\'s own javadoc ("the threshold is INCLUSIVE"), the approval log message (which prints score {} >= {}), and the seed data (rows at exactly 0.85 are AUTO_APPROVED). Today a request scoring exactly 0.85 wrongly routes to MANUAL_REVIEW. Spec AC3 forces this fix, and no existing test pins the boundary — which is why the bug survives.'},
+    {t:'out', text:
+      '### Files to change\n' +
+      'Payer.java (nullable autoApproveThreshold) · ApprovalService.java (rule becomes score >= effectiveThreshold(payer)) · EligibilityService.java (the new seed payer must join the COVERED map, or every one of its requests denies with PAYER-001 before the threshold stage) · seed.sql. No controller changes — there is no payer write endpoint.\n\n' +
+      '### Migration and seed impact\n' +
+      'There is no migration framework (no Flyway/Liquibase in pom.xml) — the schema is seed.sql + ddl-auto=validate; rollout needs a fresh volume (docker compose down -v).\n\n' +
+      '### Full test list\n' +
+      '11 tests, led by scoreExactlyAtGlobalThresholdAutoApproves — 0.85, no override -> AUTO_APPROVED (fails against current code; pins the fix) [...]\n\n' +
+      'No code was written. The plan file is ready for approval.'},
+    {t:'out', text:'elapsed: 4.5 min\n$ git status --porcelain\n?? SPEC-threshold.md\n(only the spec we wrote — zero agent edits)'},
+    {t:'note', html:'<b>The gate is yours.</b> Interactive Plan Mode ends at an approve / steer prompt; headless ends at a document (this one also landed in <code>~/.claude/plans/</code>). Either way nothing has been edited yet &mdash; so when the plan folds the <code>&gt;</code>&rarr;<code>&gt;=</code> repair into the feature because the spec forces it, striking or deferring that line is a decision you make <em>before</em> it becomes churn. This course defers it: T-05 fixes that bug properly.'}
+  ];
+  mount.innerHTML =
+    '<div class="term01" aria-label="Recorded Plan Mode session replay">' +
+      '<div class="thbar"><span class="dot g"></span><span class="dot"></span><span class="dot"></span>' +
+        '<span>PLAN MODE · PRIORAUTH-API @ LAB/START</span><span class="rec">RECORDED 2026-07-21 · 4.5 MIN</span></div>' +
+      '<div class="tscroll" data-scroll></div>' +
+      '<div class="tfoot">' +
+        '<span class="tnote-cap">What to notice: the conflict surfaced before any edit existed — the plan is the deliverable. Trimmed; full capture in /recordings.</span>' +
+        '<div class="tctl">' +
+          '<button data-speed="1" aria-pressed="true">×1</button>' +
+          '<button data-speed="2" aria-pressed="false">×2</button>' +
+          '<button data-skip>SKIP</button>' +
+          '<button data-replay>REPLAY ▸</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const scroll = mount.querySelector('[data-scroll]');
+  let speed = 1, timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms / speed)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frameHtml(f, partialCmd){
+    if(f.t === 'cmd') return '<div class="tline"><span class="tp">$</span> ' + esc(partialCmd != null ? partialCmd : f.text) + (partialCmd != null ? '<span class="tcaret"></span>' : '') + '</div>';
+    if(f.t === 'out') return '<div class="tout">' + esc(f.text) + '</div>';
+    return '<div class="tnote">' + f.html + '</div>';
+  }
+  function renderUpTo(n, partialCmd){
+    scroll.innerHTML = FRAMES.slice(0, n).map(f => frameHtml(f)).join('') +
+      (partialCmd != null ? frameHtml(FRAMES[n], partialCmd) : '');
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+  function renderAll(){ stop(); renderUpTo(FRAMES.length); }
+  function play(){
+    stop();
+    if(reduce){ renderAll(); return; }
+    let i = 0;
+    (function next(){
+      if(i >= FRAMES.length) return;
+      const f = FRAMES[i];
+      if(f.t === 'cmd'){
+        let ch = 0;
+        (function type(){
+          renderUpTo(i, f.text.slice(0, ch));
+          if(ch < f.text.length){ ch += 2; later(type, 40); }
+          else { i++; renderUpTo(i); later(next, 500); }
+        })();
+      } else {
+        i++; renderUpTo(i);
+        later(next, f.t === 'out' ? 1600 : 600);
+      }
+    })();
+  }
+  mount.querySelectorAll('[data-speed]').forEach(b => {
+    b.addEventListener('click', () => {
+      speed = +b.dataset.speed;
+      mount.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  mount.querySelector('[data-skip]').addEventListener('click', renderAll);
+  mount.querySelector('[data-replay]').addEventListener('click', play);
   play();
 };
 
