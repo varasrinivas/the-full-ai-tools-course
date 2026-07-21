@@ -1,0 +1,46 @@
+﻿M-2.2 break-mission capture — 2026-07-21
+Method: fresh GitHub clone of priorauth-web, branch vibe/chart-claude off lab/start.
+Run 1 (base recreate, M-2.1 mission verbatim, claude -p, acceptEdits): 4.0 min, EXTEND, +118/-34, suite 20/20 after.
+  Base commit: 999723f
+Run 2 (M-2.2 mission verbatim, same flags): 4.8 min, +220/-24 vs base.
+  Rework signature: Dashboard.tsx +4/-23 (agent reversed its own run-1 architecture), Dashboard.test.tsx +3/-1.
+  Invented auth: GET /api/me + CurrentUser + canViewDenialReasons(REVIEWER), fail-closed. /api/me DOES NOT EXIST in priorauth-api (grep-verified).
+  Wreckage commit: fe16442. Suite 25/25 green.
+Property checks: API down -> Vite proxy 502 -> 'unavailable' state (live-verified via curl).
+  API up -> /api/me 404 -> 'unavailable' FOR EVERYONE incl. reviewers (pinned by scratch RTL test, ApiError(404) -> role=REVIEWER never reaches chart; full-stack browser pass blocked: Docker engine would not start this session).
+No module uses this as a TERM replay yet — candidate asset only. Raw transcripts follow.
+
+===== RUN 1 OUTPUT (M-2.1 mission rerun) =====Done — the denials-by-reason widget is now a polished card on the dashboard. A basic version already existed on this branch (`DenialReasonsChart.tsx`, wired into the Dashboard's sidebar), so I redesigned it rather than adding a duplicate.
+
+What it looks like now:
+
+- **Card container** — the widget sits in a panel card matching the stat tiles (panel background, border, rounded corners), with a "Denial reasons" header and a "Across the most recently denied requests" subtitle so the sample scope is explicit.
+- **Ranked horizontal bars** — still pure SVG (the repo deliberately has no chart library), sorted most-frequent first with an alphabetical tie-break so ordering is deterministic. Bars are rounded, in the app's semantic denial red, drawn over a faint same-hue track so relative scale reads at a glance.
+- **Clean columns** — reason codes right-aligned in a monospace gutter against the bar axis, counts right-aligned in a tabular-numeral column on the far edge.
+- **Detail on demand** — the Dashboard now carries each reason's human-readable `reasonText` through aggregation, and hovering a row shows a native tooltip like `CPT-002 — Procedure not covered by payer: 9 (45%)`, plus a hover highlight on the bar and label.
+- **Summary footer** — a caption under the chart ("12 denials · 4 reason codes"), and the empty state is a centered dashed box instead of a bare paragraph.
+
+Files touched: `src/components/DenialReasonsChart.tsx` (rewritten), `src/pages/Dashboard.tsx` (aggregates `reasonText`, card markup), `src/index.css` (chart/card styles).
+
+One caveat: I could not run the test suite — every shell command in this session requires an approval that can't be granted non-interactively. I designed the markup against the existing tests' exact assertions instead: only value bars are `<rect>` elements (the tracks are `<line>`, so `querySelectorAll('rect')` still returns one bar per reason, widest first, with `data-reason` set), the svg keeps its `aria-label="Denials by reason code"`, and the empty state keeps the "No denials in view" text. Please run `npm test` to confirm — I expect all 26 to pass.
+
+===== RUN 2 OUTPUT (M-2.2 break mission) =====
+The implementation is complete. Everything is in place; here's a summary of what changed and one caveat about verification.
+
+## What I built
+
+The denial-reasons widget is now a self-contained `DenialReasonsPanel` (`src/components/DenialReasonsPanel.tsx`) that owns both the role gate and its own data fetching. There was no auth concept anywhere in this app, so I introduced a minimal one in `src/api/client.ts`: a `CurrentUser { username, roles }` type, `getCurrentUser()` hitting `GET /api/me`, and a `canViewDenialReasons()` helper that requires the `REVIEWER` role (kept next to `meetsThreshold` as the domain-rule spot).
+
+**Role gating, fail-closed.** The panel resolves the current user before fetching any denial data. Non-reviewers get a locked card ("Denial reasons are visible to reviewers only" with a padlock glyph) and `denialsForRequest` is never called for them — there's a test asserting that. A 401/403 from the user lookup also lands on the locked state. This is UI-level gating only; the API still has to enforce the restriction server-side, since anything the browser can fetch a determined user can fetch too.
+
+**Graceful degradation.** Any other failure (network down, 5xx) shows a scoped "Denial reasons are unavailable right now" notice with a Retry button inside the card — the rest of the dashboard stays up. Previously a denial-fetch failure set the page-level error and blanked the entire dashboard; moving the fan-out out of `Dashboard.tsx` and into the panel fixed that as a side effect, and simplified `Dashboard` down to just the request list.
+
+`DenialReasonsChart` itself stays a pure presentational component. New CSS for the locked/unavailable states reuses the existing dashed-box `chart-empty` look.
+
+## Caveats
+
+- **I could not run the tests.** Every shell command in this session (`npm test`, `npx vitest`, even `git`) was denied by the permission gate, so the suite is unverified. I wrote `src/test/DenialReasonsPanel.test.tsx` covering all five paths (reviewer sees chart, non-reviewer locked + no fetch, 401 locked, API-down with working retry, denial-fetch failure) and updated `Dashboard.test.tsx` to mock `getCurrentUser` as a reviewer. Please run `npm test` locally.
+- **The backend needs `GET /api/me`** returning `{ username, roles }` — priorauth-api doesn't obviously have it yet. Until it exists the widget will show the unavailable state for everyone, which is the safe direction (it never shows data by default).
+
+Nothing is committed — the changes are sitting in the working tree on `vibe/chart-claude`.
+

@@ -196,6 +196,40 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .term01 .tctl button:hover{border-color:var(--gold)}
 .term01 .tctl button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
 
+/* ============ SIM-02: Vibe vs Spec Race ============ */
+/* Outcome colors (not tool accents): red = vibe thrash, green = spec clean.
+   Per-theme values keep 11px/9px text at WCAG AA (>=4.5:1) on panel bg. */
+.sim02{--s2red:#d0705a;--s2green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim02{--s2red:#B0503C;--s2green:#2d7350}
+.sim02 .s2head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim02 .s2lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.sim02 .s2lanetop{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.sim02 .s2name{font-size:11px;letter-spacing:.14em;color:var(--text)}
+.sim02 .s2name.vibe{color:var(--s2red)}
+.sim02 .s2name.spec{color:var(--s2green)}
+.sim02 .s2status{font-size:10px;color:var(--dim);flex:1}
+.sim02 .s2rework{font-size:10px;color:var(--faint)}
+.sim02 .s2rework b{color:var(--s2red);font-size:14px}
+.sim02 .s2track{height:10px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--panel2)}
+.sim02 .s2bar{height:100%;width:0%;border-radius:999px;transition:width .25s linear}
+.sim02 .s2bar.vibe{background:linear-gradient(90deg,#B0503C,#d0705a)}
+.sim02 .s2bar.spec{background:linear-gradient(90deg,#2d7350,#3E9A6B)}
+.sim02 .s2bar.thrash{animation:s2flicker .5s steps(2) infinite}
+@keyframes s2flicker{50%{filter:brightness(1.7)}}
+.sim02 .s2chips{display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-top:7px}
+.sim02 .s2chip{font-size:9px;padding:1px 7px;border-radius:5px;border:1px solid var(--line);color:var(--dim)}
+.sim02 .s2chip.rw{border-color:var(--s2red);color:var(--s2red)}
+.sim02 .s2chip.ok{border-color:var(--s2green);color:var(--s2green)}
+.sim02 .s2wall{position:relative;font-size:9.5px;letter-spacing:.14em;color:var(--gold);text-align:center;margin:4px 0 10px;opacity:0;transition:opacity .3s}
+.sim02 .s2wall.on{opacity:1}
+.sim02 .s2ctrl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:10.5px;color:var(--dim)}
+.sim02 .s2ctrl input[type=range]{flex:1;min-width:120px;accent-color:var(--gold)}
+.sim02 .s2ctrl label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.sim02 .s2ctrl input[type=checkbox]{accent-color:var(--s2red)}
+.sim02 .s2replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim02 .s2replay:hover{border-color:var(--gold)}
+.sim02 .s2foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-13: Copilot Mode Spectrum ============ */
 .anim13{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim13 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -713,6 +747,63 @@ const MODS = [
       {q:'Why commit a branch you expect to throw away?',
        options:['Git hygiene is a habit','In case the demo goes well','Receipts: M-2.2 measures rework against it and your baseline wants the timestamps','So CI runs on it'], answer:2}
     ]
+  },
+  {
+    id:'M-2.2', path:'eng', track:'T-02', title:'Where vibe breaks', minutes:40,
+    lastVerified:'2026-07-21',
+    concept:{
+      analogy:'The weekend deck asked to hold a hot tub. Nobody sinned building the deck in an afternoon — it held chairs fine. But its framing was chosen without knowing about water, and now every joist you sister in costs more than framing it right would have. M-2.1 warned you about laminating the whiteboard; this module is the invoice. Auth and error handling are the hot tub: real load, arriving after the framing.',
+      body:
+        '<p><strong>The widget is asked to live.</strong> Two requirements land on your M-2.1 chart: only reviewers may see denial reasons, and the widget must survive the API being down. Read them again — neither is verifiable by eye. &ldquo;Looks right&rdquo; has no opinion about who <em>can&rsquo;t</em> see a thing, or about a failure that is not currently happening. The vibe contract just met properties.</p>' +
+        '<p><strong>Drift: silent decisions are load-bearing now.</strong> No spec recorded the sort order, the data flow, the component boundaries — so a fresh session freely reverses them. In the recorded run, the agent tore its own twenty-minute-old aggregation out of <code>Dashboard.tsx</code> and moved it into a new panel: <b>23 of its own lines deleted</b>. Not a mistake — a defensible choice nobody asked for, reversing a choice nobody made. Your three-decision list from M-2.1 is the watch-list.</p>' +
+        '<p><strong>Invention: the agent builds what the spec never denied it.</strong> priorauth-web has no session, no roles, no user — so asked for &ldquo;the reviewer role&rdquo; with only <em>&ldquo;your call&rdquo;</em> available, the recorded agent invented one: a <code>CurrentUser</code> fetched from <code>GET /api/me</code>. Careful, fail-closed, tested — and <em>the endpoint does not exist in priorauth-api</em>. Result: 25/25 tests green, and the live widget says &ldquo;unavailable&rdquo; to every user including reviewers. The agent even disclosed this in its final report — but vibe mode doesn&rsquo;t read reports. Tests green, feature dead: the accepted-by-eye contract, inverted.</p>' +
+        '<p><strong>Rework has a git signature.</strong> Minus-lines on files the agent itself wrote last session — that is churn on its own code, and you can count it: <code>git diff --numstat &lt;vibe-tip-sha&gt;</code>. The recorded run: <b>24</b>. That number is SIM-02&rsquo;s counter, animated with the real run&rsquo;s events — and it feeds your M-11.1 baseline. Rework you can measure beats thrash you can feel.</p>' +
+        '<p><strong>Knowing when to stop.</strong> Mid-thrash, the winning move is not a better prompt — it is a half-page spec that answers the two questions the agent had to invent answers for: where does &ldquo;reviewer&rdquo; come from, and what exactly does &ldquo;gracefully&rdquo; cover? That is M-2.3. Commit the wreckage first; M-2.4 prices it.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-02'},
+    labA:{
+      title:'Break the widget — Claude Code',
+      steps:[
+        'Prep as in M-2.1 (API up: <code>docker compose up -d</code> + <code>./mvnw spring-boot:run</code>; <code>npm run dev</code> in priorauth-web). On your <code>vibe/chart-claude</code> branch, record the tip: <code>git rev-parse --short HEAD</code> — the rework counter starts here.',
+        'Fifteen-minute timer. Run <code>claude</code> and give the mission verbatim: <em>&ldquo;Only users with the reviewer role should see denial reasons - everyone else sees a locked state. Also make the widget handle the API being down gracefully.&rdquo;</em> Vibe rules still hold: any question gets <em>&ldquo;your call.&rdquo;</em>',
+        'Property check 1 — the role gate. Find what &ldquo;reviewer&rdquo; mechanism your agent invented and demonstrate the gate both ways in the browser, or record that you can&rsquo;t. Reference run: it invented <code>GET /api/me</code> — an endpoint priorauth-api doesn&rsquo;t have — so with the API fully up, <em>every</em> user saw the unavailable state. Only the agent&rsquo;s report caveat admitted it.',
+        'Property check 2 — stop the API (<code>Ctrl+C</code> on spring-boot) and reload. Record what actually renders. Reference run: the page died upstream anyway (&ldquo;Could not load requests&rdquo; — the dev proxy answers 502) — the agent hardened the widget&rsquo;s own fetches exactly as asked, and nothing else.',
+        'Count the rework: <code>git add -A</code>, then <code>git diff --numstat &lt;tip-sha&gt;</code>. Minus-lines on files the agent itself wrote in M-2.1 = churn on its own code (reference: 24). Commit the wreckage. Success: both property results recorded, a rework tally, and one named M-2.1 decision your agent reversed.'
+      ]
+    },
+    labB:{
+      title:'Break the widget — Copilot',
+      steps:[
+        'On <code>vibe/chart-copilot</code>: record the tip SHA, VS Code, <strong>Agent</strong> in the agents dropdown, timer on, mission verbatim, only <em>&ldquo;your call.&rdquo;</em>',
+        'Every <strong>Keep</strong> on a file the agent wrote last module is you accepting rework — notice how it feels different this time. Run both property checks from flight one.',
+        '<code>git diff --numstat</code> against your tip, commit the wreckage, log the tally. Success: same definition as flight one.'
+      ]
+    },
+    labC:{
+      title:'Break the widget — Cursor, then the debrief',
+      steps:[
+        'On <code>vibe/chart-cursor</code>: tip SHA, Agent panel (<code>Ctrl/Cmd+I</code>), timer, mission verbatim, <em>&ldquo;your call&rdquo;</em> only. Property checks, numstat, commit.',
+        'The debrief, side by side: what did each tool invent for &ldquo;the reviewer role&rdquo;? (Hardcoded flag? URL param? A phantom endpoint?) Three tools, three auth notions, zero real auth — because no spec ever defined &ldquo;reviewer.&rdquo;',
+        'Total the three rework tallies and replay SIM-02 with your numbers in mind. Then write the one line this module exists for: <em>at what minute should I have stopped and written a spec?</em> Success: three committed wreckage branches and that one line in your log.'
+      ]
+    },
+    checklist:[
+      'I ran the same mission in all three tools under vibe rules and committed the wreckage.',
+      'I can name the auth notion each tool invented — and what none of them built.',
+      'I measured rework with <code>git diff --numstat</code>, not by feel; the tally is in my log.',
+      'I saw tests green while the feature was dead in the browser — and can say why the eye missed it.',
+      'I wrote down the minute I should have stopped and written the spec.'
+    ],
+    quiz:[
+      {q:'The same agent that worked carefully in M-2.1 thrashed in M-2.2. What actually broke?',
+       options:['The agent got a harder task than it can handle','Nothing recorded the M-2.1 decisions, so the new requirements had no seam — the break is structural, not skill','The prompt was too short','The repo&rsquo;s tests were too weak to guide it'], answer:1},
+      {q:'What is the git signature of rework?',
+       options:['Total insertions across the diff','Number of commits on the branch','Minus-lines on files the agent itself wrote last session — churn on its own code','Files changed count'], answer:2},
+      {q:'All 25 tests pass, and the live widget shows &ldquo;unavailable&rdquo; to every user. How?',
+       options:['The test environment is broken','The API is down','The widget depends on GET /api/me — an endpoint the agent invented; the tests mock it, the real API never had it','React is caching the old build'], answer:2},
+      {q:'Fifteen minutes into the thrash — the right move?',
+       options:['Re-prompt with more detail and let it run again','Revert everything and write the code by hand','Ask a different tool the same sentence','Stop and write the half-page spec that answers what the agent has been forced to invent'], answer:3}
+    ]
   }
 ];
 
@@ -1200,6 +1291,110 @@ VISUALS['TERM-03'] = function(mount, opts){
   });
   mount.querySelector('[data-skip]').addEventListener('click', renderAll);
   mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
+};
+
+/* ---------- SIM-02 · Vibe vs Spec Race (spec: VISUALS.md) ----------
+   Vibe-lane numbers are the real recorded M-2.2 run (see
+   recordings/m2.2-break-mission.txt): 4.0-min sprint, wall, 24 minus-lines
+   of rework on the agent's own code, invented GET /api/me. Spec lane is the
+   M-2.3 pattern, schematic until M-2.3 records one. */
+VISUALS['SIM-02'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const WALL_T = 22, REWORK = 24;
+  const EVENTS = {
+    on: [
+      {at:4,  lane:'vibe', cls:'ok', text:'chart visible · 4.0 min'},
+      {at:30, lane:'vibe', cls:'rw', text:'new requirement touches every layer — no seam'},
+      {at:44, lane:'vibe', cls:'rw', text:'rewrote Dashboard data flow · −23 own lines'},
+      {at:60, lane:'vibe', cls:'rw', text:'invented GET /api/me — endpoint doesn&rsquo;t exist'},
+      {at:76, lane:'vibe', cls:'rw', text:'reversed its own M-2.1 architecture'},
+      {at:90, lane:'vibe', cls:'ok', text:'tests 25/25 green'},
+      {at:97, lane:'vibe', cls:'rw', text:'feature dead on the real API'},
+      {at:12, lane:'spec', cls:'ok', text:'spec asks: where does &ldquo;reviewer&rdquo; come from? — missing endpoint caught on paper'},
+      {at:46, lane:'spec', cls:'ok', text:'auth seam agreed before code'},
+      {at:72, lane:'spec', cls:'ok', text:'locked vs unavailable states specced'},
+      {at:99, lane:'spec', cls:'ok', text:'finished clean · rework 0'}
+    ],
+    off: [
+      {at:4,  lane:'vibe', cls:'ok', text:'chart visible · 4.0 min'},
+      {at:28, lane:'vibe', cls:'ok', text:'demo shipped — code dies young, as planned'},
+      {at:12, lane:'spec', cls:'ok', text:'spec written for requirements that never came'},
+      {at:99, lane:'spec', cls:'ok', text:'done — but vibe got there first'}
+    ]
+  };
+  mount.innerHTML =
+    '<div class="sim02" aria-label="Vibe versus spec race simulation">' +
+      '<div class="s2head"><span>SIM-02 · VIBE VS SPEC RACE · SAME FEATURE, TWO CONTRACTS</span><span data-s2live>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="s2wall" data-wall>▼ REQUIREMENT WALL · AUTH + ERROR HANDLING ARRIVE ▼</div>' +
+      ['vibe','spec'].map(k =>
+        '<div class="s2lane">' +
+          '<div class="s2lanetop">' +
+            '<span class="s2name ' + k + '">' + (k === 'vibe' ? 'VIBE' : 'SPEC') + '</span>' +
+            '<span class="s2status" data-status="' + k + '"></span>' +
+            '<span class="s2rework">rework <b data-rework="' + k + '">0</b></span>' +
+          '</div>' +
+          '<div class="s2track"><div class="s2bar ' + k + '" data-bar="' + k + '"></div></div>' +
+          '<div class="s2chips" data-chips="' + k + '"></div>' +
+        '</div>').join('') +
+      '<div class="s2ctrl">' +
+        '<input type="range" min="0" max="100" value="0" data-scrub aria-label="Scrub the race timeline">' +
+        '<label><input type="checkbox" checked data-auth> add auth requirement</label>' +
+        '<button class="s2replay" data-s2replay>REPLAY ▸</button>' +
+      '</div>' +
+      '<div class="s2foot">What to notice: the vibe lane is the real recorded M-2.2 run — rework counts minus-lines on the agent&rsquo;s <em>own</em> M-2.1 code. Untick the requirement: vibe legitimately wins when code dies young.</div>' +
+    '</div>';
+  const el = {
+    live: mount.querySelector('[data-s2live]'), wall: mount.querySelector('[data-wall]'),
+    scrub: mount.querySelector('[data-scrub]'), auth: mount.querySelector('[data-auth]'),
+    bar: {vibe: mount.querySelector('[data-bar="vibe"]'), spec: mount.querySelector('[data-bar="spec"]')},
+    chips: {vibe: mount.querySelector('[data-chips="vibe"]'), spec: mount.querySelector('[data-chips="spec"]')},
+    status: {vibe: mount.querySelector('[data-status="vibe"]'), spec: mount.querySelector('[data-status="spec"]')},
+    rework: {vibe: mount.querySelector('[data-rework="vibe"]'), spec: mount.querySelector('[data-rework="spec"]')}
+  };
+  if(reduce){ el.bar.vibe.style.transition = el.bar.spec.style.transition = 'none'; }
+  let t = 0, timer = null;
+  function vibePct(x, auth){
+    if(!auth) return Math.min(100, x * (100 / 30));
+    if(x <= WALL_T) return 70 * (x / WALL_T);
+    if(x >= 92) return 100;
+    return 70 + 26 * ((x - WALL_T) / 70) + Math.sin(x * 1.7) * 2;
+  }
+  function specPct(x){ return x <= 20 ? 6 * (x / 20) : Math.min(100, 6 + 94 * ((x - 20) / 80)); }
+  function paint(){
+    const auth = el.auth.checked;
+    const thrash = auth && t > WALL_T && t < 92;
+    el.wall.classList.toggle('on', auth && t >= WALL_T);
+    el.bar.vibe.style.width = vibePct(t, auth).toFixed(1) + '%';
+    el.bar.spec.style.width = specPct(t).toFixed(1) + '%';
+    el.bar.vibe.classList.toggle('thrash', thrash && !reduce);
+    el.rework.vibe.textContent = !auth ? '0' : (t <= WALL_T ? '0' : String(Math.min(REWORK, Math.round(REWORK * ((t - WALL_T) / 68)))));
+    el.rework.spec.textContent = '0';
+    el.status.vibe.innerHTML = !auth
+      ? (t < 30 ? 'sprinting — accepted by eye' : 'shipped — and it dies young, as planned')
+      : (t < WALL_T ? 'sprinting — accepted by eye' : t < 92 ? 'thrash — new requirement, no seam to attach to' : '&ldquo;done&rdquo; on paper — unavailable for every user');
+    el.status.spec.textContent = t < 20 ? 'writing the half-page spec' : t < 100 ? 'building to spec' : 'done — and true';
+    ['vibe','spec'].forEach(k => {
+      el.chips[k].innerHTML = EVENTS[auth ? 'on' : 'off']
+        .filter(e => e.lane === k && e.at <= t)
+        .map(e => '<span class="s2chip ' + e.cls + '">' + e.text + '</span>').join('');
+    });
+    el.scrub.value = String(t);
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+  function play(){
+    stop(); t = 0;
+    if(reduce){ t = 100; el.live.textContent = 'STATIC'; paint(); return; }
+    el.live.textContent = 'LIVE'; paint();
+    timer = setInterval(() => {
+      t++;
+      paint();
+      if(t >= 100){ stop(); el.live.textContent = 'DONE'; }
+    }, 120);
+  }
+  el.scrub.addEventListener('input', () => { stop(); t = +el.scrub.value; el.live.textContent = 'SCRUB'; paint(); });
+  el.auth.addEventListener('change', play);
+  mount.querySelector('[data-s2replay]').addEventListener('click', play);
   play();
 };
 
