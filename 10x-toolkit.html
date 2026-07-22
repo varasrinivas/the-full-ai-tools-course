@@ -263,6 +263,34 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim07 .s7why b{color:var(--text);font-weight:500}
 .sim07 .s7foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-08: Tool-Fit Drill ============ */
+.sim08{--s8red:#d0705a;--s8green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim08{--s8red:#B0503C;--s8green:#2d7350}
+.sim08 .s8head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim08 .s8card{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:7px 10px;margin-bottom:6px}
+.sim08 .s8card.hit{border-color:var(--s8green)}
+.sim08 .s8card.miss{border-color:var(--s8red)}
+.sim08 .s8task{flex:1;font-size:10.5px;color:var(--text);line-height:1.45;min-width:0}
+.sim08 .s8verdict{font-size:9px;letter-spacing:.08em;white-space:nowrap}
+.sim08 .s8verdict.ok{color:var(--s8green)}
+.sim08 .s8verdict.no{color:var(--s8red)}
+.sim08 .s8picks{display:flex;gap:4px;flex-shrink:0}
+.sim08 .s8pick{font-family:var(--mono);font-size:9px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim08 .s8pick:disabled{cursor:default;opacity:.75}
+.sim08 .s8pick.g[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+.sim08 .s8pick.c[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700}
+.sim08 .s8pick.p[aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
+.sim08 .s8pick.a[aria-pressed="true"]{background:var(--dim);border-color:var(--dim);color:var(--void);font-weight:700}
+.sim08 .s8ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim08 .s8btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim08 .s8btn:hover:not(:disabled){border-color:var(--gold)}
+.sim08 .s8btn:disabled{opacity:.45;cursor:default}
+.sim08 .s8score{font-size:10.5px;color:var(--dim)}
+.sim08 .s8why{margin-top:10px;font-size:10.5px;color:var(--dim);line-height:1.55;list-style:none;padding:0}
+.sim08 .s8why li{margin-bottom:5px}
+.sim08 .s8why b{color:var(--text);font-weight:500}
+.sim08 .s8foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-15: The Two Boundaries ============ */
 .anim15{--a15red:#d0705a;--a15green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim15{--a15red:#B0503C;--a15green:#2d7350}
@@ -1034,6 +1062,62 @@ const MODS = [
       {q:'The vibe-coded seed-report script has printed its tally. Correct disposition?',
        options:['Commit it to /scripts for next time','Add tests so it hardens over time','Delete it &mdash; the recorded artifact lived about six minutes; keeping it converts marker ink into unowned production code','Refactor it into an API endpoint'], answer:2}
     ]
+  },
+  {
+    id:'M-2.5', path:'eng', track:'T-02', title:'Pick your tool', minutes:40,
+    lastVerified:'2026-07-22',
+    concept:{
+      analogy:'Nobody pages the surgeon to draw blood. The phlebotomist, the hospitalist, and the surgeon are all licensed; the triage board matches task to clinician because cost and speed differ wildly for work any of them could do &mdash; and for some tasks, any of them genuinely would do. The tool-fit table is that board: a triage sheet, not a leaderboard. This module is learning to read it, defend a pick against it, and say &ldquo;any&rdquo; out loud when that is the honest answer.',
+      body:
+        '<p><strong>The table is a triage board, not a leaderboard.</strong> Six rows, each with a <em>why</em>: rapid UI iteration &rarr; <b>Cursor</b> (per current docs, Tab does multi-line edits and &ldquo;predicts cross-file edits when changes in one file need updates in another&rdquo;); long multi-step backend work &rarr; <b>Claude Code</b> (plan gate, long-horizon loops, headless); GitHub-native team flow &rarr; <b>Copilot</b> (the PR surface and org controls are the product); flow-state typing &rarr; <b>Cursor Tab</b>, with Copilot&rsquo;s <b>next edit suggestions</b> a close second; cold onboarding &rarr; honestly <b>any</b>; headless/CI &rarr; <b>Claude Code</b>. Be precise about epistemics: the <em>capabilities</em> are doc-verified; the <em>rankings</em> are this course&rsquo;s editorial defaults &mdash; versioned, dated, and yours to overturn.</p>' +
+        '<p><strong>The habit is two questions, in order.</strong> M-2.4&rsquo;s rubric answers <em>mode</em>; this module answers <em>tool</em> &mdash; and T-02&rsquo;s receipts compose both: the demo chart was vibe &times; Cursor territory; the threshold override was spec &times; Claude Code; writing up the M-2.2 wreckage for review is Copilot&rsquo;s home surface. Mode comes first because it changes what the tool is even <em>for</em>: a plan-first task cares about the quality of the gate; a vibe task cares about the speed of the loop.</p>' +
+        '<p><strong>Cost and speed have real numbers now.</strong> The recorded headless integrity check &mdash; row six&rsquo;s exact use case &mdash; returned &ldquo;500 requests, zero orphans&rdquo; in 49 seconds, and the JSON envelope priced it: <b>$0.89, nine agent turns</b>. The right spend for a CI gate no tab-completion could run. Now imagine the same envelope wrapped around M-2.4&rsquo;s 30-second caption tweak: same context assembly, same turn overhead, one line changed &mdash; overpriced in <em>any</em> agent, free in the autocomplete layer. The overhead lives in the turn, not the tool brand. T-08 dissects the bill; M-11.1 makes you measure your own.</p>' +
+        '<p><strong>Contested cards are the curriculum, not a flaw.</strong> Extracting the shared API client honestly cites two rows &mdash; multi-file frontend edit (Cursor) <em>and</em> long-horizon refactor (Claude Code) &mdash; and the module&rsquo;s rule is that <b>the defense matters more than the pick</b>: a cited row plus your context beats an uncited &ldquo;obviously.&rdquo; And when no row wins, say &ldquo;any&rdquo; &mdash; cold onboarding is deliberately scored that way in SIM-08, and T-03 runs that comparison head-to-head so you stop guessing.</p>' +
+        '<p><strong>Defaults are for overturning &mdash; with evidence.</strong> This table&rsquo;s vocabulary already changed twice this month (mode renames, deprecations &mdash; PROGRESS.md keeps the receipts), which is exactly why modules cite it instead of hardcoding opinions. Your logged lab minutes are the only argument that beats it: &ldquo;the table says Cursor, but my timed runs say Copilot NES on this codebase&rdquo; is a win, not a heresy. That closes T-02: score the mode, pick the tool, measure both, and let the measurements argue. T-03 starts using the habit on a codebase you don&rsquo;t know.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-08'},
+    labA:{
+      title:'Row six, priced — Claude Code',
+      steps:[
+        'Run the CI row for real on a disposable clone: <code>claude -p &quot;Verify every request in seed.sql references an existing payer; report the count per payer and any orphans.&quot;</code> Reference run: 49s &mdash; 500 requests, MERIDIAN 271 + NORTHSTAR 229, zero orphans (it checked for nulls, 0s, and ids &ge; 3 unprompted).',
+        'Run it again with the cost envelope: append <code>--output-format json</code> and read <code>total_cost_usd</code>, <code>num_turns</code>, and <code>duration_ms</code>. Reference: <b>$0.89 &middot; 9 turns &middot; 50s</b>. Log all three &mdash; your first per-invocation price tag.',
+        'Write the fit line: this task belongs to a headless agent (exit code + stdout, schedulable, no IDE) &mdash; what would an IDE session have added? Reference answer: overhead, nothing else.',
+        'The misfit, priced: estimate the same envelope spent on M-2.4&rsquo;s caption tweak &mdash; same turns, same assembly, one line changed. Which layer should own it, per the table? Success: verdict reproduced, three numbers logged, both lines written.'
+      ]
+    },
+    labB:{
+      title:'The home surface — Copilot',
+      steps:[
+        'On your M-2.2 wreckage branch (local only, no push needed): stage the diff, let Copilot generate the commit message, then draft the PR description in Chat &mdash; it must name both property checks from that lab (the role gate, the API-down behavior) and your rework tally.',
+        'Time it, then write the fit line: the PR surface costs nothing extra <em>because you are already there</em> &mdash; that is what GitHub-native means in the table, and why VS 2026 org approval policies live on this row too.',
+        'Success: a PR description a reviewer could act on without opening the diff, the time logged, the fit line written.'
+      ]
+    },
+    labC:{
+      title:'The fast loop — Cursor, then the debrief',
+      steps:[
+        'The rapid-UI row, timed: three styling iterations on the review-queue table in priorauth-web (row spacing &rarr; hover affordance &rarr; status-badge emphasis) using Tab and quick edits only &mdash; no full agent missions. Reference bar: all three inside 10 minutes total. Stay out of the component internals flagged in M-2.4.',
+        'Watch for one cross-file moment &mdash; current docs say Tab &ldquo;predicts cross-file edits when changes in one file need updates in another&rdquo; &mdash; and note whether it fired for you.',
+        'The debrief: fill SIM-08&rsquo;s twelve cards, then write one dissent &mdash; a card where you would overturn the table&rsquo;s default &mdash; citing a row <em>and</em> one of your own logged times from these labs. Success: three iterations timed, the board scored, the dissent written like you&rsquo;d defend it in review.'
+      ]
+    },
+    checklist:[
+      'I ran the row-six task headless and logged wall time, dollars, and turns from the JSON envelope.',
+      'I produced a reviewer-ready PR description on Copilot&rsquo;s home surface and timed it.',
+      'I ran three timed Tab-layer UI iterations without invoking a full agent.',
+      'I scored the twelve drill cards and can cite a table row for every pick.',
+      'I wrote one dissent from the table&rsquo;s defaults backed by my own logged minutes.'
+    ],
+    quiz:[
+      {q:'&ldquo;Restyle the review-queue table until it feels right.&rdquo; The table&rsquo;s row, and its reason?',
+       options:['Claude Code &mdash; agents are strongest at UI','Copilot &mdash; everything visual defaults to NES','Cursor &mdash; the fast visual multi-file loop: Tab&rsquo;s multi-line and cross-file edits are built for iterate-until-right','Any &mdash; styling is undifferentiated'], answer:2},
+      {q:'The caption tweak costs ~30 seconds of typing. Why is it overpriced in a full agent turn &mdash; in any of the three tools?',
+       options:['The turn&rsquo;s overhead is constant regardless of task size &mdash; the recorded row-six run cost $0.89 and 9 turns; a one-line edit buys the same overhead for none of the benefit','Agents write worse CSS','Agents cannot edit single lines','Token prices are higher for small files'], answer:0},
+      {q:'A drill card honestly cites two table rows with different tools. What skill is being tested?',
+       options:['Picking the newest tool','Escalating to a team vote','Always preferring the first-listed row','The defense: a cited row plus your context beats an uncited &ldquo;obviously&rdquo; &mdash; contested cards accept either defended answer'], answer:3},
+      {q:'What legitimately overturns a tool-fit default?',
+       options:['A vendor keynote demo','Your own logged, repeatable task times on your codebase &mdash; the M-11.1 evidence pattern','A teammate&rsquo;s strong preference','The tool with the larger context window'], answer:1}
+    ]
   }
 ];
 
@@ -1802,6 +1886,89 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- SIM-08 · Tool-Fit Drill (spec: VISUALS.md) ----------
+   12 PA scenario cards vs the BLUEPRINT tool-fit table. Contested cards
+   accept either defended pick; card 6's numbers are the real recorded run
+   (recordings/m25-ci-run.txt: 49s, $0.89, 9 turns). Reduced motion:
+   pre-picked, revealed. */
+VISUALS['SIM-08'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TOOLS = [{k:'g',lbl:'CLAUDE'},{k:'c',lbl:'COPILOT'},{k:'p',lbl:'CURSOR'},{k:'a',lbl:'ANY'}];
+  const NAME = {g:'CLAUDE CODE', c:'COPILOT', p:'CURSOR', a:'ANY'};
+  const CARDS = [
+    {t:'Restyle the review-queue table — spacing, hover, badges — until it feels right', a:['p'], why:'<b>Review-queue restyle</b> → Cursor: the rapid-UI row. Tab&rsquo;s multi-line + cross-file edits are the iterate-until-right loop.'},
+    {t:'Break up ApprovalService.process() behind its tests', a:['g'], why:'<b>ApprovalService refactor</b> → Claude Code: the long multi-step backend row — plan gate, run-fix loop, checkpoints.'},
+    {t:'Approved plan → issue → branch → PR for team review', a:['c'], why:'<b>Plan to PR</b> → Copilot: the GitHub-native row; the PR surface is the product.'},
+    {t:'Hand-write a new DTO + mapper, completions on, staying in flow', a:['p','c'], why:'<b>Flow-state typing</b> → Cursor Tab first per the table (editorial), Copilot next edit suggestions a defensible close second. Contested by design.'},
+    {t:'&ldquo;Explain this repo&rdquo; — cold onboarding to priorauth-api', a:['a'], why:'<b>Cold onboarding</b> → ANY, honestly: the table refuses to rank it; T-03 runs the head-to-head.'},
+    {t:'Nightly CI job: seed-data integrity check into the build log', a:['g'], why:'<b>Nightly CI check</b> → Claude Code headless: the recorded run — 49s, $0.89, 9 turns, exit code + stdout. Row six exactly.'},
+    {t:'Generate boundary tests for EligibilityService coverage rules', a:['g'], why:'<b>Boundary test generation</b> → Claude Code: generation is a commodity; the run-fix loop against real Postgres is the differentiator.'},
+    {t:'Throwaway demo screen for tomorrow&rsquo;s stakeholder meeting', a:['p'], why:'<b>Demo screen</b> → Cursor, and vibe mode per M-2.4: marker ink on the rapid-UI row.'},
+    {t:'Review a teammate&rsquo;s PR: summary, risks, missing tests', a:['c'], why:'<b>PR review</b> → Copilot: you are already on the surface where the review lives.'},
+    {t:'One-off production backfill script plus its verification check', a:['g'], why:'<b>Backfill + check</b> → Claude Code, verify-twice mode: the backend and headless rows both apply.'},
+    {t:'Extract the API client into a package other teams import', a:['p','g'], why:'<b>Shared client extraction</b> → contested by design: multi-file frontend edit (Cursor) or long-horizon refactor (Claude Code). Either survives review if the defense cites its row. Plan-first regardless.'},
+    {t:'VS 2026 shop with org approval policy — pick the team&rsquo;s daily driver', a:['c'], why:'<b>The VS 2026 shop</b> → Copilot: enterprise controls, approval scopes, and Visual Studio integration are the row&rsquo;s whole point.'}
+  ];
+  mount.innerHTML =
+    '<div class="sim08" aria-label="Tool-fit drill: twelve prior-auth tasks">' +
+      '<div class="s8head"><span>SIM-08 · TOOL-FIT DRILL · 12 TASKS, PICK THE TOOL</span><span data-s8mode>' + (reduce ? 'STATIC' : 'DRILL') + '</span></div>' +
+      '<div data-s8cards>' + CARDS.map((c,i) =>
+        '<div class="s8card" data-card="' + i + '">' +
+          '<span class="s8task">' + c.t + '<span class="s8verdict" data-v="' + i + '"></span></span>' +
+          '<span class="s8picks">' + TOOLS.map(t =>
+            '<button class="s8pick ' + t.k + '" type="button" data-pick data-i="' + i + '" data-t="' + t.k + '" aria-pressed="false" aria-label="' + c.t.replace(/<[^>]*>/g,'') + ': pick ' + NAME[t.k] + '">' + t.lbl + '</button>').join('') +
+          '</span>' +
+        '</div>').join('') + '</div>' +
+      '<div class="s8ctrl">' +
+        '<button class="s8btn" type="button" data-reveal disabled>REVEAL</button>' +
+        '<button class="s8btn" type="button" data-reset>RESET</button>' +
+        '<span class="s8score" data-score aria-live="polite"></span>' +
+      '</div>' +
+      '<ul class="s8why" data-why hidden></ul>' +
+      '<div class="s8foot">What to notice: two cards accept either defended pick, and one honestly scores &ldquo;any.&rdquo; The defense is the skill.</div>' +
+    '</div>';
+  const picks = {};
+  let revealed = false;
+  const revealBtn = mount.querySelector('[data-reveal]');
+  const scoreEl = mount.querySelector('[data-score]');
+  const whyEl = mount.querySelector('[data-why]');
+  function refresh(){
+    CARDS.forEach((c,i) => {
+      const card = mount.querySelector('[data-card="' + i + '"]');
+      const v = mount.querySelector('[data-v="' + i + '"]');
+      card.querySelectorAll('[data-pick]').forEach(b => {
+        b.setAttribute('aria-pressed', String(picks[i] === b.dataset.t));
+        b.disabled = revealed;
+      });
+      card.classList.remove('hit','miss');
+      if(revealed){
+        const ok = c.a.indexOf(picks[i]) > -1;
+        card.classList.add(ok ? 'hit' : 'miss');
+        v.className = 's8verdict ' + (ok ? 'ok' : 'no');
+        v.innerHTML = ok ? ' ✓' : ' ✗ → ' + c.a.map(k => NAME[k]).join(' / ');
+      } else { v.innerHTML = ''; v.className = 's8verdict'; }
+    });
+    revealBtn.disabled = revealed || Object.keys(picks).length < CARDS.length;
+    if(revealed){
+      const right = CARDS.filter((c,i) => c.a.indexOf(picks[i]) > -1).length;
+      scoreEl.textContent = right + '/12 defended';
+      whyEl.hidden = false;
+      whyEl.innerHTML = CARDS.map(c => '<li>' + c.why + '</li>').join('');
+    } else { scoreEl.textContent = ''; whyEl.hidden = true; whyEl.innerHTML = ''; }
+  }
+  mount.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+    if(revealed) return;
+    picks[+b.dataset.i] = b.dataset.t; refresh();
+  }));
+  revealBtn.addEventListener('click', () => { revealed = true; refresh(); });
+  mount.querySelector('[data-reset]').addEventListener('click', () => {
+    Object.keys(picks).forEach(k => delete picks[k]); revealed = false;
+    mount.querySelector('[data-s8mode]').textContent = 'DRILL'; refresh();
+  });
+  if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
+  refresh();
 };
 
 /* ---------- ANIM-15 · The Two Boundaries (spec: VISUALS.md) ----------

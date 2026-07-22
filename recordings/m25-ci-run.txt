@@ -1,0 +1,50 @@
+M-2.5 HEADLESS CI RUN — method notes + raw captures
+====================================================
+Recorded: 2026-07-22 · Claude Code v2.1.216 (headless -p, default permission mode)
+Repo: pristine lab/start clone of priorauth-api (b1b13da) — M-1.6's staged
+phi/ + settings removed first; git status clean before the run.
+This is M-2.5's tool-fit row-6 task (headless / CI / scripted) run for real.
+
+RUN 1 — the integrity check (verbatim = labA step 1):
+  claude -p "Verify every request in seed.sql references an existing payer; report the count per payer and any orphans."
+Elapsed: 49s · exit 0. Verdict: all 500 requests resolve — MERIDIAN(1) 271 +
+NORTHSTAR(2) 229 = 500, and the agent explicitly checked for nulls, 0s, and
+ids >= 3 (none). Third independent derivation of 271/229 this week (script in
+m24, doc-read in m16, scan here) — all agree.
+
+RUN 2 — same mission with the cost envelope (verbatim = labA step 2):
+  claude -p "..." --output-format json
+Elapsed: 50s · total_cost_usd: 0.893096 · duration_ms: 46361 · num_turns: 9
+Same verdict. THE point of the recording: a real dollar-and-turn price tag on
+one headless agent invocation. This is the number the module's cost/speed
+beat stands on — an agent turn is the right spend for a CI integrity check,
+and visibly the wrong spend for a 30-second caption tweak.
+
+Doc claims verified same day: -p/--print is current headless mode
+(code.claude.com/docs/en/headless); --output-format json returns
+total_cost_usd + per-model breakdown. Copilot "next edit suggestions" (NES)
+is current naming incl. long-distance NES (code.visualstudio.com, Feb 2026);
+setting github.copilot.nextEditSuggestions.enabled. Cursor Tab officially:
+multi-line edits, "predicts cross-file edits when changes in one file need
+updates in another", jump-in-file next-edit prediction (cursor.com/docs/tab/
+overview); no "Composer" anywhere.
+
+RUN 1 RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------------
+All 500 requests reference an existing payer — there are no orphans.
+
+`seed.sql` inserts exactly two payers with identity-assigned ids: `MERIDIAN` (Meridian Health) gets id 1 and `NORTHSTAR` (Northstar Mutual) gets id 2. Scanning all 500 `insert into prior_auth_request` rows, the `payer_id` column (third value in each row) breaks down as:
+
+| Payer | payer_id | Requests |
+|---|---|---|
+| Meridian Health | 1 | 271 |
+| Northstar Mutual | 2 | 229 |
+| **Total** | | **500** |
+
+I also checked explicitly for any other value in that column — a null, a 0, or any id ≥ 3 — and found none, so the two counts fully account for all 500 rows and every foreign key resolves.
+---META--- exit=0 elapsed=49s
+
+RUN 2 JSON ENVELOPE (key fields)
+---------------------------------
+total_cost_usd: 0.893096 | duration_ms: 46361 | num_turns: 9
+(full JSON kept out of the repo - result text identical to run 1 in substance)
