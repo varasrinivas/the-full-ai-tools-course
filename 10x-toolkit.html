@@ -263,6 +263,28 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim07 .s7why b{color:var(--text);font-weight:500}
 .sim07 .s7foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-15: The Two Boundaries ============ */
+.anim15{--a15red:#d0705a;--a15green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim15{--a15red:#B0503C;--a15green:#2d7350}
+.anim15 .a15head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim15 .a15lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim15 .a15lname{font-size:10px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.anim15 .a15row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim15 .a15row.on{opacity:1;transform:none}
+.anim15 .a15chip{justify-self:start;font-size:9.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2)}
+.anim15 .a15gate{font-size:9px;letter-spacing:.1em;color:var(--faint);border-left:2px solid var(--line);border-right:2px solid var(--line);padding:2px 8px;min-width:66px;text-align:center}
+.anim15 .a15gate.deny{color:var(--a15red);border-color:var(--a15red)}
+.anim15 .a15gate.pass{color:var(--a15green);border-color:var(--a15green)}
+.anim15 .a15gate.human{color:var(--gold);border-color:var(--gold)}
+.anim15 .a15out{justify-self:start;font-size:9.5px;color:var(--dim)}
+.anim15 .a15out b{font-weight:500}
+.anim15 .a15out .ok{color:var(--a15green)}
+.anim15 .a15out .no{color:var(--a15red)}
+.anim15 .a15out .hum{color:var(--gold)}
+.anim15 .a15cap{font-size:10.5px;color:var(--faint);margin-top:8px}
+.anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim15 .a15replay:hover{border-color:var(--gold)}
+
 /* ============ ANIM-13: Copilot Mode Spectrum ============ */
 .anim13{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim13 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -730,6 +752,63 @@ const MODS = [
     ]
   },
   {
+    id:'M-1.6', path:'eng', track:'T-01', title:'Responsible AI in a regulated domain', minutes:35,
+    lastVerified:'2026-07-22',
+    concept:{
+      analogy:'A resident can draft the discharge order &mdash; fast, and often right. But no hospital lets the resident discharge the patient alone: the attending signs, and the signature is the accountability, not the draft. Your agent is the resident. It may draft anything in this codebase; it signs nothing. This module writes down the hospital rules &mdash; before the residents get busy.',
+      body:
+        '<p><strong>Two boundaries govern everything you will build here.</strong> The <b>data boundary</b>: what is allowed to leave your machine inside a prompt, a context window, or an index. The <b>decision boundary</b>: what the pipeline may conclude about a patient without a human in the loop. Every rule in this module is one of the two. M-2.4 will teach you to price the cost of being wrong; in this domain the currency is not rework &mdash; it is patients and protected data. That is why this module sits in Foundations, not in an appendix.</p>' +
+        '<p><strong>The data boundary: PHI never enters a prompt.</strong> Not pasted, not @-mentioned, not indexed. The teaching repos are synthetic <em>by design</em> &mdash; 500 fabricated requests, two fictional payers &mdash; so everything you have done since M-1.1 happened inside the safety rail. Each tool then gives you an enforcement layer: Claude Code <b>deny rules</b> (<code>&quot;deny&quot;: [&quot;Read(phi/**)&quot;]</code> in <code>.claude/settings.json</code>; they bind the built-in file tools and recognized shell reads like <code>cat</code> &mdash; not arbitrary subprocesses); Copilot <b>content exclusions</b> (repo Settings &rarr; Copilot on github.com, Business/Enterprise plans &mdash; and per current docs <em>&ldquo;currently not supported in Edit and Agent modes of Copilot Chat&rdquo;</em>); Cursor <b>Privacy Mode</b> (no training on your code, zero-data-retention agreements with providers &mdash; inference still transits their backend) plus <code>.cursorignore</code>, which Cursor itself calls best-effort: &ldquo;complete protection isn&rsquo;t guaranteed due to LLM unpredictability.&rdquo;</p>' +
+        '<p><strong>The recorded proof &mdash; and the gap no tool closes.</strong> In the recorded run, one deny rule was enough: asked to summarize <code>phi/patient-export.csv</code>, the agent was blocked, inferred <em>why</em> the rule existed (&ldquo;given it holds protected health information&rdquo;), declined to work around it, and recommended keeping it. Asked the same shape of question against <code>seed.sql</code>, it answered fully &mdash; 500 requests, MERIDIAN 271, NORTHSTAR 229 &mdash; from synthetic data alone. That is what a working boundary looks like: configured, not promised. Now the honest part: every mechanism above polices <em>the tool&rsquo;s</em> reads. None polices your clipboard. The last gate on the data boundary is the engineer &mdash; which is why this is a Foundations module and not a settings page.</p>' +
+        '<p><strong>The decision boundary is already in your codebase &mdash; go read it.</strong> In <code>ApprovalService</code>, the confidence score has exactly two powers: <b>&gt;= 0.85 (inclusive)</b> auto-approves, and anything less routes to <code>MANUAL_REVIEW</code>. There is no code path where the score alone produces <code>DENIED</code>. Denials come from two places only: deterministic coverage policy (<code>EligibilityService</code>, reason codes like <code>PAYER-001</code>) and a human reviewer (<code>resolveManualReview</code>, <code>REV-001</code>). Memorize the sentence: <em>the model may say yes alone; it may never say no alone.</em> It mirrors how regulators treat adverse determinations &mdash; and your repo drew the line correctly before you ever arrived.</p>' +
+        '<p><strong>You sign, and the gauge is not a clinician.</strong> M-1.4 made you sign the constitution; the same signature covers every diff an agent drafts. Six months from now, the auditor&rsquo;s &ldquo;who wrote this?&rdquo; is answered by <em>you</em>, backed by git history and session transcripts &mdash; this course&rsquo;s own recordings-never-fabricated rule is the working example. And treat the confidence score as what it is: a model output with skew to watch across payers and CPT codes, not a clinical judgment. The enforcement tooling deepens later &mdash; redaction hooks in M-10.2, MCP allowlists in M-10.3, the governance view in L-03 &mdash; but both boundaries, and the signature, start today.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-15'},
+    labA:{
+      title:'Build and test the boundary — Claude Code',
+      steps:[
+        'On a disposable clone of priorauth-api, stage the hazard safely: create <code>phi/patient-export.csv</code> with two obviously synthetic rows (fake refs and DOBs, a &ldquo;not a real person&rdquo; note column). Then write the guardrail &mdash; <code>.claude/settings.json</code>: <code>{&quot;permissions&quot;: {&quot;deny&quot;: [&quot;Read(phi/**)&quot;]}}</code>.',
+        'Test the boundary from outside it: <code>claude -p &quot;Summarize phi/patient-export.csv - what columns does it have and how many rows?&quot;</code>. You should see a refusal that names the block. Reference run (18s): the agent inferred the rule was compliance-driven, declined to work around it, and recommended keeping it. Note what it did <b>not</b> do: read the file and apologize afterward.',
+        'Prove work continues inside the rail: <code>claude -p &quot;Using only seed.sql, how many prior auth requests are in the fixture and how do they split by payer?&quot;</code>. Expected: 500 &mdash; MERIDIAN 271, NORTHSTAR 229 (reference run: 27s). Same codebase, zero PHI needed.',
+        'Write down the rule&rsquo;s documented limits: deny rules bind Claude&rsquo;s file tools and recognized shell reads (<code>cat</code>, <code>head</code>, <code>tail</code>, <code>sed</code>) &mdash; not a script the agent writes that opens files itself. Guardrail, not forcefield.',
+        'The decision-boundary drill: open <code>ApprovalService.java</code> and find the two-powers proof &mdash; the score branch that can only produce <code>AUTO_APPROVED</code> or <code>MANUAL_REVIEW</code>, and the two real sources of <code>DENIED</code> (eligibility policy, human reviewer). Success: the refusal captured, the seed answer correct at 500, the limits list, and the &ldquo;yes alone / never no alone&rdquo; line in your log with the line numbers that prove it.'
+      ]
+    },
+    labB:{
+      title:'Content exclusions — Copilot',
+      steps:[
+        'Copilot&rsquo;s layer is <b>content exclusion</b> &mdash; repo Settings &rarr; Copilot &rarr; Content exclusion on github.com, Business/Enterprise plans. Step one is knowing your coverage: check whether your plan has it at all. If it does not, that absence <em>is</em> the finding &mdash; record it and lean on the discipline rules.',
+        'If available: exclude <code>phi/**</code>, reload VS Code, and confirm the file draws no inline suggestions and Chat will not use its content. Then read the documented gaps aloud: exclusions are <em>&ldquo;currently not supported in Edit and Agent modes of Copilot Chat&rdquo;</em>, do not cover symlinks or remote filesystems, and semantic traces can still arrive indirectly via the IDE.',
+        'Write the comparison line for your log: <code>.gitignore</code> excludes nothing from AI context; content exclusion binds some Copilot surfaces, not all. Success: coverage known, exclusion tested (or its absence recorded), the gap list written.'
+      ]
+    },
+    labC:{
+      title:'Privacy Mode and .cursorignore — Cursor, then the debrief',
+      steps:[
+        'Enable <b>Privacy Mode</b> in Cursor&rsquo;s settings &mdash; on Free/Pro it is OFF by default, so check rather than assume (Business plans force it on). Per Cursor&rsquo;s data-use page it guarantees no training on your code and zero-data-retention agreements with providers; it does <b>not</b> stop your prompt and context transiting Cursor&rsquo;s backend for inference.',
+        'Add <code>phi/</code> to <code>.cursorignore</code> and verify by asking: the file should be blocked from Agent, Tab, inline edit, and @-mentions. Cursor&rsquo;s own wording keeps you honest &mdash; &ldquo;complete protection isn&rsquo;t guaranteed due to LLM unpredictability.&rdquo; (<code>.cursorindexingignore</code> is the weaker cousin: index-only.)',
+        'The tri-tool debrief: build the coverage table &mdash; which mechanism binds which surface (file tools, shell reads, inline, chat, agent mode, index) &mdash; and circle the cell every tool leaves open: you, pasting. Success: Privacy Mode state known and set, the ignore rule tested, the coverage table with the paste-gap circled in your log.'
+      ]
+    },
+    checklist:[
+      'I created the synthetic phi/ hazard and proved my tool&rsquo;s exclusion blocks it &mdash; by asking, not by trusting.',
+      'I proved real work continues from synthetic data alone (500 &mdash; 271/229).',
+      'I can list what each exclusion mechanism does NOT cover &mdash; including the clipboard no tool polices.',
+      'I found the two-powers proof in ApprovalService and logged &ldquo;yes alone / never no alone&rdquo; with line numbers.',
+      'I know who signs an agent-drafted diff in an audit &mdash; and which artifacts back the signature.'
+    ],
+    quiz:[
+      {q:'Why does this course run on synthetic seed data instead of scrubbed production exports?',
+       options:['Synthetic data is cheaper to generate','Because it makes the data boundary structural: if PHI never exists in the repo, no prompt, index, or paste can ever leak it','Production data would make the labs too slow','Regulators require synthetic data for training courses'], answer:1},
+      {q:'A request scores 0.62. What may the pipeline do &mdash; and what may it never do?',
+       options:['Auto-deny; the score is too low','Auto-approve if the payer allows it','Route it to MANUAL_REVIEW; the score alone may never produce DENIED &mdash; denials need policy or a human','Hold it until the score improves'], answer:2},
+      {q:'Deny rules, content exclusions, and .cursorignore share one gap. Which leak can none of them prevent?',
+       options:['Indexed embeddings','You pasting PHI into the prompt box yourself &mdash; the last gate is discipline','Agent mode reading files','Symlinked directories'], answer:1},
+      {q:'Six months on, an auditor asks who wrote a shipped diff the agent drafted. The answer?',
+       options:['The model vendor &mdash; they generated it','Nobody owns generated code','The agent, traceable by its session id','You &mdash; the signer, backed by git history and session transcripts'], answer:3}
+    ]
+  },
+  {
     id:'M-2.1', path:'eng', track:'T-02', title:'Vibe coding: when it works', minutes:35,
     lastVerified:'2026-07-20',
     concept:{
@@ -960,7 +1039,7 @@ const MODS = [
 
 const TRACKS = {
   eng: [
-    {id:'T-01',name:'Foundations & Setup',tag:'CLI, sessions, permission modes · VS Code + Visual Studio 2026 · day zero: make any repo AI-ready',mods:5,tools:'gcp'},
+    {id:'T-01',name:'Foundations & Setup',tag:'CLI, sessions, permission modes · VS Code + Visual Studio 2026 · day zero: make any repo AI-ready · responsible AI in healthcare',mods:6,tools:'gcp'},
     {id:'T-02',name:'Ways of Working: Vibe vs Spec',tag:'When to vibe, when to spec, which tool for which scenario — and watching vibe coding break live',mods:5,tools:'gcp'},
     {id:'T-03',name:'Reading & Analyzing Code',tag:'Codebase onboarding, architecture mapping, Plan Mode, Plan agent & Cursor codebase index',mods:5,tools:'gcp'},
     {id:'T-04',name:'Autocomplete & Inline Flow',tag:'Cursor Tab & Copilot next-edit, inline chat, multi-file edits — the autocomplete layer',mods:4,tools:'cp'},
@@ -984,7 +1063,7 @@ const TRACKS = {
 };
 
 const PATH_DESC = {
-  eng:'// 12 tracks · 59 modules · hands-on in both repos, three tools',
+  eng:'// 12 tracks · 60 modules · hands-on in both repos, three tools',
   lead:'// 6 tracks · 22 modules · for EMs, directors & principal-in-charge roles — no coding required'
 };
 const LEGENDS = {
@@ -1723,6 +1802,44 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-15 · The Two Boundaries (spec: VISUALS.md) ----------
+   Rows stage in sequentially, then loop. Data-lane deny beat and the seed
+   numbers are the real recorded run (recordings/m16-boundary-run.txt).
+   Decision-lane outcomes mirror ApprovalService/EligibilityService exactly. */
+VISUALS['ANIM-15'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim15" aria-label="The two boundaries: data and decision">' +
+      '<div class="a15head"><span>ANIM-15 · THE TWO BOUNDARIES</span>' +
+        '<button class="a15replay" data-a15replay>REPLAY ▸</button></div>' +
+      '<div class="a15lane">' +
+        '<div class="a15lname">1 · DATA BOUNDARY — WHAT MAY ENTER A PROMPT</div>' +
+        '<div class="a15row"><span class="a15chip">seed.sql</span><span class="a15gate pass">PASSES</span><span class="a15out"><b class="ok">→ context</b> · synthetic by design</span></div>' +
+        '<div class="a15row"><span class="a15chip">CLAUDE.md</span><span class="a15gate pass">PASSES</span><span class="a15out"><b class="ok">→ context</b> · the constitution rides along</span></div>' +
+        '<div class="a15row"><span class="a15chip">phi/patient-export.csv</span><span class="a15gate deny">DENY RULE</span><span class="a15out"><b class="no">never crosses</b> · recorded: agent refused &amp; said why</span></div>' +
+      '</div>' +
+      '<div class="a15lane">' +
+        '<div class="a15lname">2 · DECISION BOUNDARY — WHAT AUTOMATION DECIDES ALONE</div>' +
+        '<div class="a15row"><span class="a15chip">request · score 0.91</span><span class="a15gate pass">&ge; 0.85</span><span class="a15out"><b class="ok">AUTO_APPROVED</b> · yes, alone</span></div>' +
+        '<div class="a15row"><span class="a15chip">request · score 0.62</span><span class="a15gate human">&lt; 0.85</span><span class="a15out"><b class="hum">MANUAL_REVIEW</b> · a human decides</span></div>' +
+        '<div class="a15row"><span class="a15chip">request · PAYER-001</span><span class="a15gate deny">POLICY</span><span class="a15out"><b class="no">DENIED</b> · by coverage rule, never by score</span></div>' +
+      '</div>' +
+      '<div class="a15cap">The model may say yes alone; it may never say no alone. And PHI never rides in a prompt — the deny beat above is the real recorded run.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a15row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 350 + i*650)));
+    timers.push(setTimeout(play, 350 + rows.length*650 + 4500));
+  }
+  mount.querySelector('[data-a15replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- Progress store ---------- */
