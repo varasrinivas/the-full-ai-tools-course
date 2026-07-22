@@ -1,0 +1,45 @@
+M-2.4 VIBE-EXTREME RUN — method notes + raw capture
+====================================================
+Recorded: 2026-07-21 · Claude Code v2.1.216 (headless, --permission-mode acceptEdits)
+Repo: same fresh lab/start clone as the M-2.3 recording (b1b13da).
+This is the rubric's LOW-COST/SHORT-LIFE extreme: a genuinely disposable task,
+vibed on purpose, deleted after. Contrast recording: m23-spec-plan-run.txt
+(the HIGH/HIGH extreme on the same clone, same day).
+
+Command (verbatim, = labA step 2):
+  claude -p "Write a quick throwaway script that counts the requests in
+  seed.sql per payer and prints a table. Just make it work, I'll delete it
+  right after." --permission-mode acceptEdits
+
+Elapsed: 73s (1.2 min) · exit 0 · one file written: count_requests.ps1
+
+Honest wrinkle (kept): the sandbox denied every attempt the agent made to
+EXECUTE its script (direct, nested powershell, inlined one-liner) — it said so
+plainly and verified its numbers with regex counts against seed.sql instead.
+Accept-by-eye then had a real anchor: we ran the script ourselves and the
+table matched both the agent's regex tally and the file's own "500-request
+fixture" comment.
+
+  Payer                        Requests
+  ---------------------------- --------
+  Meridian Health (MERIDIAN)        271
+  Northstar Mutual (NORTHSTAR)      229
+  TOTAL                             500
+
+Disposition (the module's point): `rm count_requests.ps1` — working tree back
+to clean. Total artifact lifespan: ~6 minutes. No spec was ever the right call.
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+Done — the counts (verified with ripgrep against `seed.sql`, since the sandbox wouldn't let me execute the script or a Python interpreter directly):
+
+| Payer | Requests |
+|---|---|
+| Meridian Health (MERIDIAN) | 271 |
+| Northstar Mutual (NORTHSTAR) | 229 |
+| **Total** | **500** |
+
+The total matches the "500-request fixture" comment at the top of the file, and those are the only two payers in the seed data.
+
+The throwaway script is at `count_requests.ps1` in the repo root. It reads `seed.sql`, assigns payer ids in insert order (matching the identity column), tallies the third value column (`payer_id`) of each `prior_auth_request` insert, and prints the same table. Every way I had to run it was blocked by the command sandbox (direct invocation, nested `powershell -File`, and an inlined one-liner all got denied), so I confirmed the numbers with regex counts instead — but it'll run fine for you with `.\count_requests.ps1`. Delete it whenever you're done.
+---META--- exit=0 elapsed=73s

@@ -235,6 +235,34 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim02 .s2replay:hover{border-color:var(--gold)}
 .sim02 .s2foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-07: Rubric Board ============ */
+.sim07{--s7red:#d0705a;--s7green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim07{--s7red:#B0503C;--s7green:#2d7350}
+.sim07 .s7head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim07 .s7tray{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:26px}
+.sim07 .s7card{font-family:var(--mono);font-size:10px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--text);cursor:pointer}
+.sim07 .s7card[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.sim07 .s7card:disabled{opacity:.45;cursor:default}
+.sim07 .s7grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px}
+.sim07 .s7axis{font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-align:center;align-self:center}
+.sim07 .s7axis.y{writing-mode:vertical-rl;transform:rotate(180deg);grid-row:1/3}
+.sim07 .s7q{border:1px dashed var(--line);border-radius:10px;background:var(--panel);padding:8px;min-height:88px;text-align:left;cursor:pointer;font-family:var(--mono)}
+.sim07 .s7q:hover{border-color:var(--gold)}
+.sim07 .s7q .qname{display:block;font-size:10px;letter-spacing:.13em;color:var(--text);margin-bottom:2px}
+.sim07 .s7q .qcap{display:block;font-size:9px;color:var(--faint);margin-bottom:6px}
+.sim07 .s7chip{display:inline-block;font-size:9px;padding:1px 7px;margin:2px 3px 0 0;border-radius:5px;border:1px solid var(--line);color:var(--dim)}
+.sim07 .s7chip.hit{border-color:var(--s7green);color:var(--s7green)}
+.sim07 .s7chip.miss{border-color:var(--s7red);color:var(--s7red)}
+.sim07 .s7ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim07 .s7btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim07 .s7btn:hover:not(:disabled){border-color:var(--gold)}
+.sim07 .s7btn:disabled{opacity:.45;cursor:default}
+.sim07 .s7score{font-size:10.5px;color:var(--dim)}
+.sim07 .s7why{margin-top:10px;font-size:10.5px;color:var(--dim);line-height:1.55;list-style:none;padding:0}
+.sim07 .s7why li{margin-bottom:5px}
+.sim07 .s7why b{color:var(--text);font-weight:500}
+.sim07 .s7foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-13: Copilot Mode Spectrum ============ */
 .anim13{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim13 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -869,6 +897,63 @@ const MODS = [
        options:['VS Code Plan agent &mdash; /memories/session/plan.md','Cursor Plan Mode&rsquo;s default save location','Claude Code headless &mdash; ~/.claude/plans/','Visual Studio Plan agent &mdash; .copilot/plans/plan-{title}.md'], answer:3},
       {q:'M-2.2 measured rework 24; the plan-gated run measured ~0. Where did the rework go?',
        options:['The model improved between sessions','Into the plan &mdash; reversing a decision there costs one edit to a document instead of churn on working code','The threshold task was easier than the auth task','Nowhere; it will show up later regardless'], answer:1}
+    ]
+  },
+  {
+    id:'M-2.4', path:'eng', track:'T-02', title:'The decision rubric', minutes:35,
+    lastVerified:'2026-07-21',
+    concept:{
+      analogy:'The pharmacy hands you ibuprofen without a single form, and demands prior authorization for a forty-thousand-dollar biologic. The system is not pricing effort &mdash; dispensing either takes a minute. It prices the cost of being wrong and how long the consequences last. That is the whole rubric: your codebase deserves the same triage the formulary already runs &mdash; paperwork proportional to blast radius, never to line count.',
+      body:
+        '<p><strong>Two axes decide the paperwork.</strong> Cost of being wrong: blast radius, reversibility, and above all whether failure is even <em>visible</em> &mdash; M-2.2&rsquo;s auth gate failed silently for every user while 25/25 tests passed. Lifespan: how long the code &mdash; and the silent decisions inside it &mdash; outlives the session that wrote it. Score both before the first prompt. And notice what is <em>not</em> an axis: size. The one-character boundary change at 0.85 is near-maximal risk; a whole throwaway report script is near-zero.</p>' +
+        '<p><strong>T-02 already populated the board.</strong> Low cost, short life &rarr; <b>vibe</b>: the M-2.1 demo chart (4.1 min, the right call) and this module&rsquo;s recorded seed-report script &mdash; 1.2 minutes, tally anchored to the seed&rsquo;s own 500-request fixture (MERIDIAN 271 + NORTHSTAR 229), then deleted; total artifact lifespan about six minutes. High cost, long life &rarr; <b>spec</b>: M-2.2&rsquo;s auth requirement (vibed anyway: rework 24, a phantom endpoint) and M-2.3&rsquo;s threshold override (24-line spec, latent boundary bug caught in 4.5 minutes). The rubric is not theory &mdash; every corner of the board has a recording and a number from this track.</p>' +
+        '<p><strong>The off-diagonal cells are where judgment lives.</strong> Low cost but long-lived &mdash; a denial-notice copy change, a shared API-client extraction &mdash; takes <b>plan-first</b>: the M-2.3 gate without the full form, because silent decisions outlive you even when failure is cheap and visible. High cost but short-lived &mdash; a one-off production backfill &mdash; is <b>verify-twice</b> territory: the script dies after one run, the damage does not, so you spec the <em>check</em>, not the code.</p>' +
+        '<p><strong>Prototypes do not harden by prompt.</strong> The moment a vibe artifact&rsquo;s quadrant changes &mdash; the demo gets promoted, the script gets scheduled &mdash; you re-derive it through a spec: keep the learning, rebuild the code. T-02&rsquo;s receipts are the proof: the same widget cost 4.1 vibe-minutes as marker ink and 24 rework-lines as production. Spike, then spec. What you never do is feed &ldquo;now make it production-ready&rdquo; to the same session and hope &mdash; M-2.2 is the recording of that hope.</p>' +
+        '<p><strong>Make it a one-line habit.</strong> Every task in your log gets a scored line &mdash; <code>cost:high &middot; life:years &rarr; spec</code> &mdash; ten seconds that decides minutes-or-form before any tool opens. SIM-07 drills it on eight PA tasks with the real T-02 numbers attached. M-2.5 adds the second question (which tool); your M-11.1 baseline will price both answers; and L-1.2 reads this same board as a risk register &mdash; your one-line scores are what that conversation is made of.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-07'},
+    labA:{
+      title:'Run both extremes — Claude Code',
+      steps:[
+        'Before any tool opens, score these four on both axes, one line each: (a) a throwaway script counting seed.sql requests per payer; (b) the per-payer threshold override; (c) a hover state on the review-queue table; (d) a one-off backfill of a production column. Check yourself against SIM-07&rsquo;s reveal.',
+        'Run the vibe extreme exactly as recorded, on a disposable clone of priorauth-api: <code>claude -p &quot;Write a quick throwaway script that counts the requests in seed.sql per payer and prints a table. Just make it work, I&rsquo;ll delete it right after.&quot; --permission-mode acceptEdits</code>. Reference run: 1.2 min. The headless sandbox may block the agent from executing its own script &mdash; the recorded agent said so plainly and verified its numbers by regex instead. Honesty from the tool is part of this contract.',
+        'Accept by eye &mdash; and notice the eye has an anchor here: run the script yourself. The total must be 500 (the seed file&rsquo;s own fixture comment) and the payers must sum to it (reference: MERIDIAN 271 + NORTHSTAR 229). That anchor is exactly why this task is vibe-safe: correctness is fully visible in the output.',
+        'The disposition move: delete the script, then <code>git status --porcelain</code> &mdash; clean. Log the artifact&rsquo;s lifespan (reference: ~6 minutes). If deleting felt wasteful, re-read the M-2.2 row of the board: keeping it is how marker ink becomes unowned production code.',
+        'The spec extreme you already ran &mdash; M-2.3&rsquo;s plan run, same clone, same day. Put the two lines side by side in your log: <em>1.2 min, no paperwork, deleted</em> vs <em>4.5 min, 24-line spec, latent bug found</em>. Success: four scored lines, the tally verified at 500, a clean tree, both extremes logged.'
+      ]
+    },
+    labB:{
+      title:'The extremes in Copilot',
+      steps:[
+        'VS Code on the same clone: <b>Agent</b> from the agents dropdown, the same throwaway mission verbatim. Run the script it writes, check the 500 anchor, <b>Keep</b> &mdash; then delete the file anyway, and notice whether Keep-then-delete felt strange. That feeling is the rubric working.',
+        'Now a plan-first cell: take the denial-notice copy change through the <b>Plan</b> agent (<code>/plan</code>), read the one-screen plan, and decline <b>start the implementation</b>. One gate, no form &mdash; the whole ceremony this quadrant needs.',
+        'Success: script verified against the anchor and deleted; a plan you read and declined; both quadrant choices defended in one line each.'
+      ]
+    },
+    labC:{
+      title:'The extremes in Cursor, then your backlog',
+      steps:[
+        'Cursor on priorauth-web: the low-stakes cell is a caption tweak in the app header (<code>src/App.tsx</code>, the <code>topbar</code>) &mdash; Agent, accept by eye in the browser, done. Keep away from the chart, gauge, and table components: their quadrants are not what they look like, and T-05/T-06 will show you why.',
+        'The long-life cell: &ldquo;extract the API client for shared reuse&rdquo; through <b>Plan Mode</b> (Shift+Tab). Read the plan, do <b>not</b> press <b>Build</b> &mdash; count how many silent decisions it surfaces for a &ldquo;simple&rdquo; extraction. Each one is a thing that would have shipped unrecorded under vibe.',
+        'Fill SIM-07&rsquo;s board to 8/8 (or argue your misses in writing &mdash; a defended miss beats a lucky hit), then add your own backlog&rsquo;s top three tasks with scored rubric lines. Success: the board revealed, three backlog lines in your log, the header tweak visible in your browser.'
+      ]
+    },
+    checklist:[
+      'I scored all four drill tasks on both axes before any tool opened.',
+      'I ran the vibe extreme, verified the tally against the 500-request anchor, and deleted the artifact.',
+      'I ran a plan-first gate on a long-lived-but-cheap task and declined implementation.',
+      'I can say in one line why size is not an axis &mdash; the 0.85 one-character counterexample.',
+      'My backlog&rsquo;s top three tasks now carry scored rubric lines in my log.'
+    ],
+    quiz:[
+      {q:'Changing <code>&gt;</code> to <code>&gt;=</code> at 0.85 is a one-character diff. Where does it land on the board?',
+       options:['Vibe &mdash; a diff that small is a quick edit','Plan-first &mdash; small but long-lived','Verify-twice &mdash; risky, but it only runs once','Spec &mdash; near-zero size, near-maximal cost: every request scoring exactly 0.85 re-routes, and the rule lives for years'], answer:3},
+      {q:'Your PM promotes the M-2.1 demo widget into the payer portal. What does the rubric say happens next?',
+       options:['Its quadrant changed, so it gets re-derived through a spec &mdash; keep the learning, rebuild the code; M-2.2 is the recording of the alternative','Keep vibing &mdash; it already works in the demo','Freeze it exactly as-is; touching it adds risk','Rewrite it by hand so a human owns it'], answer:0},
+      {q:'&ldquo;Only reviewers may see denial reasons&rdquo; moved the widget across the board. Which axis, and why?',
+       options:['Lifespan &mdash; auth code simply lives longer','Cost-of-wrong &mdash; the failure went invisible: accepted-by-eye cannot see who <em>can&rsquo;t</em> see a thing','Neither &mdash; the task just got bigger','Both moved equally'], answer:1},
+      {q:'The vibe-coded seed-report script has printed its tally. Correct disposition?',
+       options:['Commit it to /scripts for next time','Add tests so it hardens over time','Delete it &mdash; the recorded artifact lived about six minutes; keeping it converts marker ink into unowned production code','Refactor it into an API endpoint'], answer:2}
     ]
   }
 ];
@@ -1554,6 +1639,90 @@ VISUALS['TERM-04'] = function(mount, opts){
   mount.querySelector('[data-skip]').addEventListener('click', renderAll);
   mount.querySelector('[data-replay]').addEventListener('click', play);
   play();
+};
+
+/* ---------- SIM-07 · Rubric Board (spec: VISUALS.md) ----------
+   Card numbers are the real T-02 recordings: M-2.1 4.1 min, M-2.2 rework 24,
+   M-2.3 4.5-min plan, M-2.4 1.2-min script (recordings/). Click a card, then
+   a quadrant; reveal scores the board. Reduced motion: pre-placed, revealed. */
+VISUALS['SIM-07'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const QUADS = [
+    {k:'verify', name:'VERIFY TWICE', cap:'high cost · short life'},
+    {k:'spec',   name:'SPEC',         cap:'high cost · long life'},
+    {k:'vibe',   name:'VIBE',         cap:'low cost · short life'},
+    {k:'plan',   name:'PLAN-FIRST',   cap:'low cost · long life'}
+  ];
+  const CARDS = [
+    {n:'Demo chart widget', q:'vibe',   why:'<b>Demo chart widget (M-2.1)</b> — marker ink: failure fully visible, demo lifespan. Real run: vibed in 4.1 min; the right call.'},
+    {n:'Same widget + auth', q:'spec',  why:'<b>Same widget + auth &amp; resilience (M-2.2)</b> — failure went invisible and the code went live. Real cost of vibing it anyway: rework 24, one phantom endpoint.'},
+    {n:'Per-payer threshold override', q:'spec', why:'<b>Per-payer threshold override (M-2.3)</b> — routes real approvals for years. The 24-line spec caught a latent boundary bug in 4.5 min.'},
+    {n:'Throwaway seed report', q:'vibe', why:'<b>Throwaway seed-report script (M-2.4)</b> — real run: 1.2 min, tally anchored to the 500-request fixture, deleted. Artifact lifespan ≈ 6 minutes.'},
+    {n:'One-off prod backfill', q:'verify', why:'<b>One-off production backfill</b> — the script dies after one run; a wrong run is forever. Spec the check, not the code.'},
+    {n:'Denial-notice copy change', q:'plan', why:'<b>Denial-notice copy change</b> — patients read it for years, but failure is visible and reversal is one commit. One gate, no form.'},
+    {n:'&gt; to &gt;= at 0.85', q:'spec', why:'<b>One character at the 0.85 boundary</b> — near-zero size, near-maximal cost: every request scoring exactly 0.85 re-routes. Size is not an axis.'},
+    {n:'Extract shared API client', q:'plan', why:'<b>Shared API-client extraction</b> — other teams import your silent decisions for years; immediate blast radius small. The plan is the artifact you circulate.'}
+  ];
+  mount.innerHTML =
+    '<div class="sim07" aria-label="Rubric board: cost of being wrong times lifespan of code">' +
+      '<div class="s7head"><span>SIM-07 · THE RUBRIC BOARD · COST-OF-WRONG × LIFESPAN</span><span data-s7mode>' + (reduce ? 'STATIC' : 'DRILL') + '</span></div>' +
+      '<div class="s7tray" data-tray role="group" aria-label="Task cards — select one, then choose a quadrant"></div>' +
+      '<div class="s7grid">' +
+        '<span class="s7axis y">COST OF BEING WRONG ↑</span>' +
+        QUADS.map(q =>
+          '<button class="s7q" type="button" data-q="' + q.k + '" aria-label="Place selected card: ' + q.name + ', ' + q.cap + '">' +
+            '<span class="qname">' + q.name + '</span><span class="qcap">' + q.cap + '</span>' +
+            '<span data-drop="' + q.k + '"></span>' +
+          '</button>').join('') +
+        '<span></span><span class="s7axis" style="grid-column:2/4">LIFESPAN: HOURS ⟶ YEARS</span>' +
+      '</div>' +
+      '<div class="s7ctrl">' +
+        '<button class="s7btn" type="button" data-reveal disabled>REVEAL</button>' +
+        '<button class="s7btn" type="button" data-reset>RESET</button>' +
+        '<span class="s7score" data-score aria-live="polite"></span>' +
+      '</div>' +
+      '<ul class="s7why" data-why hidden></ul>' +
+      '<div class="s7foot">What to notice: three of the eight belong to spec — none of them because of size. Place all eight, then reveal.</div>' +
+    '</div>';
+  const tray = mount.querySelector('[data-tray]');
+  const whyEl = mount.querySelector('[data-why]');
+  const scoreEl = mount.querySelector('[data-score]');
+  const revealBtn = mount.querySelector('[data-reveal]');
+  let placed = {}, selected = null, revealed = false;
+  function paint(){
+    tray.innerHTML = CARDS.map((c,i) =>
+      '<button class="s7card" type="button" data-c="' + i + '" aria-pressed="' + String(selected === i) + '"' +
+      (placed[i] !== undefined || revealed ? ' disabled' : '') + '>' + c.n + '</button>').join('');
+    QUADS.forEach(q => {
+      mount.querySelector('[data-drop="' + q.k + '"]').innerHTML = CARDS.map((c,i) => {
+        if(placed[i] !== q.k) return '';
+        const cls = revealed ? (c.q === q.k ? ' hit' : ' miss') : '';
+        const fix = revealed && c.q !== q.k ? ' → ' + QUADS.find(x => x.k === c.q).name : '';
+        return '<span class="s7chip' + cls + '">' + c.n + fix + '</span>';
+      }).join('');
+    });
+    revealBtn.disabled = revealed || Object.keys(placed).length < CARDS.length;
+    if(revealed){
+      const right = CARDS.filter((c,i) => placed[i] === c.q).length;
+      scoreEl.textContent = right + '/' + CARDS.length + ' placed right';
+      whyEl.hidden = false;
+      whyEl.innerHTML = CARDS.map(c => '<li>' + c.why + '</li>').join('');
+    } else { scoreEl.textContent = ''; whyEl.hidden = true; whyEl.innerHTML = ''; }
+    tray.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', () => {
+      selected = (selected === +b.dataset.c) ? null : +b.dataset.c; paint();
+    }));
+  }
+  mount.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => {
+    if(selected === null || revealed) return;
+    placed[selected] = b.dataset.q; selected = null; paint();
+  }));
+  revealBtn.addEventListener('click', () => { revealed = true; paint(); });
+  mount.querySelector('[data-reset]').addEventListener('click', () => {
+    placed = {}; selected = null; revealed = false;
+    mount.querySelector('[data-s7mode]').textContent = 'DRILL'; paint();
+  });
+  if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
+  paint();
 };
 
 /* ---------- Progress store ---------- */

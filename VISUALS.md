@@ -11,6 +11,7 @@ All components: vanilla JS + SVG/canvas, no libraries, embedded in the single-fi
 | SIM-04 | Threshold Slider | Drag AUTO_APPROVE_THRESHOLD; 60 request dots re-route live between approve/manual lanes. The 0.85-exactly dot blinks; toggle `>` vs `>=` and watch it switch lanes. | M-5.2, L-1.1 |
 | SIM-05 | Subagent Org Chart | Click "delegate": parent spawns reviewer/tester/security children, each with its own mini context bar filling independently; summaries flow back; parent bar stays lean. Toggle "no subagents" to see the parent bar flood. | M-9.4, M-9.5 |
 | SIM-06 | Session Bill Meter | Replays a lab as a ticking cost meter; spikes annotated ("pasted 40K-token log ↑"). Toggle "reference by path instead" and re-run for the cheaper line. | M-8.2, L-4.1 |
+| SIM-07 | Rubric Board | 2×2 quadrant drill (x = lifespan, y = cost-of-wrong; quadrants vibe / plan-first / verify-twice / spec). Eight PA task cards placed click-to-place (keyboard-operable, no drag), then reveal scores the board with one-line rationales; the four T-02 cards carry their real recorded numbers (4.1-min vibe, rework 24, 4.5-min plan, 1.2-min throwaway script). Reset button; reduced-motion = pre-placed revealed board. | M-2.4, L-1.2 candidate |
 
 ## Animated diagrams (loop / scroll-triggered)
 | ID | Name | Behavior | Modules |
