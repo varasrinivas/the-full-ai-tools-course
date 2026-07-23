@@ -1,0 +1,61 @@
+M-5.3 RUNTIME FRAME AT THE BOUNDARY — method notes + raw capture
+=================================================================
+Recorded: 2026-07-23 · priorauth-api lab/start clone, branch drill/m53-probe
+(temporary probe test, deleted after capture; clone verified pristine).
+
+WHY: M-5.3 teaches runtime validation vs static analysis. Visual Studio's
+Debugger Agent is the module's lead surface but cannot be run on this machine
+(no VS install) — so the CLAUDE-side equivalent was run for real: a temporary
+JUnit probe that prints the same values a paused debugger frame would show in
+the Locals window at the threshold decision.
+
+PROBE (temporary test, mirrors labA step 2): constructs a request at
+PT-2001 / 97110 / MERIDIAN with confidenceScore = ApprovalService
+.AUTO_APPROVE_THRESHOLD (the constant, never the literal), mocks eligibility
+to pass, runs process(), and prints the frame.
+
+REAL OUTPUT (verbatim, unedited):
+
+  16:41:37.296 [main] INFO com.priorauth.service.ApprovalService --
+      PA request for patientRef=PT-2001 routed to MANUAL_REVIEW (score 0.85 < 0.85)
+  === RUNTIME FRAME AT THE THRESHOLD DECISION ===
+    score                  = 0.85
+    AUTO_APPROVE_THRESHOLD = 0.85
+    score >  threshold     = false
+    score >= threshold     = true
+    Double.compare         = 0
+    resulting status       = MANUAL_REVIEW
+  ===============================================
+  Tests run: 1, Failures: 0 · BUILD SUCCESS
+
+WHAT THIS PROVES (all three are module beats):
+ 1. PREDICTION CONFIRMED: M-3.4's static trace predicted the routing log would
+    print the literally-false "score 0.85 < 0.85". Here it is, emitted by the
+    running application, unprompted, in the same output as the frame.
+ 2. FLOAT HYPOTHESIS KILLED: Double.compare(score, threshold) == 0 — the two
+    values are exactly equal. "Maybe it's floating-point drift" is the first
+    hypothesis a debugger session exists to test; runtime answers it in one
+    line, and the answer is no.
+ 3. BOTH OPERATORS OBSERVED IN THE SAME FRAME: > is false and >= is true on
+    the identical pair of values. The bug is not inference; it is observation.
+
+DOC VERIFICATION (Visual Studio, same day, learn.microsoft.com):
+ - Debugger Agent "provides an end-to-end agentic workflow that validates bugs
+   against real runtime behavior instead of relying on static analysis."
+ - Six documented steps: Context injection · Autonomous reproducer ·
+   Hypothesis and instrumentation (tracepoints + conditional breakpoints) ·
+   Runtime validation (live telemetry) · Targeted correction ("a precise fix
+   at the exact failure point rather than broad refactoring") ·
+   **Final human validation** ("You rerun the scenario and confirm the fix in
+   the live environment alongside the agent").
+   >>> NOTE FOR THE COURSE: step six is exactly what M-5.1 discovered live
+   (the agent could not close the verify station; a human did). Microsoft
+   ships it as a required step. Convergent evidence, not coincidence.
+ - Entry: View > GitHub Copilot Chat, pick **Debugger** from the mode dropdown
+   (lower-left), or @debugger in Agent mode. Accepts a GitHub/Azure DevOps
+   issue link or natural language.
+ - Conditional breakpoints: "select the expression field and Copilot starts
+   working on suggestions" (doc example: item == "Test").
+ - Copilot "understands call stacks, frames, variable names, and values";
+   Ask Copilot / Analyze with Copilot buttons; inline Chat "#" references IDE
+   surfaces such as the Locals window. Prereq: VS 2022 17.8+ / VS 2026.

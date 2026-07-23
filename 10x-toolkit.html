@@ -332,6 +332,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-19: Static vs Runtime Evidence ============ */
+.anim19{--a19red:#d0705a;--a19green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim19{--a19red:#B0503C;--a19green:#2d7350}
+.anim19 .a19head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim19 .a19cols{display:flex;gap:10px;flex-wrap:wrap}
+.anim19 .a19col{flex:1;min-width:210px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px}
+.anim19 .a19cname{font-size:10px;letter-spacing:.13em;margin-bottom:8px}
+.anim19 .a19col.static .a19cname{color:var(--dim)}
+.anim19 .a19col.runtime .a19cname{color:var(--cyan)}
+.anim19 .a19line{font-size:10px;color:var(--dim);line-height:1.65;padding:3px 0;border-bottom:1px dashed var(--line);opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.anim19 .a19line:last-child{border-bottom:none}
+.anim19 .a19line.on{opacity:1;transform:none}
+.anim19 .a19line b{color:var(--text);font-weight:500}
+.anim19 .a19line .no{color:var(--a19red)}
+.anim19 .a19line .yes{color:var(--a19green)}
+.anim19 .a19steps{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+.anim19 .a19step{font-size:9px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim);opacity:0;transition:opacity .3s}
+.anim19 .a19step.on{opacity:1}
+.anim19 .a19step.human{border-color:var(--gold);color:var(--gold);font-weight:700}
+.anim19 .a19cap{font-size:10.5px;color:var(--faint);margin-top:10px}
+.anim19 .a19replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim19 .a19replay:hover{border-color:var(--gold)}
+
 /* ============ SIM-04: Threshold Slider ============ */
 .sim04{--s4red:#d0705a;--s4green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim04{--s4red:#B0503C;--s4green:#2d7350}
@@ -1876,6 +1899,61 @@ const MODS = [
       {q:'Why did this bug survive a full green suite for so long?',
        options:['The tests were disabled','Nobody read the javadoc','Every score in the suite sat at least 0.05 away from the threshold &mdash; the one value where the two operators disagree was never tested','Testcontainers skipped the service tests'], answer:2}
     ]
+  },
+  {
+    id:'M-5.3', path:'eng', track:'T-05', title:'Debugger agent (Visual Studio)', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'The chart says the patient is stable. The monitor says otherwise. A good clinician does not argue with the monitor &mdash; the chart records what someone concluded, the monitor reports what is happening. Everything T-03 taught you was chart-reading. This module attaches the monitor.',
+      body:
+        '<p><strong>Static reasoning ends in a hypothesis; runtime ends in an observation.</strong> Microsoft states the distinction plainly: the <b>Debugger Agent</b> &ldquo;provides an end-to-end agentic workflow that validates bugs against real runtime behavior instead of relying on static analysis.&rdquo; Reach it in Visual Studio via <b>View &gt; GitHub Copilot Chat</b> and the <b>Debugger</b> mode dropdown, or <code>@debugger</code> in Agent mode &mdash; starting from a GitHub or Azure DevOps issue link, or plain natural language.</p>' +
+        '<p><strong>The same bug, seen from the other side.</strong> M-3.4 <em>predicted</em> from reading alone that the routing log would print &ldquo;score 0.85 &lt; 0.85&rdquo;. The recorded runtime frame &mdash; the values a paused debugger shows in Locals &mdash; confirms it word for word, and adds what no amount of reading could settle: <code>score = 0.85</code>, <code>AUTO_APPROVE_THRESHOLD = 0.85</code>, <code>&gt;</code> is <b>false</b> and <code>&gt;=</code> is <b>true</b> on the identical pair, and <code>Double.compare = 0</code> &mdash; exactly equal. That last line kills the first hypothesis anyone reaches for at a numeric boundary (&ldquo;it must be floating-point drift&rdquo;) in one observation. Prediction is cheap; confirmation is what a debugger sells.</p>' +
+        '<p><strong>Six steps, and the last one is you.</strong> The documented loop: <em>context injection</em> (map the issue to your source), <em>autonomous reproducer</em> (build a minimal scenario if repro steps are missing), <em>hypothesis and instrumentation</em> (tracepoints and conditional breakpoints to capture runtime state), <em>runtime validation</em> (run it, read live telemetry), <em>targeted correction</em> (&ldquo;a precise fix at the exact failure point rather than broad refactoring&rdquo;), and <em>final human validation</em> &mdash; &ldquo;you rerun the scenario and confirm the fix in the live environment alongside the agent.&rdquo; Read that last step twice. M-5.1 discovered it the hard way when an agent could not close its own verify station; here it is shipped as a required product step. Two independent routes to the same rule.</p>' +
+        '<p><strong>Conditional breakpoints are the runtime form of a boundary test.</strong> Insert a conditional breakpoint and, per the docs, &ldquo;select the expression field and Copilot starts working on suggestions&rdquo; specific to your code. The expression that matters here is the one that fires only on the 13 rows: <code>score == AUTO_APPROVE_THRESHOLD</code>. Same instinct as M-5.2&rsquo;s test, different instrument &mdash; and it answers a question the unit test could not. Remember mutation B: the suite pins the operator but nothing pins the <em>value</em>. A breakpoint watching the live constant sees the number itself.</p>' +
+        '<p><strong>Know what you actually have.</strong> This is the Visual Studio surface, and it is genuinely ahead here &mdash; Copilot &ldquo;understands call stacks, frames, variable names, and values,&rdquo; with <b>Analyze with Copilot</b> on exceptions, call-stack analysis, Locals assistance, and <code>#</code> references to IDE surfaces in inline chat. VS Code and Cursor give you the editor debugger with AI chat beside it, not a debugger-driving agent. Claude Code has no debugger at all &mdash; its honest equivalent is the instrumented run: add a probe, execute, read real values, delete the probe. That is exactly how the frame above was captured, and it is what labA does.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-19'},
+    labA:{
+      title:'The instrumented run — Claude Code&rsquo;s equivalent',
+      steps:[
+        'Claude Code cannot attach a debugger, so build the nearest honest equivalent on a scratch branch: ask it for a <em>temporary probe test</em> that constructs a request at exactly <code>ApprovalService.AUTO_APPROVE_THRESHOLD</code> and prints the frame &mdash; score, threshold, both comparison results, <code>Double.compare</code>, and the resulting status.',
+        'Run it and read the real output. Reference capture: <code>score = 0.85</code>, <code>threshold = 0.85</code>, <code>&gt;</code> false, <code>&gt;=</code> true, <code>Double.compare = 0</code>, status <code>MANUAL_REVIEW</code> &mdash; plus the application&rsquo;s own log line appearing unprompted: <em>&ldquo;routed to MANUAL_REVIEW (score 0.85 &lt; 0.85)&rdquo;</em>.',
+        'Note which line settles which question: <code>Double.compare = 0</code> is the one that ends the floating-point theory. Then delete the probe &mdash; instrumentation is scaffolding, not a deliverable &mdash; and confirm a clean tree. Success: the frame captured in your log, the float theory closed by observation, probe removed.'
+      ]
+    },
+    labB:{
+      title:'The Debugger Agent — Visual Studio',
+      steps:[
+        'Open the priorauth-api solution in Visual Studio. <b>View &gt; GitHub Copilot Chat</b>, choose <b>Debugger</b> from the mode dropdown (or type <code>@debugger</code> in Agent mode), and describe the bug in natural language: <em>&ldquo;requests scoring exactly 0.85 go to manual review, but the documented rule says they should auto-approve.&rdquo;</em>',
+        'Follow its six steps and note where each lands: what it chose to reproduce, where it placed tracepoints or conditional breakpoints, and what live values it read back. Compare its instrumentation to your labA probe &mdash; same question, different instrument.',
+        'Do the manual version too: right-click the gutter at the threshold line, <b>Insert Conditional Breakpoint</b>, select the expression field, and let Copilot suggest. Steer it to <code>score == AUTO_APPROVE_THRESHOLD</code>, run against seeded data, and confirm it fires only on boundary rows. Then close the loop yourself &mdash; step six is <b>final human validation</b>, and it has your name on it. Success: the agent&rsquo;s runtime evidence, your conditional breakpoint firing on the boundary, and a fix you confirmed live.'
+      ]
+    },
+    labC:{
+      title:'Breakpoints in the VS Code family — Cursor, then the debrief',
+      steps:[
+        'Cursor (and VS Code) give you the editor debugger with AI chat beside it rather than an agent driving the session. Prove the difference on the web side: in priorauth-web, set a breakpoint in the confidence-score display path, run the dev server under the debugger, and pause on a request.',
+        'With the program paused, ask the chat about the frame &mdash; and notice what you must supply by hand that Visual Studio&rsquo;s surface supplies itself. That gap <em>is</em> the module.',
+        'Debrief: three ways to get runtime truth &mdash; instrumented run (Claude), agent-driven session (Visual Studio), human-driven session with AI alongside (Cursor/VS Code). Write which you would reach for on a bug you cannot reproduce, and why. Success: a real paused frame in the browser stack, the comparison written, the reach-for-first answer defended.'
+      ]
+    },
+    checklist:[
+      'I captured a real runtime frame at the boundary and can read every line of it.',
+      'I can name the observation that ends the floating-point hypothesis.',
+      'I ran a conditional breakpoint (or its probe equivalent) that fires only at the boundary.',
+      'I can recite the six Debugger Agent steps &mdash; and who owns the sixth.',
+      'My instrumentation was deleted afterward; only the finding survived.'
+    ],
+    quiz:[
+      {q:'What does the Debugger Agent do that static analysis cannot, in Microsoft&rsquo;s own framing?',
+       options:['Write more tests','Refactor broadly across the solution','Validate bugs against real runtime behavior instead of relying on static analysis &mdash; instrumenting, running, and reading live state','Generate documentation from the call stack'], answer:2},
+      {q:'In the recorded frame, which single line closes the &ldquo;maybe it&rsquo;s floating-point drift&rdquo; hypothesis?',
+       options:['score = 0.85','resulting status = MANUAL_REVIEW','score &gt;= threshold = true','<code>Double.compare = 0</code> &mdash; the two values are exactly equal, so drift cannot be the explanation'], answer:3},
+      {q:'The sixth documented step of the Debugger Agent workflow is:',
+       options:['Automatic deployment','Final human validation &mdash; you rerun the scenario and confirm the fix in the live environment alongside the agent','Closing the GitHub issue','Regression test generation'], answer:1},
+      {q:'Why is a conditional breakpoint at <code>score == AUTO_APPROVE_THRESHOLD</code> worth setting when you already have a boundary test?',
+       options:['It runs faster than the test','It replaces the need for tests','It watches the live constant against live data &mdash; answering the question mutation B exposed, since the suite pins the operator but nothing pins the value','Breakpoints are required for CI'], answer:2}
+    ]
   }
 ];
 
@@ -2644,6 +2722,67 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-19 · Static vs Runtime Evidence (spec: VISUALS.md) ----------
+   Right column is the REAL captured frame (recordings/m53-runtime-frame.txt).
+   Step chips are Visual Studio's six documented Debugger Agent steps; the
+   final human-validation gate is gold. Abstract diagram, no IDE chrome. */
+VISUALS['ANIM-19'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STATIC = [
+    'The javadoc says the threshold is <b>INCLUSIVE</b>',
+    'The line reads <b>score &gt; AUTO_APPROVE_THRESHOLD</b>',
+    'So a request at exactly 0.85 <em>should</em> route to review',
+    'And the log line <em>would</em> print &ldquo;score 0.85 &lt; 0.85&rdquo;',
+    '<b>Status: hypothesis</b> — reasoned, cited, unobserved'
+  ];
+  const RUNTIME = [
+    'score <b>= 0.85</b> &middot; AUTO_APPROVE_THRESHOLD <b>= 0.85</b>',
+    'score &gt; threshold = <span class="no">false</span> &middot; score &gt;= threshold = <span class="yes">true</span>',
+    '<b>Double.compare = 0</b> — exactly equal, no float drift',
+    'log emitted: <span class="no">&ldquo;routed to MANUAL_REVIEW (score 0.85 &lt; 0.85)&rdquo;</span>',
+    '<b>Status: observed</b> — the frame, not an inference'
+  ];
+  const STEPS = ['context injection','autonomous reproducer','hypothesis + instrumentation','runtime validation','targeted correction','final human validation'];
+  mount.innerHTML =
+    '<div class="anim19" aria-label="Static reasoning versus runtime observation at the threshold">' +
+      '<div class="a19head"><span>ANIM-19 · STATIC REASONING vs THE RUNTIME FRAME</span>' +
+        '<button class="a19replay" data-a19replay>REPLAY ▸</button></div>' +
+      '<div class="a19cols">' +
+        '<div class="a19col static"><div class="a19cname">READING THE CODE (T-03)</div>' +
+          STATIC.map((l,i) => '<div class="a19line" data-s="' + i + '">' + l + '</div>').join('') + '</div>' +
+        '<div class="a19col runtime"><div class="a19cname">PAUSING THE PROGRAM (RECORDED)</div>' +
+          RUNTIME.map((l,i) => '<div class="a19line" data-r="' + i + '">' + l + '</div>').join('') + '</div>' +
+      '</div>' +
+      '<div class="a19steps">' +
+        STEPS.map((s,i) => '<span class="a19step' + (i === STEPS.length - 1 ? ' human' : '') + '" data-step="' + i + '">' + (i+1) + ' · ' + s + '</span>').join('') +
+      '</div>' +
+      '<div class="a19cap">The chips are Visual Studio&rsquo;s six documented Debugger Agent steps. Step six is <b>final human validation</b> &mdash; the same gate M-5.1 found the hard way, shipped as a required step.</div>' +
+    '</div>';
+  const sLines = [...mount.querySelectorAll('[data-s]')];
+  const rLines = [...mount.querySelectorAll('[data-r]')];
+  const steps = [...mount.querySelectorAll('.a19step')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){
+      sLines.concat(rLines).forEach(l => l.classList.add('on'));
+      steps.forEach(s => s.classList.add('on'));
+      return;
+    }
+    sLines.concat(rLines).forEach(l => l.classList.remove('on'));
+    steps.forEach(s => s.classList.remove('on'));
+    sLines.forEach((l,i) => timers.push(setTimeout(() => l.classList.add('on'), 250 + i*420)));
+    const after = 250 + sLines.length*420 + 400;
+    rLines.forEach((l,i) => timers.push(setTimeout(() => l.classList.add('on'), after + i*420)));
+    const stepStart = after + rLines.length*420 + 400;
+    steps.forEach((s,i) => timers.push(setTimeout(() => s.classList.add('on'), stepStart + i*260)));
+    timers.push(setTimeout(play, stepStart + steps.length*260 + 5000));
+  }
+  mount.querySelector('[data-a19replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- SIM-04 · Threshold Slider (spec: VISUALS.md) ----------
