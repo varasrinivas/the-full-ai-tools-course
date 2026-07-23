@@ -1,0 +1,52 @@
+M-5.4 THE FLAKY TEST — method notes + raw captures
+===================================================
+Recorded: 2026-07-23 · priorauth-api lab/start clone, branch drill/m54-flaky
+(all probes deleted, clone verified pristine). BUG-API-02.
+
+The suspect: EligibilityServiceTest.eligibilityDoesNotDependOnWhenInThe
+MonthTheCheckRuns — a "sanity" block asserting LocalDate.now().plusDays(3)
+lands in the same calendar month. (First flagged UNPROMPTED by the M-5.1
+debug-loop agent while fixing an unrelated bug — see recordings/m51-debug-loop.txt.)
+
+STEP 1 — MAKE "FLAKY" DETERMINISTIC (temporary calendar probe, real run):
+  Ran the assertion against every day of 2026.
+  === all of 2026 ===
+    days in year        : 365
+    days the test FAILS : 36  (9.9% of runs)
+    first failing dates : [2026-01-29, 2026-01-30, 2026-01-31,
+                           2026-02-26, 2026-02-27, 2026-02-28]
+    today (2026-07-23)  : passes
+    next failure after today: 2026-07-29
+  "Flaky" is a lie the calendar tells: it is a hard, predictable failure on
+  the last 3 days of EVERY month — 36 days/year, leap or common. The next red
+  is 2026-07-29, six days out.
+
+STEP 2 — DIAGNOSIS (agent, 88s, zero edits):
+  - Root cause is in the TEST's scaffolding, not the code under test:
+    LocalDate.now() (the only nondeterminism) + a sanity assertion that
+    now+3d is the same month. Breaks when day > N-3 → last 3 days of every
+    month → exactly 3×12 = 36 days/year, month-length-independent.
+  - THE KEY DISTINCTION: EligibilityService.check is fully deterministic —
+    branches only on patientRef/cptCode/payer/coverage map, never reads a
+    Clock or now(); the class isn't even built with a Clock. "The test named
+    ...DoesNotDependOnWhenInTheMonth... is the ONLY date-dependent thing in
+    play, and the dependence is in the test, not the code under test."
+  - The eligibility assertion it claims to verify ALWAYS passes; the sanity
+    block "is dead weight that only adds a failure mode."
+  - Smallest fix: delete the 4 sanity lines (68-71), keep the eligibility
+    assertion. Optional: preserve intent as living doc by pinning to the
+    fixed date the test's own request() helper already uses
+    (Instant.parse 2026-06-01) → LocalDate.of(2026,6,1); June 1 + 3 = June 4.
+  - Correctly REJECTED over-engineering: "no value in injecting a Clock into
+    EligibilityService itself — it has no time dependence to pin, so that
+    would be adding a seam for nothing."
+  - Bonus honesty: the agent noticed FlakyCalendarProbeTest sitting in the
+    tree and flagged it for cleanup as diagnostic-only.
+
+TEACHING BEATS: (1) flaky usually means "deterministic on a condition you
+haven't identified" — find the condition and it stops being flaky; (2)
+distinguish a flaky TEST from flaky CODE — here the code is innocent; (3)
+the fix menu runs smallest-first (delete dead assertion) to smallest-that-
+keeps-intent (pin the clock), and STOPS before the seam-for-nothing.
+Contrast anchor: M-1.5's deniedAt work used a REAL injected Clock because
+that code IS time-dependent; this code is not. Same tool, opposite verdict.

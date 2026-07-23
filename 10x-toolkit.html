@@ -332,6 +332,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ SIM-11: Flaky Calendar Heatmap ============ */
+.sim11{--s11red:#d0705a;--s11green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim11{--s11red:#B0503C;--s11green:#2d7350}
+.sim11 .s11head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim11 .s11grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}
+.sim11 .s11mon{min-width:0}
+.sim11 .s11mlabel{font-size:8.5px;letter-spacing:.06em;color:var(--faint);text-align:center;margin-bottom:4px}
+.sim11 .s11days{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.sim11 .s11day{aspect-ratio:1;border-radius:2px;background:var(--s11green);opacity:.5;transition:opacity .2s,transform .2s}
+.sim11 .s11day.fail{background:var(--s11red);opacity:1}
+.sim11 .s11day.today{outline:2px solid var(--gold);outline-offset:1px;opacity:1}
+.sim11 .s11day.next{transform:scale(1.25);box-shadow:0 0 0 2px var(--panel2),0 0 0 3px var(--s11red)}
+.sim11 .s11legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:10px;color:var(--dim)}
+.sim11 .s11legend i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.sim11 .s11legend .g{background:var(--s11green);opacity:.5}
+.sim11 .s11legend .r{background:var(--s11red)}
+.sim11 .s11readout{font-size:10.5px;color:var(--dim);line-height:1.55;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-top:10px}
+.sim11 .s11readout b{color:var(--text);font-weight:500}
+.sim11 .s11readout .bad{color:var(--s11red)}
+.sim11 .s11ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:10.5px;color:var(--dim)}
+.sim11 .s11btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim11 .s11btn:hover:not(:disabled){border-color:var(--gold)}
+.sim11 .s11btn[aria-pressed="true"]{border-color:var(--s11green);color:var(--s11green);font-weight:700}
+.sim11 .s11foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-19: Static vs Runtime Evidence ============ */
 .anim19{--a19red:#d0705a;--a19green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim19{--a19red:#B0503C;--a19green:#2d7350}
@@ -1954,6 +1979,62 @@ const MODS = [
       {q:'Why is a conditional breakpoint at <code>score == AUTO_APPROVE_THRESHOLD</code> worth setting when you already have a boundary test?',
        options:['It runs faster than the test','It replaces the need for tests','It watches the live constant against live data &mdash; answering the question mutation B exposed, since the suite pins the operator but nothing pins the value','Breakpoints are required for CI'], answer:2}
     ]
+  },
+  {
+    id:'M-5.4', path:'eng', track:'T-05', title:'The flaky test', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'&ldquo;The chest pain comes and goes at random.&rdquo; It doesn&rsquo;t &mdash; it comes when he climbs stairs, and he only climbs stairs some days. The cardiologist&rsquo;s whole job is to find the hidden variable that makes &ldquo;random&rdquo; predictable. A flaky test is that patient: the failure is deterministic on a condition nobody has named yet.',
+      body:
+        '<p><strong>&ldquo;Flaky&rdquo; is a confession, not a diagnosis.</strong> It means &ldquo;fails on a condition I haven&rsquo;t identified.&rdquo; The debugging move is to make it deterministic <em>before</em> touching it: find the hidden variable and the flakiness evaporates. In the recorded drill, the suspect was <code>eligibilityDoesNotDependOnWhenInTheMonthTheCheckRuns</code>, which asserts that <code>LocalDate.now().plusDays(3)</code> lands in the same calendar month. Run that assertion against all 365 days of 2026 &mdash; a real probe did &mdash; and &ldquo;random&rdquo; becomes a calendar: it fails on the <b>last three days of every month</b>, exactly <b>36 days a year, 9.9% of runs</b>. Today (Jul 23) passes; the next red is <b>Jul 29</b>. A coin has no schedule; this does.</p>' +
+        '<p><strong>The question that cracks it: is the <em>test</em> flaky, or the <em>code</em>?</strong> They demand opposite fixes, and confusing them is how flaky tests get &ldquo;fixed&rdquo; by injecting complexity into innocent code. Here the agent was precise: <code>EligibilityService.check</code> branches only on the request&rsquo;s own fields and the coverage map &mdash; it never reads a clock, is not even constructed with one. The production code is <em>fully deterministic and always passes</em>. The only date-dependent thing in play is the test named for date-independence. The failure lives entirely in the test&rsquo;s scaffolding; the assertion it actually cares about was never in doubt.</p>' +
+        '<p><strong>The fix menu runs smallest-first &mdash; and knows when to stop.</strong> Smallest correct fix: delete the four &ldquo;sanity&rdquo; lines; they assert nothing about production and only add a failure mode. Smallest fix that <em>keeps the intent</em> as living documentation: pin the date to the fixed instant the test&rsquo;s own helper already uses &mdash; <code>LocalDate.of(2026, 6, 1)</code>, since June 1 + 3 is still June. And the option the agent explicitly <em>refused</em>: injecting a <code>Clock</code> into <code>EligibilityService</code>. &ldquo;It has no time dependence to pin, so that would be adding a seam for nothing.&rdquo; Knowing which fixes not to make is the senior move.</p>' +
+        '<p><strong>Contrast with M-1.5, deliberately.</strong> That module injected a real <code>Clock</code> into the approval path &mdash; correct, because that code <em>is</em> time-dependent (it stamps <code>decidedAt</code>). Same tool, opposite verdict, and the difference is one question: does the <em>code under test</em> read the clock? Yes &rarr; inject a seam and pin it. No &rarr; the clock has no business in the code, and a test that drags one in is the bug. SIM-11 shows both worlds: toggle the fix and 36 red days turn green with no change to a line of production code.</p>' +
+        '<p><strong>Provenance worth noting.</strong> This bug was first flagged <em>unprompted</em> back in M-5.1 &mdash; the debug-loop agent, fixing an unrelated regression, noticed the time bomb and mentioned it in passing while correctly leaving it alone. That is the debugging reflex the whole track builds: things you notice go in the log, not into an unscoped fix. M-5.5 takes the loop to the frontend, where the hidden variable is a stale closure instead of a calendar.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-11'},
+    labA:{
+      title:'Make &ldquo;flaky&rdquo; deterministic — Claude Code',
+      steps:[
+        'Scratch branch off <code>lab/start</code>. Before any fix, kill the word &ldquo;flaky&rdquo;: ask for a <em>temporary probe</em> that runs the suspect test&rsquo;s month assertion (<code>date.plusDays(3)</code> same month as <code>date</code>) across every day of 2026 and prints the failing dates and count. Reference: <b>36 days, 9.9%</b>, last three of every month; today passes, next failure Jul 29.',
+        'Now diagnose the right layer. Give the mission verbatim: <em>&ldquo;Diagnose this precisely: what makes it time-dependent, on which days it fails, whether the production code it tests is actually time-dependent, and the smallest correct fix given what this repo provides for testable time. Do not change code yet.&rdquo;</em> Reference run: 88s. The load-bearing finding is that <code>EligibilityService</code> reads no clock &mdash; the code is innocent.',
+        'Apply the smallest fix, then argue the alternative in your log: deletion vs pinning to <code>LocalDate.of(2026,6,1)</code>. Both are correct; say which you&rsquo;d ship and why. Then state, in one sentence, why injecting a <code>Clock</code> into <code>EligibilityService</code> would be wrong here.',
+        'Delete the probe, run <code>EligibilityServiceTest</code>, and confirm green &mdash; then mentally re-run it on Jul 31 and confirm your fix still holds (SIM-11&rsquo;s toggle does this for you). Success: the 36-day proof, the test-not-code diagnosis, the fix shipped, the seam-for-nothing rejected in writing, clean tree.'
+      ]
+    },
+    labB:{
+      title:'The same flaky test — Copilot',
+      steps:[
+        'Branch <code>drill/flaky-copilot</code>. Reproduce the determinism proof in the Test Explorer by temporarily hard-coding the assertion&rsquo;s date to a month-end (e.g. the 30th) and watching it fail on demand &mdash; flakiness you can summon isn&rsquo;t flaky.',
+        'Ask <b>Agent</b> to diagnose test-vs-code and propose the smallest fix. Grade it on the one thing that matters: did it correctly say the production code is <em>not</em> time-dependent, and refuse to add a clock to it?',
+        'Apply, revert your reproduction hack, confirm green. Success: on-demand failure shown, the test-not-code call made, one-line fix, no seam added to innocent code.'
+      ]
+    },
+    labC:{
+      title:'The same flaky test — Cursor, then the flakiness rule',
+      steps:[
+        'Branch <code>drill/flaky-cursor</code>. Same diagnosis with <code>@EligibilityService @EligibilityServiceTest</code> anchored. Confirm the agent locates the nondeterminism in the test, not the service.',
+        'Open SIM-11 beside your fix: toggle shipped vs pinned and watch the 36 red days go green with zero production change. That is the visual proof that this was a test bug all along.',
+        'Write the rule for your team: <em>&ldquo;flaky&rdquo; is a to-do, not a verdict &mdash; make it deterministic, then ask whether the test or the code owns the nondeterminism; pin a clock only where the code reads one.</em> List any other <code>now()</code>/<code>random()</code> calls in the PA test suites worth auditing. Success: three diagnoses agreeing on test-not-code, the SIM-11 proof, the rule and the audit list.'
+      ]
+    },
+    checklist:[
+      'I made &ldquo;flaky&rdquo; deterministic first &mdash; 36 days, last three of every month &mdash; before proposing any fix.',
+      'I established the production code is not time-dependent, so this is a flaky TEST, not flaky code.',
+      'I shipped the smallest correct fix and can defend deletion vs pinning.',
+      'I can say in one sentence why injecting a Clock into EligibilityService would be wrong.',
+      'I contrasted this with M-1.5, where injecting a real Clock WAS correct because that code reads time.'
+    ],
+    quiz:[
+      {q:'A test &ldquo;fails randomly.&rdquo; What is the first debugging move?',
+       options:['Add a retry so CI goes green','Make it deterministic &mdash; find the hidden variable; the recorded probe turned &ldquo;random&rdquo; into &ldquo;the last three days of every month, 36 a year&rdquo;','Delete it &mdash; flaky tests have no value','Run it a hundred times and take the majority'], answer:1},
+      {q:'The test is time-dependent. Is the code it tests time-dependent?',
+       options:['Yes &mdash; both always are','No &mdash; EligibilityService.check reads no clock and always passes; the nondeterminism lives entirely in the test&rsquo;s own sanity assertion','It cannot be determined without running it on every date','Only in leap years'], answer:1},
+      {q:'The agent refused to inject a <code>Clock</code> into <code>EligibilityService</code>. Why is that the senior move?',
+       options:['Clocks are slow','The code has no time dependence to pin &mdash; a seam for nothing adds complexity to innocent code to paper over a bug that lives in the test','Dependency injection is deprecated','It would break the other tests'], answer:1},
+      {q:'M-1.5 injected a real Clock into the approval path and that was correct; here it is wrong. The distinguishing question?',
+       options:['Which tool you use','How many tests exist','Whether the code under test actually reads the clock &mdash; the approval path stamps decidedAt (yes, pin it); eligibility does not (no, leave it alone)','The age of the code'], answer:2}
+    ]
   }
 ];
 
@@ -2721,6 +2802,64 @@ VISUALS['SIM-07'] = function(mount, opts){
     mount.querySelector('[data-s7mode]').textContent = 'DRILL'; paint();
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
+  paint();
+};
+
+/* ---------- SIM-11 · Flaky Calendar Heatmap (spec: VISUALS.md) ----------
+   365 days of 2026; red = the test's hard failure days (last 3 of each
+   month = 36, verified by the real probe run). "fixed" toggle applies the
+   recorded fix (pin to 2026-06-01) → all green. Today/next-failure from the
+   recording (2026-07-23 passes; next 2026-07-29). No Date.now() — dates are
+   static data, safe under the harness's Date ban. */
+VISUALS['SIM-11'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const LEN = [31,28,31,30,31,30,31,31,30,31,30,31];
+  const TODAY = {m:6, d:23};      // 2026-07-23, zero-indexed month
+  const NEXT = {m:6, d:29};       // next failing day after today
+  let fixed = false;
+  mount.innerHTML =
+    '<div class="sim11" aria-label="Calendar heatmap of when the flaky test fails across 2026">' +
+      '<div class="s11head"><span>SIM-11 · &ldquo;FLAKY&rdquo; TEST · EVERY DAY OF 2026</span><span data-s11mode>' + (reduce ? 'STATIC' : 'HEATMAP') + '</span></div>' +
+      '<div class="s11grid" data-grid></div>' +
+      '<div class="s11legend">' +
+        '<span><i class="g"></i>passes</span>' +
+        '<span><i class="r"></i>hard failure (last 3 days of the month)</span>' +
+        '<span><i style="outline:2px solid var(--gold);outline-offset:1px;background:var(--s11green);opacity:.5"></i>today (Jul 23)</span>' +
+      '</div>' +
+      '<div class="s11readout" data-readout></div>' +
+      '<div class="s11ctrl"><span>test version:</span>' +
+        '<button class="s11btn" type="button" data-fix="off" aria-pressed="true">LocalDate.now() (shipped)</button>' +
+        '<button class="s11btn" type="button" data-fix="on" aria-pressed="false">pinned to 2026-06-01 (fixed)</button>' +
+      '</div>' +
+      '<div class="s11foot">What to notice: &ldquo;flaky&rdquo; is a calendar, not a coin. 36 red days a year &mdash; the last three of every month &mdash; and the code under test never once looks at the date.</div>' +
+    '</div>';
+  const grid = mount.querySelector('[data-grid]');
+  const readout = mount.querySelector('[data-readout]');
+  function fails(m, day1){ return !fixed && day1 > LEN[m] - 3; }
+  function paint(){
+    let total = 0;
+    grid.innerHTML = MON.map((name,m) => {
+      let cells = '';
+      for(let d = 1; d <= LEN[m]; d++){
+        const f = fails(m, d);
+        if(f) total++;
+        const isToday = m === TODAY.m && d === TODAY.d;
+        const isNext = !fixed && m === NEXT.m && d === NEXT.d;
+        cells += '<span class="s11day' + (f ? ' fail' : '') + (isToday ? ' today' : '') + (isNext ? ' next' : '') +
+          '" title="' + name + ' ' + d + (f ? ' — FAILS' : ' — passes') + '"></span>';
+      }
+      return '<div class="s11mon"><div class="s11mlabel">' + name + '</div><div class="s11days">' + cells + '</div></div>';
+    }).join('');
+    readout.innerHTML = fixed
+      ? 'Pinned to <b>2026-06-01</b>: June 1 + 3 = June 4, same month, <b>every run</b>. <b class="good" style="color:var(--s11green)">0 failing days</b> &mdash; the nondeterminism is gone, and the eligibility assertion still verifies exactly what the test name claims.'
+      : '<span class="bad">Shipped:</span> <b>' + total + ' failing days</b> in 2026 (<b>9.9%</b> of runs) &mdash; the last three of every month. Today (Jul 23) <b>passes</b>; the next red is <b>Jul 29</b>, then 30 and 31. A CI run on any of those &ldquo;randomly&rdquo; goes red.';
+  }
+  mount.querySelectorAll('[data-fix]').forEach(b => b.addEventListener('click', () => {
+    fixed = b.dataset.fix === 'on';
+    mount.querySelectorAll('[data-fix]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    paint();
+  }));
   paint();
 };
 
