@@ -1526,6 +1526,53 @@ const MODS = [
       {q:'Ghost text vs next edit suggestions &mdash; the difference?',
        options:['Ghost text is Cursor-only','NES is paid, ghost text is free','Ghost text completes at your cursor; NES predicts an edit somewhere else &mdash; a gutter arrow marks it, Tab navigates, Tab accepts','They are the same feature renamed'], answer:2}
     ]
+  },
+  {
+    id:'M-4.2', path:'eng', track:'T-04', title:'Next edit suggestions', minutes:35,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A copyeditor renaming a character doesn&rsquo;t re-read the novel &mdash; they ride find-next from occurrence to occurrence, judging each in its sentence. But no copyeditor calls the book done because find-next went quiet: the continuity editor certifies that. Next-edit suggestions are find-next with judgment attached; your compiler is still the continuity editor.',
+      body:
+        '<p><strong>NES predicts two things: where, and what.</strong> Per the current docs and the long-distance NES release, Copilot&rsquo;s next edit suggestions use a dedicated location model to predict <em>where</em> your next edit should happen &mdash; now anywhere in the file, not just near the cursor &mdash; and the edit model proposes <em>what</em> it should be. The choreography: an arrow in the gutter marks the spot, <b>Tab navigates to it, Tab again accepts</b>, and the gutter menu (hover the arrow) holds shortcuts and settings. Turn it on with <code>github.copilot.nextEditSuggestions.enabled</code>; tame the clutter with <code>editor.inlineSuggest.edits.showCollapsed</code>, which reveals each change only when you Tab to it or hover.</p>' +
+        '<p><strong>The ripple workflow inverts M-4.1.</strong> Ghost text finishes what you started; NES chases what you <em>caused</em>. You make one deliberate seed change by hand &mdash; rename a record component, add a field &mdash; and then ride Tab through the consequences: the accessor, the factory method, the call sites, each proposed in place, each judged in its own context. Cursor&rsquo;s Tab runs the same workflow with its own verbs: jump-in-file (&ldquo;predicts your next editing location and jumps there&rdquo;) and cross-file prediction &mdash; &ldquo;changes in one file need updates in another,&rdquo; the hook-to-component hop ANIM-07 replays.</p>' +
+        '<p><strong>The silence trap.</strong> The chain of suggestions will eventually stop. That is not the same as the ripple being complete &mdash; prediction has no obligation to be exhaustive. The house rule: <b>the compiler certifies done, not the quiet gutter</b>. In the labs you end every ripple with the error pane (Java) or <code>tsc</code> (web), and the drill is designed so you feel the difference between &ldquo;no more arrows&rdquo; and &ldquo;actually consistent.&rdquo; Boundary discipline carries over unchanged: an NES hop that lands on a comparison or a reason code gets read character-by-character, not rhythm-Tabbed &mdash; a ripple is exactly where a wrong-but-plausible edit can surf into the codebase on muscle memory.</p>' +
+        '<p><strong>Know when the ripple outgrows the layer.</strong> Three tools exist for propagating a change, and they are not rivals: a <em>semantic rename</em> (F2) is deterministic and touches every reference by construction &mdash; when the change IS a rename, it wins outright. NES earns its keep when the ripple is <em>judgmental</em> &mdash; each site needs a slightly different edit, like a new field that some call sites populate and others default. And when the ripple crosses modules with decisions at every site, that is an agent turn with a plan (T-02&rsquo;s economics). M-4.4 drills this three-way choice with real counts.</p>' +
+        '<p><strong>Same exemption, same honesty.</strong> This is still the autocomplete layer &mdash; Claude Code sits it out by design. And the editorial note from M-2.5 stands: the table ranks Cursor Tab and Copilot NES a close first-and-second for this work; your lab scorecard, riding one identical ripple in both, is the only ranking that matters for your hands.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-07'},
+    labB:{
+      title:'Ride one ripple — Copilot NES',
+      steps:[
+        'Setup: confirm <code>github.copilot.nextEditSuggestions.enabled</code> is on. In priorauth-api, open <code>PriorAuthController.java</code> and make one seed change by hand: in the <code>ReviewContext</code> record, rename the component <code>recentClaims</code> to <code>recentClaimCount</code> &mdash; and stop typing.',
+        'Ride the ripple: watch the gutter for arrows, Tab to each proposed edit (the factory method, the constructor call, any usage), and judge each in place before the second Tab. Count the hops. Try <code>showCollapsed</code> both ways and pick a preference.',
+        'End with the continuity editor, not the silence: open the Problems pane and confirm zero errors. If the arrows stopped early, find the missed site yourself and log it &mdash; that gap is the module&rsquo;s lesson. Then revert everything (<code>git checkout -- .</code>): this was a drill, not a change. Success: hop count, silence-vs-done verdict, clean revert.'
+      ]
+    },
+    labC:{
+      title:'The same ripple — Cursor, then the three-way rule',
+      steps:[
+        'In priorauth-web, seed a judgmental ripple: in the API client&rsquo;s request type, rename <code>cptCode</code> to <code>procedureCode</code> by editing the type only. Ride Cursor Tab &mdash; count in-file jumps and watch for the documented cross-file hop into the hook or form component.',
+        'End with <code>npx tsc --noEmit</code>: did the ripple reach everything, or did the compiler find survivors? Log the count either way, then revert.',
+        'The debrief: run the SAME rename once more using plain F2 (semantic rename) and compare &mdash; hops ridden vs zero hops needed. Write your three-way rule: <em>rename &rarr; F2; judgmental ripple &rarr; NES/Tab; cross-module with decisions &rarr; agent with a plan.</em> Success: both counts, the compiler verdicts, the rule in your log for M-4.4.'
+      ]
+    },
+    checklist:[
+      'I rode one full ripple in each tool, counting hops and judging every edit before the second Tab.',
+      'I ended every ripple with the compiler, not the silence &mdash; and logged any site the arrows missed.',
+      'I compared the same rename against F2 and can say when NES is the wrong tool for the job.',
+      'No ripple edit landed on a boundary without a character-by-character read.',
+      'My three-way propagation rule is written down for M-4.4&rsquo;s pricing drill.'
+    ],
+    quiz:[
+      {q:'What does NES actually predict, per the current architecture?',
+       options:['The rest of the current line only','Where your next edit should happen (a dedicated location model, now anywhere in the file) and what that edit should be &mdash; gutter arrow, Tab to navigate, Tab to accept','Which file to open next','Your typing speed'], answer:1},
+      {q:'The gutter went quiet after four hops. The module&rsquo;s verdict?',
+       options:['The ripple is complete','Restart the IDE to refresh suggestions','Silence is not done-ness &mdash; prediction has no obligation to be exhaustive; the compiler or tsc certifies the ripple, and finding the missed site is the drill&rsquo;s point','Accept the last suggestion again'], answer:2},
+      {q:'The change you need is a pure rename with 30 references. Best tool?',
+       options:['Ride NES through all 30 hops','An agent turn with a plan','Hand-edit each one for safety','F2 semantic rename &mdash; deterministic, every reference by construction; NES earns its keep only when each site needs a slightly different, judged edit'], answer:3},
+      {q:'An NES hop lands on <code>if (score &gt; AUTO_APPROVE_THRESHOLD)</code> mid-ripple. What happens to your rhythm?',
+       options:['It breaks, on purpose: boundaries get read character-by-character &mdash; a ripple is exactly where a plausible wrong edit surfs in on muscle memory','Nothing; Tab and keep moving','Undo the whole ripple','Switch to the agent'], answer:0}
+    ]
   }
 ];
 
