@@ -332,6 +332,21 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-16: Read-Only Toolbox & the Handoff ============ */
+.anim16{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim16 .a16head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim16 .a16lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim16 .a16lname{font-size:10px;letter-spacing:.14em;color:var(--cyan);margin-bottom:8px}
+.anim16 .a16row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim16 .a16row.on{opacity:1;transform:none}
+.anim16 .a16chip{font-size:9.5px;padding:2px 8px;border-radius:5px;border:1px solid rgba(79,216,235,.4);color:var(--cyan);background:var(--panel2);white-space:nowrap}
+.anim16 .a16chip.gate{border-color:var(--gold);color:var(--gold)}
+.anim16 .a16out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim16 .a16out b{color:var(--text);font-weight:500}
+.anim16 .a16cap{font-size:10.5px;color:var(--faint);margin-top:8px}
+.anim16 .a16replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim16 .a16replay:hover{border-color:var(--gold)}
+
 /* ============ ANIM-13: Copilot Mode Spectrum ============ */
 .anim13{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim13 .ahead{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -1251,6 +1266,63 @@ const MODS = [
       {q:'The steer message accepted the flags, made the scope call, and set a size limit &mdash; what did it deliberately NOT do?',
        options:['Relitigate the research &mdash; round two trusted the reading and re-verified only the line-level facts it would build on','Mention the javadoc','Keep the characterization test','Set any constraints'], answer:0}
     ]
+  },
+  {
+    id:'M-3.3', path:'eng', track:'T-03', title:'Plan agent & symbol tools (Copilot)', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'Send the same patient chart to a second specialist and compare the workups. Where the two agree, your confidence rises for free; where they diverge, you have localized exactly what needs a human look. M-3.2 was the first opinion; this module orders the second &mdash; same mission, same repo, Copilot&rsquo;s surfaces &mdash; and the comparison itself is the diagnostic.',
+      body:
+        '<p><strong>The Plan agent&rsquo;s job description, verbatim from the docs:</strong> &ldquo;Research requirements, ask clarifying questions, and generate a structured plan with steps, verification, and decisions.&rdquo; Select <b>Plan</b> in the agents dropdown or type <code>/plan</code>. Same philosophy as M-3.2&rsquo;s gate &mdash; research before edits, a document you argue with &mdash; different affordances: this surface asks its clarifying questions <em>after</em> researching your task, and your answers shape the plan before it exists.</p>' +
+        '<p><strong>The read-only toolbox is yours too.</strong> The tools the agent plans with are the tools you can invoke by name in any prompt: <code>#codebase</code> (&ldquo;perform a code search in the current workspace&rdquo; &mdash; semantic), <code>#usages</code> &mdash; per current docs, a &ldquo;Combination of <em>Find All References</em>, <em>Find Implementation</em>, and <em>Go to Definition</em>&rdquo; &mdash; plus <code>#readFile</code>, <code>#textSearch</code>, <code>#fileSearch</code>. One naming correction the course owes you: this module&rsquo;s blueprint originally said <code>find_symbol</code> and &ldquo;call-hierarchy navigation&rdquo; &mdash; stale. <code>#usages</code> is the current symbol tool, and that is rename catch number four (after Composer, Edit mode, and @workspace). Tool names drift; the cheat sheet is the authority.</p>' +
+        '<p><strong>The control experiment, with a real discovery.</strong> The recorded Claude-side control asked one symbol question &mdash; who calls <code>process()</code> and who calls <code>resolveManualReview()</code> &mdash; and got, in 23 seconds: one production caller for <code>process()</code> (<code>PriorAuthController.java:54</code>, matching M-3.2&rsquo;s &ldquo;one production caller&rdquo; flag), seven test call sites plus a Mockito stub it correctly labeled as mock setup&hellip; and the finding that <code>resolveManualReview()</code> has <b>zero production callers</b>. The human-review resolution path exists in the service and has no HTTP door. That is what symbol questions are for: not finding code &mdash; finding <em>absences</em>.</p>' +
+        '<p><strong>Know where the plan lives before you need it.</strong> VS Code: session memory, <code>/memories/session/plan.md</code> (find it via <b>Chat: Show Memory Files</b>) &mdash; and &ldquo;session memory is cleared when the conversation ends,&rdquo; so a plan worth keeping gets copied out or lives in Visual Studio&rsquo;s durable <code>.copilot/plans/</code> instead (M-2.3&rsquo;s split). The handoff has three exits, all human-initiated: <b>start the implementation</b> (Agent mode, this session), a background Copilot CLI session, or opening the planning prompt in the editor for further review &mdash; this surface&rsquo;s &ldquo;No, keep planning.&rdquo; Settings worth knowing: <code>chat.planAgent.defaultModel</code>, <code>github.copilot.chat.implementAgent.model</code>, and the experimental <code>planAgent.additionalTools</code>.</p>' +
+        '<p><strong>Second opinions are cheap &mdash; order them.</strong> labB reruns M-3.2&rsquo;s exact mission and steer here, and the comparison is the lesson: flags both agents find are load-bearing facts about the repo; flags only one finds are your review agenda. The same discipline as M-3.2&rsquo;s gate applies at the handoff &mdash; nothing runs without you, and what you approve, you own. M-3.4 stops planning and traces a request end to end.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-16'},
+    labA:{
+      title:'The control run — Claude Code',
+      steps:[
+        'On your clone, run the symbol question verbatim: <code>claude -p &quot;Who calls ApprovalService.process() and who calls resolveManualReview()? Cite file and line for every call site, including tests.&quot;</code> Reference run: 23s.',
+        'Hand-verify the two headline claims: <code>PriorAuthController.java:54</code> is the only production caller of <code>process()</code>, and <code>resolveManualReview()</code> has none &mdash; open the controller and confirm there is no resolve endpoint. Note how the reference run separated a Mockito stub from a real invocation.',
+        'Success: both claims verified, and the architecture gap (no HTTP door for human resolution) recorded in your M-3.1 map &mdash; recorded, not fixed; building that endpoint is a future lab&rsquo;s job, not onboarding&rsquo;s.'
+      ]
+    },
+    labB:{
+      title:'The deep dive — Copilot Plan agent + #usages',
+      steps:[
+        'Pick <b>Plan</b> in the agents dropdown (or <code>/plan</code>) and give M-3.2&rsquo;s round-one mission verbatim (the refactor-and-flag mission). If it asks clarifying questions after researching &mdash; the documented behavior &mdash; answer them and note how they shape the plan.',
+        'Grade the flags against the M-3.2 reference: the &ldquo;resist tidying&rdquo; javadoc, the strict-<code>&gt;</code> preservation, the boundary-test gap. Agreements are load-bearing repo facts; divergences are your review agenda.',
+        'Steer with M-3.2&rsquo;s scope-cut message verbatim. Then find the plan: <b>Chat: Show Memory Files</b> &rarr; <code>plan.md</code> &mdash; and say out loud what happens to it when this conversation ends. If a plan is worth keeping, copy it out (or use Visual Studio, where it is a durable repo file).',
+        'The symbol tool: ask <code>#usages ApprovalService.process</code> &mdash; the docs call it a combination of Find All References, Find Implementation, and Go to Definition. Cross-check its answer against labA&rsquo;s recorded ground truth: one production caller, and zero for <code>resolveManualReview</code>.',
+        'Decline <b>start the implementation</b> (and note the background-CLI option you also did not take). Success: both rounds run, flag comparison logged, plan.md located with its lifetime stated, #usages cross-checked, zero edits.'
+      ]
+    },
+    labC:{
+      title:'The same questions in Cursor, then the debrief',
+      steps:[
+        'Ask Cursor the labA symbol question with <code>@ApprovalService</code> as context. Grade the citations against the recorded ground truth &mdash; the semantic index (M-3.1) is doing the finding here; note whether it also surfaces the zero-callers gap.',
+        'Compare the three surfaces on one axis: how does each represent &ldquo;who calls this?&rdquo; &mdash; text search + reading (Claude), a named symbol tool (<code>#usages</code>), a semantic index (Cursor). All three found the same repo; they differ in what they make <em>checkable</em>.',
+        'Debrief line for your log: which surface would you trust for a refactor&rsquo;s blast-radius check, and why. Success: gap confirmed in all three (or divergences recorded), the one-liner written.'
+      ]
+    },
+    checklist:[
+      'I ran the control question and hand-verified both headline claims against the controller.',
+      'I reran M-3.2&rsquo;s mission and steer in the Plan agent and logged the flag comparison.',
+      'I located plan.md via Chat: Show Memory Files and can state its lifetime &mdash; and the Visual Studio difference.',
+      'I cross-checked #usages against recorded ground truth, including the zero-callers finding.',
+      'I recorded the architecture gap in my map without &ldquo;helpfully&rdquo; building the missing endpoint.'
+    ],
+    quiz:[
+      {q:'Per current docs, what is <code>#usages</code>?',
+       options:['A test-coverage report','A combination of Find All References, Find Implementation, and Go to Definition &mdash; the symbol tool the blueprint&rsquo;s stale &ldquo;find_symbol&rdquo; became','A telemetry dashboard','A Cursor-only feature'], answer:1},
+      {q:'The recorded symbol question&rsquo;s most valuable answer was that <code>resolveManualReview()</code> has zero production callers. Why does that matter?',
+       options:['It means the method can be deleted','It proves the tests are wrong','Symbol questions find absences: the human-review path has no HTTP endpoint &mdash; an architecture gap recorded during onboarding, built later on purpose','It shows Claude is better than Copilot'], answer:2},
+      {q:'Your VS Code Plan agent produced a plan worth keeping. What must you know?',
+       options:['It auto-commits to the repo','Session memory is cleared when the conversation ends &mdash; copy it out, or use Visual Studio&rsquo;s durable .copilot/plans/','It syncs to github.com automatically','Plans cannot be exported'], answer:1},
+      {q:'Two agents planned the same mission; one flagged the forbidding javadoc, the other did not. The module&rsquo;s read?',
+       options:['Use the one that flagged it and drop the other','Average the two plans','The shared flags are load-bearing repo facts; the divergence is precisely your human review agenda &mdash; that is why second opinions are cheap and worth ordering','Rerun until they agree'], answer:2}
+    ]
   }
 ];
 
@@ -2019,6 +2091,46 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-16 · Read-Only Toolbox & the Handoff (spec: VISUALS.md) ----------
+   Abstract behavior diagram per the no-fake-IDE-chrome rule (ANIM-13
+   precedent). Tool names and quoted descriptions are verbatim from
+   code.visualstudio.com docs, verified 2026-07-23. */
+VISUALS['ANIM-16'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim16" aria-label="Copilot Plan agent: read-only toolbox and the implementation handoff">' +
+      '<div class="a16head"><span>ANIM-16 · PLAN AGENT · THE READ-ONLY TOOLBOX &amp; THE HANDOFF</span>' +
+        '<button class="a16replay" data-a16replay>REPLAY ▸</button></div>' +
+      '<div class="a16lane">' +
+        '<div class="a16lname">1 · RESEARCH — TOOLS THAT ONLY READ</div>' +
+        '<div class="a16row"><span class="a16chip">#codebase</span><span class="a16out">&ldquo;perform a code search in the current workspace&rdquo; &mdash; semantic, finds ApprovalService by meaning</span></div>' +
+        '<div class="a16row"><span class="a16chip">#usages</span><span class="a16out">&ldquo;Combination of <b>Find All References</b>, <b>Find Implementation</b>, and <b>Go to Definition</b>&rdquo; &mdash; the symbol tool</span></div>' +
+        '<div class="a16row"><span class="a16chip">#readFile · #textSearch</span><span class="a16out">read and grep &mdash; the same primitives every battery in M-3.1 leaned on</span></div>' +
+        '<div class="a16row"><span class="a16chip">clarifying questions</span><span class="a16out">asked <b>after</b> researching your task &mdash; answering them shapes the plan (docs)</span></div>' +
+        '<div class="a16row"><span class="a16chip">plan.md</span><span class="a16out"><b>/memories/session/plan.md</b> &mdash; steps &middot; verification &middot; decisions. Session memory: <b>cleared when the conversation ends</b></span></div>' +
+      '</div>' +
+      '<div class="a16lane">' +
+        '<div class="a16lname">2 · THE HANDOFF — NOTHING RUNS WITHOUT YOU</div>' +
+        '<div class="a16row"><span class="a16chip gate">start the implementation</span><span class="a16out">hands the plan to Agent mode in this session &mdash; edits begin only now</span></div>' +
+        '<div class="a16row"><span class="a16chip gate">background CLI session</span><span class="a16out">or a new Copilot CLI session implements the plan in the background</span></div>' +
+        '<div class="a16row"><span class="a16chip gate">open in editor</span><span class="a16out">or review the planning prompt in the editor first &mdash; the &ldquo;No, keep planning&rdquo; of this surface</span></div>' +
+      '</div>' +
+      '<div class="a16cap">Visual Studio differs: the plan is a durable repo file (.copilot/plans/plan-{title}.md) with an <b>Implement plan</b> button &mdash; the persistence split M-2.3 taught. Abstract diagram by design; no fake IDE chrome.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a16row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 350 + i*600)));
+    timers.push(setTimeout(play, 350 + rows.length*600 + 4500));
+  }
+  mount.querySelector('[data-a16replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- TERM-05 · Plan Steer Replay (spec: VISUALS.md) ----------

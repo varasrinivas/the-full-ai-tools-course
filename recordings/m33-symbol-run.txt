@@ -1,0 +1,64 @@
+M-3.3 SYMBOL-QUESTION CONTROL RUN — method notes + raw capture
+===============================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless, default mode)
+Repo: pristine lab/start clone of priorauth-api (b1b13da).
+Purpose: the Claude-side control for M-3.3's #usages cross-check — the same
+symbol question labB asks Copilot's #usages tool, answered here with text
+tools (grep/read), citations hand-checkable.
+
+Command (verbatim = labA step 1):
+  claude -p "Who calls ApprovalService.process() and who calls
+  resolveManualReview()? Cite file and line for every call site,
+  including tests."
+Elapsed: 23s · exit 0
+
+Verified against source (controller read line-by-line this session):
+- process(): ONE production caller — PriorAuthController.java:54 (matches
+  M-3.2 round-1's "one production caller" flag) + 7 test call sites + 1
+  Mockito stub, which the answer correctly labeled as mock setup, not a
+  real invocation.
+- resolveManualReview(): ZERO production callers — the human-review
+  resolution path has no HTTP endpoint (controller confirmed: submit, get,
+  list, review-queue, review-queue/context only). Real architecture-gap
+  discovery, found by a symbol question.
+
+Doc claims verified same day (code.visualstudio.com, exact wording quoted in
+module + ANIM-16): #usages = "Combination of 'Find All References', 'Find
+Implementation', and 'Go to Definition'"; #codebase, #readFile, #textSearch,
+#fileSearch, #listDirectory; Plan agent cheat-sheet entry ("Research
+requirements, ask clarifying questions, and generate a structured plan with
+steps, verification, and decisions"); plan storage /memories/session/plan.md
+(cleared at conversation end); handoff "start the implementation" / background
+CLI session / open planning prompt in editor; settings chat.planAgent.
+defaultModel, github.copilot.chat.implementAgent.model, planAgent.
+additionalTools (experimental). BLUEPRINT's "find_symbol / call-hierarchy"
+naming confirmed STALE — course teaches #usages (rename catch #4 after
+Composer, Edit mode, @workspace).
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+Both methods are defined in `src/main/java/com/priorauth/service/ApprovalService.java` (`process` at line 58, `resolveManualReview` at line 115). Here are all the call sites, with nothing else in the repo calling either method:
+
+**Callers of `ApprovalService.process()`**
+
+Production code:
+- `src/main/java/com/priorauth/controller/PriorAuthController.java:54` — the only production caller, invoked when a request is submitted through the controller.
+
+Tests:
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:70`
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:77`
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:86`
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:95`
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:101` (inside `assertThatThrownBy`, passing `null`)
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:110` (inside `assertThatThrownBy`)
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:121`
+- `src/test/java/com/priorauth/controller/PriorAuthControllerTest.java:68` — a Mockito stub (`when(approvalService.process(any()))`), so it's a mock setup rather than a real invocation, but it is a call site in the test source.
+
+**Callers of `resolveManualReview()`**
+
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:130` (approve path)
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:139` (deny path with a denial reason)
+- `src/test/java/com/priorauth/service/ApprovalServiceTest.java:150` (inside `assertThatThrownBy`)
+
+Notably, `resolveManualReview()` has **no production callers** — no controller endpoint or other service invokes it; it's only exercised by unit tests. Neither method calls the other internally.
+---META--- exit=0 elapsed=23s
