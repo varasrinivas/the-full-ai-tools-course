@@ -332,6 +332,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-08: Debug Loop Orbit ============ */
+.anim08{--a8red:#d0705a;--a8green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim08{--a8red:#B0503C;--a8green:#2d7350}
+.anim08 .a8head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim08 .a8wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.anim08 .a8orbit{position:relative;width:210px;height:210px;flex-shrink:0;margin:0 auto}
+.anim08 .a8ring{position:absolute;inset:14px;border:1px dashed var(--line);border-radius:50%;transition:inset .6s ease}
+.anim08 .a8node{position:absolute;width:74px;margin-left:-37px;margin-top:-15px;text-align:center;font-size:9px;letter-spacing:.06em;color:var(--faint);transition:left .5s ease,top .5s ease,color .3s}
+.anim08 .a8node.on{color:var(--gold)}
+.anim08 .a8node.pass{color:var(--a8green)}
+.anim08 .a8node.fail{color:var(--a8red)}
+.anim08 .a8core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;font-size:10px;color:var(--dim);width:110px}
+.anim08 .a8core b{display:block;font-size:20px;color:var(--text);font-weight:500}
+.anim08 .a8side{flex:1;min-width:200px}
+.anim08 .a8step{border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin-bottom:6px;font-size:10px;color:var(--dim);line-height:1.5;opacity:.4;transition:opacity .3s,border-color .3s}
+.anim08 .a8step.on{opacity:1;border-color:var(--gold)}
+.anim08 .a8step b{color:var(--text);font-weight:500}
+.anim08 .a8ctrl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:10.5px;color:var(--dim)}
+.anim08 .a8ctrl input[type=range]{flex:1;min-width:110px;accent-color:var(--gold)}
+.anim08 .a8btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim08 .a8btn:hover{border-color:var(--gold)}
+.anim08 .a8foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ SIM-10: Layer Drill ============ */
 .sim10{--s10red:#d0705a;--s10green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim10{--s10red:#B0503C;--s10green:#2d7350}
@@ -1709,6 +1732,63 @@ const MODS = [
       {q:'SIM-10&rsquo;s reveal disagrees with your pick and you have M-4.1&ndash;4.3 logs supporting yours. The module&rsquo;s ruling?',
        options:['The board is authoritative','Rerun the drill until you agree','Split the difference','Keep your pick &mdash; defended counts outrank editorial defaults, the same evidence rule M-2.5 set; log the disagreement for M-11.1'], answer:3}
     ]
+  },
+  {
+    id:'M-5.1', path:'eng', track:'T-05', title:'The agentic debug loop', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'Six symptoms walk into triage: fever, rash, joint pain, fatigue, headache, nausea. The intern writes six problems on the board. The attending asks one question &mdash; what do these have in common? &mdash; and treats one infection. Six failing tests are six symptoms, and the loop exists to stop you from patching symptoms one at a time.',
+      body:
+        '<p><strong>The loop is the unit of work, not the fix.</strong> Five stations: <b>run</b> to get real output, <b>read</b> the trace, <b>hypothesize</b> a single cause, <b>fix</b> the smallest thing, <b>verify</b> by running again. A fix without a verify is a guess with better handwriting. ANIM-08 rides the orbit &mdash; and its dial is the whole trick: the number of stations never changes, only how many times you go around.</p>' +
+        '<p><strong>Six messages, one character.</strong> In the recorded drill, one character changed in a regex &mdash; <code>\\d{5}</code> to <code>\\d{4}</code> &mdash; and the suite reported <em>six</em> failures that appeared to contradict each other: one test expected <code>CPT-001</code> and got <code>CPT-002</code>, another expected <code>CPT-002</code> and got <code>CPT-001</code>, two payer tests got a CPT code instead. The agent&rsquo;s read in 89 seconds: the format guard fires <em>first</em> and short-circuits everything after it, so valid codes now fail early with <code>CPT-001</code> while the deliberately-malformed input sails past the format check and gets rejected later as <code>CPT-002</code>. One cause, five downstream lies. Read the failure set as one system.</p>' +
+        '<p><strong>The green suite is evidence too.</strong> <code>ApprovalServiceTest</code> stayed fully green throughout &mdash; and the agent used that as a diagnostic instrument, not a comfort: green &ldquo;because it mocks EligibilityService and never exercises the regex.&rdquo; What <em>didn&rsquo;t</em> fail bounds where the bug can live, exactly like M-3.4&rsquo;s negative space. A suite that stays green through a real bug is telling you where its mocks are.</p>' +
+        '<p><strong>Context quality decides your lap count.</strong> The recorded mission carried the actual assertion messages, the fact that the other suite was green, and a leash (&ldquo;do not weaken or edit any test&rdquo;). One lap, 89 seconds, one line. &ldquo;The tests are failing, fix it&rdquo; buys the same five stations three or four times over while the agent re-derives what your terminal already printed. Paste the real output &mdash; and paste what <em>passed</em> too.</p>' +
+        '<p><strong>The last station may not be the agent&rsquo;s to run.</strong> Here is the recorded run&rsquo;s most valuable moment: the agent fixed the bug and then reported plainly that it <em>could not verify</em> &mdash; the permission layer rejected every attempt to run Maven. It offered surrogate evidence (a stale surefire report, hand-tracing all eight tests) and asked for approval rather than claiming success. A human ran the suite: <b>22/22 green</b>. Learn both halves: surrogate evidence is not verification, and an agent that says &ldquo;I could not run it&rdquo; is doing its job. M-5.2 takes the loop to the threshold bug; M-5.3 hands verification to a debugger that watches runtime.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-08'},
+    labA:{
+      title:'Ride the loop — Claude Code',
+      steps:[
+        'Plant it yourself on a scratch branch of priorauth-api (<code>git switch -c drill/loop</code>): in <code>EligibilityService</code>, change the CPT pattern from <code>\\d{5}</code> to <code>\\d{4}</code> &mdash; one character. Then station one: <code>./mvnw test -Dtest=EligibilityServiceTest,ApprovalServiceTest</code>. Reference: 6 failures in one class, 10 green in the other.',
+        'Copy the <em>real</em> failure block, then give the mission with all three ingredients &mdash; the failing assertions verbatim, the fact that ApprovalServiceTest is green, and the leash: <em>&ldquo;Find the single root cause, fix it, and verify with the test suite. Do not weaken or edit any test.&rdquo;</em> Reference run: 89s, one line changed.',
+        'Grade the read before you grade the fix: does your agent explain why the two CPT tests contradict each other (guard order and short-circuiting)? Does it explain why the other suite stayed green (it mocks this service)? A right fix with a wrong story will fool you next time.',
+        'Close the loop yourself: run the suite. Reference: <b>22/22</b>. If your agent reported it couldn&rsquo;t execute the tests, that is honest behavior, not failure &mdash; note what surrogate evidence it offered instead, and log why that isn&rsquo;t verification.',
+        'Confirm the leash held: <code>git diff</code> should show one line in one production file and <b>zero test edits</b>. Then delete the branch. Success: the six-to-one story in your log, a green suite you ran, and a clean revert.'
+      ]
+    },
+    labB:{
+      title:'The same loop — Copilot',
+      steps:[
+        'Same plant, branch <code>drill/loop-copilot</code>. Run the tests in the Test Explorer, then hand <b>Agent</b> the failures with the same three ingredients and the same leash.',
+        'Watch where this surface changes the loop: it can usually run tests itself, so the verify station may close without you &mdash; which makes reading the run output <em>yourself</em> the discipline, not an optional step.',
+        'Success: same one-line fix, same six-to-one explanation, a green run you personally read, branch deleted.'
+      ]
+    },
+    labC:{
+      title:'The same loop — Cursor, then the debrief',
+      steps:[
+        'Same plant, branch <code>drill/loop-cursor</code>, same mission and leash in the agent panel.',
+        'The tempting anti-pattern to try once, deliberately: drop the leash and say only &ldquo;make the tests pass.&rdquo; Note whether anything proposes touching a test. Then discard that attempt entirely &mdash; you now know what the leash is for.',
+        'Debrief across three: laps to green, whether each closed its own verify station, and which explanation you&rsquo;d trust at 2am. Write your loop card: <em>run &rarr; read &rarr; one hypothesis &rarr; smallest fix &rarr; verify, and paste what passed too.</em> Success: three loops ridden, the leash experiment logged, the card written.'
+      ]
+    },
+    checklist:[
+      'I planted the character, ran the suite, and captured the real six-failure output.',
+      'My agent&rsquo;s explanation covers guard order AND why the green suite stayed green.',
+      'I closed the verify station myself and saw 22/22 &mdash; I did not accept surrogate evidence.',
+      'The leash held: one production line changed, zero test edits.',
+      'I tried &ldquo;make the tests pass&rdquo; without a leash once, saw what it invites, and discarded it.'
+    ],
+    quiz:[
+      {q:'One character changed and six tests failed with contradictory messages. What does the loop say to do first?',
+       options:['Fix the first failing assertion, then re-run','Read the whole failure set as one system and hypothesize a single cause &mdash; six symptoms rarely mean six bugs','Ask the agent to fix all six independently','Revert everything and start over'], answer:1},
+      {q:'ApprovalServiceTest stayed green through a real bug in EligibilityService. What is that fact worth?',
+       options:['Nothing &mdash; passing tests carry no information','It proves the bug is not real','It bounds where the bug can live and exposes a mock boundary &mdash; the green suite mocks the broken service, so it never exercised the regex','It means the fix is already deployed'], answer:2},
+      {q:'The agent fixed the bug, then said it could not run the suite and offered a stale test report plus hand-tracing. Correct response?',
+       options:['Accept it &mdash; the reasoning was thorough','Run the suite yourself: surrogate evidence is not verification &mdash; and note that an agent saying &ldquo;I could not run it&rdquo; is behaving correctly','Ask it to try harder','Treat the fix as unverifiable and revert it'], answer:1},
+      {q:'What does the context dial in ANIM-08 actually change?',
+       options:['Which stations the loop has','How many laps you take &mdash; the five stations never change; pasting real output (and what passed) is what buys a single lap','The model used','Whether tests are needed'], answer:1}
+    ]
   }
 ];
 
@@ -2477,6 +2557,87 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-08 · Debug Loop Orbit (spec: VISUALS.md) ----------
+   Five stations; the context dial tightens the orbit and cuts laps. The
+   high-quality end is the real recorded run (recordings/m51-debug-loop.txt):
+   one lap, 89s, one line — and a verify step the agent could not run. */
+VISUALS['ANIM-08'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NODES = ['RUN','RED TRACE','READ','PATCH','VERIFY'];
+  const STEPS = [
+    '<b>RUN</b> — 8 tests, 6 failures. Six messages, and two of them contradict each other.',
+    '<b>RED TRACE</b> — expected CPT-001 got CPT-002 &middot; expected CPT-002 got CPT-001 &middot; two PAYER-001 tests got CPT-001.',
+    '<b>READ</b> — one guard fires first and short-circuits the rest; the green suite mocks this service, so it never saw the regex.',
+    '<b>PATCH</b> — one character restored: <code>\\d{4}</code> &rarr; <code>\\d{5}</code>. No test touched.',
+    '<b>VERIFY</b> — the agent could not run the suite and said so. A human ran it: <b>22/22 green</b>.'
+  ];
+  mount.innerHTML =
+    '<div class="anim08" aria-label="The agentic debug loop orbit">' +
+      '<div class="a8head"><span>ANIM-08 · THE DEBUG LOOP · CONTEXT TIGHTENS THE ORBIT</span>' +
+        '<button class="a8btn" data-a8run>RUN LOOP ▸</button></div>' +
+      '<div class="a8wrap">' +
+        '<div class="a8orbit" data-orbit>' +
+          '<div class="a8ring" data-ring></div>' +
+          NODES.map((n,i) => '<div class="a8node" data-node="' + i + '">' + n + '</div>').join('') +
+          '<div class="a8core">laps to green<b data-laps>1</b><span data-lapnote>recorded run</span></div>' +
+        '</div>' +
+        '<div class="a8side">' +
+          STEPS.map((s,i) => '<div class="a8step" data-step="' + i + '">' + s + '</div>').join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="a8ctrl"><span>context quality:</span>' +
+        '<input type="range" min="0" max="100" step="1" value="90" data-quality aria-label="Context quality fed into the loop">' +
+        '<span data-qlabel>real failure output pasted</span></div>' +
+      '<div class="a8foot">What to notice: the loop always has five stations &mdash; context quality only decides how many times you go around. And the last station is the one an agent may not be able to run for you.</div>' +
+    '</div>';
+  const ring = mount.querySelector('[data-ring]');
+  const nodes = [...mount.querySelectorAll('.a8node')];
+  const steps = [...mount.querySelectorAll('.a8step')];
+  const slider = mount.querySelector('[data-quality]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function lapsFor(q){ return q >= 85 ? 1 : q >= 60 ? 2 : q >= 35 ? 3 : 5; }
+  function labelFor(q){
+    return q >= 85 ? 'real failure output pasted' : q >= 60 ? 'summarized the error' :
+           q >= 35 ? '"the tests are failing"' : '"it doesn\'t work"';
+  }
+  function layout(q){
+    const laps = lapsFor(q);
+    const r = 46 + (laps - 1) * 12;
+    ring.style.inset = (105 - r) + 'px';
+    nodes.forEach((n,i) => {
+      const a = (i / NODES.length) * Math.PI * 2 - Math.PI / 2;
+      n.style.left = (105 + Math.cos(a) * r) + 'px';
+      n.style.top = (105 + Math.sin(a) * r) + 'px';
+    });
+    mount.querySelector('[data-laps]').textContent = String(laps);
+    mount.querySelector('[data-lapnote]').textContent = q >= 85 ? 'recorded run' : 'more turns, more tokens';
+    mount.querySelector('[data-qlabel]').textContent = labelFor(q);
+  }
+  function clearMarks(){
+    nodes.forEach(n => n.classList.remove('on','fail','pass'));
+    steps.forEach(s => s.classList.remove('on'));
+  }
+  function runLoop(){
+    stop(); clearMarks();
+    if(reduce){
+      nodes.forEach((n,i) => n.classList.add(i === 1 ? 'fail' : i === 4 ? 'pass' : 'on'));
+      steps.forEach(s => s.classList.add('on'));
+      return;
+    }
+    nodes.forEach((n,i) => timers.push(setTimeout(() => {
+      clearMarks();
+      steps[i].classList.add('on');
+      n.classList.add(i === 1 ? 'fail' : i === 4 ? 'pass' : 'on');
+    }, 200 + i * 900)));
+    timers.push(setTimeout(() => { steps.forEach(s => s.classList.add('on')); }, 200 + NODES.length * 900));
+  }
+  slider.addEventListener('input', () => layout(+slider.value));
+  mount.querySelector('[data-a8run]').addEventListener('click', runLoop);
+  layout(+slider.value);
+  runLoop();
 };
 
 /* ---------- SIM-10 · Layer Drill (spec: VISUALS.md) ----------

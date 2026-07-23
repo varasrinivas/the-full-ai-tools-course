@@ -1,0 +1,56 @@
+M-5.1 AGENTIC DEBUG LOOP — method notes + raw captures
+=======================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless, --permission-mode acceptEdits)
+Repo: lab/start clone of priorauth-api (b1b13da), scratch branch drill/m51-loop.
+
+THE PLANT (one character, by hand — NOT one of the repo's tagged plants):
+  EligibilityService.java:17
+  -  Pattern.compile("\d{5}")     // CPT codes are 5 digits
+  +  Pattern.compile("\d{4}")
+
+STEP 1 — RUN (real surefire output, verbatim excerpt):
+  Tests run: 8, Failures: 6 -- EligibilityServiceTest
+    malformedCptCodeIsIneligible        expected: "CPT-001"  but was: "CPT-002"
+    cptNotCoveredByPayerIsIneligible    expected: "CPT-002"  but was: "CPT-001"
+    unknownPayerIsIneligible            expected: "PAYER-001" but was: "CPT-001"
+    missingPayerIsIneligible            expected: "PAYER-001" but was: "CPT-001"
+    coveredCptWithKnownPayerIsEligible  Expecting value to be true but was false
+    eligibilityDoesNotDependOnWhenInTheMonthTheCheckRuns  ... true but was false
+  Tests run: 10, Failures: 0 -- ApprovalServiceTest   (fully green)
+  ^ Note the CONTRADICTION: one test expects CPT-001 and gets CPT-002; another
+    expects CPT-002 and gets CPT-001. Six messages, six apparent bugs.
+
+STEP 2-4 — READ / HYPOTHESIZE / FIX (agent mission verbatim = labA step 2):
+  claude -p "EligibilityServiceTest has 6 failures after a change. The messages
+  contradict each other: [six failures pasted] ... ApprovalServiceTest is fully
+  green. Find the single root cause, fix it, and verify with the test suite.
+  Do not weaken or edit any test." --permission-mode acceptEdits
+Elapsed: 89s · exit 0 · ONE line changed, restoring \d{5}.
+
+The explanation is the teaching payload — a short-circuit cascade:
+  "97110/70553 no longer match → the guard at line 29 fires first and returns
+   CPT-001, short-circuiting before the payer checks" (hence PAYER-001 tests
+   getting CPT-001), while "9711 (the deliberately-malformed input) now PASSES
+   the format check and falls through to the coverage check → CPT-002 where
+   CPT-001 was expected."
+  And why the green suite mattered: "ApprovalServiceTest was green throughout
+  because it mocks EligibilityService (ApprovalServiceTest.java:48) and never
+  exercises the regex" — the mock boundary as a diagnostic instrument.
+
+STEP 5 — VERIFY: THE AGENT COULD NOT CLOSE THE LOOP (kept, it IS the lesson):
+  "Verification — I could not run it. .\mvnw.cmd -o test, mvn -o test, and the
+   call-operator form were each rejected by the permission layer ... the suite
+   has not actually been executed." It offered surrogate evidence (stale
+   surefire report + hand-tracing all 8 tests) and asked for approval.
+  HUMAN CLOSED THE LOOP (this session, real run):
+   ./mvnw test -Dtest=EligibilityServiceTest,ApprovalServiceTest,ClaimHistoryServiceTest
+   → Tests run: 22, Failures: 0, Errors: 0 · BUILD SUCCESS
+   → git diff vs lab/start: EMPTY (fix restored the file exactly)
+
+UNPROMPTED BONUS FIND (do not spoil in M-5.1 copy — it is M-5.4's bug):
+  The agent flagged eligibilityDoesNotDependOnWhenInTheMonthTheCheckRuns as a
+  latent time bomb: it calls LocalDate.now() and "will fail on the last three
+  days of any month regardless of the fix." That is BUG-API-02, found while
+  fixing something else, and correctly left alone per the mission's leash.
+
+CLEANUP: drill branch deleted; clone restored to pristine lab/start.
