@@ -1,0 +1,83 @@
+M-3.2 PLAN-MODE STEER CYCLE — method notes + raw captures
+==========================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless --permission-mode plan)
+Repo: pristine lab/start clone of priorauth-api (b1b13da).
+Two rounds simulate the interactive "No, keep planning" steer in headless form
+(round 2's prompt IS the steer message, verbatim in labA step 4). Post-cycle
+`git status --porcelain`: empty — ZERO edits across both planning rounds.
+
+ROUND 1 mission (verbatim = labA step 2):
+  claude -p "Produce a plan to refactor ApprovalService.process() into smaller
+  methods. List the extraction steps, what each new method owns, and the test
+  impact. Flag anything in the code or repo that argues against this refactor.
+  Do not write any code." --permission-mode plan
+Elapsed: 118s. The plan argued against its own mission: flag 1 QUOTED the
+"resist tidying" javadoc ("The code explicitly says don't") and reasoned
+lab-branch vs hard-no; flag 2 demanded the strict > be preserved bit-for-bit
+with a 0.85 characterization test (no test pins the boundary); flag 3 called
+the payoff modest; flag 4 ruled out stage beans on transaction semantics.
+
+ROUND 2 steer (verbatim = labA step 4):
+  "...Good flags - this IS the intended lab, and your scope concern is
+  accepted. Re-plan with the scope cut: extract ONLY the eligibility-denial
+  block, plus the 0.85 characterization test you recommended. Leave everything
+  else untouched including the strict comparison. Five steps or fewer."
+Elapsed: 84s. Five steps, test-first (pin current behavior BEFORE moving
+code), explicit out-of-scope list, javadoc + strict > untouched; bonus catch:
+the misleading ">=" in the log message at line 101, also declared out of scope.
+
+Honest wrinkle (kept): headless plan mode again noted ExitPlanMode unavailable
+and printed the plan, writing it to ~/.claude/plans/ (same as the M-2.3 run).
+Interactive gate wording doc-verified same day (code.claude.com/docs/en/
+permission-modes): options are "Yes, and use auto mode" / "Yes, auto-accept
+edits" / "Yes, manually approve edits" / "No, refine with Ultraplan on Claude
+Code on the web" / "No, keep planning"; Ctrl+G opens the plan in your editor;
+Shift+Tab leaves plan mode without approving; status bar shows "⏸ plan mode
+on"; cycle default → acceptEdits → plan; /plan prefixes a single prompt.
+
+ROUND 1 RAW TRANSCRIPT (stdout, untrimmed)
+-------------------------------------------
+The plan is written to the plan file. Here's the summary:
+
+## Plan: refactor `ApprovalService.process()` into smaller methods
+
+**Target shape.** `process()` stays the only public `@Transactional` entry point (~12 lines) and reads as the pipeline narration; all extracted methods are **private on the same bean** (moving them to another bean or splitting the transaction boundary would change semantics via Spring self-invocation).
+
+**Extraction steps** (one at a time, `./mvnw test` after each — all are pure "Extract Method" moves, no logic edits):
+
+1. **`validateProcessable(request)`** — owns the guards (lines 59–65): null → `IllegalArgumentException`, non-`SUBMITTED` → `IllegalStateException`.
+2. **`denyForEligibility(request, eligibility)`** — owns the Stage-1 denial short-circuit (lines 72–82): set `DENIED`, stamp `decidedAt`, save request, create the `Denial` from the *saved* request (preserve that ordering), notify, log, return.
+3. **`logHeavyDenialHistory(patientRef)`** — owns Stage 2 (lines 88–95): fetch history, count `"DENIED"`, log when > 3. Void return makes its advisory, non-gating nature explicit.
+4. **`applyThresholdDecision(request)`** — owns Stage 3 (lines 98–107): `AUTO_APPROVED` vs `MANUAL_REVIEW` plus logging. Copy the comparison **verbatim** (see flag #2). The shared `decidedAt` stamp + final save stay in `process()`.
+5. Optional: a tiny shared `stampDecided(request)` reusable from `resolveManualReview()`. Skip a shared "deny + notify" helper — the two denial paths save the request and the `Denial` in opposite orders, so unifying them isn't a pure extraction.
+
+**Test impact.** Zero required changes: all 10 `ApprovalServiceTest` tests drive the public API against mocks, and `PriorAuthControllerTest` mocks `ApprovalService` entirely — they're the safety net, not casualties. Don't widen helper visibility to test private methods. One gap worth closing *before* refactoring: no test pins `score == 0.85` exactly; add a characterization test asserting today's behavior (`0.85` → `MANUAL_REVIEW`) so an accidental boundary change fails loudly.
+
+**Flags against the refactor:**
+
+1. **The code explicitly says don't.** The Javadoc on `process()` reads: *"this method is intentionally long-form… Refactoring it is a course lab — resist tidying it."* The README confirms this is a teaching repo where labs branch from `lab/start` — the current branch. If this is the intended lab, do it on a fresh branch off `lab/start` (other labs branch from it); if it's not the lab, that comment is a hard no.
+2. **Latent threshold bug the refactor could silently change.** The class doc and the approval log line both say the threshold is inclusive (`>= 0.85` approves), but the code uses strict `score > AUTO_APPROVE_THRESHOLD` — so `0.85` currently routes to manual review. No test covers the boundary. The refactor must preserve `>` bit-for-bit; fixing the discrepancy is a separate decision/commit.
+3. **Modest payoff.** ~50 lines, one production caller (`PriorAuthController.java:54`), real logic already delegated to `EligibilityService`/`ClaimHistoryService`, and clear stage-banner comments — extraction mostly turns those comments into method names.
+4. **Transaction constraints** rule out fancier shapes (stage beans, public step methods).
+
+Verification: boundary test green pre-refactor, full suite green after each step with no test modified, and a final `git diff` showing only `ApprovalService.java` plus the one new test.
+---META--- exit=0 elapsed=118s
+
+ROUND 2 RAW TRANSCRIPT (stdout, untrimmed)
+-------------------------------------------
+ExitPlanMode isn't exposed in this session's toolset (ToolSearch found no match), so I'll present the final plan here directly. It's saved at `C:\Users\vara\.claude\plans\you-planned-a-refactor-radiant-church.md`.
+
+## Re-planned with the scope cut — 5 steps, test-first
+
+I re-verified the code: the eligibility-denial block is `ApprovalService.java:72-82`, and the strict comparison at line 99 (`score > AUTO_APPROVE_THRESHOLD`) does contradict the class javadoc's "INCLUSIVE" claim — so a score of exactly 0.85 currently routes to `MANUAL_REVIEW`, and that's the behavior the characterization test pins.
+
+1. **Add the characterization test first** in `ApprovalServiceTest.java`: an eligible request with score exactly `ApprovalService.AUTO_APPROVE_THRESHOLD` asserts `MANUAL_REVIEW` and no denial saved. Use the constant, not a `0.85` literal, so the pin is bit-for-bit; a comment notes it deliberately captures the strict `>` behavior that the javadoc contradicts. The existing `eligible()` and `submitted(score)` helpers cover the setup.
+2. **Confirm the pin** — run `.\mvnw test -Dtest=ApprovalServiceTest` and see it pass against unmodified production code, so the test documents current behavior rather than a hoped-for one.
+3. **Extract the block** — move lines 72–82 verbatim into a private helper, e.g. `denyForEligibility(request, eligibility)`: set `DENIED`, stamp `decidedAt` from the clock, save, persist the `Denial`, notify, log, return. No `@Transactional` on it — it runs inside `process()`'s existing transaction.
+4. **Wire it in** — the `if (!eligibility.eligible())` body becomes `return denyForEligibility(request, eligibility);`. Nothing else moves: Stage 2, Stage 3, the strict `>`, the stage comments, and the "resist tidying" javadoc all stay exactly as they are.
+5. **Verify** — full `.\mvnw test`; all existing tests plus the new one green.
+
+Explicitly out of scope, per your decision: the `>`/`>=` discrepancy itself (including the misleading `>=` in the log message at line 101), any other extraction, and any javadoc edits.
+
+Ready to execute on your approval.
+---META--- exit=0 elapsed=84s

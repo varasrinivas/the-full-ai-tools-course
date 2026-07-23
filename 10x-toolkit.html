@@ -1194,6 +1194,63 @@ const MODS = [
       {q:'The durable output of an onboarding session is:',
        options:['The chat transcript','A committed architecture map with cited findings &mdash; the artifact the next person reads','A longer CLAUDE.md','Your memory of the session'], answer:1}
     ]
+  },
+  {
+    id:'M-3.2', path:'eng', track:'T-03', title:'Plan Mode deep dive (Claude)', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'An architect&rsquo;s site survey ends in a drawing, and the drawing goes through review: the client strikes the atrium, the engineer flags the span, revision two comes back smaller and buildable &mdash; and through all of it, not one brick has been laid. Plan Mode is the survey plus the review meeting. The recorded session even did what good architects do: told the client the site itself argues against the project.',
+      body:
+        '<p><strong>Plan Mode is a research mode with a locked toolbox.</strong> Claude reads files and explores, but edits stay blocked until you approve a plan &mdash; the status bar says <code>&#9208; plan mode on</code> the whole time. Three ways in: <b>Shift+Tab</b> cycles <code>default &rarr; acceptEdits &rarr; plan</code>; prefix a single prompt with <code>/plan</code>; or start the session with <code>claude --permission-mode plan</code>. And one way out without committing to anything: Shift+Tab again leaves plan mode with no plan approved. The recorded proof of the lock: two full planning rounds on priorauth-api, then <code>git status --porcelain</code> &mdash; empty.</p>' +
+        '<p><strong>The gate has exact affordances &mdash; learn all five.</strong> When the plan lands, the prompt offers (current docs, verbatim): <em>Yes, and use auto mode</em> (or <em>Yes, auto-accept edits</em>), <em>Yes, manually approve edits</em>, <em>No, refine with Ultraplan on Claude Code on the web</em>, and <em>No, keep planning</em>. Two more most people miss: <b>Ctrl+G</b> opens the proposed plan in your text editor so you can strike lines by hand before anything proceeds, and approving a plan switches the session into the mode the option names &mdash; the gate is also the throttle for what comes after.</p>' +
+        '<p><strong>&ldquo;No, keep planning&rdquo; is the whole skill.</strong> In the recorded round one, the mission was a refactor of <code>ApprovalService.process()</code> &mdash; and the plan came back arguing against its own mission: it <em>quoted</em> the method&rsquo;s &ldquo;resist tidying&rdquo; javadoc (&ldquo;The code explicitly says don&rsquo;t&rdquo;), demanded the strict <code>&gt;</code> be preserved bit-for-bit behind a characterization test no one had written, and called the payoff modest. That is plan mode working: counter-evidence surfaced while edits still cost nothing. The steer accepted the flags and cut scope; round two came back in 84 seconds &mdash; five steps, <em>test-first</em>, an explicit out-of-scope list, and a bonus catch (the misleading <code>&gt;=</code> in a log line, also declared out of scope).</p>' +
+        '<p><strong>Steering is editing a document, not arguing with a model.</strong> Three levers, in escalating precision: reply with feedback (&ldquo;No, keep planning&rdquo; + what to change), edit the plan text directly (Ctrl+G), or re-anchor the mission and re-plan. The recorded steer used the first: named what the plan got right, made the scope decision the plan had surfaced, and set a size limit. Notice what the steer did <em>not</em> do &mdash; relitigate the research. Round two trusted round one&rsquo;s reading and re-verified only the two line-level facts it was about to build on.</p>' +
+        '<p><strong>When you approve, you own it.</strong> M-1.6&rsquo;s signature rule applies to plans exactly as to diffs: the approved plan is your scope decision, recorded &mdash; including what it defers (here, the boundary fix, parked for T-05 with a characterization test pinning today&rsquo;s behavior until then). Headless plan mode (<code>-p --permission-mode plan</code>) has no interactive gate; it prints the plan and writes it to <code>~/.claude/plans/</code> &mdash; CI-able, and the file is the artifact. M-3.3 gives Copilot&rsquo;s Plan agent the same deep dive.</p>'
+    },
+    visual:{type:'term', componentId:'TERM-05'},
+    labA:{
+      title:'Run a full steer cycle — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-api. Start <code>claude</code>, press <b>Shift+Tab</b> until the status bar reads <code>&#9208; plan mode on</code> (the cycle is default &rarr; acceptEdits &rarr; plan).',
+        'Give the mission verbatim: <em>&ldquo;Produce a plan to refactor ApprovalService.process() into smaller methods. List the extraction steps, what each new method owns, and the test impact. Flag anything in the code or repo that argues against this refactor. Do not write any code.&rdquo;</em> Reference run: 118s.',
+        'Grade the flags before reading further: did your plan find the &ldquo;resist tidying&rdquo; javadoc? The strict-<code>&gt;</code> preservation requirement? The missing boundary test? The recorded run found all three and called the payoff modest &mdash; a plan arguing against its mission is the gate working, not failing.',
+        'Steer with <b>No, keep planning</b> and the feedback verbatim: <em>&ldquo;Good flags &mdash; this IS the intended lab, and your scope concern is accepted. Re-plan with the scope cut: extract ONLY the eligibility-denial block, plus the 0.85 characterization test you recommended. Leave everything else untouched including the strict comparison. Five steps or fewer.&rdquo;</em> Reference: 84s, five steps, test-first.',
+        'Press <b>Ctrl+G</b>, strike one line of the plan by hand in your editor, close it. Then leave plan mode <em>without approving</em> (Shift+Tab) and run <code>git status --porcelain</code>. Success: two plans produced, the javadoc flag found (or its absence recorded), one hand-edit made, and an empty status &mdash; the lock held.'
+      ]
+    },
+    labB:{
+      title:'The same cycle in Copilot — comparative',
+      steps:[
+        'Same round-one mission in the <b>Plan</b> agent (<code>/plan</code>). Compare against your labA notes: did it flag the forbidding javadoc? The boundary-test gap?',
+        'Steer it the same way in chat, then locate the plan artifact &mdash; session memory in VS Code (<b>Chat: Show Memory Files</b>), durable <code>.copilot/plans/</code> in Visual Studio (M-2.3&rsquo;s split). Decline the implementation handoff.',
+        'Success: both rounds run, the flag comparison logged, and one line on which gate &mdash; Claude&rsquo;s five options or Copilot&rsquo;s handoff &mdash; fits how your team reviews.'
+      ]
+    },
+    labC:{
+      title:'The same cycle in Cursor, then the debrief',
+      steps:[
+        'Same mission in Cursor&rsquo;s <b>Plan Mode</b> (Shift+Tab). When the Markdown plan lands, steer by editing it directly: delete the to-dos outside the scope cut &mdash; Cursor&rsquo;s steer is document-first where Claude&rsquo;s is dialogue-first.',
+        'Do <b>not</b> press Build. Note where the plan saved and whether your edit survived a re-prompt.',
+        'Debrief across all three: which surface made the counter-evidence easiest to act on? Write the one-line answer with a reason &mdash; it becomes your default for risky-change planning. Success: three steered plans, zero edits anywhere, the one-liner in your log.'
+      ]
+    },
+    checklist:[
+      'I entered and left plan mode with Shift+Tab and can name all five gate affordances.',
+      'My round-one plan flagged the forbidding javadoc &mdash; or I recorded that it didn&rsquo;t and why that matters.',
+      'I steered with &ldquo;No, keep planning&rdquo; feedback and got a scope-cut, test-first round two.',
+      'I edited a plan by hand with Ctrl+G before deciding anything.',
+      'I proved the lock: git status empty after the full cycle, in every tool.'
+    ],
+    quiz:[
+      {q:'You want out of plan mode without approving anything. The move?',
+       options:['Approve, then revert the edits','Close the terminal','Press Shift+Tab again &mdash; plan mode exits with nothing approved and nothing written','Delete the plan file'], answer:2},
+      {q:'The recorded round-one plan spent a third of its length arguing against its own mission. That is&hellip;',
+       options:['A failure &mdash; plans should plan, not object','The gate working: read-only research surfaced the forbidding javadoc, the boundary risk, and the modest payoff while edits still cost nothing','A sign the prompt was too vague','Overcaution to be prompted away'], answer:1},
+      {q:'What does Ctrl+G do at the plan gate?',
+       options:['Approves the plan','Regenerates the plan','Switches to auto mode','Opens the proposed plan in your text editor so you can edit it directly before anything proceeds'], answer:3},
+      {q:'The steer message accepted the flags, made the scope call, and set a size limit &mdash; what did it deliberately NOT do?',
+       options:['Relitigate the research &mdash; round two trusted the reading and re-verified only the line-level facts it would build on','Mention the javadoc','Keep the characterization test','Set any constraints'], answer:0}
+    ]
   }
 ];
 
@@ -1962,6 +2019,96 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- TERM-05 · Plan Steer Replay (spec: VISUALS.md) ----------
+   Real recorded two-round steer cycle (recordings/m32-plan-steer.txt,
+   2026-07-23, v2.1.216, 118s + 84s, zero edits). Frames trimmed from the
+   real transcripts — never fabricated. Reuses .term01 styles. */
+VISUALS['TERM-05'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = [
+    {t:'cmd', text:'claude -p "Produce a plan to refactor ApprovalService.process() into smaller methods. List the extraction steps, what each new method owns, and the test impact. Flag anything in the code or repo that argues against this refactor. Do not write any code." --permission-mode plan'},
+    {t:'out', text:
+      '## Plan: refactor ApprovalService.process() into smaller methods\n\n' +
+      'Target shape: process() stays the only public @Transactional entry point (~12 lines)... four private extractions...\n\n' +
+      '### Flags against the refactor:\n' +
+      '1. The code explicitly says don\'t. The Javadoc on process() reads: "this method is intentionally long-form... Refactoring it is a course lab — resist tidying it." ... if it\'s not the lab, that comment is a hard no.\n' +
+      '2. Latent threshold bug the refactor could silently change. The class doc and the approval log line both say the threshold is inclusive (>= 0.85 approves), but the code uses strict >. No test covers the boundary. The refactor must preserve > bit-for-bit.\n' +
+      '3. Modest payoff. ~50 lines, one production caller, real logic already delegated... extraction mostly turns stage comments into method names.'},
+    {t:'note', html:'<b>The gate, verbatim from current docs:</b> <em>Yes, and use auto mode</em> &middot; <em>Yes, manually approve edits</em> &middot; <em>No, refine with Ultraplan on Claude Code on the web</em> &middot; <em>No, keep planning</em> &mdash; plus <code>Ctrl+G</code> to edit the plan in your editor, and Shift+Tab to walk away entirely. The steer below is &ldquo;No, keep planning&rdquo; with feedback.'},
+    {t:'cmd', text:'claude -p "You planned a refactor... Good flags - this IS the intended lab, and your scope concern is accepted. Re-plan with the scope cut: extract ONLY the eligibility-denial block, plus the 0.85 characterization test you recommended. Leave everything else untouched including the strict comparison. Five steps or fewer." --permission-mode plan'},
+    {t:'out', text:
+      '## Re-planned with the scope cut — 5 steps, test-first\n\n' +
+      'I re-verified the code: the eligibility-denial block is ApprovalService.java:72-82, and the strict comparison at line 99 does contradict the javadoc — 0.85 currently routes to MANUAL_REVIEW; that\'s what the characterization test pins.\n\n' +
+      '1. Add the characterization test first (use the constant, not a 0.85 literal)\n' +
+      '2. Confirm the pin passes against unmodified code\n' +
+      '3. Extract lines 72-82 verbatim into denyForEligibility(...)\n' +
+      '4. Wire it in — nothing else moves: Stage 2, Stage 3, the strict >, and the "resist tidying" javadoc all stay\n' +
+      '5. Verify — full test suite green\n\n' +
+      'Explicitly out of scope, per your decision: the >/>= discrepancy itself (including the misleading >= in the log message at line 101).'},
+    {t:'out', text:'elapsed: round 1 — 118s · round 2 — 84s\n$ git status --porcelain\n(empty — zero edits across both planning rounds)'},
+    {t:'note', html:'<b>What to notice:</b> round one argued against its own mission &mdash; that is the gate <em>working</em>, counter-evidence surfaced while edits cost nothing. The steer accepted the flags, made the scope call, and did not relitigate the research. Round two re-verified only the two line-level facts it was about to build on &mdash; then parked the boundary fix for T-05 behind a test that pins today&rsquo;s behavior.'}
+  ];
+  mount.innerHTML =
+    '<div class="term01" aria-label="Recorded Plan Mode steer-cycle replay">' +
+      '<div class="thbar"><span class="dot g"></span><span class="dot"></span><span class="dot"></span>' +
+        '<span>PLAN MODE · STEER CYCLE · PRIORAUTH-API</span><span class="rec">RECORDED 2026-07-23 · 2 ROUNDS</span></div>' +
+      '<div class="tscroll" data-scroll></div>' +
+      '<div class="tfoot">' +
+        '<span class="tnote-cap">What to notice: two full planning rounds, one steer, zero edits. Trimmed; full capture in /recordings.</span>' +
+        '<div class="tctl">' +
+          '<button data-speed="1" aria-pressed="true">×1</button>' +
+          '<button data-speed="2" aria-pressed="false">×2</button>' +
+          '<button data-skip>SKIP</button>' +
+          '<button data-replay>REPLAY ▸</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const scroll = mount.querySelector('[data-scroll]');
+  let speed = 1, timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms / speed)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frameHtml(f, partialCmd){
+    if(f.t === 'cmd') return '<div class="tline"><span class="tp">$</span> ' + esc(partialCmd != null ? partialCmd : f.text) + (partialCmd != null ? '<span class="tcaret"></span>' : '') + '</div>';
+    if(f.t === 'out') return '<div class="tout">' + esc(f.text) + '</div>';
+    return '<div class="tnote">' + f.html + '</div>';
+  }
+  function renderUpTo(n, partialCmd){
+    scroll.innerHTML = FRAMES.slice(0, n).map(f => frameHtml(f)).join('') +
+      (partialCmd != null ? frameHtml(FRAMES[n], partialCmd) : '');
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+  function renderAll(){ stop(); renderUpTo(FRAMES.length); }
+  function play(){
+    stop();
+    if(reduce){ renderAll(); return; }
+    let i = 0;
+    (function next(){
+      if(i >= FRAMES.length) return;
+      const f = FRAMES[i];
+      if(f.t === 'cmd'){
+        let ch = 0;
+        (function type(){
+          renderUpTo(i, f.text.slice(0, ch));
+          if(ch < f.text.length){ ch += 2; later(type, 40); }
+          else { i++; renderUpTo(i); later(next, 500); }
+        })();
+      } else {
+        i++; renderUpTo(i);
+        later(next, f.t === 'out' ? 1600 : 600);
+      }
+    })();
+  }
+  mount.querySelectorAll('[data-speed]').forEach(b => {
+    b.addEventListener('click', () => {
+      speed = +b.dataset.speed;
+      mount.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  mount.querySelector('[data-skip]').addEventListener('click', renderAll);
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- SIM-09 · API Architecture Map (spec: VISUALS.md) ----------
