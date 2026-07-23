@@ -1,0 +1,86 @@
+M-3.5 SMELL-HUNT RUN — method notes + raw capture
+==================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless, default mode)
+Repo: pristine lab/start clone of priorauth-api (b1b13da). BUG-API-03 planted.
+Post-run `git status --porcelain`: empty — "You asked for diagnosis only, so I
+changed nothing" honored and verified.
+
+Command (verbatim = labA step 1):
+  claude -p "The review queue endpoint GET /api/requests/review-queue/context
+  feels slow as the queue grows. Without changing any code, find why,
+  characterize exactly how the cost scales with queue size, and cite every
+  line involved. If the seed data lets you put real numbers on it, do."
+Elapsed: 297s (5.0 min) · exit 0
+
+Beats delivered unscripted:
+- Primary cause: the per-patient loop at ClaimHistoryService.java:39-41,
+  regressed by commit 674272e, with the correct batch method now DEAD CODE at
+  ClaimRepo.java:14 — carrying the ironic comment "keep it this way".
+- Multipliers: no index on claim.patient_ref (each query = full scan + sort);
+  minor: no index on prior_auth_request.status.
+- Scaling law: SQL round trips = 1 + P (P = distinct queue patients); rows
+  scanned ≈ P × C → superlinear O(P·C): doubling the business quadruples DB work.
+- Real seed numbers: 179 queued / 92 distinct patients / 435 claims →
+  93 statements scanning ≈40,000 rows to return ≈359 (~46× necessary work);
+  10× projection: ~900 queries over ~4M rows per page load.
+- Negative space: lazy payer associations + open-in-view=false RULED OUT as
+  contributing N+1s — diagnosis says what is NOT the cause too.
+- Discipline: no code changed; fix location named (one-line revert + index)
+  and left for M-5.6.
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+I have everything I need. Here's the full picture.
+
+## TL;DR
+
+The endpoint is a classic N+1: `ClaimHistoryService.historyFor` claims to do "ONE query" but actually issues **one claim query per distinct patient in the queue**, and each of those queries is a **full scan of the unindexed `claim` table**. On the shipped seed data that's **93 SQL statements per call scanning ~40,000 rows to return ~360**. It was introduced by commit `674272e` ("Simplify claim history lookup with a per-patient map"), which quietly replaced the real batch query with a loop.
+
+## The call path, line by line
+
+1. `src/main/java/com/priorauth/controller/PriorAuthController.java:83` — loads the queue: `requestRepo.findByStatus(RequestStatus.MANUAL_REVIEW)`. One query, but note `seed.sql` defines `prior_auth_request` (seed.sql:10–19) with **no index on `status`**, so this is a full scan of the request table. Linear, one-time — not the main problem.
+2. `PriorAuthController.java:84` — collapses the queue to distinct `patientRef`s.
+3. `PriorAuthController.java:85` — calls `claimHistoryService.historyFor(patientRefs)`. The Javadoc above the endpoint (`PriorAuthController.java:77–80`) promises "One batch query for the whole queue."
+4. `src/main/java/com/priorauth/service/ClaimHistoryService.java:39–41` — **the bug**. Instead of one batch query, it loops:
+   ```java
+   for (String patientRef : patientRefs) {
+       history.put(patientRef, claimRepo.findByPatientRefOrderByServiceDateDesc(patientRef));
+   }
+   ```
+   One `SELECT ... WHERE patient_ref = ? ORDER BY service_date DESC` per patient (`src/main/java/com/priorauth/repository/ClaimRepo.java:11`).
+5. `seed.sql:20–28` — the `claim` table has **no index on `patient_ref`** (the file has zero `CREATE INDEX` statements, and `spring.jpa.hibernate.ddl-auto=validate` in `src/main/resources/application.properties:9` means Hibernate never adds any). So every per-patient query is a sequential scan of the whole claim table plus its own sort.
+
+The correct batch method still exists, now dead code: `ClaimRepo.findByPatientRefInOrderByServiceDateDesc` at `ClaimRepo.java:14` — ironically commented "*keep it this way (see ClaimHistoryService)*". Commit `674272e` (Jul 20) swapped `historyFor` from that single `IN` query + `groupingBy` to the loop, and left the "issues ONE query" comment at `ClaimHistoryService.java:13–14` stale. The two comments now document the behavior the code no longer has.
+
+## How the cost scales
+
+Let **Q** = queue rows, **P** = distinct patients in the queue (P ≤ Q), **C** = total rows in `claim`:
+
+- **SQL round trips per call: 1 + P** (previously a constant 2). The loop is sequential, so latency grows linearly in P from round-trip overhead alone — this is the growth users feel on a networked Postgres.
+- **Rows scanned per call: ≈ P × C**, because each of the P queries seq-scans all C claim rows (no index) and sorts its matches. Since the claim table grows with the patient population, doubling the business (queue and claim history both 2×) roughly **quadruples** the database work — effectively O(P·C), superlinear in queue size, vs. the old O(C) single scan.
+
+## Real numbers from the seed fixture (`seed.sql`)
+
+The fixture loads 500 requests, of which **179 are `MANUAL_REVIEW`** across **92 distinct patients**, and **435 claims** (112 patients have history, ~3.9 claims each; the 92 queue patients hold ~359 of the claim rows — four of them have no claims at all but still get a query each).
+
+Per single `GET /api/requests/review-queue/context` call, at seed scale:
+
+| Metric | Current code | Before commit 674272e |
+|---|---|---|
+| SQL statements | **93** (1 status + 92 per-patient) | 2 (1 status + 1 `IN`) |
+| Claim rows scanned | **92 × 435 ≈ 40,000** | 435 (one pass) |
+| Claim rows actually returned | ~359 | ~359 |
+| Sorts performed | 92 | 1 |
+
+So today the endpoint does ~46× the necessary I/O and round trips; at 10× the seed volume (≈900 queue patients, ≈4,400 claims) it becomes ~900 queries scanning ~4 million rows per page load, while the batch version would still be 2 queries and one scan.
+
+## Summary of contributing factors
+
+1. **Primary:** the per-patient loop in `ClaimHistoryService.historyFor` (`ClaimHistoryService.java:39–41`), regressed in commit `674272e`; the batch query it should use sits unused at `ClaimRepo.java:14`.
+2. **Multiplier:** no index on `claim.patient_ref` (`seed.sql:20–28`), turning each of those P queries into a full table scan + sort.
+3. **Minor:** no index on `prior_auth_request.status` (`seed.sql:10–19`) for the queue fetch at `PriorAuthController.java:83` — one linear scan per call, worth an index but not the driver.
+
+Not implicated: both `@ManyToOne` payer associations are `LAZY` (`PriorAuthRequest.java:30`, `Claim.java:28`) and `ReviewContext` never touches payer, so there's no additional entity-graph N+1; `open-in-view=false` (`application.properties:10`) also holds.
+
+You asked for diagnosis only, so I changed nothing. The fix, when you want it, is a one-line revert of `historyFor` to `findByPatientRefInOrderByServiceDateDesc` + `groupingBy` (commit `674272e^` has the exact code), plus an index on `claim(patient_ref, service_date desc)` in `seed.sql`.
+---META--- exit=0 elapsed=297s

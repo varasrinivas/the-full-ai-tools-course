@@ -332,6 +332,27 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-17: The N+1 Fan-out ============ */
+.anim17{--a17red:#d0705a;--a17green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim17{--a17red:#B0503C;--a17green:#2d7350}
+.anim17 .a17head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim17 .a17lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim17 .a17lname{font-size:10px;letter-spacing:.14em;margin-bottom:8px}
+.anim17 .a17lname.promise{color:var(--a17green)}
+.anim17 .a17lname.reality{color:var(--a17red)}
+.anim17 .a17q{display:inline-block;font-size:9px;padding:2px 7px;margin:2px 3px 0 0;border-radius:5px;border:1px solid var(--line);color:var(--dim);opacity:0;transition:opacity .25s}
+.anim17 .a17q.on{opacity:1}
+.anim17 .a17q.one{border-color:var(--a17green);color:var(--a17green)}
+.anim17 .a17q.n{border-color:var(--a17red);color:var(--a17red)}
+.anim17 .a17count{font-size:11px;color:var(--text)}
+.anim17 .a17count b{font-size:16px;color:var(--a17red)}
+.anim17 .a17count b.ok{color:var(--a17green)}
+.anim17 .a17ctrl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:4px;font-size:10.5px;color:var(--dim)}
+.anim17 .a17ctrl input[type=range]{flex:1;min-width:120px;accent-color:var(--gold)}
+.anim17 .a17replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim17 .a17replay:hover{border-color:var(--gold)}
+.anim17 .a17foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-16: Read-Only Toolbox & the Handoff ============ */
 .anim16{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim16 .a16head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -1380,6 +1401,63 @@ const MODS = [
       {q:'What did the trace verify about Stage 2 (claim history) for PT-2001?',
        options:['It denied the request','It approved the request','It was skipped entirely','It ran, found nothing, and could not have mattered &mdash; the advisory claim is pinned by both a comment and a test, and verifying that negative space is half the trace'], answer:3}
     ]
+  },
+  {
+    id:'M-3.5', path:'eng', track:'T-03', title:'Finding the smell', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A patient with normal labs who gets winded on stairs. Nothing is &ldquo;broken&rdquo; &mdash; every test comes back green &mdash; but the cardiologist orders a stress test anyway, because some conditions only show under load. Performance smells are exactly this: the review queue returns correct data, the suite passes, and the cost curve is quietly wrong. You diagnose under load, characterize precisely, and you do not operate today.',
+      body:
+        '<p><strong>A smell is not a bug &mdash; that is why tests can&rsquo;t see it.</strong> Every row the review-queue context endpoint returns is <em>correct</em>. The planted suite is green. What&rsquo;s wrong is the cost: the recorded hunt found the endpoint doing <b>93 SQL statements scanning &asymp;40,000 rows to return &asymp;359</b> at seed scale &mdash; about 46&times; the necessary work &mdash; and no correctness test will ever fail because of it. Smells need a different question: not &ldquo;is the answer right?&rdquo; but &ldquo;how does the cost scale?&rdquo;</p>' +
+        '<p><strong>The recorded hunt, five minutes, diagnosis only.</strong> The mission named a <em>symptom</em> (&ldquo;feels slow as the queue grows&rdquo;) and a <em>leash</em> (&ldquo;without changing any code&rdquo;). The agent walked the call path to <code>ClaimHistoryService.historyFor</code> and found the classic shape: a loop issuing one claim query per distinct patient &mdash; under a comment still promising &ldquo;ONE query.&rdquo; Then the two multipliers: no index on <code>claim.patient_ref</code>, so each of those queries is a full table scan with its own sort, and (minor) no index on request status. And the forensic kicker: the correct batch method still exists as <em>dead code</em> in <code>ClaimRepo</code> &mdash; wearing the comment &ldquo;keep it this way.&rdquo; The regressing commit was named. This is M-3.1&rsquo;s contradiction hunt grown teeth.</p>' +
+        '<p><strong>Characterize means a scaling law, not an adjective.</strong> &ldquo;Slow&rdquo; is a complaint; the deliverable is math: round trips = <b>1 + P</b> (P = distinct patients in the queue), rows scanned &asymp; <b>P &times; C</b> (C = total claim rows) &mdash; so doubling the business roughly <em>quadruples</em> the database work. At 10&times; seed volume: ~900 queries over ~4 million rows per page load, where the batch version stays at 2 queries and one pass. ANIM-17 lets you drag P and watch both curves. A smell card with a law on it survives arguments that &ldquo;it seemed fine on my machine&rdquo; cannot.</p>' +
+        '<p><strong>Diagnosis includes ruling things out.</strong> The recorded hunt explicitly cleared the usual suspects: both payer associations are lazy, <code>open-in-view</code> is off &mdash; no hidden entity-graph N+1 stacked on top. Negative space again (M-3.4&rsquo;s habit): a diagnosis that says what is <em>not</em> the cause is the one M-5.6 can act on without re-doing the work.</p>' +
+        '<p><strong>The leash held, and that closes the track.</strong> &ldquo;You asked for diagnosis only, so I changed nothing&rdquo; &mdash; verified, git clean &mdash; while still naming where the fix lives (a one-line revert plus an index) for M-5.6 to execute with a profiler watching. T-03 complete: you can interrogate, plan, second-opinion, trace, and now smell a codebase you didn&rsquo;t write &mdash; without having changed a single line of it. That restraint is the skill.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-17'},
+    labA:{
+      title:'Order the stress test — Claude Code',
+      steps:[
+        'On your clone, run the mission verbatim: <em>&ldquo;The review queue endpoint GET /api/requests/review-queue/context feels slow as the queue grows. Without changing any code, find why, characterize exactly how the cost scales with queue size, and cite every line involved. If the seed data lets you put real numbers on it, do.&rdquo;</em> Reference run: 5.0 min.',
+        'Grade the diagnosis against four bars: the loop found and cited (<code>ClaimHistoryService.java:39-41</code>); a <em>scaling law</em>, not an adjective (1 + P round trips, &asymp;P &times; C rows); real seed numbers (reference: 93 statements, &asymp;40,000 rows for &asymp;359); and at least one multiplier (the missing <code>claim.patient_ref</code> index).',
+        'Hand-verify the ironic artifact: open <code>ClaimRepo.java</code> and find the dead batch method and its &ldquo;keep it this way&rdquo; comment. The correct code has been sitting there the whole time &mdash; write one line on what that tells you about how the smell got in.',
+        'Check the leash: <code>git status --porcelain</code> must be empty. If your agent &ldquo;helpfully&rdquo; fixed it, revert, and note that the leash is part of the mission text for a reason.',
+        'Write the smell card into your architecture map: symptom, mechanism, scaling law, multipliers, ruled-out causes, fix location, owner (M-5.6). Success: all four bars met, the dead method found, tree clean, card written.'
+      ]
+    },
+    labB:{
+      title:'The same hunt — Copilot',
+      steps:[
+        'Same mission in <b>Ask</b> with <code>#codebase</code>; when the trail needs call sites, <code>#usages ClaimHistoryService.historyFor</code> (one production caller &mdash; the context endpoint).',
+        'Grade to the same four bars. Log which bar this surface needed prompting to clear &mdash; the scaling law is the usual gap.',
+        'Success: same mechanism found, divergences on the numbers recorded, zero edits.'
+      ]
+    },
+    labC:{
+      title:'The same hunt — Cursor, then the debrief',
+      steps:[
+        'Same mission with <code>@ClaimHistoryService @ClaimRepo</code> anchored. Note whether the index gaps surface unprompted &mdash; they live in <code>seed.sql</code>, not the Java.',
+        'The debrief: three diagnoses of one smell. Compare on the bar that matters &mdash; who produced a usable scaling law with real numbers?',
+        'Close T-03 in your log: five modules, five read-only skills, zero lines changed. Write which skill you&rsquo;ll reach for first on a strange codebase at work. Success: three graded diagnoses, the T-03 closing line written.'
+      ]
+    },
+    checklist:[
+      'I ran the smell hunt in all three tools with the no-code-changes leash, and the leash held.',
+      'My diagnosis has a scaling law with real seed numbers, not an adjective.',
+      'I found the dead batch method and its &ldquo;keep it this way&rdquo; comment by hand.',
+      'My smell card includes ruled-out causes and names M-5.6 as the fix&rsquo;s owner.',
+      'T-03 closed: I can interrogate, plan, second-opinion, trace, and smell a strange codebase without changing it.'
+    ],
+    quiz:[
+      {q:'The planted suite is green and every response row is correct &mdash; yet the endpoint is doing ~46&times; the necessary work. Why do the tests stay silent?',
+       options:['The tests are badly written','Correctness tests assert answers, not cost curves &mdash; a smell lives in how the work scales, which needs a different question entirely','The N+1 only happens in production','Testcontainers hides SQL'], answer:1},
+      {q:'What separates &ldquo;characterized&rdquo; from &ldquo;found&rdquo;?',
+       options:['A longer report','Screenshots of slow requests','A scaling law &mdash; round trips = 1 + P, rows &asymp; P &times; C, so doubled business quadruples database work &mdash; plus real numbers at a known scale','Naming the commit that introduced it'], answer:2},
+      {q:'The correct batch query still exists in ClaimRepo &mdash; as dead code with a &ldquo;keep it this way&rdquo; comment. What is that, diagnostically?',
+       options:['A reason to delete the method','Forensic evidence: the batch path was the original design and a later commit quietly bypassed it, leaving both comments describing a world that no longer exists','Proof the repo auto-generates queries','A Hibernate artifact'], answer:1},
+      {q:'Why does the mission say &ldquo;without changing any code&rdquo;?',
+       options:['Fixes are dangerous','Because diagnosis and treatment are different modules: the fix belongs to M-5.6 with a profiler watching &mdash; and an agent that fixes during diagnosis ships an unreviewed change nobody measured','Agents cannot write SQL','To save tokens'], answer:1}
+    ]
   }
 ];
 
@@ -2148,6 +2226,57 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-17 · The N+1 Fan-out (spec: VISUALS.md) ----------
+   Numbers are the real recorded hunt (recordings/m35-smell-run.txt):
+   seed scale = 179 queued, 92 distinct patients, 435 claim rows →
+   93 statements scanning ≈40,000 rows. Slider scales P; the promise
+   lane stays constant at 2. */
+VISUALS['ANIM-17'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CLAIMS = 435, SEED_P = 92, MAXCHIPS = 24;
+  mount.innerHTML =
+    '<div class="anim17" aria-label="The N plus one query fan-out">' +
+      '<div class="a17head"><span>ANIM-17 · THE N+1 FAN-OUT · REVIEW-QUEUE CONTEXT</span>' +
+        '<button class="a17replay" data-a17replay>REPLAY ▸</button></div>' +
+      '<div class="a17lane">' +
+        '<div class="a17lname promise">THE PROMISE — &ldquo;ONE BATCH QUERY FOR THE WHOLE QUEUE&rdquo;</div>' +
+        '<span class="a17q one on">findByStatus(MANUAL_REVIEW)</span>' +
+        '<span class="a17q one on">findByPatientRefIn(&hellip;92 refs)</span>' +
+        '<div class="a17count" style="margin-top:6px">queries: <b class="ok">2</b> &middot; claim rows scanned: <b class="ok">435</b> (one pass) &mdash; and the batch method still exists, as dead code</div>' +
+      '</div>' +
+      '<div class="a17lane">' +
+        '<div class="a17lname reality">THE REALITY — ONE QUERY PER PATIENT, NO INDEX, FULL SCAN EACH</div>' +
+        '<div data-chips></div>' +
+        '<div class="a17count" style="margin-top:6px">queries: <b data-q>93</b> &middot; claim rows scanned: <b data-rows>&asymp;40,000</b> &middot; rows actually needed: &asymp;359</div>' +
+        '<div class="a17ctrl"><span>distinct patients in queue:</span>' +
+          '<input type="range" min="4" max="92" step="1" value="92" data-p aria-label="Distinct patients in the review queue">' +
+          '<span data-plabel>92 (seed scale)</span></div>' +
+      '</div>' +
+      '<div class="a17foot">What to notice: the left lane never moves; the right lane is 1 + P queries and &asymp;P &times; 435 rows &mdash; doubling the business quadruples the work. Recorded diagnosis: 5.0 min, zero code changed. M-5.6 owns the one-line fix.</div>' +
+    '</div>';
+  const chipsEl = mount.querySelector('[data-chips]');
+  const slider = mount.querySelector('[data-p]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function fmt(n){ return n >= 1000 ? '≈' + (Math.round(n/100)/10).toLocaleString() + 'k' : String(n); }
+  function render(p, animate){
+    stop();
+    const shown = Math.min(p, MAXCHIPS);
+    chipsEl.innerHTML = Array.from({length: shown}, (x,i) =>
+      '<span class="a17q n">q' + (i+2) + ' · scan 435</span>').join('') +
+      (p > MAXCHIPS ? '<span class="a17q n on">+' + (p - MAXCHIPS) + ' more</span>' : '');
+    mount.querySelector('[data-q]').textContent = String(p + 1);
+    mount.querySelector('[data-rows]').textContent = fmt(p * CLAIMS);
+    mount.querySelector('[data-plabel]').textContent = p + (p === SEED_P ? ' (seed scale)' : '');
+    const chips = [...chipsEl.querySelectorAll('.a17q')];
+    if(!animate || reduce){ chips.forEach(c => c.classList.add('on')); return; }
+    chips.forEach((c,i) => timers.push(setTimeout(() => c.classList.add('on'), 120 + i*90)));
+  }
+  slider.addEventListener('input', () => render(+slider.value, false));
+  mount.querySelector('[data-a17replay]').addEventListener('click', () => render(+slider.value, true));
+  render(SEED_P, !reduce);
 };
 
 /* ---------- ANIM-16 · Read-Only Toolbox & the Handoff (spec: VISUALS.md) ----------
