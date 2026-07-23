@@ -332,6 +332,36 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ SIM-04: Threshold Slider ============ */
+.sim04{--s4red:#d0705a;--s4green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim04{--s4red:#B0503C;--s4green:#2d7350}
+.sim04 .s4head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim04 .s4lanes{display:flex;gap:10px;margin-bottom:10px}
+.sim04 .s4lane{flex:1;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:9px 10px;min-height:104px}
+.sim04 .s4lname{font-size:9.5px;letter-spacing:.13em;margin-bottom:7px}
+.sim04 .s4lane.appr .s4lname{color:var(--s4green)}
+.sim04 .s4lane.man .s4lname{color:var(--gold)}
+.sim04 .s4dots{display:flex;flex-wrap:wrap;gap:4px}
+.sim04 .s4dot{width:11px;height:11px;border-radius:50%;background:var(--line);transition:background .35s ease,transform .35s ease}
+.sim04 .s4dot.a{background:var(--s4green)}
+.sim04 .s4dot.m{background:var(--gold)}
+.sim04 .s4dot.edge{position:relative;transform:scale(1.35);box-shadow:0 0 0 2px var(--panel),0 0 0 3px currentColor}
+.sim04 .s4dot.edge.blink{animation:s4blink 1.1s ease-in-out infinite}
+@keyframes s4blink{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){.sim04 .s4dot.edge.blink{animation:none}}
+.sim04 .s4count{font-size:10px;color:var(--dim);margin-top:7px}
+.sim04 .s4count b{color:var(--text);font-size:13px;font-weight:500}
+.sim04 .s4ctrl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:10.5px;color:var(--dim);margin-bottom:6px}
+.sim04 .s4ctrl input[type=range]{flex:1;min-width:130px;accent-color:var(--gold)}
+.sim04 .s4op{display:flex;gap:6px}
+.sim04 .s4opbtn{font-family:var(--mono);font-size:11px;padding:4px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim04 .s4opbtn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
+.sim04 .s4verdict{font-size:10.5px;line-height:1.55;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;color:var(--dim);margin-top:8px}
+.sim04 .s4verdict b{color:var(--text);font-weight:500}
+.sim04 .s4verdict .bad{color:var(--s4red)}
+.sim04 .s4verdict .good{color:var(--s4green)}
+.sim04 .s4foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-08: Debug Loop Orbit ============ */
 .anim08{--a8red:#d0705a;--a8green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim08{--a8red:#B0503C;--a8green:#2d7350}
@@ -1789,6 +1819,63 @@ const MODS = [
       {q:'What does the context dial in ANIM-08 actually change?',
        options:['Which stations the loop has','How many laps you take &mdash; the five stations never change; pasting real output (and what passed) is what buys a single lap','The model used','Whether tests are needed'], answer:1}
     ]
+  },
+  {
+    id:'M-5.2', path:'eng', track:'T-05', title:'The threshold bug', minutes:45,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A blood-pressure cutoff written as &ldquo;treat above 130&rdquo; in the protocol and coded as &ldquo;treat over 130&rdquo; in the order set. Every patient at exactly 130 walks out untreated, the chart looks fine, and the discrepancy is one character wide. Nobody notices until someone finally checks a patient <em>at</em> the number &mdash; which is the one value nobody ever tests.',
+      body:
+        '<p><strong>The bug you have been circling since M-1.1.</strong> <code>ApprovalService</code> gates on <code>score &gt; AUTO_APPROVE_THRESHOLD</code>. Four independent sources say it should be <code>&gt;=</code>: the class javadoc (the word INCLUSIVE, in caps), the field comment, the approval log line that literally prints <code>&gt;=</code>, and the seed fixture. M-3.1 found it, M-3.4 traced a request into it, M-2.3&rsquo;s plan flagged it &mdash; and every time, the discipline was <em>record, don&rsquo;t fix</em>. Today you fix it, plan-first and test-first.</p>' +
+        '<p><strong>Quantify before you touch anything.</strong> The recorded plan computed the blast radius from <code>seed.sql</code> in 224 seconds, zero edits: every score carries at most two decimals, so <b>0.85 is the only value where the two operators disagree</b> &mdash; 13 rows, 2.6% of the fixture. Ten of them are already <code>AUTO_APPROVED</code>: <em>outcomes the shipped code cannot produce</em>. As the plan put it, <b>the fixture is the assertion</b>. Two more sit in <code>SUBMITTED</code> and both clear eligibility &mdash; the rows live code actually mis-routes: 2 of 25 pending, <b>8% of the queue</b>. A blast radius turns &ldquo;one character&rdquo; into a number a payer would care about.</p>' +
+        '<p><strong>Test-first means the test fails first.</strong> Two tests, both referencing the <em>constant</em> rather than the literal 0.85: exactly-at-threshold must auto-approve, and <code>Math.nextDown(threshold)</code> must route to review. Real run: <b>12 tests, 1 failure</b> &mdash; the exactly-at test, &ldquo;but was: MANUAL_REVIEW.&rdquo; That red is the receipt: it proves the test can see the bug. Then the production diff &mdash; one line, <code>&gt;</code> to <code>&gt;=</code> &mdash; and the suite goes <b>24/24 green</b>, with the test file additions-only. Why did this survive so long? Because, in the plan&rsquo;s words, &ldquo;every score in the entire test suite is &ge;0.05 away from 0.85.&rdquo;</p>' +
+        '<p><strong>Then attack your own fix &mdash; and find its limit.</strong> Mutation one: put <code>&gt;</code> back. Exactly one test fails, the new one. The test is load-bearing. Mutation two, run for real in the same session: keep <code>&gt;=</code> and change the constant from 0.85 to <b>0.84</b>. <span style="color:var(--gold)">All twelve tests pass.</span> The suite pins the <em>operator</em> and nothing pins the <em>number</em> &mdash; a direct consequence of referencing the constant, which was itself the right call for defeating a different dodge. Both facts are true, and knowing which one your test buys is the difference between a green suite and a safe one. M-6.4 turns this into a discipline.</p>' +
+        '<p><strong>The rule this module leaves you with.</strong> Boundary bugs are not found by reading; they are found by testing <em>at</em> the boundary, and they are proven by mutating the fix. SIM-04 makes the mechanism physical: drag the threshold, watch the dots re-route, and toggle the operator &mdash; only the dots sitting exactly on the line ever move. Those are the 13. M-5.3 hands the same class of bug to a debugger that validates against live runtime.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-04'},
+    labA:{
+      title:'Fix BUG-API-01 — Claude Code, plan-first and test-first',
+      steps:[
+        'Scratch branch off <code>lab/start</code>: <code>git switch -c fix/threshold</code>. Enter <b>Plan Mode</b> (Shift+Tab) and give the mission verbatim: <em>&ldquo;BUG-API-01: ApprovalService gates auto-approval with strict &gt; but the javadoc, the field comment, the approval log line, and the seed fixture all say the threshold is INCLUSIVE. Plan the fix test-first: the boundary test that must fail before the fix, the one-line change, and how you will prove the fix without weakening anything. Quantify the blast radius from seed.sql. Do not write any code yet.&rdquo;</em>',
+        'Grade the plan on its blast radius before you approve it. Reference numbers to check by hand in <code>seed.sql</code>: 13 rows at exactly 0.85, of which 10 are already AUTO_APPROVED and 2 are still SUBMITTED. If your plan skipped the count, send it back &mdash; &ldquo;one character&rdquo; is not a risk assessment.',
+        'Approve step one only: the two boundary tests, both referencing <code>ApprovalService.AUTO_APPROVE_THRESHOLD</code> rather than the literal. Run the suite and <b>capture the red</b>: reference is 12 tests, 1 failure, &ldquo;but was: MANUAL_REVIEW&rdquo;. A boundary test that passes before the fix is testing nothing.',
+        'Approve step two: the one-line change. Run again &mdash; reference <b>24/24 green</b> &mdash; then <code>git diff --stat</code>: exactly one production line, and the test file additions-only.',
+        'Attack it: put <code>&gt;</code> back and confirm <em>exactly one</em> test fails (load-bearing). Restore, then run the second mutation &mdash; keep <code>&gt;=</code>, set the constant to 0.84 &mdash; and watch the whole suite stay green. Write the one-line lesson in your log, restore 0.85, re-verify green. Success: red captured, green earned, both mutations run, and your test&rsquo;s limit written down in your own words.'
+      ]
+    },
+    labB:{
+      title:'The same fix — Copilot',
+      steps:[
+        'Branch <code>fix/threshold-copilot</code>. Run the same mission through the <b>Plan</b> agent, then hand off to Agent mode for step one only (tests), and run them in the Test Explorer to capture the red yourself.',
+        'Apply the one-line fix, re-run, then use the Test Explorer to run both mutations. Note whether this surface makes the red-then-green rhythm easier or easier to <em>skip</em> &mdash; automation that runs tests for you can quietly swallow the red you needed to see.',
+        'Success: same red-green-mutate sequence with your own eyes on each run, one-line diff, no test weakened.'
+      ]
+    },
+    labC:{
+      title:'The same fix — Cursor, then the boundary rule',
+      steps:[
+        'Branch <code>fix/threshold-cursor</code>. Plan Mode for the plan, then execute step-by-step, capturing red before green.',
+        'Run SIM-04 alongside your fix: set the threshold to 0.85, toggle the operator, and confirm the only dots that move are the ones sitting exactly on the line. That is the visual form of your 13 rows.',
+        'Write the rule for your log and your team: <em>every threshold in this codebase gets a test AT the value, referencing the constant &mdash; and a mutation check that proves the test holds the line.</em> Then list the other thresholds in the PA repos worth that treatment. Success: three fixes, the SIM-04 confirmation, the rule and the list.'
+      ]
+    },
+    checklist:[
+      'My plan quantified the blast radius from seed.sql before any code changed.',
+      'I captured a real red from the boundary test before applying the fix.',
+      'The production diff is one line and no test was weakened or edited.',
+      'I ran both mutations &mdash; operator reverted (one failure) and constant shifted (all green).',
+      'I wrote down what my boundary test pins &mdash; and what it does not.'
+    ],
+    quiz:[
+      {q:'Ten seed rows sit at exactly 0.85 with status AUTO_APPROVED. Why is that evidence rather than trivia?',
+       options:['It proves the seed file is corrupted','The shipped code cannot produce those rows &mdash; the fixture records the documented inclusive rule, so the data itself testifies that the code drifted','It means the tests already cover 0.85','It has no bearing on the bug'], answer:1},
+      {q:'Your boundary test passes before you apply the fix. What does that tell you?',
+       options:['The bug is already fixed','The test cannot see the bug &mdash; a red you never captured is a test proving nothing','The suite is fast','The threshold constant is wrong'], answer:1},
+      {q:'With <code>&gt;=</code> in place, the constant was changed from 0.85 to 0.84 and all twelve tests stayed green. What does that reveal?',
+       options:['The tests are broken and should be deleted','Nothing &mdash; 0.84 is close enough','The suite pins the operator but nothing pins the value: the boundary tests reference the constant, so they follow it wherever it goes','Mutation testing does not apply to constants'], answer:2},
+      {q:'Why did this bug survive a full green suite for so long?',
+       options:['The tests were disabled','Nobody read the javadoc','Every score in the suite sat at least 0.05 away from the threshold &mdash; the one value where the two operators disagree was never tested','Testcontainers skipped the service tests'], answer:2}
+    ]
   }
 ];
 
@@ -2556,6 +2643,72 @@ VISUALS['SIM-07'] = function(mount, opts){
     mount.querySelector('[data-s7mode]').textContent = 'DRILL'; paint();
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
+  paint();
+};
+
+/* ---------- SIM-04 · Threshold Slider (spec: VISUALS.md) ----------
+   60 dots sampled to mirror the real seed distribution (96 of 500 rows in
+   the 0.80-0.89 band; 13 at exactly 0.85 → 1.56 dots, rounded to 2 edge
+   dots at scale). Operator toggle reproduces BUG-API-01 exactly. */
+VISUALS['SIM-04'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Scores held as integer cents — exact comparisons, no float drift.
+     Shape mirrors the seed: a dense 0.80-0.89 band (12 of 60 ≈ the real
+     96 of 500) holding exactly two dots at the boundary. */
+  const SCORES = [
+    85,85,80,81,82,83,84,86,87,88,89,84,
+    37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,35,43,55,63,71,77,
+    91,93,95,97,99,90,92,94,96,98,91,93,95,97,99,90,92,94,96,98
+  ];
+  mount.innerHTML =
+    '<div class="sim04" aria-label="Threshold slider: requests re-routing between lanes">' +
+      '<div class="s4head"><span>SIM-04 · THE THRESHOLD · 60 REQUESTS, ONE COMPARISON</span><span data-s4mode>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="s4ctrl"><span>AUTO_APPROVE_THRESHOLD</span>' +
+        '<input type="range" min="0.50" max="0.99" step="0.01" value="0.85" data-thr aria-label="Auto approve threshold">' +
+        '<b data-thrval>0.85</b>' +
+        '<span class="s4op" role="group" aria-label="Comparison operator">' +
+          '<button class="s4opbtn" type="button" data-op="gt" aria-pressed="true">score &gt; T</button>' +
+          '<button class="s4opbtn" type="button" data-op="ge" aria-pressed="false">score &gt;= T</button>' +
+        '</span>' +
+      '</div>' +
+      '<div class="s4lanes">' +
+        '<div class="s4lane appr"><div class="s4lname">AUTO-APPROVED</div><div class="s4dots" data-appr></div><div class="s4count">requests: <b data-acount>0</b></div></div>' +
+        '<div class="s4lane man"><div class="s4lname">MANUAL REVIEW QUEUE</div><div class="s4dots" data-man></div><div class="s4count">requests: <b data-mcount>0</b></div></div>' +
+      '</div>' +
+      '<div class="s4verdict" data-verdict></div>' +
+      '<div class="s4foot">What to notice: the operator toggle moves only the blinking dots &mdash; the ones scoring exactly the threshold. In the real seed that is 13 of 500 rows, and 10 of them were already auto-approved by a rule the shipped code could not produce.</div>' +
+    '</div>';
+  let thr = 85, op = 'gt';   // cents
+  const apprEl = mount.querySelector('[data-appr]'), manEl = mount.querySelector('[data-man]');
+  const fmt = (c) => (c / 100).toFixed(2);
+  function approves(c){ return op === 'ge' ? c >= thr : c > thr; }
+  function paint(){
+    let a = 0, m = 0, aH = '', mH = '';
+    SCORES.forEach(c => {
+      const cls = 's4dot ' + (approves(c) ? 'a' : 'm') + (c === thr ? ' edge blink' : '');
+      const dot = '<span class="' + cls + '" title="score ' + fmt(c) + '"></span>';
+      if(approves(c)){ a++; aH += dot; } else { m++; mH += dot; }
+    });
+    apprEl.innerHTML = aH; manEl.innerHTML = mH;
+    mount.querySelector('[data-acount]').textContent = String(a);
+    mount.querySelector('[data-mcount]').textContent = String(m);
+    mount.querySelector('[data-thrval]').textContent = fmt(thr);
+    const edges = SCORES.filter(c => c === thr).length;
+    const v = mount.querySelector('[data-verdict]');
+    if(!edges){
+      v.innerHTML = 'No request scores exactly <b>' + fmt(thr) + '</b> here, so both operators agree &mdash; which is precisely why a suite that never tests the boundary stays green through this bug.';
+    } else if(op === 'gt'){
+      v.innerHTML = '<span class="bad">Strict &gt; (the shipped bug):</span> <b>' + edges + '</b> request' + (edges > 1 ? 's' : '') + ' scoring exactly ' + fmt(thr) + ' sit' + (edges > 1 ? '' : 's') + ' in the review queue &mdash; and the log line for each says <em>&ldquo;score ' + fmt(thr) + ' &lt; ' + fmt(thr) + '&rdquo;</em>.';
+    } else {
+      v.innerHTML = '<span class="good">Inclusive &gt;= (documented, and now the code):</span> the same <b>' + edges + '</b> boundary request' + (edges > 1 ? 's' : '') + ' auto-approve' + (edges > 1 ? '' : 's') + ' &mdash; matching the javadoc, the log line, and the 10 seed rows the old code could never have produced.';
+    }
+  }
+  mount.querySelector('[data-thr]').addEventListener('input', (e) => { thr = Math.round(+e.target.value * 100); paint(); });
+  mount.querySelectorAll('[data-op]').forEach(b => b.addEventListener('click', () => {
+    op = b.dataset.op;
+    mount.querySelectorAll('[data-op]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    paint();
+  }));
   paint();
 };
 

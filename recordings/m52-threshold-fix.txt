@@ -1,0 +1,55 @@
+M-5.2 THE THRESHOLD FIX — method notes + raw captures
+======================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 · lab/start clone, branch drill/m52-threshold
+BUG-API-01 (plant tag plant/BUG-API-01) fixed test-first, plan-gated.
+Every number below came from a real run in this session.
+
+PHASE 1 — PLAN (--permission-mode plan, 224s, zero edits):
+  Mission (verbatim = labA step 2): "BUG-API-01: ApprovalService gates
+  auto-approval with strict > but the class javadoc, the field comment, the
+  approval log line, and the seed fixture all say the threshold is INCLUSIVE...
+  Plan the fix test-first ... Quantify the blast radius from seed.sql.
+  Do not write any code yet."
+
+  BLAST RADIUS the plan computed (hand-checkable against seed.sql):
+   - 500 requests; every score has <=2 decimals, so 0.85 is THE only value
+     where > and >= disagree: 13 rows, 2.6%.
+   - 10 AUTO_APPROVED at exactly 0.85 — "outcomes the shipped code cannot
+     produce. The fixture is the assertion."
+   - 2 SUBMITTED (PAT-0058/97110/NORTHSTAR, PAT-0090/29881/MERIDIAN) — both
+     clear eligibility, so they are the rows live code actually mis-routes:
+     "2 of 25 pending rows — 8% of the queue — mis-routed today."
+   - 1 DENIED at 0.85 is a Stage-1 CPT-002 eligibility denial (MERIDIAN does
+     not cover 70553) — correctly excluded as evidence for either operator.
+   - 96 rows sit in the 0.80-0.89 band: the boundary is in the densest part.
+   - Why nothing caught it: "every score in the entire test suite is >=0.05
+     away from 0.85" (ApprovalServiceTest tested 0.92 and 0.61).
+
+PHASE 2a — RED (agent wrote tests only, ApprovalService untouched):
+  Two tests, both referencing the CONSTANT (never the literal 0.85):
+    scoreExactlyAtThresholdAutoApproves  -> AUTO_APPROVED
+    scoreJustBelowThresholdRoutesToManualReview  (Math.nextDown) -> MANUAL_REVIEW
+  Real run: Tests run: 12, Failures: 1 — scoreExactlyAtThresholdAutoApproves
+    "but was: MANUAL_REVIEW"   (the nextDown test passed immediately)
+
+PHASE 2b — GREEN (one-line production diff):
+  -        if (score > AUTO_APPROVE_THRESHOLD) {
+  +        if (score >= AUTO_APPROVE_THRESHOLD) {
+  Real run: Tests run: 24, Failures: 0 · BUILD SUCCESS
+  git diff --stat: 1 production line changed, test file additions-only (+15/-0).
+
+PHASE 3 — MUTATION CHECKS (the module's payload; both run for real):
+  A) Revert >= back to > : Tests run: 12, Failures: 1 — EXACTLY the new
+     boundary test. The test is load-bearing. PASS.
+  B) Keep >=, change the CONSTANT 0.85 -> 0.84 : Tests run: 12, Failures: 0.
+     ALL GREEN. *** The suite does not pin the number. ***
+     Unplanned discovery: because both boundary tests reference the constant
+     (a deliberate anti-cheat choice from the plan — it does defeat the
+     "keep > and lower the constant" dodge), they follow the constant
+     wherever it goes. The operator is pinned; the VALUE is pinned by
+     nothing in the unit suite. Course use: M-5.2 teaches it as the honest
+     limit of a boundary test; M-6.4's mutation drills own the general case.
+  Constant restored to 0.85; final state re-verified 24/24 green.
+
+CLEANUP: fix left on the scratch branch only; lab/start untouched; the plant
+tag plant/BUG-API-01 remains intact for students.
