@@ -332,6 +332,27 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-07: Ghost Text Editor ============ */
+.anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
+.anim07 .a7tabs{display:flex;gap:2px;background:var(--panel);border-bottom:1px solid var(--line);padding:6px 8px 0}
+.anim07 .a7tab{font-size:9.5px;padding:5px 12px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;color:var(--faint);background:transparent;position:relative}
+.anim07 .a7tab.on{color:var(--text);background:var(--panel2)}
+.anim07 .a7tab .nesdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-left:6px;opacity:0;transition:opacity .3s}
+.anim07 .a7tab .nesdot.show{opacity:1}
+.anim07 .a7code{padding:14px 16px;font-size:11.5px;line-height:1.9;min-height:150px;white-space:pre-wrap;word-break:break-word}
+.anim07 .a7code .typed{color:var(--text)}
+.anim07 .a7code .ghost{color:var(--faint);font-style:italic}
+.anim07 .a7code .newl{color:var(--text)}
+.anim07 .a7caret{display:inline-block;width:7px;height:13px;background:var(--gold);vertical-align:text-bottom;animation:a7blink 1s steps(1) infinite}
+@keyframes a7blink{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.anim07 .a7caret{animation:none}}
+.anim07 .a7key{display:inline-block;font-size:9px;letter-spacing:.08em;padding:1px 8px;border-radius:5px;border:1px solid var(--gold);color:var(--gold);margin-left:8px;vertical-align:middle;opacity:0;transition:opacity .25s}
+.anim07 .a7key.show{opacity:1}
+.anim07 .a7foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.anim07 .a7cap{font-size:10.5px;color:var(--faint)}
+.anim07 .a7replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim07 .a7replay:hover{border-color:var(--gold)}
+
 /* ============ ANIM-17: The N+1 Fan-out ============ */
 .anim17{--a17red:#d0705a;--a17green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim17{--a17red:#B0503C;--a17green:#2d7350}
@@ -1458,6 +1479,53 @@ const MODS = [
       {q:'Why does the mission say &ldquo;without changing any code&rdquo;?',
        options:['Fixes are dangerous','Because diagnosis and treatment are different modules: the fix belongs to M-5.6 with a profiler watching &mdash; and an agent that fixes during diagnosis ships an unreviewed change nobody measured','Agents cannot write SQL','To save tokens'], answer:1}
     ]
+  },
+  {
+    id:'M-4.1', path:'eng', track:'T-04', title:'Ghost text mastery', minutes:35,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A scrub nurse anticipates the surgeon&rsquo;s next instrument and holds it out &mdash; and the surgeon glances, takes it or doesn&rsquo;t, without breaking rhythm. The instrument offered is not the instrument used until the surgeon&rsquo;s hand closes on it. Ghost text is the offered instrument: always there, costing nothing until accepted &mdash; and the discipline is entirely in the glance.',
+      body:
+        '<p><strong>A different contract from everything so far.</strong> T-02 and T-03 ran agent turns &mdash; M-2.5 priced one at <b>$0.89 and nine turns</b> for a task that earned it. The autocomplete layer is the opposite deal: always on, latency-bound, priced in keystrokes, and <em>you remain the author</em>. One honest note up front, per the tool-fit table: this track is Copilot + Cursor territory &mdash; <b>Claude Code has no autocomplete layer</b>, by design; its unit of work is the turn, not the keystroke. That is why this module has two labs, not three.</p>' +
+        '<p><strong>The glance is the skill.</strong> Ghost text renders dim at your cursor; you have about half a second to read it honestly. Calibrate by <em>content class</em>: scaffolding &mdash; state hooks, DTO fields, mapper chains, test arrange blocks &mdash; is where suggestions shine; accept and move. Domain rules are where they quietly lie: a suggested comparison can look exactly right and be exactly wrong, and T-02 taught you what one character at 0.85 costs. The house rule, non-negotiable: <b>never Tab through a boundary</b> &mdash; thresholds, comparison operators, reason codes, anything the payer or a regulator cares about, you type yourself.</p>' +
+        '<p><strong>Three gears, doc-verified.</strong> Full accept: <b>Tab</b>. Partial accept: <b>Ctrl+&rarr;</b> (&#8984;&rarr; on Mac) &mdash; in VS Code&rsquo;s words, &ldquo;accept either the next word of a suggestion, or the next line&rdquo;; Cursor&rsquo;s Tab takes the same chord for next-word (rebindable via <code>editor.action.inlineSuggest.acceptNextWord</code>). Reject: just keep typing &mdash; the ghost yields. VS Code adds hover-for-alternatives on the suggestion. Partial accept is the underused middle gear: take the correct scaffold of a line, then type the domain-bearing tail yourself.</p>' +
+        '<p><strong>Side by side, per current docs.</strong> Cursor Tab: multi-line edits, &ldquo;predicts cross-file edits when changes in one file need updates in another,&rdquo; and jump-in-file &mdash; press Tab again and it moves you to the predicted next edit point. Copilot: ghost text plus <b>next edit suggestions</b> &mdash; an arrow in the gutter marks the predicted edit, Tab navigates to it, Tab again accepts, now with long-distance range across the whole file. ANIM-07 walks the full sequence: type, ghost, Tab, partial accept, and the hop to the related file. The table ranks Cursor Tab first for flow with NES a close second &mdash; editorial, as always; your lab scorecard outranks it.</p>' +
+        '<p><strong>Authorship is the point.</strong> The autocomplete layer is the only tier where every character still passes through your judgment at typing speed &mdash; which is exactly why the boundary discipline lives here and not in a review checklist. M-4.2 goes deep on next-edit prediction; M-4.4 prices type-vs-Tab-vs-agent with your own numbers.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-07'},
+    labB:{
+      title:'The three gears — Copilot',
+      steps:[
+        'In priorauth-web, open a scratch file and hand-write the start of a payer display mapper: <code>const payerLabel = (code: string) =&gt;</code> &mdash; let ghost text finish it. Practice each gear deliberately: one full <b>Tab</b>, one <b>Ctrl+&rarr;</b> run taking a suggestion word by word, one rejection by simply typing over it. Hover a suggestion to see alternatives.',
+        'The discipline drill: type a validation involving the auto-approve rule &mdash; when the ghost offers a comparison, do <b>not</b> accept it. Type <code>score &gt;= 0.85</code> yourself, every character, and log what the ghost had offered. If it offered <code>&gt;</code>, you just watched T-02&rsquo;s bug try to be born at your cursor.',
+        'Ten minutes of real work on any small component, counting: full accepts, partial accepts, rejections. Success: all three gears used on purpose, the boundary typed by hand, and the three counts in your log.'
+      ]
+    },
+    labC:{
+      title:'The same gears — Cursor Tab, then the scorecard',
+      steps:[
+        'Same scratch drill in Cursor: full Tab, Ctrl/&#8984;&rarr; partial accepts, reject-by-typing. Then hunt the two behaviors its docs promise: a <em>multi-line</em> suggestion, and a <em>jump</em> &mdash; accept, press Tab again, and note where it moved you.',
+        'Repeat the boundary drill verbatim &mdash; the house rule is tool-independent: comparisons, thresholds, and reason codes get typed, never Tabbed.',
+        'The scorecard M-2.5 promised: ten minutes each tool on similar work &mdash; accepts, partials, rejections, and wrong-but-plausible offers caught. Write your personal &ldquo;when I type vs when I Tab&rdquo; rule in two lines. Success: the counts, the rule, and one logged example of a plausible-looking suggestion you refused.'
+      ]
+    },
+    checklist:[
+      'I used all three gears on purpose in both tools &mdash; full, partial, reject.',
+      'I typed the boundary comparison by hand and logged what the ghost offered.',
+      'I caught at least one wrong-but-plausible suggestion and wrote it down.',
+      'I saw a multi-line or cross-file behavior and noted where the jump took me.',
+      'My two-line type-vs-Tab rule is in my log, ready for M-4.4&rsquo;s pricing.'
+    ],
+    quiz:[
+      {q:'How does the autocomplete layer&rsquo;s contract differ from the agent turn M-2.5 priced at $0.89?',
+       options:['It is more accurate','Always on, latency-bound, priced in keystrokes &mdash; and you remain the author of every accepted character','It has a bigger context window','It writes tests automatically'], answer:1},
+      {q:'Per current docs, what does Ctrl+&rarr; do to a ghost suggestion in VS Code?',
+       options:['Dismisses it','Shows alternatives','Accepts &ldquo;either the next word of a suggestion, or the next line&rdquo; &mdash; the middle gear between typing and Tab','Sends it to Chat'], answer:2},
+      {q:'The ghost offers <code>if (score &gt; threshold)</code> while you&rsquo;re writing approval logic. The house rule says?',
+       options:['Accept it &mdash; it compiles','Accept, then review in the PR','Hover for alternatives and pick one','Never Tab through a boundary: type the comparison yourself &mdash; plausible-looking is exactly how T-02&rsquo;s one-character bug looks at your cursor'], answer:3},
+      {q:'Ghost text vs next edit suggestions &mdash; the difference?',
+       options:['Ghost text is Cursor-only','NES is paid, ghost text is free','Ghost text completes at your cursor; NES predicts an edit somewhere else &mdash; a gutter arrow marks it, Tab navigates, Tab accepts','They are the same feature renamed'], answer:2}
+    ]
   }
 ];
 
@@ -2226,6 +2294,96 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-07 · Ghost Text Editor (spec: VISUALS.md) ----------
+   Stylized editor abstraction (no real IDE chrome). Sequence: type →
+   ghost suggestion → Tab accept → partial accept (Ctrl+→, doc-verified
+   wording) → NES gutter beat hops to the related file tab. Loops. */
+VISUALS['ANIM-07'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim07" aria-label="Ghost text and next-edit suggestion walkthrough">' +
+      '<div class="a7tabs">' +
+        '<span class="a7tab on" data-tab="hook">usePriorAuthForm.ts</span>' +
+        '<span class="a7tab" data-tab="form">SubmitRequest.tsx<span class="nesdot" data-nesdot></span></span>' +
+      '</div>' +
+      '<div class="a7code" data-code></div>' +
+      '<div class="a7foot">' +
+        '<span class="a7cap" data-cap>Ghost text: dim = suggestion, Tab = accept, Ctrl/⌘→ = &ldquo;next word&hellip; or the next line&rdquo;.</span>' +
+        '<button class="a7replay" data-a7replay>REPLAY ▸</button>' +
+      '</div>' +
+    '</div>';
+  const code = mount.querySelector('[data-code]');
+  const cap = mount.querySelector('[data-cap]');
+  const nesdot = mount.querySelector('[data-nesdot]');
+  const tabs = mount.querySelectorAll('.a7tab');
+  let timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function setTab(k){ tabs.forEach(t => t.classList.toggle('on', t.dataset.tab === k)); }
+  const L1 = "const [cptCode, setCptCode] = useState('')";
+  const L2 = "const [payerCode, setPayerCode] = useState('')";
+  const L3 = "const isValid =";
+  const G3 = " /^\\d{5}$/.test(cptCode) && payerCode !== ''";
+  const NES = "<submit disabled={!isValid}> — the edit this hook now implies";
+  function render(typed, ghost, key){
+    code.innerHTML = '<span class="typed">' + esc(typed) + '</span>' +
+      (ghost ? '<span class="ghost">' + esc(ghost) + '</span>' : '') +
+      '<span class="a7caret"></span>' +
+      (key ? '<span class="a7key show">' + esc(key) + '</span>' : '');
+  }
+  function finale(){
+    setTab('form');
+    code.innerHTML = '<span class="typed">// SubmitRequest.tsx</span>\n' +
+      '<span class="newl">+ ' + esc(NES) + '</span><span class="a7key show">TAB · ACCEPT</span>';
+    cap.textContent = 'Next edit suggestions: the gutter arrow marks the predicted edit in the RELATED file — Tab navigates to it, Tab again accepts.';
+  }
+  function play(){
+    stop(); setTab('hook'); nesdot.classList.remove('show');
+    cap.textContent = 'Ghost text: dim = suggestion, Tab = accept, Ctrl/⌘→ = "next word… or the next line".';
+    if(reduce){ finale(); nesdot.classList.add('show'); return; }
+    let ch = 0;
+    (function typeL1(){
+      render(L1.slice(0, ch), '', null);
+      if(ch < L1.length){ ch += 2; later(typeL1, 34); }
+      else later(step2, 500);
+    })();
+    function step2(){
+      render(L1 + '\n', L2, 'TAB · ACCEPT ALL');
+      later(() => { render(L1 + '\n' + L2 + '\n', '', null); later(step3, 450); }, 1300);
+    }
+    function step3(){
+      let c3 = 0;
+      (function typeL3(){
+        render(L1 + '\n' + L2 + '\n' + L3.slice(0, c3), '', null);
+        if(c3 < L3.length){ c3 += 2; later(typeL3, 34); }
+        else later(step4, 400);
+      })();
+    }
+    function step4(){
+      render(L1 + '\n' + L2 + '\n' + L3, G3, 'CTRL+→ · NEXT WORD');
+      const words = G3.split(/(?<=\s)/);
+      let w = 2;
+      (function partial(){
+        if(w <= words.length){
+          const taken = words.slice(0, w).join('');
+          render(L1 + '\n' + L2 + '\n' + L3 + taken, G3.slice(taken.length), w < 4 ? 'CTRL+→ · NEXT WORD' : 'TAB · ACCEPT REST');
+          w++; later(partial, 650);
+        } else {
+          render(L1 + '\n' + L2 + '\n' + L3 + G3 + '\n', '', null);
+          later(step5, 600);
+        }
+      })();
+    }
+    function step5(){
+      nesdot.classList.add('show');
+      cap.textContent = 'An arrow in the gutter marks the next edit suggestion — in the other file.';
+      later(() => { finale(); later(play, 5200); }, 1400);
+    }
+  }
+  mount.querySelector('[data-a7replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-17 · The N+1 Fan-out (spec: VISUALS.md) ----------
