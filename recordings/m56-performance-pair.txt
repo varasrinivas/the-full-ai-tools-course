@@ -1,0 +1,50 @@
+M-5.6 PERFORMANCE DEBUGGING — THE PAIR — method notes + captures
+=================================================================
+Recorded: 2026-07-23 · both teaching repos, scratch branches, restored pristine.
+Two bugs, one theme (cost that correctness tests never see), measured for real.
+
+=== HALF A: BUG-API-03, the N+1 (the payoff of M-3.5's diagnosis) ===
+Repo: priorauth-api lab/start clone, branch drill/m56-nplus1.
+STEP 1 — measure the round trips (temporary Mockito-counting probe, 25-patient queue):
+    === QUERY COUNT for a 25-patient queue ===   (BEFORE FIX)
+      per-patient queries (the N+1) : 25
+      batch queries                 : 0
+      total round trips             : 25
+STEP 2 — apply M-3.5's prescribed fix: ClaimHistoryService.historyFor stops
+  looping and calls the dead-but-correct batch method, grouping in memory:
+    findByPatientRefInOrderByServiceDateDesc(patientRefs)
+      .stream().collect(groupingBy(Claim::getPatientRef))
+  (+5/-1 lines; the "keep it this way" comment on the batch method finally honored.)
+STEP 3 — re-measure (AFTER FIX):
+      per-patient queries (the N+1) : 0
+      batch queries                 : 1
+      total round trips             : 1     *** 25 → 1 ***
+  Existing ClaimHistoryServiceTest: 4/4 still green — the grouping preserves the
+  contract (per-patient lists, newest-first). Full *ServiceTest suite: 22/22.
+  Aside caught while writing the fix: a naive "pre-seed refs with List.of() then
+  computeIfAbsent().add()" throws UnsupportedOperationException (immutable list) —
+  the groupingBy-then-getOrDefault shape avoids it. (My own bug, caught by running.)
+
+=== HALF B: BUG-WEB-01, the wasteful re-render ===
+Repo: priorauth-web lab/start clone, branch drill/m56-render.
+Plant f6f72d8 "Flatten RequestTable to a single component" removed a memoized
+Row subcomponent and inlined the rows with fresh inline handlers per render.
+MEASURE (temporary render-counting probe, 50-row table):
+    === RequestTable render cost (50 rows) ===
+      row cells computed on first render      : 50
+      row cells recomputed on identical poll  : 50
+      wasted recomputes (data unchanged)      : 50   *** every row, every poll ***
+  Mechanism: the dashboard polls (usePriorAuthStatus/useReviewQueue re-render the
+  parent every 5s); with no memoized Row and inline onClick/onKeyDown closures,
+  React re-renders all 50 rows even when the row data is byte-identical.
+  Fix direction (taught, profiler-verified in lab): extract a React.memo'd Row +
+  a stable onSelect (useCallback) so only changed rows recompute → 0 wasted on
+  identical data. Instrument = React DevTools Profiler (no headless equivalent;
+  the render-count probe above is the honest CLI stand-in and it is real).
+
+THEME: correctness tests stay green through both — the N+1 returns correct data,
+the table renders correct rows. Only a COST instrument (query counter / render
+counter / profiler) sees the bug. Same lesson as M-3.5 (characterize, don't
+eyeball) and M-5.5 (a green suite only proves what it measured).
+CLEANUP: both fixes on scratch branches only; both clones restored pristine;
+plant/BUG-API-03 and plant/BUG-WEB-01 intact.

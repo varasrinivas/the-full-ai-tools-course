@@ -2117,6 +2117,62 @@ const MODS = [
       {q:'Why prefer a fake-timer unit test over watching the browser for five seconds?',
        options:['It is faster to type','React&rsquo;s dev effects and StrictMode can mask or mimic polling behavior, and staring is not repeatable &mdash; a fake-timer test pins the exact transition deterministically','Browsers cannot show status changes','Unit tests run in CI and browsers do not'], answer:1}
     ]
+  },
+  {
+    id:'M-5.6', path:'eng', track:'T-05', title:'Performance debugging', minutes:45,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'Two hospitals with identical outcomes. One runs one lab panel per patient; the other re-orders the whole panel every time a nurse walks past the chart. Both discharge healthy patients &mdash; the quality audit passes both. Only a <em>cost</em> audit, counting orders and staff-hours, sees that one of them is quietly on fire. Performance bugs are correct code with a runaway meter.',
+      body:
+        '<p><strong>Two bugs, one instrument you have to bring yourself.</strong> This module fixes the pair T-03 and T-05 have been circling: the backend N+1 M-3.5 diagnosed but left for here, and a frontend table that re-renders far more than it should. Neither throws. Neither fails a correctness test. Both are invisible until you attach a meter &mdash; a query counter, a render counter, a profiler &mdash; and that is the whole discipline: performance work starts by <em>measuring</em>, and ends by measuring again to prove you helped.</p>' +
+        '<p><strong>The N+1, finally fixed &mdash; with the number.</strong> M-3.5 characterized the review-queue endpoint as 1 + P queries. Here you apply the fix and measure the drop. A real probe counted the repo round trips for a 25-patient queue: <b>25 queries before</b>, and after switching <code>historyFor</code> from its per-patient loop to the batch method the repo already had (dead code wearing the comment &ldquo;keep it this way&rdquo;), <b>1 query</b>. Twenty-five to one, and the existing four tests stay green because the grouping preserves the contract &mdash; per-patient lists, newest first. The fix is <code>groupingBy(Claim::getPatientRef)</code> over one <code>IN</code> query; the correctness never changed, only the cost.</p>' +
+        '<p><strong>The re-render, measured the same way.</strong> A &ldquo;streamline&rdquo; commit flattened <code>RequestTable</code>, removing a memoized row component and inlining the rows with fresh <code>onClick</code>/<code>onKeyDown</code> closures each render. The dashboard polls every five seconds, so the parent re-renders constantly &mdash; and a render-counting probe showed all <b>50 rows recomputing on an identical poll</b>, 50 wasted recomputes when not one byte of row data changed. The fix is a <code>React.memo</code>&rsquo;d <code>Row</code> plus a stable <code>useCallback</code> handler, so React skips the rows whose props didn&rsquo;t change: 50 wasted recomputes to zero. The instrument in the lab is the <b>React DevTools Profiler</b> &mdash; the flame graph is the frontend&rsquo;s query log.</p>' +
+        '<p><strong>Measure, fix, measure &mdash; never fix, hope.</strong> Both halves follow the identical loop, and the second measurement is non-negotiable: a performance &ldquo;fix&rdquo; with no before-and-after is a guess wearing a lab coat. It is the same rigor as M-5.2&rsquo;s mutation check &mdash; you do not trust the change until an instrument confirms it. And it is where AI earns its keep carefully: an agent will happily add a cache, a <code>useMemo</code>, an index &mdash; and you accept none of it without the counter moving in the right direction. Ask for the measurement in the same breath as the fix.</p>' +
+        '<p><strong>Cost bugs hide behind green suites &mdash; that is the through-line.</strong> The N+1 returns correct data; the table renders correct rows; every correctness test passes. M-3.5 said characterize don&rsquo;t eyeball, M-5.5 said a green suite only proves what it simulated, and this module is both, priced: the only test that catches a performance bug is one that asserts a <em>cost</em> &mdash; a query count, a render count, a latency budget. That closes T-05. Debugging, end to end: reproduce, read, hypothesize, fix, and verify &mdash; against a runtime, a clock, or a meter, but always against something real.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-17'},
+    labA:{
+      title:'Fix the N+1 with a before/after count — Claude Code',
+      steps:[
+        'Scratch branch off <code>lab/start</code>. Before touching <code>ClaimHistoryService</code>, measure: ask for a temporary test that mocks <code>ClaimRepo</code> and counts how many times each finder is invoked for a 25-patient queue. Reference: <b>25 per-patient queries, 0 batch</b>. That count is your baseline &mdash; no baseline, no performance work.',
+        'Apply the fix M-3.5 prescribed: replace the per-patient loop with the batch method <code>findByPatientRefInOrderByServiceDateDesc</code> and group in memory (<code>groupingBy(Claim::getPatientRef)</code>). Run the existing <code>ClaimHistoryServiceTest</code> &mdash; all four must stay green, proving the contract held.',
+        'Re-measure with the same probe. Reference: <b>0 per-patient, 1 batch &mdash; 25 to 1</b>. Write both numbers in your log; the ratio is the deliverable. Then delete the probe.',
+        'Watch the AI at the boundary: if your agent proposed a cache or an index <em>instead</em> of the batch query, note it &mdash; those are real tools, but the right fix here is the query the repo already had. Success: baseline count, contract-preserving fix, after count, probe removed, clean tree.'
+      ]
+    },
+    labB:{
+      title:'Profile the re-render — Copilot in the browser',
+      steps:[
+        'Fresh clone of priorauth-web, scratch branch. Open the dashboard, start the <b>React DevTools Profiler</b>, record, and let it poll once. Read the flame graph: <code>RequestTable</code>&rsquo;s rows should light up as re-rendering on a poll that changed nothing. That flame graph is your baseline.',
+        'Ask <b>Agent</b> to fix the wasteful re-render. Grade the fix: does it extract a <code>React.memo</code>&rsquo;d row and stabilize the <code>onSelect</code> callback with <code>useCallback</code>? A <code>memo</code> without a stable callback does nothing &mdash; the inline closure is new every render, so the memo never hits.',
+        'Record the profiler again and compare: the unchanged rows should now be skipped. Success: a before flame graph, the memo + useCallback fix, an after flame graph with the rows greyed out, and the render count you read off each.'
+      ]
+    },
+    labC:{
+      title:'The same re-render — Cursor, then the perf rule',
+      steps:[
+        'Same profiler-first flow in Cursor. Optionally reproduce the measurement in a unit test that counts row renders across an identical rerender (reference: <b>50 wasted recomputes</b> for a 50-row table) &mdash; a CI-able cost assertion the profiler can&rsquo;t give you.',
+        'Apply and verify the memo + useCallback fix; confirm the count drops.',
+        'Write the performance rule for your log: <em>measure before, fix, measure after &mdash; a perf change with no before/after number is a guess; and the only test that catches a cost bug is one that asserts a cost.</em> Then list the other polling surfaces in the app worth a profiler pass. Success: the two measurements, the fix, the rule, the audit list &mdash; T-05 complete.'
+      ]
+    },
+    checklist:[
+      'I measured the N+1 baseline (25 queries) before changing any code.',
+      'My batch fix kept ClaimHistoryServiceTest green &mdash; the contract held while the cost dropped to 1 query.',
+      'I profiled the re-render before and after, and read the row count off each.',
+      'My frontend fix is React.memo AND a stable useCallback &mdash; not one without the other.',
+      'I can state the rule: the only test that catches a performance bug asserts a cost.'
+    ],
+    quiz:[
+      {q:'The review-queue endpoint returns correct data and passes every test, yet M-3.5 flagged it. This module measured the fix as:',
+       options:['A latency improvement of a few milliseconds','25 queries down to 1 for a 25-patient queue &mdash; the per-patient loop replaced by the batch query the repo already had, contract preserved','A smaller response payload','Fewer lines of code'], answer:1},
+      {q:'A <code>React.memo</code> was added to the row but the table still re-renders every row. The most likely reason?',
+       options:['memo is deprecated','The onSelect callback is an inline closure, new on every parent render &mdash; so the memo&rsquo;s prop check always sees changed props and never skips','The rows have no key','Profiler is misreading'], answer:1},
+      {q:'What makes a performance &ldquo;fix&rdquo; trustworthy?',
+       options:['It looks cleaner','The agent is confident','A before-and-after measurement from the same instrument &mdash; without it, a perf change is a guess wearing a lab coat','It adds a cache'], answer:2},
+      {q:'The unifying lesson of T-05&rsquo;s two performance bugs?',
+       options:['Always add caching','Frontend bugs are worse than backend bugs','Correctness tests stay green through cost bugs &mdash; only a test that asserts a cost (a query count, a render count, a latency budget) can catch them','Profilers replace unit tests'], answer:2}
+    ]
   }
 ];
 
