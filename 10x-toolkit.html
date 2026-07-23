@@ -332,6 +332,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ SIM-10: Layer Drill ============ */
+.sim10{--s10red:#d0705a;--s10green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim10{--s10red:#B0503C;--s10green:#2d7350}
+.sim10 .s10head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim10 .s10card{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:7px 10px;margin-bottom:6px}
+.sim10 .s10card.hit{border-color:var(--s10green)}
+.sim10 .s10card.miss{border-color:var(--s10red)}
+.sim10 .s10task{flex:1;font-size:10.5px;color:var(--text);line-height:1.45;min-width:0}
+.sim10 .s10verdict{font-size:9px;letter-spacing:.08em;white-space:nowrap}
+.sim10 .s10verdict.ok{color:var(--s10green)}
+.sim10 .s10verdict.no{color:var(--s10red)}
+.sim10 .s10picks{display:flex;gap:4px;flex-shrink:0}
+.sim10 .s10pick{font-family:var(--mono);font-size:9px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim10 .s10pick:disabled{cursor:default;opacity:.75}
+.sim10 .s10pick[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+.sim10 .s10ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim10 .s10btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim10 .s10btn:hover:not(:disabled){border-color:var(--gold)}
+.sim10 .s10btn:disabled{opacity:.45;cursor:default}
+.sim10 .s10score{font-size:10.5px;color:var(--dim)}
+.sim10 .s10why{margin-top:10px;font-size:10.5px;color:var(--dim);line-height:1.55;list-style:none;padding:0}
+.sim10 .s10why li{margin-bottom:5px}
+.sim10 .s10why b{color:var(--text);font-weight:500}
+.sim10 .s10foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim18 .a18head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -1637,6 +1662,53 @@ const MODS = [
       {q:'Copilot drafts your commit message from the diff plus twenty recent commit messages. What remains yours?',
        options:['Nothing &mdash; accept and commit','The why &mdash; the draft captures the what at best, and the signature rule applies to messages exactly as to code','Only the ticket number','The emoji'], answer:1}
     ]
+  },
+  {
+    id:'M-4.4', path:'eng', track:'T-04', title:'Autocomplete vs agent', minutes:35,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A hospital doesn&rsquo;t bill a bandage through the operating room. Same institution, same patient, wildly different cost centers &mdash; and the billing discipline exists precisely because &ldquo;just book the OR, it handles everything&rdquo; is how a $40 scrape becomes a $4,000 line item. The four rungs of the ladder are cost centers. This module is the billing discipline.',
+      body:
+        '<p><strong>The ladder, priced.</strong> M-4.3 drew the four rungs; now put numbers on them. Keystroke: effectively free at the margin, always on, you author everything. Selection: one bounded instruction, seconds, the edit can&rsquo;t wander. Conversation: an answer, no edit implied. Turn: the recorded envelope &mdash; <b>$0.89, nine turns, 50 seconds</b> for a task that earned every cent, because no lower rung could run a repo-wide integrity check. The cost lives in the rung, not the tool brand &mdash; M-2.5&rsquo;s lesson, now at layer resolution.</p>' +
+        '<p><strong>Misrung in both directions.</strong> Renting the OR for a bandage: a full agent turn to reword one sentence &mdash; the same overhead the integrity check earned, spent on work a selection contains for free. Bandaging in the OR&rsquo;s doorway: thirty Tab-accepts to do what one agent turn with a plan &mdash; or one F2 &mdash; does correctly once; M-2.2 is the recording of what property-level requirements do to keystroke-level tools. Both directions waste, and only one of them <em>feels</em> wasteful while you&rsquo;re doing it. The drill trains the other direction.</p>' +
+        '<p><strong>The tell is in the task, before any tool opens.</strong> Three questions sort every card in SIM-10: Is there an edit at all? (No &rarr; chat, and stop paying for edit surfaces.) Can a selection contain it? (Yes &rarr; inline; the boundary of the selection is the boundary of the risk.) Does it need to read or run things you haven&rsquo;t opened? (Yes &rarr; agent, and now M-2.4&rsquo;s mode question kicks in &mdash; vibe or spec &mdash; before the turn starts.) Everything else is ghost text finishing your typing.</p>' +
+        '<p><strong>Your counts outrank the defaults, again.</strong> You logged accepts and rejections in M-4.1, hops in M-4.2, and the ladder rule in M-4.3. SIM-10&rsquo;s reveal will disagree with you on a card or two &mdash; keep the disagreement if you can defend it with those logs; that is the same evidence-over-editorial rule M-2.5 set for tools. The T-04 close-out: the layer question and the tool question are now both ten-second habits, and both feed the M-11.1 baseline where your numbers become the argument.</p>' +
+        '<p><strong>Track exemption, one last time.</strong> Claude Code enters this drill only at the agent rung &mdash; its only rung, by design. If a card&rsquo;s answer is ghost or inline, the tool question is already answered too: Copilot or Cursor, per your M-4.1 scorecard. The rungs compose with the tool-fit table rather than replacing it.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-10'},
+    labB:{
+      title:'Price the misrungs — Copilot',
+      steps:[
+        'Do one task deliberately misrunged, both directions, and time them. Direction one: reword a single error string via a full <b>Agent</b> turn &mdash; note the wait and what else it read. Direction two: implement a two-file change via Tab-accepts only &mdash; count the accepts and the misses. Log both times against doing each on the right rung.',
+        'Now run three SIM-10 cards on their correct rungs in real code &mdash; one ghost, one inline, one chat &mdash; timing each. The contrast with step 1 is the module.',
+        'Success: the two misrung timings, the three right-rung timings, and one sentence on which misrung direction you personally default to &mdash; that sentence is the habit to break.'
+      ]
+    },
+    labC:{
+      title:'The same pricing — Cursor, then the T-04 close-out',
+      steps:[
+        'Repeat the misrung pair in Cursor: the one-sentence reword through the <b>agent panel</b> (Ctrl+I &mdash; the trap chord, used knowingly this time) vs the two-file change through Tab alone. Time both.',
+        'Fill SIM-10 to 12/12 or argue your misses from your T-04 logs &mdash; a defended miss with counts beats a lucky hit.',
+        'Close the track in your log: four rungs, each with its PA-domain example and its price tag (the $0.89 envelope, your own timings, the free keystroke). T-04 done: the layer question is now reflex. Success: the board scored, the close-out written, and your misrung-default sentence taped somewhere visible.'
+      ]
+    },
+    checklist:[
+      'I misrunged one task in both directions on purpose and have the timings.',
+      'I ran three tasks on their correct rungs and felt the contrast.',
+      'I scored SIM-10 and defended any miss with my own T-04 counts.',
+      'I know my personal misrung default direction and wrote it down.',
+      'T-04 closed: layer question and tool question are both ten-second habits feeding M-11.1.'
+    ],
+    quiz:[
+      {q:'A full agent turn to reword one error string &mdash; what exactly is wasted?',
+       options:['Nothing, if the reword is correct','The turn&rsquo;s constant overhead &mdash; context assembly, multi-turn loop, the whole $0.89-class envelope &mdash; spent on work a selection contains for free','Tokens only','The model&rsquo;s attention'], answer:1},
+      {q:'Which misrung direction does NOT feel wasteful while you&rsquo;re doing it?',
+       options:['OR-for-a-bandage &mdash; the wait makes it obvious','Bandaging-in-the-doorway: thirty Tab-accepts feel productive keystroke by keystroke, while one planned turn or one F2 would do it correctly once','Both feel equally wasteful','Neither is ever wasteful'], answer:1},
+      {q:'The three sorting questions, in order?',
+       options:['Which tool, which model, which mode','How big, how risky, how fast','Is there an edit at all; can a selection contain it; does it need to read or run things you haven&rsquo;t opened &mdash; and only then vibe-or-spec','Cost, speed, quality'], answer:2},
+      {q:'SIM-10&rsquo;s reveal disagrees with your pick and you have M-4.1&ndash;4.3 logs supporting yours. The module&rsquo;s ruling?',
+       options:['The board is authoritative','Rerun the drill until you agree','Split the difference','Keep your pick &mdash; defended counts outrank editorial defaults, the same evidence rule M-2.5 set; log the disagreement for M-11.1'], answer:3}
+    ]
   }
 ];
 
@@ -2405,6 +2477,88 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- SIM-10 · Layer Drill (spec: VISUALS.md) ----------
+   12 PA tasks vs the four rungs of ANIM-18's ladder. Agent-rung rationales
+   carry the recorded $0.89/9-turn envelope; card 6's answer (13 rows) is
+   repo canon. One contested card accepts either defended pick. */
+VISUALS['SIM-10'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LAYERS = [{k:'g',lbl:'GHOST'},{k:'i',lbl:'INLINE'},{k:'c',lbl:'CHAT'},{k:'a',lbl:'AGENT'}];
+  const NAME = {g:'GHOST/TAB', i:'INLINE', c:'CHAT', a:'AGENT'};
+  const CARDS = [
+    {t:'Finish typing this DTO&rsquo;s field list', a:['g'], why:'<b>DTO fields</b> → ghost: pure scaffolding at the cursor — the accept-and-move class from M-4.1.'},
+    {t:'Reword one denial-notice sentence, passive to active', a:['i'], why:'<b>One sentence, selected</b> → inline: the margin note. The selection contains the edit by construction.'},
+    {t:'&ldquo;What does EligibilityService return for an unknown payer?&rdquo;', a:['c'], why:'<b>A question</b> → chat: no edit implied, so no edit surface needed. (Answer, for the record: PAYER-001.)'},
+    {t:'Break up ApprovalService.process() behind its tests', a:['a'], why:'<b>The forbidden refactor</b> → agent, plan-gated — M-3.2 ran exactly this, two rounds, zero edits until a human approved scope.'},
+    {t:'Chase the consequences of adding an optional field', a:['g'], why:'<b>The judgmental ripple</b> → ghost/Tab: NES territory (M-4.2) — each hop reviewed, compiler certifies the end.'},
+    {t:'Count the seed rows scoring exactly 0.85', a:['i','c'], why:'<b>One-off count</b> → contested, honestly: terminal inline writes the grep (read before Enter), or chat just answers. Either defended pick stands. The number is 13.'},
+    {t:'Throwaway demo screen for tomorrow&rsquo;s meeting', a:['a'], why:'<b>Demo screen</b> → agent, vibe rules — M-2.1&rsquo;s recorded 4.1-minute class of work. Too much typing for Tab, no spec needed.'},
+    {t:'&ldquo;Explain what this CPT regex matches&rdquo;', a:['c'], why:'<b>Explain</b> → chat: comprehension, not modification.'},
+    {t:'Extract the selected block into a named handler', a:['i'], why:'<b>Scoped extraction</b> → inline: one instruction against exactly the selected lines.'},
+    {t:'Write the arrange block of the test you&rsquo;re typing', a:['g'], why:'<b>Test arrange block</b> → ghost: boilerplate with your hands still on the assertion — which you type yourself.'},
+    {t:'Add auth + resilience to the denial widget', a:['a'], why:'<b>M-2.2&rsquo;s mission</b> → agent — with a spec this time. Property requirements outgrow every keystroke layer.'},
+    {t:'Draft the commit message for the staged diff', a:['c'], why:'<b>Commit draft</b> → chat surface (SCM generation): drafts the what from the diff + 20 recent messages; you add the why and sign.'}
+  ];
+  mount.innerHTML =
+    '<div class="sim10" aria-label="Layer drill: twelve tasks, pick the rung">' +
+      '<div class="s10head"><span>SIM-10 · LAYER DRILL · 12 TASKS, PICK THE RUNG</span><span data-s10mode>' + (reduce ? 'STATIC' : 'DRILL') + '</span></div>' +
+      '<div>' + CARDS.map((c,i) =>
+        '<div class="s10card" data-card="' + i + '">' +
+          '<span class="s10task">' + c.t + '<span class="s10verdict" data-v="' + i + '"></span></span>' +
+          '<span class="s10picks">' + LAYERS.map(l =>
+            '<button class="s10pick" type="button" data-pick data-i="' + i + '" data-t="' + l.k + '" aria-pressed="false">' + l.lbl + '</button>').join('') +
+          '</span>' +
+        '</div>').join('') + '</div>' +
+      '<div class="s10ctrl">' +
+        '<button class="s10btn" type="button" data-reveal disabled>REVEAL</button>' +
+        '<button class="s10btn" type="button" data-reset>RESET</button>' +
+        '<span class="s10score" data-score aria-live="polite"></span>' +
+      '</div>' +
+      '<ul class="s10why" data-why hidden></ul>' +
+      '<div class="s10foot">What to notice: the agent rung appears three times in twelve tasks &mdash; the recorded $0.89 envelope is worth buying exactly that often here. Cost lives in the rung, not the tool.</div>' +
+    '</div>';
+  const picks = {};
+  let revealed = false;
+  const revealBtn = mount.querySelector('[data-reveal]');
+  const scoreEl = mount.querySelector('[data-score]');
+  const whyEl = mount.querySelector('[data-why]');
+  function refresh(){
+    CARDS.forEach((c,i) => {
+      const card = mount.querySelector('[data-card="' + i + '"]');
+      const v = mount.querySelector('[data-v="' + i + '"]');
+      card.querySelectorAll('[data-pick]').forEach(b => {
+        b.setAttribute('aria-pressed', String(picks[i] === b.dataset.t));
+        b.disabled = revealed;
+      });
+      card.classList.remove('hit','miss');
+      if(revealed){
+        const ok = c.a.indexOf(picks[i]) > -1;
+        card.classList.add(ok ? 'hit' : 'miss');
+        v.className = 's10verdict ' + (ok ? 'ok' : 'no');
+        v.innerHTML = ok ? ' ✓' : ' ✗ → ' + c.a.map(k => NAME[k]).join(' / ');
+      } else { v.innerHTML = ''; v.className = 's10verdict'; }
+    });
+    revealBtn.disabled = revealed || Object.keys(picks).length < CARDS.length;
+    if(revealed){
+      const right = CARDS.filter((c,i) => c.a.indexOf(picks[i]) > -1).length;
+      scoreEl.textContent = right + '/12 on the right rung';
+      whyEl.hidden = false;
+      whyEl.innerHTML = CARDS.map(c => '<li>' + c.why + '</li>').join('');
+    } else { scoreEl.textContent = ''; whyEl.hidden = true; whyEl.innerHTML = ''; }
+  }
+  mount.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+    if(revealed) return;
+    picks[+b.dataset.i] = b.dataset.t; refresh();
+  }));
+  revealBtn.addEventListener('click', () => { revealed = true; refresh(); });
+  mount.querySelector('[data-reset]').addEventListener('click', () => {
+    Object.keys(picks).forEach(k => delete picks[k]); revealed = false;
+    mount.querySelector('[data-s10mode]').textContent = 'DRILL'; refresh();
+  });
+  if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
+  refresh();
 };
 
 /* ---------- ANIM-18 · Scope Ladder & Key Map (spec: VISUALS.md) ----------
