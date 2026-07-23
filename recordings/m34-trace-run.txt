@@ -1,0 +1,87 @@
+M-3.4 VALUE-TRACE RUN — method notes + raw capture
+===================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless, default mode)
+Repo: pristine lab/start clone of priorauth-api (b1b13da).
+The module's exact mission: ONE concrete request (PT-2001 / 97110 / MERIDIAN /
+confidenceScore exactly 0.85) traced to a committed final status. 97110 was
+chosen against ground truth (EligibilityService.COVERED read first) so the
+request survives Stage 1 and the trace reaches the threshold.
+
+Command (verbatim = labA step 1):
+  claude -p "A new request arrives via POST /api/requests: patientRef PT-2001,
+  cptCode 97110, payerCode MERIDIAN, confidenceScore exactly 0.85. Trace it
+  through every file and line it touches, in order, and state its final status
+  with certainty. If any documentation disagrees with what the code will do,
+  say which wins at runtime and why. Cite file:line throughout."
+Elapsed: 101s · exit 0
+
+Beats delivered unscripted (all verified against source read this session):
+- Committed verdict: MANUAL_REVIEW "with certainty", decided at
+  ApprovalService.java:99 (strict >), with the IEEE-754 note that both sides
+  parse the identical literal so there is no floating-point ambiguity.
+- The literally-false log catch: the MANUAL_REVIEW branch would print
+  "score 0.85 < 0.85" — a false statement, flagged as such.
+- Forensic seed evidence: every seeded 0.85 request (seed.sql:45, 113, 167,
+  169, 175) is AUTO_APPROVED — "historical data that the current > could not
+  have produced." Docs, field comment, log string, AND fixture data all
+  testify to >= while the one line the JVM evaluates says >.
+- Negative-space checks: PT-2001 has no claims (seed uses PAT-xxxx refs);
+  history is advisory-only (comment + test cited); no Denial row, no
+  notification on this path; the request lands in GET /api/requests/
+  review-queue.
+- "Comments, javadoc, log strings, and seed fixtures have no effect on
+  control flow" — the module's one-line thesis, in the agent's own words.
+- Test-gap closure: ApprovalServiceTest checks 0.92 and 0.61, never 0.85 —
+  why the bug survives (consistent with M-2.3's and M-3.2's findings).
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+**Final status: `MANUAL_REVIEW` — with certainty.** The request sails through validation and eligibility, then loses the auto-approval decision at the strict `>` comparison in `ApprovalService.java:99`, despite three separate pieces of documentation claiming 0.85 should auto-approve. Here's the full trace.
+
+## The trace, in order
+
+**1. Security filter** — `SecurityConfig.java:17-21`: `anyRequest().permitAll()`, CSRF disabled. The unauthenticated POST reaches the controller.
+
+**2. Request binding & bean validation** — `PriorAuthController.java:49` (`@Valid @RequestBody SubmitRequest`), record at `PriorAuthController.java:91-95`:
+- `patientRef` "PT-2001": `@NotBlank` ✓
+- `cptCode` "97110": `@Pattern("\d{5}")` ✓
+- `payerCode` "MERIDIAN": `@NotBlank` ✓
+- `confidenceScore` 0.85: `@DecimalMin("0.0") @DecimalMax("1.0")` ✓ — no 400.
+
+**3. Payer lookup** — `PriorAuthController.java:50` → `PayerRepo.java:10` (`findByCode`). `seed.sql:36` inserts payer `MERIDIAN` (id 1), so a real `Payer` comes back, not null.
+
+**4. Entity construction** — `PriorAuthController.java:51-52` → constructor `PriorAuthRequest.java:47-54`, which sets `status = SUBMITTED` at line 53. Saved at `PriorAuthController.java:53`, then handed to `approvalService.process()` at line 54.
+
+**5. Guards** — `ApprovalService.java:59-65`: not null ✓, status is `SUBMITTED` ✓. Debug log at lines 67-68.
+
+**6. Stage 1, eligibility** — `ApprovalService.java:71` → `EligibilityService.check`, `EligibilityService.java:25-38`:
+- line 26: patientRef present ✓
+- line 29: CPT matches `\d{5}` ✓
+- line 32: payer non-null and `MERIDIAN` is a key in `COVERED` (`EligibilityService.java:20-23`) ✓
+- line 35: `97110` is in MERIDIAN's covered set `{"97110", "29881"}` ✓
+- Returns `pass()` (line 38). Back in `ApprovalService.java:83`, status becomes `ELIGIBLE` (transient, in-memory only).
+
+**7. Stage 2, claim history** — `ApprovalService.java:88` → `ClaimHistoryService.recentClaims` (`ClaimHistoryService.java:26-31`) → `ClaimRepo.java:11`. **PT-2001 appears nowhere in `seed.sql`** (zero claims — seed patients are all `PAT-xxxx`), so `deniedClaims = 0` and the flag log at `ApprovalService.java:92-95` doesn't fire. Irrelevant anyway: the comment at lines 86-87 and the test at `ApprovalServiceTest.java:115-123` confirm history never gates the decision.
+
+**8. Stage 3, the threshold — where it's decided** — `ApprovalService.java:98-99`:
+
+```java
+double score = request.getConfidenceScore();   // 0.85
+if (score > AUTO_APPROVE_THRESHOLD) {          // 0.85 > 0.85 → false
+```
+
+This is a **strict** comparison. Both values come from the identical literal `0.85` (the JSON `0.85` and the constant at `ApprovalService.java:26` parse to the same IEEE-754 double), so `>` is false with no floating-point ambiguity. Execution takes the else branch: `setStatus(MANUAL_REVIEW)` at line 104. It then logs *"routed to MANUAL_REVIEW (score 0.85 < 0.85)"* (lines 105-106) — a literally false statement, since 0.85 < 0.85 is not why it failed.
+
+**9. Finish** — `decidedAt` stamped from the injected clock at `ApprovalService.java:108` (`ClockConfig`), saved at line 110, transaction commits (`@Transactional`, line 57). No `Denial` row, no notification — those only happen on the denial paths (lines 72-82, 126-128). The controller returns **HTTP 201** at `PriorAuthController.java:55` with `status: MANUAL_REVIEW`, and the request will now show up in `GET /api/requests/review-queue` (`PriorAuthController.java:71-75`).
+
+## Documentation vs. code — code wins
+
+Three docs say 0.85 should **auto-approve**; the code disagrees:
+
+1. `ApprovalService.java:19-21` — class javadoc: *"the threshold is INCLUSIVE (score >= 0.85 approves, 0.8499 does not)"*.
+2. `PriorAuthRequest.java:34` — field comment: *">= 0.85 auto-approves (inclusive)"*.
+3. `ApprovalService.java:101-102` — the approve-branch log even prints `score {} >= {}`.
+4. Circumstantially, `seed.sql` agrees with the docs: every seeded 0.85 request (e.g. `seed.sql:45, 113, 167, 169, 175`) is `AUTO_APPROVED` — historical data that the current `>` could not have produced.
+
+**The code wins at runtime, unconditionally**: `score > AUTO_APPROVE_THRESHOLD` at `ApprovalService.java:99` is the only expression the JVM evaluates — comments, javadoc, log strings, and seed fixtures have no effect on control flow. And nothing pins the intended behavior in tests: `ApprovalServiceTest.java:67-80` checks 0.92 and 0.61 but never the 0.85 boundary, so this off-by-inclusivity bug (`>` should be `>=` per the documented contract) passes the suite silently.
+---META--- exit=0 elapsed=101s

@@ -1323,6 +1323,63 @@ const MODS = [
       {q:'Two agents planned the same mission; one flagged the forbidding javadoc, the other did not. The module&rsquo;s read?',
        options:['Use the one that flagged it and drop the other','Average the two plans','The shared flags are load-bearing repo facts; the divergence is precisely your human review agenda &mdash; that is why second opinions are cheap and worth ordering','Rerun until they agree'], answer:2}
     ]
+  },
+  {
+    id:'M-3.4', path:'eng', track:'T-03', title:'Tracing a request', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A pharmacist doesn&rsquo;t verify a prescription by reading the formulary&rsquo;s table of contents &mdash; they follow one specific script: this drug, this dose, this patient, through every check it will actually hit, to the answer the system will actually give. M-3.1 read the table of contents. This module fills one prescription &mdash; a request scoring exactly 0.85 &mdash; and follows it until the system commits.',
+      body:
+        '<p><strong>Shape traces describe; value traces decide.</strong> M-3.1&rsquo;s battery asked what happens when a POST arrives &mdash; a shape question, answerable by an honest summary. This module pins <em>one concrete request</em> &mdash; PT-2001, CPT 97110, MERIDIAN, confidence exactly 0.85 &mdash; and demands the final status <b>with certainty</b>. Values change everything: a shape trace can report both the docs and the code; a value trace must pick, because the request ends up in exactly one place.</p>' +
+        '<p><strong>The recorded verdict: MANUAL_REVIEW, with certainty.</strong> Nine cited steps in 101 seconds: security chain, bean validation, payer lookup against the seed, entity construction (status <code>SUBMITTED</code> at the constructor), the guards, all four eligibility checks passed one by one, the advisory history stage (PT-2001 has no claims &mdash; and the trace proved history <em>couldn&rsquo;t</em> have mattered anyway, citing the comment and the test), and then the decision: <code>0.85 &gt; 0.85 &rarr; false</code>, with the note that both sides parse the identical literal, so there is no floating-point escape hatch. The request lands in the review queue, and the controller cheerfully returns 201.</p>' +
+        '<p><strong>&ldquo;Comments, javadoc, log strings, and seed fixtures have no effect on control flow.&rdquo;</strong> The agent&rsquo;s own words, and the module&rsquo;s thesis. Four witnesses testify that 0.85 should auto-approve &mdash; the javadoc, the field comment, the approve-branch log that prints <code>&gt;=</code>, and the seed itself, where every 0.85 row is <code>AUTO_APPROVED</code>: &ldquo;historical data that the current <code>&gt;</code> could not have produced.&rdquo; One line the JVM actually evaluates says otherwise, and the JVM is not moved by testimony. The trace even caught tomorrow&rsquo;s lie: the routing log for this request would print <em>&ldquo;score 0.85 &lt; 0.85&rdquo;</em> &mdash; a literally false statement, logged with confidence.</p>' +
+        '<p><strong>Half the trace is what stages <em>can&rsquo;t</em> do.</strong> Eligibility can deny (the only automated path to DENIED); history is advisory &mdash; it logs, it never branches; notification fires only on denial paths; and the score, as M-1.6 taught, can only approve or escalate. A value trace verifies the negative space too: no Denial row, no notification, nothing where nothing should be. When T-05 hands you a misbehaving request, the stages you can <em>rule out</em> are where the speed comes from.</p>' +
+        '<p><strong>This is the debug loop minus the fix.</strong> Concrete input, committed prediction, line-level evidence &mdash; add &ldquo;run it and compare&rdquo; and you have M-5.1&rsquo;s loop; the 0.85 request you just traced is M-5.2&rsquo;s bug seen from the outside, one track early. The labs run the same trace in all three tools; the test gap the trace exposed (0.92 and 0.61 tested, the boundary never) is the thread T-06 picks up.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-09', autotrace:true},
+    labA:{
+      title:'Fill the prescription — Claude Code',
+      steps:[
+        'On your clone, run the mission verbatim: <em>&ldquo;A new request arrives via POST /api/requests: patientRef PT-2001, cptCode 97110, payerCode MERIDIAN, confidenceScore exactly 0.85. Trace it through every file and line it touches, in order, and state its final status with certainty. If any documentation disagrees with what the code will do, say which wins at runtime and why. Cite file:line throughout.&rdquo;</em> Reference run: 101s, nine steps.',
+        'Grade the verdict first: did yours commit &mdash; one status, stated plainly? &ldquo;It depends&rdquo; fails the assignment; the request ends up in exactly one place. Reference verdict: MANUAL_REVIEW, decided at <code>ApprovalService.java:99</code>.',
+        'Grade the negative space: did the trace say what did <em>not</em> happen &mdash; no Denial row, no notification, history read but never consulted? The reference trace proved the advisory claim by citing both the comment and the test that pins it.',
+        'Hand-verify the forensic claim: open <code>seed.sql</code> and check two of the cited 0.85 rows (reference: lines 45, 113). Every one is AUTO_APPROVED &mdash; fixture data the current code could not produce. Write the one-line implication in your log.',
+        'Success: a committed verdict with the deciding line cited, the negative space verified, the seed evidence checked by hand, and the trace saved into your M-3.1 architecture map as its &ldquo;worked example.&rdquo;'
+      ]
+    },
+    labB:{
+      title:'The same request — Copilot',
+      steps:[
+        'Same mission in <b>Ask</b> with <code>#codebase</code>. Where the trace needs call sites, reach for <code>#usages</code> (M-3.3) instead of hoping &mdash; symbol tools make the chain checkable.',
+        'Grade to the same three bars: committed verdict, negative space, docs-vs-code ruling. Log where this surface needed more steering than the recorded run.',
+        'Success: same verdict reached (or the divergence recorded &mdash; a different verdict on identical input is a finding, not a tie).'
+      ]
+    },
+    labC:{
+      title:'The same request — Cursor, then the debrief',
+      steps:[
+        'Same mission with <code>@ApprovalService @EligibilityService</code> as anchors. Note whether the semantic index surfaces the seed evidence unprompted &mdash; the recorded run&rsquo;s best forensic move.',
+        'The debrief: three traces of one request. Which committed fastest? Which found the literally-false log line? Which needed you to ask twice?',
+        'Close with the module&rsquo;s habit, written in your log: <em>when docs and code disagree, trace a value &mdash; the request always knows.</em> Success: three verdicts logged with divergences recorded, the habit line written.'
+      ]
+    },
+    checklist:[
+      'I ran the value trace in all three tools and got a committed verdict from each.',
+      'I hand-verified the seed evidence &mdash; 0.85 rows the current comparison could not have produced.',
+      'I can recite the thesis: comments, javadoc, log strings, and seed fixtures have no effect on control flow.',
+      'I verified the negative space: no Denial row, no notification, history read but never consulted.',
+      'The trace is pasted into my architecture map as its worked example.'
+    ],
+    quiz:[
+      {q:'Why does a value trace (score exactly 0.85) succeed where a shape trace stalls?',
+       options:['It runs faster','Values force a commitment: the docs and the code can both appear in a shape answer, but one concrete request ends up in exactly one place &mdash; so the trace must pick what wins','Shape traces cannot cite lines','Value traces skip eligibility'], answer:1},
+      {q:'The recorded trace called the seed data &ldquo;historical data that the current &gt; could not have produced.&rdquo; What kind of evidence is that?',
+       options:['Proof the seed is corrupted','Forensic: the fixtures were decided under the documented inclusive rule, so the data itself testifies that the code changed out from under the docs','A reason to regenerate the seed','Circular reasoning'], answer:1},
+      {q:'For the traced request, the routing log would print &ldquo;score 0.85 &lt; 0.85&rdquo;. The lesson?',
+       options:['Logs are always wrong','Floating point is unreliable','Log strings are documentation too &mdash; they can lie with the same confidence as javadoc, and only the evaluated expression decides','The log proves the request was denied'], answer:2},
+      {q:'What did the trace verify about Stage 2 (claim history) for PT-2001?',
+       options:['It denied the request','It approved the request','It was skipped entirely','It ran, found nothing, and could not have mattered &mdash; the advisory claim is pinned by both a comment and a test, and verifying that negative space is half the trace'], answer:3}
+    ]
   }
 ];
 
@@ -2282,7 +2339,7 @@ VISUALS['SIM-09'] = function(mount, opts){
     mount.querySelectorAll('.s9node').forEach(b => b.setAttribute('aria-pressed','false'));
     detail.innerHTML = 'Click a node — every fact on this map cites a real file. The ⚑ on ApprovalService is the contradiction a good onboarding battery finds.';
   });
-  if(reduce){ mount.querySelector('[data-trace]').click(); }
+  if(reduce || opts.autotrace){ mount.querySelector('[data-trace]').click(); }
 };
 
 /* ---------- SIM-08 · Tool-Fit Drill (spec: VISUALS.md) ----------
