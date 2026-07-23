@@ -332,6 +332,23 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-18: Scope Ladder & Key Map ============ */
+.anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim18 .a18head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim18 .a18lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim18 .a18lname{font-size:10px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.anim18 .a18row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim18 .a18row.on{opacity:1;transform:none}
+.anim18 .a18key{font-size:9.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap}
+.anim18 .a18key.c{border-color:rgba(79,216,235,.5);color:var(--cyan)}
+.anim18 .a18key.p{border-color:var(--purple);color:var(--purple)}
+[data-theme="light"] .anim18 .a18key.p{color:#5a4a91;border-color:#5a4a91}
+.anim18 .a18out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim18 .a18out b{color:var(--text);font-weight:500}
+.anim18 .a18cap{font-size:10.5px;color:var(--faint);margin-top:8px}
+.anim18 .a18replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim18 .a18replay:hover{border-color:var(--gold)}
+
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
 .anim07 .a7tabs{display:flex;gap:2px;background:var(--panel);border-bottom:1px solid var(--line);padding:6px 8px 0}
@@ -1573,6 +1590,53 @@ const MODS = [
       {q:'An NES hop lands on <code>if (score &gt; AUTO_APPROVE_THRESHOLD)</code> mid-ripple. What happens to your rhythm?',
        options:['It breaks, on purpose: boundaries get read character-by-character &mdash; a ripple is exactly where a plausible wrong edit surfs in on muscle memory','Nothing; Tab and keep moving','Undo the whole ripple','Switch to the agent'], answer:0}
     ]
+  },
+  {
+    id:'M-4.3', path:'eng', track:'T-04', title:'Inline chat & quick edits', minutes:35,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A margin note to a copyeditor: &ldquo;this paragraph, passive to active&rdquo; &mdash; scribbled beside the exact paragraph. Not a memo to the editing department, not a rewrite request for the chapter. The note&rsquo;s power is its address: it cannot change anything it doesn&rsquo;t sit beside. Inline chat is the margin note, and your selection is the address.',
+      body:
+        '<p><strong>The middle rung of the ladder.</strong> Between the keystroke (M-4.1) and the agent turn (M-2.5&rsquo;s $0.89 tier) sits the scoped one-shot: one instruction against a precise stretch of code, applied in place. VS Code: <b>Ctrl+I</b> opens inline chat in the editor or terminal, and per the docs &ldquo;your prompt is scoped to the code in the active editor&rdquo; &mdash; select a block first and the selection <em>is</em> the contract. Cursor: <b>Ctrl+K</b> is inline edit &mdash; with a selection it modifies exactly that; with none it generates at the cursor. ANIM-18 draws the whole ladder: the skill of this module is picking the lowest rung that contains your change.</p>' +
+        '<p><strong>Mind the key map &mdash; one chord, three meanings.</strong> The cross-tool trap is real and worth stating plainly: <b>Ctrl+I</b> in VS Code is a scoped whisper; <b>Ctrl+I</b> in Cursor opens the <em>agent panel</em> &mdash; a full rung higher, with a full rung&rsquo;s blast radius; Cursor&rsquo;s scoped whisper is <b>Ctrl+K</b>. If you work in both tools (this course assumes you do), the chord you press on autopilot is the one risk your selection can&rsquo;t contain. Check the rung before you press.</p>' +
+        '<p><strong>Selection is risk control, not convenience.</strong> M-2.2&rsquo;s drift happened because nothing bounded what the agent could reconsider. A selection is the opposite: the edit physically cannot wander outside it. So the discipline is to select <em>meaningfully</em> &mdash; the whole method when behavior may change, only the format string when only formatting may. In the PA repos that means: select the notification message template to reword it &mdash; never the reason-code line above it; select a test&rsquo;s arrange block to add a case &mdash; not the assertion that pins 0.85 behavior.</p>' +
+        '<p><strong>Terminal inline is the same idea aimed at commands.</strong> VS Code&rsquo;s Ctrl+I works in the terminal; Cursor&rsquo;s terminal Ctrl+K writes a command into a prompt bar &mdash; and can run it immediately with Cmd+Enter. House rule, same shape as ever: <b>generated commands get read before Enter</b>, every time &mdash; a shell line is all boundary. &ldquo;Find which seed rows score exactly 0.85&rdquo; is a fine thing to ask; the grep it writes is yours the moment you run it.</p>' +
+        '<p><strong>Commit messages: generated draft, human-owned final.</strong> Copilot&rsquo;s Source Control generation drafts from your diff &mdash; and per the release notes it reads the repository&rsquo;s ten most recent commit messages, and your own ten, to match the house style. That makes it a good <em>first draft</em> of the what; the <em>why</em> is still yours to add, and M-1.6&rsquo;s signature rule applies to commit messages exactly as to code: the auditor reads your name, not the model&rsquo;s. M-4.4 closes the track by pricing all four rungs against each other.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-18'},
+    labB:{
+      title:'Margin notes — Copilot inline chat',
+      steps:[
+        'In priorauth-web, select the body of one small component method, press <b>Ctrl+I</b>, and give one bounded instruction (&ldquo;extract this into a named handler&rdquo;). Review the in-place diff, accept or discard. Then repeat with a <em>deliberately tight</em> selection &mdash; a single template string &mdash; and notice the edit cannot touch the line above it.',
+        'Terminal drill: open the terminal, <b>Ctrl+I</b>, ask for &ldquo;a command that counts how many seed.sql rows have confidence_score exactly 0.85&rdquo; (run it against your priorauth-api clone). Read the generated command word-by-word before Enter. Reference answer: 13 rows &mdash; the fixture&rsquo;s boundary population you first met in T-02.',
+        'Stage a small real change and generate the commit message in Source Control. Grade the draft: did it capture the <em>what</em>? Add the <em>why</em> yourself, then commit. Success: one accepted and one discarded inline edit, the command read-then-run with the 13 confirmed, a commit whose message you finished.'
+      ]
+    },
+    labC:{
+      title:'The same rungs — Cursor, then the ladder rule',
+      steps:[
+        'Same component drill with <b>Ctrl+K</b> on a selection; then once with <em>no</em> selection to feel generate-at-cursor. Now the trap drill, on purpose: press <b>Ctrl+I</b> and identify what just opened &mdash; the agent panel, one rung higher. Close it without typing. That reflex check is the lab&rsquo;s most valuable rep.',
+        'Terminal: <b>Ctrl+K</b>, same 0.85-count request, read the command, run it (13 again). Note the Cmd+Enter run-immediately affordance &mdash; and why this course never uses it on a command it hasn&rsquo;t read.',
+        'Write the ladder rule for your log, one line per rung: keystroke / selection / conversation / turn &mdash; each with the PA task you&rsquo;d assign it. Success: both Ctrl+K modes felt, the Ctrl+I trap caught consciously, 13 confirmed twice, the ladder rule written for M-4.4.'
+      ]
+    },
+    checklist:[
+      'I ran scoped inline edits in both tools and watched a tight selection contain the edit.',
+      'I hit the Ctrl+I trap on purpose in Cursor and named what opened before closing it.',
+      'Every generated terminal command was read word-by-word before Enter &mdash; and the 13-row answer confirmed in both tools.',
+      'I shipped one commit whose generated message I finished with the why.',
+      'My four-rung ladder rule is written down for M-4.4&rsquo;s pricing drill.'
+    ],
+    quiz:[
+      {q:'What does a selection do to an inline-chat instruction, per the docs and the module?',
+       options:['Speeds up the response','It is the contract: &ldquo;your prompt is scoped to the code in the active editor&rdquo; &mdash; the edit physically cannot wander outside what you selected, which is why selecting meaningfully is risk control','Adds syntax highlighting','Nothing; scope comes from the prompt text'], answer:1},
+      {q:'You press Ctrl+I out of habit. What happens in each tool?',
+       options:['Inline chat in both','The agent panel in both','A scoped inline chat in VS Code &mdash; and the agent panel in Cursor, a full rung higher; Cursor&rsquo;s scoped edit lives on Ctrl+K','Nothing until you select code'], answer:2},
+      {q:'Cursor&rsquo;s terminal Ctrl+K offers Cmd+Enter to run the generated command immediately. The house rule?',
+       options:['Use it &mdash; that is what it is for','Never generate terminal commands','Only use it for git commands','Read the command word-by-word first, every time &mdash; a shell line is all boundary, and this course never runs what it hasn&rsquo;t read'], answer:3},
+      {q:'Copilot drafts your commit message from the diff plus twenty recent commit messages. What remains yours?',
+       options:['Nothing &mdash; accept and commit','The why &mdash; the draft captures the what at best, and the signature rule applies to messages exactly as to code','Only the ticket number','The emoji'], answer:1}
+    ]
   }
 ];
 
@@ -2341,6 +2405,44 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-18 · Scope Ladder & Key Map (spec: VISUALS.md) ----------
+   Keybindings and scope wording doc-verified 2026-07-23 (VS Code inline
+   chat / Cursor inline edit docs). Abstract diagram, no IDE chrome. */
+VISUALS['ANIM-18'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim18" aria-label="The scope ladder and the cross-tool key map">' +
+      '<div class="a18head"><span>ANIM-18 · THE SCOPE LADDER &amp; THE KEY MAP</span>' +
+        '<button class="a18replay" data-a18replay>REPLAY ▸</button></div>' +
+      '<div class="a18lane">' +
+        '<div class="a18lname">1 · THE LADDER — SMALLEST SCOPE THAT CONTAINS THE CHANGE</div>' +
+        '<div class="a18row"><span class="a18key">keystroke</span><span class="a18out"><b>ghost text / Tab</b> — completes what you are typing (M-4.1)</span></div>' +
+        '<div class="a18row"><span class="a18key">selection</span><span class="a18out"><b>inline chat / inline edit</b> — one instruction against exactly the lines you selected; the edit cannot wander</span></div>' +
+        '<div class="a18row"><span class="a18key">conversation</span><span class="a18out"><b>panel chat</b> — questions, multi-file context, no edits implied</span></div>' +
+        '<div class="a18row"><span class="a18key">turn</span><span class="a18out"><b>agent</b> — plans, edits, runs; the $0.89 tier — buy it when the change needs it (M-2.5)</span></div>' +
+      '</div>' +
+      '<div class="a18lane">' +
+        '<div class="a18lname">2 · THE KEY MAP — ONE CHORD, DIFFERENT MEANINGS</div>' +
+        '<div class="a18row"><span class="a18key c">VS Code · Ctrl/⌘+I</span><span class="a18out"><b>inline chat</b>, editor and terminal — &ldquo;your prompt is scoped to the code in the active editor&rdquo;</span></div>' +
+        '<div class="a18row"><span class="a18key p">Cursor · Ctrl/⌘+K</span><span class="a18out"><b>inline edit</b> — selection: modify it; no selection: generate here; terminal: write the command</span></div>' +
+        '<div class="a18row"><span class="a18key p">Cursor · Ctrl/⌘+I</span><span class="a18out"><b>agent panel</b> — same chord as VS Code&rsquo;s inline chat, one full rung higher on the ladder</span></div>' +
+      '</div>' +
+      '<div class="a18cap">What to notice: the trap is muscle memory — Ctrl+I is a scoped whisper in one tool and a full agent in the other. Check the rung before you press.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a18row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 350 + i*550)));
+    timers.push(setTimeout(play, 350 + rows.length*550 + 4500));
+  }
+  mount.querySelector('[data-a18replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-07 · Ghost Text Editor (spec: VISUALS.md) ----------
