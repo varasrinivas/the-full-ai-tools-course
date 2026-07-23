@@ -1,0 +1,59 @@
+M-5.5 FRONTEND GHOSTS — THE STALE CLOSURE — method notes + captures
+====================================================================
+Recorded: 2026-07-23 · priorauth-web lab/start clone, branch drill/m55-stale
+(probe test deleted, clone restored pristine). BUG-WEB-02.
+Toolchain: React 19 / Vitest / RTL / fake timers — npm, not Maven.
+
+THE BUG (src/hooks/usePriorAuthStatus.ts): the poll hoisted the fetch OUT of
+the tick function —
+    const inFlight = getRequest(id)      // called ONCE at mount
+    const poll = async () => { const fresh = await inFlight; ... }
+A promise resolves once and forever yields its first value, so every 5s tick
+re-awaits the SAME settled response. The status widget freezes on the first
+value it ever saw; the API is asked exactly once no matter how long the page
+is open. The hook's own doc comment ("Every tick asks the API for a fresh
+copy ... so the UI must see transitions") describes the behavior the code
+violates. Planted by commit bb2fd4f, "Streamline status polling: one request
+object per mount" — the "optimization" comment IS the bug (same signature as
+BUG-API-03's "ONE query" comment).
+
+WHY THE SHIPPED SUITE (20/20 green) NEVER CAUGHT IT — the module's spine:
+  1. "reports the current status after the first poll" uses mockResolvedValue
+     (a CONSTANT). A frozen value is indistinguishable from a correct one when
+     the mock never changes. It also only checks the FIRST poll.
+  2. "stops polling after unmount" also uses a constant mock and only asserts
+     the call count does NOT increase after unmount. A hook that fetches once
+     total satisfies "count didn't go up" VACUOUSLY.
+  Neither test ever advances a timer across a tick while expecting a NEW value
+  or a SECOND call. The hidden variable (M-5.4 framing) is the same: the value
+  only changes across polls, and the tests pinned it constant.
+
+STEP 1 — THE EXPOSING TESTS (written first, real RED against shipped code):
+  a) mockResolvedValueOnce(SUBMITTED).mockResolvedValueOnce(AUTO_APPROVED),
+     advance one interval, assert status === 'AUTO_APPROVED'.
+     RED: "expected 'SUBMITTED' to be 'AUTO_APPROVED'".
+  b) advance 3 extra ticks, assert getRequest called > 1 time.
+     RED: "expected 1 to be greater than 1".
+  Two tests, two reds — the transition and the re-fetch the suite never tried.
+
+STEP 2 — DIAGNOSIS + FIX (agent, 161s):
+  Root cause identified exactly (promise resolves once); named the introducing
+  commit; explained precisely why BOTH existing tests missed it (constant mock
+  + vacuous unmount assertion); fix = move getRequest(id) back INSIDE poll
+  (2 insertions, 4 deletions — also deleted the misleading comment).
+
+STEP 3 — VERIFY (agent could NOT run it; human did — the M-5.1 pattern again):
+  Agent: "every attempt to run the test suite ... is being auto-routed to
+  manual approval ... I could not execute the suite myself" + full line-by-line
+  trace + "Please run npm test to confirm." HUMAN RAN IT:
+    exposing tests: 2 passed · full shipped suite after fix: 20/20 green,
+    9 test files. Production diff: usePriorAuthStatus.ts, +2/-4.
+
+TEACHING BEATS: (1) a green suite is not a correct system — it is only as good
+as the transitions it simulates; (2) frontend "ghosts" are stale closures /
+hoisted async, and the debugging move is to write the test that makes the
+invisible state visible (a CHANGING mock, a timer advanced across ticks);
+(3) React StrictMode/effects hide these in dev, which is why a fake-timer unit
+test beats eyeballing the browser; (4) third confirmation that agents honestly
+report "I can't run the verify step" — final human validation is structural.
+CLEANUP: fix on scratch branch only; lab/start pristine; plant/BUG-WEB-02 intact.

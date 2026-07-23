@@ -332,6 +332,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-20: Stale Closure vs Fresh Fetch ============ */
+.anim20{--a20red:#d0705a;--a20green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim20{--a20red:#B0503C;--a20green:#2d7350}
+.anim20 .a20head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim20 .a20lanes{display:flex;gap:10px;flex-wrap:wrap}
+.anim20 .a20lane{flex:1;min-width:210px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px}
+.anim20 .a20lname{font-size:10px;letter-spacing:.13em;margin-bottom:2px}
+.anim20 .a20lane.bug .a20lname{color:var(--a20red)}
+.anim20 .a20lane.fix .a20lname{color:var(--a20green)}
+.anim20 .a20sub{font-size:9px;color:var(--faint);margin-bottom:9px;min-height:22px}
+.anim20 .a20ticks{display:flex;gap:5px;margin-bottom:9px}
+.anim20 .a20tick{flex:1;text-align:center;font-size:8.5px;color:var(--faint);padding:3px 0;border:1px solid var(--line);border-radius:5px;transition:border-color .3s,color .3s}
+.anim20 .a20tick.on{border-color:var(--gold);color:var(--gold)}
+.anim20 .a20screen{border:1px dashed var(--line);border-radius:8px;padding:10px;text-align:center;background:var(--panel2)}
+.anim20 .a20badge{font-size:12px;letter-spacing:.1em;padding:4px 12px;border-radius:999px;display:inline-block;transition:background .3s,color .3s}
+.anim20 .a20lane.bug .a20badge{background:rgba(208,112,90,.15);color:var(--a20red)}
+.anim20 .a20lane.fix .a20badge{background:rgba(62,154,107,.15);color:var(--a20green)}
+.anim20 .a20calls{font-size:9px;color:var(--dim);margin-top:8px}
+.anim20 .a20calls b{color:var(--text)}
+.anim20 .a20cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.anim20 .a20cap code{color:var(--text)}
+.anim20 .a20ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.anim20 .a20btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim20 .a20btn:hover{border-color:var(--gold)}
+
 /* ============ SIM-11: Flaky Calendar Heatmap ============ */
 .sim11{--s11red:#d0705a;--s11green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim11{--s11red:#B0503C;--s11green:#2d7350}
@@ -2035,6 +2060,63 @@ const MODS = [
       {q:'M-1.5 injected a real Clock into the approval path and that was correct; here it is wrong. The distinguishing question?',
        options:['Which tool you use','How many tests exist','Whether the code under test actually reads the clock &mdash; the approval path stamps decidedAt (yes, pin it); eligibility does not (no, leave it alone)','The age of the code'], answer:2}
     ]
+  },
+  {
+    id:'M-5.5', path:'eng', track:'T-05', title:'Frontend ghosts', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A gauge wired to a photograph of the tank instead of the tank. It reads a perfectly plausible number &mdash; the number that was true the moment the photo was taken &mdash; and it will read that number forever, calm and wrong, while the tank drains. The needle isn&rsquo;t broken. The wiring is looking at a snapshot.',
+      body:
+        '<p><strong>A green suite is not a correct system.</strong> The status widget in priorauth-web polls every five seconds and shows the wrong thing: it freezes on whatever status it saw first. Twenty-six tests pass. The bug ships anyway &mdash; and that gap, between &ldquo;the tests are green&rdquo; and &ldquo;the backend changed and the screen didn&rsquo;t,&rdquo; is the entire subject of this module. Backend bugs (T-05 so far) throw or mis-route; frontend ghosts do something worse. They render calmly, plausibly, and stale.</p>' +
+        '<p><strong>The bug is one hoisted line.</strong> <code>usePriorAuthStatus</code> was written to fetch <em>inside</em> each poll; a &ldquo;streamline&rdquo; commit lifted the call out: <code>const inFlight = getRequest(id)</code> once at mount, then <code>await inFlight</code> on every tick. A promise resolves exactly once and yields its first value forever, so every tick re-awaits the same settled response. Two consequences, both real from the recorded run: the API is called <b>once, ever</b>, and the status is <b>frozen</b> on the first value. The hook&rsquo;s own doc comment still promises &ldquo;every tick asks the API for a fresh copy&rdquo; &mdash; the comment describes the behavior the code stopped having. Same signature as the backend plants: the optimization comment <em>is</em> the bug.</p>' +
+        '<p><strong>Why twenty-six green tests were blind to it.</strong> This is M-5.4&rsquo;s hidden variable at the frontend: the value only changes <em>across polls</em>, and both shipped tests pinned it constant. One asserts the status after the <em>first</em> poll using <code>mockResolvedValue</code> &mdash; a single constant, so a frozen value is indistinguishable from a correct one. The other counts calls after unmount and asserts the count <em>doesn&rsquo;t grow</em> &mdash; which a fetch-once bug satisfies vacuously. Neither ever advances a timer across a tick expecting a <em>new</em> value or a <em>second</em> call. The bug lives precisely in the motion no test simulated.</p>' +
+        '<p><strong>The move: write the test that makes the invisible visible.</strong> Two exposing tests, written first and run red against the shipped code: mock a <em>transition</em> &mdash; <code>mockResolvedValueOnce(SUBMITTED)</code> then <code>mockResolvedValueOnce(AUTO_APPROVED)</code> &mdash; advance one interval, and assert the status changed (<span class="mono" style="color:var(--gold)">red: still SUBMITTED</span>); and assert <code>getRequest</code> was called more than once over several ticks (<span class="mono" style="color:var(--gold)">red: called exactly 1</span>). Fake timers make five real seconds instant, and RTL&rsquo;s <code>act</code> flushes the effects. Then the fix &mdash; move the fetch back inside <code>poll</code>, two lines &mdash; turns both green while the original twenty-six stay green. ANIM-20 runs the two lanes side by side over the same backend transition.</p>' +
+        '<p><strong>Why a unit test beats eyeballing the browser here.</strong> React&rsquo;s dev-mode effects and StrictMode double-invokes can mask or mimic polling bugs, and &ldquo;wait five seconds and stare&rdquo; is not a repeatable test. A fake-timer test pins the exact transition deterministically &mdash; the frontend equivalent of M-5.3&rsquo;s runtime frame. And once more the recorded agent fixed the code but reported it <em>could not run</em> the suite, tracing the fix by hand and asking for a human run &mdash; the third time this track, and the reason M-5.6 closes on measurement you take yourself.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-20'},
+    labA:{
+      title:'Make the ghost visible — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-web, scratch branch. Confirm the shipped suite is green (<code>npm test</code> &mdash; 20 tests). Then read <code>usePriorAuthStatus.ts</code> and the two existing hook tests, and predict in your log <em>why</em> a frozen status would pass both. This prediction is the module &mdash; make it before you write code.',
+        'Write two exposing tests with fake timers: one mocking a <code>SUBMITTED &rarr; AUTO_APPROVED</code> transition across a tick and asserting the change; one asserting <code>getRequest</code> is called more than once over several intervals. Run them. Reference red: &ldquo;expected &lsquo;SUBMITTED&rsquo; to be &lsquo;AUTO_APPROVED&rsquo;&rdquo; and &ldquo;expected 1 to be greater than 1&rdquo;.',
+        'Now hand the reds to the agent for diagnosis and fix. Grade the diagnosis on the frontend-specific insight: does it identify the hoisted promise (resolves once), and does it explain why the constant-mock tests were blind? Reference fix: move <code>getRequest(id)</code> back inside <code>poll</code>, +2/&minus;4 lines.',
+        'Verify yourself &mdash; the agent may report it cannot run the suite. Reference: your two tests green, all 20 shipped tests still green. Then delete your probe tests or keep them (argue which in your log &mdash; a transition test is worth keeping; a call-count probe maybe not).',
+        'Confirm the leash: <code>git diff</code> shows the hook changed and no shipped test weakened. Success: the prediction written first, real reds captured, the hoisted-promise diagnosis, green confirmed by you, clean tree.'
+      ]
+    },
+    labB:{
+      title:'The same ghost — Copilot',
+      steps:[
+        'Branch off <code>lab/start</code>. Ask <b>Agent</b> to write a test that would catch &ldquo;the polling status never updates after the first fetch&rdquo; &mdash; then run it in the Test Explorer and confirm it goes red <em>before</em> any fix. A test you didn&rsquo;t watch fail is a test you don&rsquo;t trust.',
+        'Have it diagnose and fix. Grade whether it names the hoisted promise specifically, versus a vaguer &ldquo;add a dependency&rdquo; hand-wave.',
+        'Run the suite yourself. Success: a red-first exposing test, the specific diagnosis, green confirmed, hook-only diff.'
+      ]
+    },
+    labC:{
+      title:'The same ghost — Cursor, then the ghost rule',
+      steps:[
+        'Branch off <code>lab/start</code>, anchor <code>@usePriorAuthStatus @usePriorAuthStatus.test</code>. Same exposing-test-first flow.',
+        'Open ANIM-20 beside your fix and step the two lanes: watch the shipped lane freeze on the first value while the API-call counter stays at 1, and the fixed lane track the transition. That is your bug and your fix, animated.',
+        'Write the ghost rule for your log: <em>frontend state bugs are stale snapshots &mdash; a green suite only proves what it simulated; to catch a ghost, mock a change and advance the clock across it.</em> Then audit the other two hooks (<code>useReviewQueue</code>, <code>usePriorAuthForm</code>) for the same &ldquo;value only changes over time&rdquo; blind spot. Success: three fixes, the ANIM-20 walkthrough, the rule and the audit list.'
+      ]
+    },
+    checklist:[
+      'I predicted why the frozen status passes both shipped tests &mdash; before writing any code.',
+      'I wrote a transition test and a call-count test and watched both go red first.',
+      'The diagnosis names the hoisted promise (resolves once), not a vague dependency fix.',
+      'I verified green myself &mdash; the shipped 20 plus my exposing tests.',
+      'I can state the ghost rule: a green suite only proves what it simulated.'
+    ],
+    quiz:[
+      {q:'The status widget freezes on its first value though the hook polls every 5s. The one-line cause?',
+       options:['The interval is too long','<code>getRequest(id)</code> was hoisted out of the tick, so every poll re-awaits one promise that resolves once and yields its first value forever','The API is down','React re-renders too often'], answer:1},
+      {q:'Twenty-six tests passed with this bug shipping. Why were they blind?',
+       options:['They were skipped in CI','They mocked a constant status and never advanced a timer across a tick expecting a new value &mdash; the value only changes across polls, and no test simulated that motion','Frontend tests cannot catch async bugs','The bug only happens in production'], answer:1},
+      {q:'What is the exposing move for a stale-snapshot bug?',
+       options:['Add a retry to the poll','Increase the poll frequency','Mock a transition (one value then a different one) and advance the clock across a tick, asserting the change &mdash; make the invisible motion visible','Log the status to the console'], answer:2},
+      {q:'Why prefer a fake-timer unit test over watching the browser for five seconds?',
+       options:['It is faster to type','React&rsquo;s dev effects and StrictMode can mask or mimic polling behavior, and staring is not repeatable &mdash; a fake-timer test pins the exact transition deterministically','Browsers cannot show status changes','Unit tests run in CI and browsers do not'], answer:1}
+    ]
   }
 ];
 
@@ -2803,6 +2885,64 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-20 · Stale Closure vs Fresh Fetch (spec: VISUALS.md) ----------
+   Two polling lanes over the real backend transition (SUBMITTED → AUTO_APPROVED).
+   Bug lane hoists the promise (1 call, frozen); fix lane fetches per tick.
+   Numbers match the recorded run (recordings/m55-stale-closure.txt). */
+VISUALS['ANIM-20'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BACKEND = ['SUBMITTED','SUBMITTED','AUTO_APPROVED','AUTO_APPROVED'];
+  mount.innerHTML =
+    '<div class="anim20" aria-label="Stale closure versus fresh fetch across polls">' +
+      '<div class="a20head"><span>ANIM-20 · THE POLL THAT NEVER MOVES</span>' +
+        '<button class="a20btn" data-a20run>POLL ▸</button></div>' +
+      '<div class="a20lanes">' +
+        '<div class="a20lane bug"><div class="a20lname">SHIPPED — PROMISE HOISTED OUT OF THE TICK</div>' +
+          '<div class="a20sub"><code>const inFlight = getRequest(id)</code> then <code>await inFlight</code> every tick</div>' +
+          '<div class="a20ticks" data-ticks="bug"></div>' +
+          '<div class="a20screen">widget shows <span class="a20badge" data-badge="bug">—</span></div>' +
+          '<div class="a20calls">getRequest calls: <b data-calls="bug">0</b> &mdash; the API is asked once, ever</div>' +
+        '</div>' +
+        '<div class="a20lane fix"><div class="a20lname">FIXED — FETCH INSIDE THE TICK</div>' +
+          '<div class="a20sub"><code>const fresh = await getRequest(id)</code> on every tick</div>' +
+          '<div class="a20ticks" data-ticks="fix"></div>' +
+          '<div class="a20screen">widget shows <span class="a20badge" data-badge="fix">—</span></div>' +
+          '<div class="a20calls">getRequest calls: <b data-calls="fix">0</b> &mdash; one per tick, transitions land</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="a20cap">Both suites were green: the shipped tests mocked a <b>constant</b> status, so a frozen value looked identical to a correct one. The bug lives in the gap between &ldquo;the test passed&rdquo; and &ldquo;the backend changed and the screen didn&rsquo;t.&rdquo;</div>' +
+    '</div>';
+  const N = BACKEND.length;
+  ['bug','fix'].forEach(k => {
+    mount.querySelector('[data-ticks="' + k + '"]').innerHTML =
+      BACKEND.map((x,i) => '<span class="a20tick" data-t="' + k + i + '">t' + i + '</span>').join('');
+  });
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frame(i){
+    for(let k of ['bug','fix']){
+      for(let j = 0; j < N; j++){
+        mount.querySelector('[data-t="' + k + j + '"]').classList.toggle('on', j === i);
+      }
+    }
+    // bug: always the first backend value; fix: the current one
+    mount.querySelector('[data-badge="bug"]').textContent = BACKEND[0];
+    mount.querySelector('[data-badge="fix"]').textContent = BACKEND[i];
+    mount.querySelector('[data-calls="bug"]').textContent = '1';
+    mount.querySelector('[data-calls="fix"]').textContent = String(i + 1);
+  }
+  function run(){
+    stop();
+    if(reduce){ frame(N - 1); return; }
+    frame(0);   // reset immediately so a click visibly restarts the poll
+    for(let i = 1; i < N; i++) timers.push(setTimeout(() => frame(i), i*1100));
+    timers.push(setTimeout(run, N*1100 + 3500));
+  }
+  mount.querySelector('[data-a20run]').addEventListener('click', run);
+  frame(0);
+  if(!reduce) run(); else frame(N - 1);
 };
 
 /* ---------- SIM-11 · Flaky Calendar Heatmap (spec: VISUALS.md) ----------
