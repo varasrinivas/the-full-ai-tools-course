@@ -263,6 +263,25 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim07 .s7why b{color:var(--text);font-weight:500}
 .sim07 .s7foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-09: API Architecture Map ============ */
+.sim09{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim09 .s9head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim09 .s9layer{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sim09 .s9lname{flex-shrink:0;width:92px;font-size:9px;letter-spacing:.13em;color:var(--faint);text-align:right}
+.sim09 .s9nodes{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.sim09 .s9node{font-family:var(--mono);font-size:9.5px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.sim09 .s9node:hover{border-color:var(--gold)}
+.sim09 .s9node[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.sim09 .s9node.lit{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.sim09 .s9node small{display:block;font-size:8px;color:var(--faint);letter-spacing:.06em}
+.sim09 .s9detail{border:1px dashed var(--line);border-radius:8px;background:var(--panel);padding:9px 12px;font-size:10.5px;color:var(--dim);line-height:1.55;margin-top:10px;min-height:52px}
+.sim09 .s9detail b{color:var(--text);font-weight:500}
+.sim09 .s9detail .file{color:var(--gold)}
+.sim09 .s9ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim09 .s9btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim09 .s9btn:hover{border-color:var(--gold)}
+.sim09 .s9foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ SIM-08: Tool-Fit Drill ============ */
 .sim08{--s8red:#d0705a;--s8green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim08{--s8red:#B0503C;--s8green:#2d7350}
@@ -1118,6 +1137,63 @@ const MODS = [
       {q:'What legitimately overturns a tool-fit default?',
        options:['A vendor keynote demo','Your own logged, repeatable task times on your codebase &mdash; the M-11.1 evidence pattern','A teammate&rsquo;s strong preference','The tool with the larger context window'], answer:1}
     ]
+  },
+  {
+    id:'M-3.1', path:'eng', track:'T-03', title:'Onboarding to a strange codebase', minutes:40,
+    lastVerified:'2026-07-23',
+    concept:{
+      analogy:'A buyer wanders the rooms and reads the paint; a home inspector runs a fixed battery &mdash; panel, roof, foundation, water heater &mdash; and writes a report with photo citations. Same house, different epistemics. &ldquo;Explain this codebase&rdquo; is wandering. The battery is inspection, and the cited report is what you hand the next person who has to live here.',
+      body:
+        '<p><strong>Onboarding is interrogation, not reading.</strong> Four questions, each anchored to something concrete: <b>trace the entry point</b> (&ldquo;what happens when POST /api/requests arrives, file by file&rdquo;), <b>name the layers</b> (one responsibility each, citing files), <b>find the load-bearing rule</b> (&ldquo;the one business rule that matters most; cite the exact line&rdquo;), and <b>hunt the contradiction</b> (&ldquo;where do docs and code disagree?&rdquo;). Compare &ldquo;explain this codebase,&rdquo; which reliably yields a warmed-over README. The difference is mechanical: an anchored question can only be answered by reading real code paths.</p>' +
+        '<p><strong>Citations or it didn&rsquo;t happen.</strong> Append the demand to every battery: <em>cite file and line for every claim</em>. Then hand-verify one citation per run &mdash; open the file, check the line, check the claim. Trust, then spot-check. Ungrounded answers are the onboarding failure mode precisely because they sound confident; the citation demand converts wrong into <em>visibly</em> wrong. In the recorded run, the load-bearing citation &mdash; <code>ApprovalService.java:99</code> &mdash; survived the check, line and claim both.</p>' +
+        '<p><strong>The map is the artifact.</strong> Chat scrolls evaporate when the session ends; the deliverable is <code>docs/architecture-map.md</code>, committed. SIM-09 shows the shape yours should take for priorauth-api &mdash; four layers, every node citing a real file, one flagged rule. In T-07 this artifact seeds the repo constitution; today it is simply what &ldquo;onboarded&rdquo; means for the next person.</p>' +
+        '<p><strong>All three tools can do this &mdash; M-2.5&rsquo;s honest ANY, now tested.</strong> The differences are surfaces, not ability: a Claude Code session, Copilot <b>Ask</b> with <code>#codebase</code>, Cursor&rsquo;s semantic index (check <b>Settings &rarr; Indexing</b>; search unlocks at 80% completion per current docs). The labs run the identical battery three times and let your own spot-checks pick the winner &mdash; then M-3.2 and M-3.3 deep-dive the read-only modes of the two agents that plan.</p>' +
+        '<p><strong>What the recorded battery found.</strong> Two minutes, four questions &mdash; and the answers cited their way through the whole codebase: a trace that included what runs <em>before</em> business logic (validation, the permissive security chain) and the subtlety that an unknown payer becomes an eligibility denial rather than a 404; five layers, not the assumed four; the 0.85 fork named as the load-bearing rule <em>with</em> its operator problem; and <b>four</b> doc-vs-code disagreements cited to the line &mdash; the boundary contradiction (course canon), two more that later modules hunt properly, and one piece of honest README rot. It even named the meta-pattern: every disagreement traced to a recent commit that changed behavior and left the docs describing the old world. And here is the discipline: findings recorded, nothing &ldquo;helpfully&rdquo; fixed. Onboarding that fixes things ships unreviewed changes; T-05 and T-06 own the fixes.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-09'},
+    labA:{
+      title:'Run the battery — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-api. Run the battery as one mission, verbatim: <em>&ldquo;Answer four questions about this codebase, citing file and line for every claim. 1) Trace what happens when POST /api/requests arrives, file by file. 2) Name the architectural layers and one responsibility each. 3) What is the single most important business rule? Cite the exact line. 4) Where do the docs and the code disagree?&rdquo;</em> Reference run: 2.0 minutes, headless.',
+        'Grade answer 1 like an inspector: did the trace include what runs <em>before</em> business logic (validation, the security chain) and what an unknown payer becomes (an eligibility denial, not a 404)? The recorded trace did &mdash; because the question demanded a path, not a summary.',
+        'Hand-verify one citation. The recorded run&rsquo;s load-bearing line is <code>ApprovalService.java:99</code> &mdash; open it, check the line number and the claim. A wrong citation caught now saves you a wrong mental model for months.',
+        'Count the disagreements your battery found. Reference: <b>four</b>, cited to the line, plus the meta-pattern that each traced to a recent commit that left docs stale. Record all of them in the map; fix <b>none</b> of them.',
+        'Save the output as <code>docs/architecture-map.md</code> in your clone and commit it. Success: trace graded, one citation hand-verified, the disagreement list recorded, the map committed.'
+      ]
+    },
+    labB:{
+      title:'Same battery — Copilot',
+      steps:[
+        'Same battery in <b>Ask</b> with <code>#codebase</code> appended (not <code>@workspace</code> &mdash; stale since the 07-21 sweep), same citation demand.',
+        'Grade to the same bar: real citations, the boundary contradiction found or its absence recorded honestly. Log one thing this surface found that the Claude run didn&rsquo;t &mdash; and one it missed.',
+        'Success: graded answers and both log lines.'
+      ]
+    },
+    labC:{
+      title:'Same battery — Cursor, then the head-to-head',
+      steps:[
+        'First check <b>Cursor Settings &rarr; Indexing</b> &mdash; semantic search needs the index (available at 80% completion per current docs). Then run the same battery with the same demand.',
+        'The debrief M-2.5 promised: three columns &mdash; which run found the contradiction unprompted, which citations survived your spot-check, which map draft you&rsquo;d actually commit.',
+        'Close the ANY card with evidence, one line: <em>for onboarding this codebase I&rsquo;d reach for ___ because ___</em>. Success: the comparison table, that line, and one committed map from whichever tool earned it.'
+      ]
+    },
+    checklist:[
+      'I ran the identical four-question battery in all three tools with the citation demand.',
+      'I hand-verified at least one citation per battery &mdash; line number and claim.',
+      'My disagreement list is recorded in the map, and I fixed nothing during onboarding.',
+      'I committed docs/architecture-map.md from the tool that earned it.',
+      'I closed M-2.5&rsquo;s ANY card with a one-line, evidence-backed pick.'
+    ],
+    quiz:[
+      {q:'Why does &ldquo;trace what happens when POST /api/requests arrives&rdquo; beat &ldquo;explain this codebase&rdquo;?',
+       options:['It is shorter to type','Agents cannot summarize well','It runs faster','An anchored path forces reading real code &mdash; the recorded trace surfaced validation order and the unknown-payer subtlety no README summary contains'], answer:3},
+      {q:'What makes an onboarding answer trustworthy?',
+       options:['File:line citations on every claim &mdash; and you hand-verify one; the demand converts wrong answers into visibly wrong ones','A long, detailed response','Confident wording','Agreement with the README'], answer:0},
+      {q:'Your battery surfaces docs saying inclusive-0.85 while the decision line uses strict &gt;. Good onboarding does what?',
+       options:['Fixes it immediately &mdash; it is one character','Rewrites the docs to match the code','Records it as a cited finding and moves on &mdash; it is T-05&rsquo;s bug, and onboarding that &ldquo;helpfully&rdquo; fixes things ships unreviewed changes','Asks the agent to decide which is right'], answer:2},
+      {q:'The durable output of an onboarding session is:',
+       options:['The chat transcript','A committed architecture map with cited findings &mdash; the artifact the next person reads','A longer CLAUDE.md','Your memory of the session'], answer:1}
+    ]
   }
 ];
 
@@ -1886,6 +1962,68 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- SIM-09 · API Architecture Map (spec: VISUALS.md) ----------
+   Node facts are read from the priorauth-api source at build time (files,
+   endpoints, responsibilities) — no invented architecture. The 0.85 flag on
+   ApprovalService is course canon since M-1.1. */
+VISUALS['SIM-09'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NODES = {
+    ctrl:{n:'PriorAuthController', s:'5 endpoints', d:'<b>PriorAuthController</b> — the HTTP door: <span class="file">controller/PriorAuthController.java</span>. POST /api/requests (submit → decide), GET /{id}, GET ?status=, GET /review-queue, GET /review-queue/context. Validation lives on the SubmitRequest record (5-digit CPT, score 0.0&ndash;1.0). Traced end-to-end in M-3.4.'},
+    approval:{n:'ApprovalService', s:'0.85 rule ⚑', d:'<b>ApprovalService</b> — the decision engine: <span class="file">service/ApprovalService.java</span>. Runs eligibility, gathers reviewer context, then the threshold decision: &ge; 0.85 (inclusive) auto-approves, below routes to MANUAL_REVIEW. ⚑ Course canon: the code&rsquo;s comparison disagrees with its own docs — recorded since M-1.1, fixed in M-5.2.'},
+    elig:{n:'EligibilityService', s:'policy denials', d:'<b>EligibilityService</b> — deterministic coverage policy: <span class="file">service/EligibilityService.java</span>. The COVERED payer/CPT map; ineligible requests are DENIED with reason codes like PAYER-001 before any score is consulted. The only automated path to a denial.'},
+    hist:{n:'ClaimHistoryService', s:'reviewer context', d:'<b>ClaimHistoryService</b> — advisory context: <span class="file">service/ClaimHistoryService.java</span>. recentClaims() per patient and historyFor() batched for the whole queue. Does not gate decisions. Its query pattern is M-3.5&rsquo;s smell hunt (BUG-API-03).'},
+    notif:{n:'NotificationService', s:'denial notices', d:'<b>NotificationService</b> — tells the provider about denials: <span class="file">service/NotificationService.java</span> behind a NotificationGateway port (logging impl in dev). Worth reading closely when T-05 sends you here.'},
+    repos:{n:'4 repositories', s:'Spring Data', d:'<b>Repository layer</b> — <span class="file">repository/</span>: PriorAuthRequestRepo (findByStatus), PayerRepo (findByCode), DenialRepo, ClaimRepo. Interfaces only; Spring Data generates the queries. Fetch strategy tuned with @EntityGraph (open-in-view=false).'},
+    data:{n:'Postgres + seed.sql', s:'500 requests', d:'<b>Data</b> — Postgres via docker compose; <span class="file">seed.sql</span> owns the dev schema (ddl-auto=validate) and the 500-request fixture: MERIDIAN 271 + NORTHSTAR 229, 13 rows at exactly 0.85. Tests get real Postgres via Testcontainers.'}
+  };
+  const LAYERS = [
+    {name:'CONTROLLER', keys:['ctrl']},
+    {name:'SERVICES', keys:['approval','elig','hist','notif']},
+    {name:'REPOSITORIES', keys:['repos']},
+    {name:'DATA', keys:['data']}
+  ];
+  const TRACE = ['ctrl','approval','elig','hist','repos','data'];
+  mount.innerHTML =
+    '<div class="sim09" aria-label="priorauth-api architecture map">' +
+      '<div class="s9head"><span>SIM-09 · PRIORAUTH-API · THE MAP YOUR BATTERY SHOULD DRAW</span><span data-s9mode>' + (reduce ? 'STATIC' : 'EXPLORE') + '</span></div>' +
+      LAYERS.map(L =>
+        '<div class="s9layer"><span class="s9lname">' + L.name + '</span><span class="s9nodes">' +
+          L.keys.map(k => '<button class="s9node" type="button" data-n="' + k + '" aria-pressed="false">' + NODES[k].n + '<small>' + NODES[k].s + '</small></button>').join('') +
+        '</span></div>').join('') +
+      '<div class="s9detail" data-detail aria-live="polite">Click a node — every fact on this map cites a real file. The ⚑ on ApprovalService is the contradiction a good onboarding battery finds.</div>' +
+      '<div class="s9ctrl">' +
+        '<button class="s9btn" type="button" data-trace>TRACE POST /api/requests ▸</button>' +
+        '<button class="s9btn" type="button" data-s9reset>RESET</button>' +
+      '</div>' +
+      '<div class="s9foot">What to notice: four layers, one flagged rule, and exactly one automated road to DENIED — and it isn&rsquo;t the score.</div>' +
+    '</div>';
+  const detail = mount.querySelector('[data-detail]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function clearLit(){ mount.querySelectorAll('.s9node').forEach(b => b.classList.remove('lit')); }
+  function select(k){
+    mount.querySelectorAll('.s9node').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.n === k)));
+    detail.innerHTML = NODES[k].d;
+  }
+  mount.querySelectorAll('.s9node').forEach(b => b.addEventListener('click', () => { stop(); clearLit(); select(b.dataset.n); }));
+  mount.querySelector('[data-trace]').addEventListener('click', () => {
+    stop(); clearLit();
+    detail.innerHTML = '<b>POST /api/requests</b> — controller saves the request, then ApprovalService.process(): eligibility gate (policy can DENY here) &rarr; claim-history context &rarr; the 0.85 threshold (approve or escalate — never deny) &rarr; persisted via the repositories into Postgres.';
+    TRACE.forEach((k,i) => {
+      const b = mount.querySelector('[data-n="' + k + '"]');
+      if(reduce){ b.classList.add('lit'); }
+      else timers.push(setTimeout(() => b.classList.add('lit'), 200 + i*450));
+    });
+  });
+  mount.querySelector('[data-s9reset]').addEventListener('click', () => {
+    stop(); clearLit();
+    mount.querySelectorAll('.s9node').forEach(b => b.setAttribute('aria-pressed','false'));
+    detail.innerHTML = 'Click a node — every fact on this map cites a real file. The ⚑ on ApprovalService is the contradiction a good onboarding battery finds.';
+  });
+  if(reduce){ mount.querySelector('[data-trace]').click(); }
 };
 
 /* ---------- SIM-08 · Tool-Fit Drill (spec: VISUALS.md) ----------

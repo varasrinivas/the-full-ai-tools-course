@@ -1,0 +1,81 @@
+M-3.1 ONBOARDING BATTERY RUN — method notes + raw capture
+==========================================================
+Recorded: 2026-07-23 · Claude Code v2.1.216 (headless -p, default permission mode)
+Repo: pristine lab/start clone of priorauth-api (b1b13da), git status clean.
+The module's exact four-question battery ran as ONE mission with the citation
+demand (verbatim = labA step 1). Elapsed: 120s (2.0 min) · exit 0.
+
+Grading notes (against source ground truth read this session):
+- Q1 trace included pre-business-logic reality (security chain, validation
+  order, 400-before-logic) and the unknown-payer→eligibility-denial subtlety.
+- Q3's load-bearing line citation (ApprovalService.java:99, strict >) was
+  HAND-VERIFIED against the file — line number and claim both correct.
+- Q4 found FOUR doc-vs-code disagreements, all cited: the 0.85 boundary
+  (course canon, T-05's headliner), the NotificationService javadoc-vs-swallow,
+  the ClaimHistoryService "one batch query" that is a per-patient loop, and
+  the README's stale Swagger claim. It also traced each to the introducing
+  commit and named the meta-pattern (behavior changed, adjacent docs left
+  stale). Consistent with the 07-20 lab-pass precedent: planted repos get
+  flagged by good interrogation — the course teaches this as foreshadow, and
+  onboarding records findings, fixes nothing.
+- SPOILER NOTE for course copy: disagreements 2 and 3 belong to later plant
+  modules; module body references "four, including ones later modules hunt"
+  without teaching their mechanics here.
+
+RAW TRANSCRIPT (stdout, untrimmed)
+-----------------------------------
+All four answers, with file:line citations throughout. Paths are relative to the repo root, under `src/main/java/com/priorauth/`.
+
+## 1) Trace of POST /api/requests
+
+**Security filter chain** — `config/SecurityConfig.java:17-21` permits every request without auth and disables CSRF (deliberate teaching posture per the Javadoc at lines 8-11), so the request reaches the controller unauthenticated.
+
+**Controller** — `controller/PriorAuthController.java:48-56`, the `submit` method:
+- The JSON body binds to the `SubmitRequest` record (lines 91-96), and `@Valid` enforces: non-blank `patientRef` and `payerCode`, a 5-digit `cptCode`, and `confidenceScore` in [0.0, 1.0]. Validation failure means a 400 before any business logic runs.
+- Line 50 looks up the payer by code via `repository/PayerRepo.findByCode`, tolerating a miss (`orElse(null)` — unknown payers are handled later as an eligibility denial, not a 404).
+- Lines 51-53 construct a `PriorAuthRequest` entity — whose constructor sets status to `SUBMITTED` (`model/PriorAuthRequest.java:53`) — and save it.
+- Line 54 hands it to `ApprovalService.process`; line 55 returns 201 Created with a `RequestResponse` DTO (lines 108-129).
+
+**Decision engine** — `service/ApprovalService.java:57-111`, `process`, running in one transaction (`@Transactional`, line 57):
+- Guards: rejects null requests (line 59) and any status other than `SUBMITTED` (line 62).
+- **Stage 1, eligibility** (line 71): `service/EligibilityService.java:25-39` runs four static checks — missing patientRef (ELIG-001), malformed CPT (CPT-001), unknown payer (PAYER-001), procedure not covered by that payer (CPT-002), against the hardcoded coverage map at lines 20-23. If ineligible: status → `DENIED` (`ApprovalService.java:73`), `decidedAt` stamped from the injected `Clock` (line 74, wired in `config/ClockConfig.java:12-15`), a `Denial` row saved (lines 76-77), and the provider notified (line 78). Otherwise status → `ELIGIBLE` (line 83).
+- **Notification path**: `service/NotificationService.java:20-33` formats a message and calls the gateway, swallowing any exception (lines 30-32); `service/LoggingNotificationGateway.java:14-16` just logs it.
+- **Stage 2, claim history** (lines 88-95): `service/ClaimHistoryService.java:26-31` pulls the patient's 10 most recent claims via `repository/ClaimRepo`. This is advisory only — more than 3 denied claims is merely logged (line 92-94); it never changes the decision.
+- **Stage 3, the threshold** (lines 98-107): score strictly above 0.85 → `AUTO_APPROVED`; otherwise → `MANUAL_REVIEW`. `decidedAt` stamped (line 108), final save at line 110.
+
+The decided entity flows back to the controller and out as the 201 response body. (Requests parked in `MANUAL_REVIEW` are later resolved by a human via `ApprovalService.resolveManualReview`, lines 114-132.)
+
+## 2) Architectural layers
+
+Classic Spring layered architecture, one package per layer (as the README's Layout section lays out, `README.md:23-30`):
+
+- **Controller (web)** — `controller/`: HTTP mapping, request validation, and entity↔DTO translation; e.g. `PriorAuthController.java:91-96` (validated input record) and `108-129` (response record). No business rules live here.
+- **Service (domain)** — `service/`: the business pipeline — `ApprovalService` orchestrates eligibility, history, and the threshold decision (`ApprovalService.java:57-111`), with `EligibilityService`, `ClaimHistoryService`, and `NotificationService` each owning one concern.
+- **Repository (persistence)** — `repository/`: Spring Data JPA interfaces; `PriorAuthRequestRepo.java:16-28` also handles fetch strategy (`@EntityGraph` to eagerly load the payer because open-in-view is off).
+- **Model (entities)** — `model/`: JPA entities and the `RequestStatus` lifecycle enum (`RequestStatus.java:7-14`); `PriorAuthRequest.java:47-54` encodes the invariant that new requests start `SUBMITTED`.
+- **Config** — `config/`: cross-cutting wiring — the permissive security chain (`SecurityConfig.java:17-21`) and the injectable `Clock` for testable time (`ClockConfig.java:12-15`).
+
+## 3) The single most important business rule
+
+**The auto-approve confidence threshold.** The code says so itself: "One rule matters above all others: a confidence score of AUTO_APPROVE_THRESHOLD or higher auto-approves" (`ApprovalService.java:19-21`). The constant is `AUTO_APPROVE_THRESHOLD = 0.85` at `ApprovalService.java:26`, and the exact line where the decision is made is:
+
+```java
+if (score > AUTO_APPROVE_THRESHOLD) {   // ApprovalService.java:99
+```
+
+Everything else in the pipeline feeds this fork: it is the line that decides whether a request is approved by a machine or waits for a human. Note the operator — which brings us to question 4.
+
+## 4) Where docs and code disagree
+
+Four disagreements, the first one being a live behavioral bug at the exact line cited above:
+
+1. **Inclusive vs. exclusive threshold.** Three separate docs say the threshold is inclusive: the class Javadoc "the threshold is INCLUSIVE (score >= 0.85 approves, 0.8499 does not)" (`ApprovalService.java:21`), the entity field comment ">= 0.85 auto-approves (inclusive)" (`model/PriorAuthRequest.java:34`), and even the log message printed on approval, `"score {} >= {}"` (`ApprovalService.java:101`). The code uses strict `>` (`ApprovalService.java:99`), so a score of exactly 0.85 goes to `MANUAL_REVIEW` — contradicting all three.
+
+2. **Notification failure handling.** The Javadoc says "Failures are wrapped and rethrown … this must never fail silently" and calls a missed denial notice a compliance incident (`service/NotificationService.java:7-9`), but the implementation catches every exception and silently discards it with a "best effort" comment (`NotificationService.java:30-32`). The `NotificationException` class the doc implies (lines 35-39) is now dead code. Commit `838fafc` ("Make denial notifications best-effort") changed the code without updating the doc.
+
+3. **"One batch query" that is actually a loop.** `service/ClaimHistoryService.java:13-14` promises "The batch path issues ONE query for any number of patients — never load claims per patient in a loop," and the controller repeats the claim ("One batch query for the whole queue," `PriorAuthController.java:79-80`). But `historyFor` issues one repository query per patient inside a for-loop (`ClaimHistoryService.java:39-41`) — exactly the N-query pattern the doc forbids. Commit `674272e` introduced this.
+
+4. **README promises Swagger UI that doesn't exist.** `README.md:18` says the API serves "Swagger UI at /swagger-ui.html," but `pom.xml:32-90` has no springdoc/OpenAPI dependency, and the `config/` package contains only `SecurityConfig` and `ClockConfig`. Commit `b1b13da` fixed the README's Layout section to drop `OpenApiConfig` but left the stale Swagger claim in Quickstart.
+
+A pattern worth noting for the course: disagreements 1-3 all came from recent commits (`b8faef5`, `838fafc`, `674272e`) that changed behavior while leaving the adjacent Javadoc — and in case 1 even the log message — describing the old behavior.
+---META--- exit=0 elapsed=120s
