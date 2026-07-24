@@ -1,0 +1,74 @@
+M-8.4 MODEL SELECTION ECONOMICS — grind vs judgment, measured
+==============================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone (read-only, untouched).
+Same repo, same prompts, only --model changed.
+
+=== TASK 1 · GRIND (mechanical count: "how many rows score exactly 0.85?") ===
+  small model   4 turns  $0.0912   answer: "13"  CORRECT
+  large model   4 turns  $0.1612   answer: "13"  CORRECT
+  ratio: **1.8x**, same answer.
+  NOTE how small that ratio is. Published per-token rates differ by far more —
+  but both runs did the SAME 4 turns of tool work, and most of the bill is
+  carried context (M-8.1), which does not get cheaper when the model does.
+  >>> Switching models saves less than the rate card implies.
+
+=== TASK 2 · JUDGMENT (the M-7.1 question: "at exactly what score does a
+    request auto-approve, and what should I implement? Cite your source.") ===
+  small model   7 turns  $0.0368
+  large model (recorded in M-7.1, same question, no constitution): ~90s of
+    forensics, and its opening line was "I can answer definitively about what
+    the code *does*, but not about what the rule *is* — the repo contradicts
+    itself." It tabled FOUR contradicting sources, found the introducing
+    commit, and explained why the test suite never caught it.
+
+  THE SMALL MODEL'S ANSWER (verbatim excerpt):
+    "A request auto-approves when its confidence score is **>= 0.85**
+     (inclusive)... If score >= 0.85 -> set status to AUTO_APPROVED...
+     Source: ApprovalService.java lines 18-22 (class javadoc), line 26
+     (constant), and lines 98-107 (decision logic)."
+
+  GROUND TRUTH, ApprovalService.java line 99:
+        if (score > AUTO_APPROVE_THRESHOLD) {       <-- STRICT, not inclusive
+
+  *** THE SMALL MODEL WAS WRONG — AND WRONG IN THE WORST WAY. ***
+  It looked in the right places (javadoc, constant, decision block) but
+  reported the JAVADOC'S SEMANTICS as the CODE'S BEHAVIOUR, and flagged no
+  discrepancy at all. The answer is fluent, structured, and carries precise
+  line-number citations, which is exactly what makes it dangerous: a developer
+  implementing from it would believe they were matching production. It cost
+  $0.0368 and it would have shipped a false belief about the system.
+  The large model's entire contribution on this task was NOTICING THE CONFLICT
+  — which is the part that cannot be bought cheaply.
+
+=== THE RULE, NOW DEMONSTRATED RATHER THAN ASSERTED ===
+  BIG MODEL TO PLAN, SMALL MODEL TO GRIND.
+   - Grind = mechanical, verifiable, one right answer you can check (counts,
+     transformations, format conversions, boilerplate). Small model: same
+     answer, cheaper. Use it.
+   - Judgment = the value is in noticing something (a contradiction, a risk, an
+     absence, a scope decision). Small model: confident, cheap, and it may miss
+     the very thing you were paying for — with citations that look authoritative.
+  The tell is not task SIZE, it is whether you can CHECK the answer. A grind
+  answer you can verify in seconds; a judgment answer you cannot verify without
+  redoing the judgment, which is why you bought the model in the first place.
+  Ties to M-8.3: "confidently wrong and cheap is worse than expensive and right."
+
+=== FALLBACK CHAINS ===
+  The sane pattern is not "pick one model", it is: small model first for work
+  that is checkable, escalate on failure or on any task whose output you cannot
+  verify. Escalation must be triggered by the TASK TYPE, not by the model's
+  confidence — the small model was maximally confident while being wrong.
+
+=== THREE-WAY COST-MODEL COMPARISON (structure, not price points) ===
+  Prices change; the STRUCTURES are stable and are what actually shape behaviour:
+   - Claude Code: metered/usage-visible. Every turn has a number attached — which
+     is precisely why this entire track could be measured at all. Waste is visible,
+     so there is a feedback loop that teaches efficiency.
+   - GitHub Copilot: per-seat subscription. Cost is predictable and decoupled from
+     usage — no per-action feedback, so nothing in the pricing teaches restraint;
+     budgeting is a headcount question, not an engineering one.
+   - Cursor: per-seat with usage-based components — a hybrid; predictable floor,
+     variable ceiling once heavier agent use kicks in.
+  DO NOT quote current per-seat or per-token prices from this course; check the
+  vendors. What generalises: metered pricing makes waste legible (and is why
+  M-8.2's 9.7x paste penalty was discoverable), seat pricing hides it.

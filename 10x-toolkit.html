@@ -355,6 +355,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-16: Grind or Judgment ============ */
+.sim16{--s16red:#d0705a;--s16green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim16{--s16red:#B0503C;--s16green:#2d7350}
+.sim16 .s16head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim16 .s16tabs{display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap}
+.sim16 .s16tab{flex:1;min-width:170px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;cursor:pointer;text-align:left;font-family:var(--mono)}
+.sim16 .s16tab[aria-pressed="true"]{border-color:var(--gold)}
+.sim16 .s16tn{display:block;font-size:9px;letter-spacing:.1em;color:var(--faint);margin-bottom:3px}
+.sim16 .s16tab[aria-pressed="true"] .s16tn{color:var(--gold)}
+.sim16 .s16tq{font-size:10px;color:var(--text);line-height:1.4}
+.sim16 .s16pair{display:flex;gap:9px;flex-wrap:wrap}
+.sim16 .s16card{flex:1;min-width:200px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--panel)}
+.sim16 .s16card.ok{border-color:var(--s16green)}
+.sim16 .s16card.bad{border-color:var(--s16red)}
+.sim16 .s16m{font-size:9px;letter-spacing:.09em;color:var(--faint);margin-bottom:4px}
+.sim16 .s16cost{font-size:17px;color:var(--text);font-weight:500}
+.sim16 .s16ans{font-size:10px;color:var(--dim);line-height:1.5;margin-top:5px}
+.sim16 .s16ans b{color:var(--text);font-weight:500}
+.sim16 .s16v{display:inline-block;font-size:8.5px;letter-spacing:.07em;padding:2px 8px;border-radius:999px;margin-top:6px}
+.sim16 .s16v.ok{background:rgba(62,154,107,.16);color:var(--s16green)}
+.sim16 .s16v.bad{background:rgba(208,112,90,.16);color:var(--s16red)}
+.sim16 .s16say{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.65;min-height:56px}
+.sim16 .s16say b{color:var(--text);font-weight:500}
+.sim16 .s16say .warn{color:var(--s16red)}
+.sim16 .s16foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ ANIM-25: Two Levers (re-anchor vs scope) ============ */
 .anim25{--a25red:#d0705a;--a25green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim25{--a25red:#B0503C;--a25green:#2d7350}
@@ -3209,6 +3235,47 @@ const MODS = [
       {q:'When should you clear and re-anchor rather than compact?',
        options:['Whenever the session is long','When the thread itself is the problem &mdash; a wrong path, a mistake the summary would faithfully preserve, or context you regret adding; compaction inherits your errors, a clear lets you choose what carries forward','Never; compaction is always better','Only when the tool refuses to continue'], answer:1}
     ]
+  },
+  {
+    id:'M-8.4', path:'eng', track:'T-08', title:'Model selection economics', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'You do not need a consultant to read a thermometer, and you should not send the thermometer reading to committee. But there is a third case that ruins the analogy for everyone: the junior who reads the chart, states a confident diagnosis, cites the right pages &mdash; and misses that two of those pages contradict each other. That case is not cheap. It is a bill you pay later.',
+      body:
+        '<p><strong>Two tasks, two models, and only one of the results is comfortable.</strong> The mechanical task &mdash; count the rows scoring exactly 0.85 &mdash; came back <b>13</b> from both models. The small one cost <b>$0.0912</b>, the large one <b>$0.1612</b>: a ratio of just <b>1.8&times;</b> for an identical answer. Note how <em>small</em> that gap is against published per-token rates. Both runs did the same four turns of tool work, and most of the bill is carried context (M-8.1), which does not get cheaper when the model does. <b>Switching models saves far less than a rate card implies</b> &mdash; the second time this track has found that the model is not where the money is.</p>' +
+        '<p><strong>Then the judgment task, and the number stops being the point.</strong> Asked what score auto-approves and what to implement, the small model answered in seven turns for <b>$0.0368</b>: <em>&ldquo;a request auto-approves when its confidence score is &ge; 0.85 (inclusive)&hellip; if score &gt;= 0.85 &rarr; AUTO_APPROVED&rdquo;</em>, citing the class javadoc, the constant, and the decision block by line number. Line 99 of that decision block reads <code>if (score &gt; AUTO_APPROVE_THRESHOLD)</code> &mdash; strict. It had looked in exactly the right places, reported the <em>javadoc&rsquo;s</em> wording as the <em>code&rsquo;s</em> behaviour, and flagged no discrepancy at all. On the same question the large model opened with <em>&ldquo;I can answer definitively about what the code does, but not about what the rule is &mdash; the repo contradicts itself&rdquo;</em>, tabled four conflicting sources and found the commit that introduced the divergence.</p>' +
+        '<p><strong>The failure mode is fluency, not stupidity.</strong> The cheap answer was structured, confident and precisely cited &mdash; which is exactly what makes it dangerous. Nothing in it signals doubt, so a developer implements from it and carries a false belief about production into a new payer integration for three and a half cents. The large model&rsquo;s entire contribution on that task was <em>noticing the conflict</em>, and noticing is the thing you cannot buy cheaply. M-8.3 put it in one line: confidently wrong and cheap is worse than expensive and right.</p>' +
+        '<p><strong>So the rule has a sharper test than task size.</strong> &ldquo;Big model to plan, small model to grind&rdquo; is right, but people apply it by <em>bigness</em> when the real question is <b>can you check the answer?</b> Grind work &mdash; counts, transformations, format conversions, boilerplate &mdash; has one right answer you verify in seconds, so a small model is free money. Judgment work pays for something being <em>noticed</em>: a contradiction, a risk, an absence, a scope call. You cannot verify that output without redoing the judgment you were buying, so a cheap wrong answer there is undetectable by construction. This also fixes how fallback chains should work: escalate on <em>task type</em>, never on the model&rsquo;s confidence &mdash; the small model was maximally confident while being wrong.</p>' +
+        '<p><strong>Three tools, three pricing structures &mdash; and pricing shapes behaviour.</strong> Claude Code meters usage, so every turn carries a number; that visibility is exactly why this entire track could be measured, and why M-8.2&rsquo;s 9.7&times; paste penalty was discoverable at all. Copilot is per-seat: predictable, decoupled from usage, and therefore silent &mdash; nothing in the pricing teaches restraint, and budgeting becomes a headcount question rather than an engineering one. Cursor is a hybrid, a predictable floor with variable ceiling under heavier agent use. Do not take price points from this course; check the vendors, because they change. What generalises is the structure: <b>metered pricing makes waste legible, seat pricing hides it</b> &mdash; so on a seat plan you need the discipline of T-08 without the feedback loop that teaches it. That closes the track: read the itemisation, spend turns deliberately, never volunteer context, and buy the big model for the judgments you cannot check.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-16'},
+    labA:{
+      title:'Route your own work by task type — Claude Code',
+      steps:[
+        'Pick one <em>grind</em> task from your week &mdash; something with a single checkable answer &mdash; and run it on a small and a large model with <code>--model</code> and <code>--output-format json</code>. Compare cost <em>and</em> verify both answers. Reference: identical answers, <b>1.8&times;</b> apart.',
+        'Now pick a <em>judgment</em> task: one where the value is in noticing something (a contradiction between docs and code, a missing case, a risk). Run it on both. Reference: the small model produced a confident, well-cited, <b>wrong</b> answer for $0.0368 while the large one led with the contradiction.',
+        'Grade the cheap judgment answer honestly. Could you have caught the error <em>without</em> already knowing the ground truth? If not, that is the whole argument: the failure is invisible from the answer alone.',
+        'Write your routing rule as a checkable test rather than a vibe: <em>can I verify this answer in under a minute without redoing the work?</em> Yes &rarr; small model. No &rarr; large model. Then list three tasks from this week on each side.',
+        'Design your fallback chain to escalate on task type, not confidence, and write down why: the small model was maximally confident while wrong. Success: two metered comparisons, an honest grading of the cheap judgment answer, your routing test, and a fallback rule that never trusts confidence as a signal.'
+      ]
+    },
+    checklist:[
+      'I compared a small and large model on a grind task and verified both answers.',
+      'I compared them on a judgment task and found what the cheap one missed.',
+      'I can state why the cheap failure was undetectable from the answer alone.',
+      'My routing rule is the checkability test, not task size.',
+      'My fallback chain escalates on task type, never on the model&rsquo;s confidence.'
+    ],
+    quiz:[
+      {q:'On the mechanical counting task the small model cost $0.0912 and the large $0.1612 &mdash; only 1.8&times; apart. Why so little, given published rate differences?',
+       options:['The rates are identical','Both runs did the same four turns of tool work, and most of the bill is carried context, which does not get cheaper when the model does','The small model was throttled','Caching was disabled'], answer:1},
+      {q:'On the judgment task the small model answered &ldquo;auto-approves at &ge; 0.85 (inclusive)&rdquo; with line-number citations for $0.0368. What was wrong?',
+       options:['Nothing &mdash; it matched the documentation','Line 99 uses strict <code>&gt;</code>; it reported the javadoc&rsquo;s wording as the code&rsquo;s behaviour and flagged no discrepancy &mdash; fluent, well-cited, and false','It used the wrong file','It refused to answer'], answer:1},
+      {q:'What is the sharper test for routing work to a small model?',
+       options:['Whether the task is small','Whether you can check the answer &mdash; grind answers verify in seconds, judgment answers cannot be verified without redoing the judgment you were paying for','Whether the repo is large','Whether latency matters'], answer:1},
+      {q:'How should a fallback chain decide to escalate?',
+       options:['When the small model reports low confidence','On task type &mdash; the small model was maximally confident while being wrong, so confidence is not a usable signal','After three failed attempts','Based on file count'], answer:1}
+    ]
   }
 ];
 
@@ -4042,6 +4109,55 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-16 · Grind or Judgment (spec: VISUALS.md) ----------
+   Both tasks are real recorded runs (recordings/m84-model-economics.txt).
+   The judgment tab is the one that matters: cheap, confident, and wrong. */
+VISUALS['SIM-16'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TASKS = [
+    {k:'GRIND · mechanical', q:'&ldquo;How many rows score exactly 0.85?&rdquo; &mdash; one right answer, checkable in seconds',
+     small:{cost:'$0.0912', ans:'<b>13</b> &mdash; correct', ok:true, v:'✓ CORRECT'},
+     big:{cost:'$0.1612', ans:'<b>13</b> &mdash; correct', ok:true, v:'✓ CORRECT'},
+     say:'Same answer, and the big model cost <b>1.8&times;</b> more for it. Note how <em>small</em> that gap is: both runs did the same four turns of tool work, and most of the bill is carried context, which does not get cheaper when the model does. <b>Use the small model here</b> &mdash; and notice that switching models saves less than a rate card implies.'},
+    {k:'JUDGMENT · notice something', q:'&ldquo;At exactly what score does a request auto-approve, and what should I implement?&rdquo;',
+     small:{cost:'$0.0368', ans:'&ldquo;auto-approves when score is <b>&ge; 0.85</b> (inclusive)&hellip; if score &gt;= 0.85 &rarr; AUTO_APPROVED&rdquo; &mdash; with line-number citations', ok:false, v:'✗ WRONG — line 99 is strict &gt;'},
+     big:{cost:'~10&times; more', ans:'&ldquo;I can answer what the code <em>does</em>, but not what the rule <em>is</em> &mdash; <b>the repo contradicts itself</b>&rdquo; + four conflicting sources + the introducing commit', ok:true, v:'✓ FOUND THE CONFLICT'},
+     say:'<span class="warn">The cheap answer was fluent, well-cited, and false.</span> It read the javadoc&rsquo;s wording and reported it as the code&rsquo;s behaviour, flagging no discrepancy &mdash; so a developer would ship a false belief about production for 3.7 cents. The big model&rsquo;s whole contribution was <b>noticing the conflict</b>, and that is the part you cannot buy cheaply.'}
+  ];
+  let cur = 0;
+  mount.innerHTML =
+    '<div class="sim16" aria-label="Choosing a model by task type">' +
+      '<div class="s16head"><span>SIM-16 · BIG TO PLAN, SMALL TO GRIND</span><span>REAL RUNS</span></div>' +
+      '<div class="s16tabs" role="tablist">' +
+        TASKS.map((t,i) => '<button class="s16tab" type="button" role="tab" data-t="' + i + '" aria-pressed="' + (i===0) + '">' +
+          '<span class="s16tn">' + t.k + '</span><span class="s16tq">' + t.q + '</span></button>').join('') +
+      '</div>' +
+      '<div class="s16pair">' +
+        '<div class="s16card" data-card="small"><div class="s16m">SMALL MODEL</div><div class="s16cost" data-c="small"></div><div class="s16ans" data-a="small"></div><span class="s16v" data-v="small"></span></div>' +
+        '<div class="s16card" data-card="big"><div class="s16m">LARGE MODEL</div><div class="s16cost" data-c="big"></div><div class="s16ans" data-a="big"></div><span class="s16v" data-v="big"></span></div>' +
+      '</div>' +
+      '<div class="s16say" data-say></div>' +
+      '<div class="s16foot">The tell is not task <em>size</em> &mdash; it is whether you can <b>check</b> the answer. A grind answer you verify in seconds; a judgment answer you cannot verify without redoing the judgment you were paying for.</div>' +
+    '</div>';
+  function show(i){
+    cur = i;
+    const t = TASKS[i];
+    mount.querySelectorAll('[data-t]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.t === i)));
+    ['small','big'].forEach(k => {
+      const d = t[k];
+      mount.querySelector('[data-card="' + k + '"]').className = 's16card ' + (d.ok ? 'ok' : 'bad');
+      mount.querySelector('[data-c="' + k + '"]').innerHTML = d.cost;
+      mount.querySelector('[data-a="' + k + '"]').innerHTML = d.ans;
+      const v = mount.querySelector('[data-v="' + k + '"]');
+      v.className = 's16v ' + (d.ok ? 'ok' : 'bad');
+      v.innerHTML = d.v;
+    });
+    mount.querySelector('[data-say]').innerHTML = t.say;
+  }
+  mount.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => show(+b.dataset.t)));
+  show(reduce ? 1 : 0);
 };
 
 /* ---------- ANIM-25 · Two Levers (spec: VISUALS.md) ----------
