@@ -1,0 +1,57 @@
+M-6.1 TEST GENERATION THAT ISN'T GARBAGE — method notes + captures
+===================================================================
+Recorded: 2026-07-24 · priorauth-web lab/start clone, branch drill/m61-naive
+(both generated test files + any source edits discarded, clone restored pristine).
+Target: ConfidenceGauge.tsx, which carries BUG-WEB-04 — a DUPLICATED, WRONG copy
+of the auto-approve rule: `const meets = score > AUTO_APPROVE_THRESHOLD` (strict)
+while the component's own doc comment AND its band text say ">= 0.85 INCLUSIVE",
+and a correct meetsThreshold(score){return score >= 0.85} already exists in
+api/client.ts. So a 0.85 request the backend auto-approves, the gauge shows as
+"Below threshold — manual review."
+
+THE SHIPPED TEST (pattern 1 — mirrors non-boundary behavior): uses 0.92 and 0.61,
+never 0.85. It is green and useless: it never probes the one value where the bug
+lives, so it certifies the bug by omission.
+
+RUN 1 — NAIVE PROMPT (pattern 2 — "make it pass" edits the defendant):
+  "Write thorough tests for ConfidenceGauge ... Make the suite pass."
+  Elapsed 148s. The (careful) agent DID write a real boundary test at 0.85 — but
+  to satisfy "make the suite pass" it EDITED THE COMPONENT:
+    - import { meetsThreshold, AUTO_APPROVE_THRESHOLD } from '../api/client'
+    - const meets = score > AUTO_APPROVE_THRESHOLD
+    + const meets = meetsThreshold(score)
+  Result: 17/17 green — because it silently fixed planted BUG-WEB-04 as a side
+  effect of a "write tests" task. The test-gen inverted the judge/defendant
+  relationship: told to make tests pass, it changed the code under test.
+
+RUN 2 — SPEC-ANCHORED PROMPT (pattern 3 — the good one):
+  "... Anchor every assertion to the DOCUMENTED behavior (>= 0.85 INCLUSIVE).
+   Test the boundary at exactly 0.85, just above, just below ... STRICT RULE:
+   do not modify ConfidenceGauge.tsx or any source file. If a test fails against
+   the current code, leave it failing and report what it caught."
+  Elapsed 120s. git diff of src/: EMPTY (source untouched). The boundary tests
+  FAIL RED against the buggy code, exactly as they should:
+    × auto-approves a request scored exactly at the threshold (inclusive rule)
+    × agrees with the shared meetsThreshold rule at the boundary
+    × exposes the band to screen readers at the exact threshold
+    actual: aria-label="Confidence 85 percent - below the auto-approve threshold"
+            "Below threshold - manual review"
+  The agent reported the finding, traced it to commit 93f67f8 ("Tighten gauge
+  banding for borderline scores" - where the '=' was lost), named the domain
+  impact (portal contradicts the backend at 0.85), and REFUSED to fix it per
+  instruction ("or better, replace the inline comparison with the already-exported
+  meetsThreshold so the rule lives in one place").
+
+THE LESSON (all three patterns from one target):
+  A generated test's value is what it would CATCH, not whether it is green.
+  The PROMPT CONTRACT governs quality:
+    - mirror the implementation -> certifies bugs (assert what the code DOES)
+    - "make it pass" -> edits the code under test to satisfy tests (silently
+      erased a planted bug here)
+    - anchor to the SPEC + forbid source edits + "a failing test is the finding"
+      -> catches the bug; RED is the deliverable.
+  Naming: pattern-3 names are behavioral ("auto-approves a request scored exactly
+  at the threshold"); garbage names mirror code ("returns true when score > 0.85").
+  Foreshadows M-6.4 (mutation: a test only counts if it can fail) and M-6.3
+  (BUG-WEB-03's untested form). BUG-WEB-04 left intact for its own reveal.
+CLEANUP: both test files + all source edits discarded; clone pristine; plant intact.

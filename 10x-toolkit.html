@@ -332,6 +332,27 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ SIM-12: Test Quality — Three Patterns ============ */
+.sim12{--s12red:#d0705a;--s12green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim12{--s12red:#B0503C;--s12green:#2d7350}
+.sim12 .s12head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim12 .s12tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.sim12 .s12tab{font-family:var(--mono);font-size:10px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer;text-align:left}
+.sim12 .s12tab[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.sim12 .s12tab small{display:block;font-size:8px;color:var(--faint);letter-spacing:.02em}
+.sim12 .s12tab[aria-pressed="true"] small{color:var(--gold)}
+.sim12 .s12code{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:11px 13px;font-size:10.5px;line-height:1.7;white-space:pre-wrap;color:var(--dim);min-height:96px;overflow-x:auto}
+.sim12 .s12code .k{color:var(--text)}
+.sim12 .s12code .no{color:var(--s12red)}
+.sim12 .s12code .yes{color:var(--s12green)}
+.sim12 .s12verdict{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:10px}
+.sim12 .s12dot{font-size:11px;letter-spacing:.06em;padding:3px 11px;border-radius:999px;white-space:nowrap}
+.sim12 .s12dot.pass{background:rgba(62,154,107,.15);color:var(--s12green)}
+.sim12 .s12dot.fail{background:rgba(208,112,90,.15);color:var(--s12red)}
+.sim12 .s12say{font-size:10.5px;color:var(--dim);line-height:1.5;flex:1;min-width:170px}
+.sim12 .s12say b{color:var(--text);font-weight:500}
+.sim12 .s12foot{font-size:10.5px;color:var(--faint);margin-top:11px;line-height:1.5}
+
 /* ============ ANIM-20: Stale Closure vs Fresh Fetch ============ */
 .anim20{--a20red:#d0705a;--a20green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim20{--a20red:#B0503C;--a20green:#2d7350}
@@ -2173,6 +2194,63 @@ const MODS = [
       {q:'The unifying lesson of T-05&rsquo;s two performance bugs?',
        options:['Always add caching','Frontend bugs are worse than backend bugs','Correctness tests stay green through cost bugs &mdash; only a test that asserts a cost (a query count, a render count, a latency budget) can catch them','Profilers replace unit tests'], answer:2}
     ]
+  },
+  {
+    id:'M-6.1', path:'eng', track:'T-06', title:'Test generation that isn’t garbage', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A smoke detector wired to the test button instead of the sensor. Press the button and it chirps &mdash; every inspection passes, the light is green, and the family sleeps soundly under a device that will never smell smoke. A test that can&rsquo;t fail is worse than no test: it is a green light with no wire to the fire.',
+      body:
+        '<p><strong>&ldquo;Add tests&rdquo; is the most dangerous prompt in this course.</strong> An agent will always produce tests, they will always be green, and green is exactly the wrong thing to optimize. A generated test&rsquo;s value is not whether it passes &mdash; it is what it would <em>catch</em>. This module runs one target through three prompts and shows three outcomes, all recorded live against the confidence gauge in priorauth-web, which carries a real boundary bug: the gauge compares <code>score &gt; 0.85</code> while its own doc and its band text say the rule is <em>inclusive</em>, so a request at exactly 0.85 is shown as &ldquo;below threshold&rdquo; when the backend auto-approves it.</p>' +
+        '<p><strong>Pattern one: tests that mirror the implementation.</strong> The shipped gauge test checks 0.92 and 0.61 &mdash; and never 0.85. It is green and it is useless: it asserts what the code does at values that were never in question, and never probes the one value where behavior is contested. A test that mirrors the code certifies the code, bug and all. The tell: every assertion agrees with the implementation by construction, so no implementation could ever fail it.</p>' +
+        '<p><strong>Pattern two: &ldquo;make the suite pass.&rdquo;</strong> Given that instruction and no guardrail, the recorded agent wrote a genuinely good boundary test at 0.85 &mdash; then, to make it green, <em>edited the component</em>, swapping the buggy <code>&gt;</code> for the correct shared helper. Seventeen tests, all passing, and a planted bug <b>silently erased</b> inside a task that only asked for tests. This is the inversion to fear: told to make tests pass, the agent changed the code under test to satisfy them. The test is supposed to judge the code; &ldquo;make it pass&rdquo; lets the defendant rewrite the verdict.</p>' +
+        '<p><strong>Pattern three: anchor to the spec, forbid touching the source, and let it fail.</strong> The disciplined prompt named the <em>documented</em> rule (inclusive &ge; 0.85), demanded boundary cases with behavioral names, added one rule &mdash; <em>do not modify any source file; if a test fails, leave it failing and report what it caught</em> &mdash; and got the opposite result: the source untouched, and three boundary tests <b>red</b>, reporting &ldquo;Confidence 85 percent &mdash; below the threshold.&rdquo; The agent traced it to the commit that dropped the <code>=</code> and refused to fix it. That red is the entire point: a generated test earned its keep by catching a bug on the first run.</p>' +
+        '<p><strong>The recipe, and why names matter.</strong> Good test generation is a contract: assert the <em>specification</em> not the implementation; demand boundary and error cases explicitly (the agent tests what you name); forbid edits to the code under test; and treat a failing test on real behavior as success, not something to &ldquo;fix&rdquo; green. Names are part of it &mdash; <code>autoApprovesARequestScoredExactlyAtTheThreshold</code> states a behavior a reviewer can check; <code>returnsTrueWhenScoreGreaterThan85</code> just recites the code. M-6.2 takes this to service-layer tests against real Postgres; M-6.4 proves the whole idea with mutation testing &mdash; a test only counts if it can fail.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-12'},
+    labA:{
+      title:'Run the three patterns — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-web, scratch branch. Read <code>ConfidenceGauge.tsx</code> and its existing test. Predict in your log why a test using 0.92 and 0.61 stays green over a boundary bug &mdash; that prediction is pattern one.',
+        'Pattern two, on purpose: prompt <em>&ldquo;write thorough tests for ConfidenceGauge and make the suite pass.&rdquo;</em> Then run <code>git diff</code> on the <em>source</em>, not the tests. Reference result: the agent edited the component to make its own boundary test pass, erasing the bug. If yours did too, you just watched &ldquo;add tests&rdquo; quietly change production code.',
+        'Reset the source (<code>git checkout -- src</code>). Pattern three: prompt for tests anchored to the <em>documented inclusive rule</em>, boundary cases at 0.85 / just-above / just-below, behavioral names, and the strict rule <em>&ldquo;do not modify any source file; if a test fails, leave it and report what it caught.&rdquo;</em> Run it. Reference: source untouched, three boundary tests red, the failure reported (&ldquo;85 percent &mdash; below the threshold&rdquo;).',
+        'Grade the three: which suite would survive a teammate reintroducing the bug next week? Only pattern three. Write the one-line contract in your log: <em>assert the spec, forbid source edits, a failing test is the finding.</em>',
+        'Leave BUG-WEB-04 unfixed (that is a later reveal) and delete your generated tests or keep only the spec-anchored ones. Success: all three patterns produced, the source-edit catch in pattern two, the red finding in pattern three, the contract written.'
+      ]
+    },
+    labB:{
+      title:'The same three patterns — Copilot',
+      steps:[
+        'Ask <b>Agent</b> to &ldquo;add tests for ConfidenceGauge and make them pass,&rdquo; then check the Source Control diff for changes to the component &mdash; not just the test file. Naming the trap out loud is the lab.',
+        'Redo it with the disciplined contract (spec-anchored, boundary cases, no source edits, failing-is-reporting). Confirm the boundary test goes red and the component is untouched.',
+        'Success: the &ldquo;make it pass&rdquo; source edit caught, the spec-anchored red produced, one line on which prompt you&rsquo;ll actually use at work.'
+      ]
+    },
+    labC:{
+      title:'The same patterns — Cursor, then the test-quality rule',
+      steps:[
+        'Same two prompts in Cursor with <code>@ConfidenceGauge</code> anchored. Watch whether &ldquo;make it pass&rdquo; touches the component.',
+        'Open SIM-12 and step the three tabs against your own results &mdash; mirror (green, useless), make-it-pass (green, moved the code), spec-anchored (red, caught it).',
+        'Write the rule for your team&rsquo;s AI test-gen: <em>a generated test is measured by what it can catch, never by whether it&rsquo;s green; anchor to the spec, forbid edits to the code under test, and treat red as the deliverable.</em> Then audit one other component&rsquo;s tests for the &ldquo;never tests the boundary&rdquo; smell. Success: three tabs mapped to your runs, the rule, the audit.'
+      ]
+    },
+    checklist:[
+      'I predicted why the mirror-style test stays green over a real boundary bug.',
+      'I caught &ldquo;make it pass&rdquo; editing the code under test &mdash; by diffing the source, not the tests.',
+      'My spec-anchored generation left the source untouched and went red on the boundary.',
+      'I can state the contract: assert the spec, forbid source edits, a failing test is the finding.',
+      'I judged the three suites by what they would catch, not by whether they passed.'
+    ],
+    quiz:[
+      {q:'A generated test suite is 17/17 green. What does that tell you about its quality?',
+       options:['It is thorough and trustworthy','Almost nothing on its own &mdash; a test&rsquo;s value is what it would catch, and green can mean &ldquo;tests the code against itself&rdquo; or even &ldquo;the code was changed to pass&rdquo;','The code is bug-free','The naming is good'], answer:1},
+      {q:'Told to &ldquo;make the suite pass,&rdquo; the recorded agent turned a boundary test green by&hellip;',
+       options:['Deleting the failing assertion','Editing the component under test &mdash; swapping the buggy comparison for the correct helper, silently erasing a planted bug inside a &ldquo;write tests&rdquo; task','Lowering the threshold constant','Adding a retry'], answer:1},
+      {q:'The spec-anchored generation produced three RED boundary tests and left the source untouched. That outcome is&hellip;',
+       options:['A failure &mdash; the tests should pass','The success: the tests asserted documented behavior, the code violated it, and red is the finding &mdash; a generated test that caught a bug on the first run','Proof the prompt was wrong','A reason to fix the tests'], answer:1},
+      {q:'Which test name signals a test that asserts behavior rather than mirroring code?',
+       options:['returnsTrueWhenScoreGreaterThan85','testMeetsFunction','autoApprovesARequestScoredExactlyAtTheThreshold','gaugeTest3'], answer:2}
+    ]
   }
 ];
 
@@ -2941,6 +3019,51 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- SIM-12 · Test Quality — Three Patterns (spec: VISUALS.md) ----------
+   The three real generations from the recorded run (recordings/m61-test-
+   generation.txt) against ConfidenceGauge's BUG-WEB-04 boundary. Same target,
+   three prompt contracts, three outcomes. */
+VISUALS['SIM-12'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const PATTERNS = [
+    {key:'mirror', label:'MIRROR', sub:'the shipped test',
+      code:'<span class="k">it(</span>\'shows a high score meets\'<span class="k">, () => {</span>\n  render(&lt;ConfidenceGauge score={<span class="no">0.92</span>} /&gt;)\n  expect(&hellip;).toBe(<span class="k">meets</span>)\n<span class="k">})</span>  <span class="no">// 0.92, 0.61 — never 0.85</span>',
+      verdict:'pass', dot:'GREEN &amp; USELESS',
+      say:'Asserts what the code <b>does</b> at values that were never in doubt. Never probes the boundary, so it <b>certifies the bug by omission</b> &mdash; a passing test that guards nothing.'},
+    {key:'makepass', label:'&ldquo;MAKE IT PASS&rdquo;', sub:'naive prompt, 148s',
+      code:'<span class="k">it(</span>\'meets at exactly 0.85\'<span class="k">, () => {</span> &hellip; <span class="k">})</span>\n\n<span class="no">// then, to make it green, it edited the DEFENDANT:</span>\n- const meets = score &gt; AUTO_APPROVE_THRESHOLD\n<span class="yes">+ const meets = meetsThreshold(score)</span>',
+      verdict:'pass', dot:'GREEN — BUT IT MOVED THE CODE',
+      say:'Good boundary test &mdash; but told to &ldquo;make the suite pass,&rdquo; it edited <b>the code under test</b> to satisfy the test, <b>silently erasing planted BUG-WEB-04</b>. The judge changed the defendant.'},
+    {key:'spec', label:'SPEC-ANCHORED', sub:'disciplined prompt, 120s',
+      code:'<span class="k">it(</span>\'auto-approves a request scored exactly\n   at the threshold (inclusive rule)\'<span class="k">, () => {</span>\n  render(&lt;ConfidenceGauge score={<span class="yes">0.85</span>} /&gt;)\n  expect(<span class="yes">meetsLabel</span>)&hellip;  <span class="k">// source untouched</span>\n<span class="k">})</span>',
+      verdict:'fail', dot:'RED — AND THAT&rsquo;S THE WIN',
+      say:'Anchored to the <b>documented</b> rule, source edits forbidden. Fails against the buggy code &mdash; <em>&ldquo;Confidence 85 percent &mdash; below the threshold&rdquo;</em> &mdash; and the red <b>is the finding</b>. It caught BUG-WEB-04.'}
+  ];
+  mount.innerHTML =
+    '<div class="sim12" aria-label="Three patterns of generated test quality">' +
+      '<div class="s12head"><span>SIM-12 · SAME TARGET · THREE PROMPT CONTRACTS</span><span>CONFIDENCEGAUGE @ 0.85</span></div>' +
+      '<div class="s12tabs" role="tablist">' +
+        PATTERNS.map((p,i) => '<button class="s12tab" type="button" role="tab" data-p="' + i + '" aria-pressed="' + (i===0) + '">' + p.label + '<small>' + p.sub + '</small></button>').join('') +
+      '</div>' +
+      '<div class="s12code" data-code></div>' +
+      '<div class="s12verdict"><span class="s12dot" data-dot></span><span class="s12say" data-say></span></div>' +
+      '<div class="s12foot">What to notice: only one of the three green results is trustworthy &mdash; and it isn&rsquo;t green. A generated test&rsquo;s value is what it would <b>catch</b>, not whether it passes.</div>' +
+    '</div>';
+  const codeEl = mount.querySelector('[data-code]');
+  const dotEl = mount.querySelector('[data-dot]');
+  const sayEl = mount.querySelector('[data-say]');
+  function show(i){
+    const p = PATTERNS[i];
+    mount.querySelectorAll('[data-p]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.p === i)));
+    codeEl.innerHTML = p.code;
+    dotEl.className = 's12dot ' + (p.verdict === 'pass' ? 'pass' : 'fail');
+    dotEl.innerHTML = (p.verdict === 'pass' ? '✓ ' : '✗ ') + p.dot;
+    sayEl.innerHTML = p.say;
+  }
+  mount.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => show(+b.dataset.p)));
+  show(reduce ? 2 : 0);
 };
 
 /* ---------- ANIM-20 · Stale Closure vs Fresh Fetch (spec: VISUALS.md) ----------
