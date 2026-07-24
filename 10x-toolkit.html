@@ -355,6 +355,37 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-23: Two-Tier Memory ============ */
+.anim23{--a23red:#d0705a;--a23green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim23{--a23red:#B0503C;--a23green:#2d7350}
+.anim23 .a23head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim23 .a23tier{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:9px}
+.anim23 .a23tn{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+.anim23 .a23label{font-size:10px;letter-spacing:.13em}
+.anim23 .a23tier.idx .a23label{color:var(--gold)}
+.anim23 .a23tier.topics .a23label{color:var(--dim)}
+.anim23 .a23cost{font-size:9px;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.anim23 .a23cost.rent{background:rgba(245,184,75,.15);color:var(--gold)}
+.anim23 .a23cost.free{background:rgba(62,154,107,.15);color:var(--a23green)}
+.anim23 .a23file{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:baseline;font-size:10px;color:var(--dim);padding:4px 0;border-bottom:1px dashed var(--line);transition:opacity .3s}
+.anim23 .a23file:last-child{border-bottom:none}
+.anim23 .a23file.gone{opacity:.25;text-decoration:line-through}
+.anim23 .a23fn{color:var(--text);word-break:break-all}
+.anim23 .a23sz{font-size:9px;color:var(--faint);white-space:nowrap}
+.anim23 .a23st{font-size:9px;white-space:nowrap}
+.anim23 .a23st.on{color:var(--gold)}
+.anim23 .a23st.off{color:var(--faint)}
+.anim23 .a23meter{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.anim23 .a23m{flex:1;min-width:145px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:var(--panel)}
+.anim23 .a23ml{font-size:9px;letter-spacing:.1em;color:var(--faint)}
+.anim23 .a23mv{font-size:16px;color:var(--text);font-weight:500}
+.anim23 .a23say{margin-top:10px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:46px}
+.anim23 .a23say b{color:var(--text);font-weight:500}
+.anim23 .a23acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.anim23 .a23btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim23 .a23btn:hover{border-color:var(--gold)}
+.anim23 .a23foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-03: Context Budget ============ */
 .sim03{--s3red:#d0705a;--s3green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim03{--s3red:#B0503C;--s3green:#2d7350}
@@ -2825,6 +2856,62 @@ const MODS = [
       {q:'Which instruction survives a <code>/compact</code>?',
        options:['Anything you said clearly enough in conversation','A rule in the project-root CLAUDE.md &mdash; it is re-read from disk and re-injected; conversation-only instructions are candidates for the summariser','Only the most recent message','Nothing survives compaction'], answer:1}
     ]
+  },
+  {
+    id:'M-7.4', path:'eng', track:'T-07', title:'Claude memory in practice', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A good clinician&rsquo;s handover sheet is one page: names, room numbers, the two things that will kill someone tonight. It is not the charts &mdash; the charts are in the rack, and you pull the one you need. A handover sheet that grew into a chart would stop being read, and the point of the sheet is that it is always read.',
+      body:
+        '<p><strong>Two memory systems, and confusing them is the common mistake.</strong> <code>CLAUDE.md</code> is what <em>you</em> write: instructions and rules, loaded in full every session &mdash; that was M-7.1. Auto memory is what <em>Claude</em> writes: learnings and patterns it picks up from your corrections, stored per repository. Same purpose in spirit, opposite authorship, and different loading rules. Both are context rather than enforced configuration &mdash; if a rule must hold regardless of what the model decides, it belongs in a hook, not in memory.</p>' +
+        '<p><strong>The two-tier design, measured on this course&rsquo;s own memory directory.</strong> This is not a mock-up: while building these modules, Claude accumulated a real memory folder. It holds a <code>MEMORY.md</code> index of <b>479 bytes</b> &mdash; three lines &mdash; plus topic files totalling about <b>4.2 KB</b>. Only the index loads at session start; the topic files are read on demand when they are actually relevant. So roughly <b>90% of what that directory knows costs nothing at startup</b>. That is the whole architecture: the index is the rent, and it holds <em>pointers</em>, not paragraphs. The documented cap is the first 200 lines or 25KB of the index, whichever comes first &mdash; and the failure mode is not an error, it is silent truncation of everything past the limit.</p>' +
+        '<p><strong>Capturing without breaking your flow.</strong> Plain language decides the destination: say <em>&ldquo;remember that the integration tests need Docker&rdquo;</em> and it lands in auto memory; say <em>&ldquo;add this to CLAUDE.md&rdquo;</em> and it lands in the instructions file. <code>/memory</code> lists your CLAUDE.md, CLAUDE.local.md and memory locations across user and project scope, toggles auto memory, and opens any file in your editor. <code>/context</code> tells you which files actually loaded this session &mdash; the difference between what you think is loaded and what is. One honest caution: the <code>#</code> quick-capture shortcut is famous, widely repeated in cheat sheets, and <em>not present in the current official memory documentation</em>, with public reports of it failing to save. Test it in your version before you build a habit on it; the doc-supported paths are natural language and <code>/memory</code>. That is the fifth naming claim this course has had to check rather than repeat.</p>' +
+        '<p><strong>Pruning is the discipline, and it has a real example.</strong> During this build a memory was written to carry a directive across sessions &mdash; and deleted the day it was fulfilled, index line and all. That is the rule: <b>a memory that has done its job is debris, and debris is rent</b> (M-7.3&rsquo;s economics, applied to the one file you pay for every session). Claude Code helps &mdash; after writing the index it measures the file, nudges toward one line per entry with detail pushed into topic files, and errors if the index is over its limit &mdash; but the judgement about what is still <em>true</em> is yours. Newer versions stamp a <code>modified</code> timestamp into memory files, which is how you spot a fact that has quietly gone stale.</p>' +
+        '<p><strong>What to let it remember, and what to write yourself.</strong> Auto memory is good at the things you would otherwise re-explain: the build command that actually works, the debugging insight, the preference you corrected twice. Policy is different &mdash; the signed 0.85 rule from M-7.1 has no business being something the model inferred and wrote down for itself; it belongs in a committed file a human owns and a team reviews. The dividing line is authorship and accountability: <em>learnings</em> can be discovered, <em>rules</em> must be signed. M-7.5 closes the track on the anti-patterns &mdash; the essays, the stale commands, and the duplicated docs that make a constitution stop being read.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-23'},
+    labA:{
+      title:'Audit your own memory — Claude Code',
+      steps:[
+        'Open <code>/memory</code> and browse what has accumulated for a project you use daily, then open the auto-memory folder. Measure it: how many bytes is <code>MEMORY.md</code>, and how many are in topic files? Reference from this course&rsquo;s own directory: <b>479 B index, ~4.2 KB topics &mdash; only 10% loads</b>.',
+        'Run <code>/context</code> and compare the Memory files list against what you assumed was loaded. People are routinely wrong about this in both directions &mdash; a file they thought was loading, and one they forgot exists.',
+        'Test capture both ways in one session: say &ldquo;remember that &hellip;&rdquo; for a genuine build insight, then &ldquo;add this to CLAUDE.md&rdquo; for a rule. Open both files and confirm each landed where you intended. If you want to try the <code>#</code> shortcut, do it now and <em>verify the file changed</em> rather than assuming.',
+        'Prune for real: find one memory that is fulfilled, stale, or contradicted by a newer decision. Delete the file <em>and</em> its index line, then re-measure. Success: a measured before and after, capture verified in both destinations, and at least one memory deleted with its pointer.'
+      ]
+    },
+    labB:{
+      title:'The equivalent surfaces — Copilot',
+      steps:[
+        'Copilot&rsquo;s durable instruction surface is <code>.github/copilot-instructions.md</code> (M-1.4). Ask <b>Agent</b> to add a convention you have corrected twice, and note that here <em>you</em> are the one deciding it persists &mdash; there is no separate self-written memory tier to audit.',
+        'Consider what that means for hygiene: with one file and no auto-written tier, everything is reviewed by definition, but nothing accumulates on its own either. Which failure mode does your team prefer?',
+        'Success: one convention promoted to the instructions file, and a written comparison of the two models &mdash; self-accumulating memory versus author-only instructions.'
+      ]
+    },
+    labC:{
+      title:'Rules in Cursor, then the memory charter',
+      steps:[
+        'Put a genuine team convention into <code>.cursor/rules/</code> and confirm it is honored. Then ask yourself the dividing-line question for each of your existing rules: is this a <em>learning</em> (fine for a tool to discover and write down) or a <em>rule</em> (must be signed, committed, reviewed)?',
+        'Sort your current instruction and memory content into those two buckets. Anything in the wrong bucket is either unreviewed policy or ceremony.',
+        'Write your team&rsquo;s memory charter: <em>learnings may be discovered and auto-written; rules are signed and committed; the index holds pointers, not paragraphs; and every memory gets deleted the day it stops being true.</em> Success: the two buckets sorted, the charter written, one stale item removed.'
+      ]
+    },
+    checklist:[
+      'I measured my index against my topic files and know what fraction actually loads.',
+      'I ran <code>/context</code> and reconciled it with what I assumed was loaded.',
+      'I captured to both destinations deliberately and verified where each landed.',
+      'I deleted at least one fulfilled or stale memory &mdash; file and index line.',
+      'I can state the dividing line: learnings may be discovered, rules must be signed.'
+    ],
+    quiz:[
+      {q:'This course&rsquo;s real memory directory holds a 479-byte index and ~4.2KB of topic files. What loads at session start?',
+       options:['Everything in the directory','Only the MEMORY.md index &mdash; topic files are read on demand, so about 90% of what it knows costs nothing at startup','Only the most recent topic file','Nothing until you run /memory'], answer:1},
+      {q:'Your MEMORY.md index grows past its documented limit. What happens?',
+       options:['The session refuses to start','Everything past the limit is silently dropped on the next load &mdash; truncation you do not notice, which is why pruning is a discipline rather than a cleanup task','Older entries move to topic files automatically','Claude compresses it losslessly'], answer:1},
+      {q:'How should you treat the <code>#</code> quick-capture shortcut?',
+       options:['As the primary capture method','Test it in your own version before depending on it &mdash; it is absent from the current official memory docs and has public reports of failing to save; natural language and /memory are the documented paths','It has been removed entirely','It only works for user-level memory'], answer:1},
+      {q:'Where does the signed 0.85 threshold rule belong?',
+       options:['Auto memory, so Claude can refine it','A committed CLAUDE.md a human owns and the team reviews &mdash; learnings may be discovered, but rules must be signed','Either one; they are equivalent','A topic file, to save context'], answer:1}
+    ]
   }
 ];
 
@@ -3658,6 +3745,77 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-23 · Two-Tier Memory (spec: VISUALS.md) ----------
+   The real auto-memory directory from this course build
+   (recordings/m74-memory-practice.txt): 479-byte index loaded every session,
+   4,178 bytes of topic files loaded on demand. Prune shows the lifecycle. */
+VISUALS['ANIM-23'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const IDX = {name:'MEMORY.md', bytes:479, note:'3 lines · cap is 200 lines / 25KB'};
+  let TOPICS = [
+    {name:'course-hosting-and-repos.md', bytes:2757, gone:false},
+    {name:'module-session-workflow.md', bytes:1421, gone:false},
+    {name:'next-session-m23.md', bytes:0, gone:true, ghost:true}
+  ];
+  mount.innerHTML =
+    '<div class="anim23" aria-label="Two-tier auto memory: index versus topic files">' +
+      '<div class="a23head"><span>ANIM-23 · AUTO MEMORY · THIS COURSE&rsquo;S OWN DIRECTORY</span><span>REAL FILES</span></div>' +
+      '<div class="a23tier idx">' +
+        '<div class="a23tn"><span class="a23label">TIER 1 · THE INDEX</span><span class="a23cost rent">LOADED EVERY SESSION &mdash; this is the rent</span></div>' +
+        '<div class="a23file"><span class="a23fn">' + IDX.name + '</span><span class="a23sz">' + IDX.bytes + ' B</span><span class="a23st on">loaded</span></div>' +
+        '<div style="font-size:9px;color:var(--faint);margin-top:5px">' + IDX.note + ' &mdash; one line per memory, pointing at a topic file</div>' +
+      '</div>' +
+      '<div class="a23tier topics">' +
+        '<div class="a23tn"><span class="a23label">TIER 2 · TOPIC FILES</span><span class="a23cost free">READ ON DEMAND &mdash; free until needed</span></div>' +
+        '<div data-topics></div>' +
+      '</div>' +
+      '<div class="a23meter">' +
+        '<div class="a23m"><div class="a23ml">ON DISK</div><div class="a23mv" data-disk></div></div>' +
+        '<div class="a23m"><div class="a23ml">LOADED EVERY SESSION</div><div class="a23mv" data-loaded></div></div>' +
+        '<div class="a23m"><div class="a23ml">INDEX vs 25KB CAP</div><div class="a23mv" data-cap></div></div>' +
+      '</div>' +
+      '<div class="a23say" data-say></div>' +
+      '<div class="a23acts">' +
+        '<button class="a23btn" type="button" data-act="write">remember something new</button>' +
+        '<button class="a23btn" type="button" data-act="prune">prune a fulfilled memory</button>' +
+        '<button class="a23btn" type="button" data-act="reset">reset</button>' +
+      '</div>' +
+      '<div class="a23foot">What to notice: 90% of what this directory knows costs nothing at startup. The index is the only thing you pay for every session &mdash; which is why it holds pointers, not paragraphs.</div>' +
+    '</div>';
+  function paint(msg){
+    const live = TOPICS.filter(t => !t.gone);
+    mount.querySelector('[data-topics]').innerHTML = TOPICS.map(t =>
+      '<div class="a23file' + (t.gone ? ' gone' : '') + '"><span class="a23fn">' + t.name + '</span>' +
+      '<span class="a23sz">' + (t.ghost ? 'deleted' : t.bytes.toLocaleString() + ' B') + '</span>' +
+      '<span class="a23st off">' + (t.gone ? 'pruned' : 'on demand') + '</span></div>').join('');
+    const disk = IDX.bytes + live.reduce((s,t) => s + t.bytes, 0);
+    mount.querySelector('[data-disk]').textContent = disk.toLocaleString() + ' B';
+    mount.querySelector('[data-loaded]').textContent = IDX.bytes + ' B (' + Math.round(IDX.bytes / disk * 100) + '%)';
+    mount.querySelector('[data-cap]').textContent = (IDX.bytes / 25600 * 100).toFixed(1) + '% used';
+    mount.querySelector('[data-say]').innerHTML = msg ||
+      'Two entries, two topic files, and an index small enough to be free. The third file is real too &mdash; a memory written to carry a directive between sessions, then <b>deleted the day it was fulfilled</b>.';
+  }
+  mount.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    if(a === 'write'){
+      if(!TOPICS.some(t => t.name === 'debugging-notes.md')) TOPICS.push({name:'debugging-notes.md', bytes:1980, gone:false});
+      paint('Claude wrote a new memory: the <b>detail goes in a topic file</b> (1,980 B, not loaded at startup) and only <b>one pointer line</b> joins the index. The rent barely moves; the knowledge is still there when needed.');
+    } else if(a === 'prune'){
+      const victim = TOPICS.find(t => !t.gone && !t.ghost);
+      if(victim){ victim.gone = true; victim.ghost = true; }
+      paint('Pruned. A memory that has done its job is <b>debris, and debris is rent</b> &mdash; delete the file <em>and</em> its index line. An un-pruned index does not error, it gets <b>silently truncated</b> past the cap, and you never learn which line was dropped.');
+    } else {
+      TOPICS = [
+        {name:'course-hosting-and-repos.md', bytes:2757, gone:false},
+        {name:'module-session-workflow.md', bytes:1421, gone:false},
+        {name:'next-session-m23.md', bytes:0, gone:true, ghost:true}
+      ];
+      paint();
+    }
+  }));
+  paint();
 };
 
 /* ---------- SIM-03 · Context Budget (spec: VISUALS.md) ----------

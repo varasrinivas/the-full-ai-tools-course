@@ -1,0 +1,65 @@
+M-7.4 CLAUDE MEMORY IN PRACTICE — a real memory directory, measured
+====================================================================
+Recorded: 2026-07-24. The live artifact is THIS COURSE'S OWN auto-memory
+directory, accumulated while building these modules — not a mock-up.
+
+=== THE REAL DIRECTORY (~/.claude/projects/<project>/memory/) ===
+  MEMORY.md                     479 bytes   <- the INDEX, loaded every session
+  course-hosting-and-repos.md  2,757 bytes  <- topic file, NOT loaded at startup
+  module-session-workflow.md   1,421 bytes  <- topic file, NOT loaded at startup
+  total on disk 4,657 bytes; loaded every session: 479 (~10%).
+  MEMORY.md is 3 lines against a documented cap of 200 lines / 25KB.
+
+  Its actual content is two one-line pointers, e.g.
+    - [Course hosting and repos](course-hosting-and-repos.md) — GitHub: ... LIVE at
+      learnings.varasrinivas.com/... (shared bucket, CloudFront ... never deploy to
+      bucket root); teaching repos priorauth-api/-web live on GitHub
+  That is the whole design: the index is the rent you pay every session; the detail
+  sits in topic files that cost nothing until Claude reads them on demand.
+
+=== TWO SYSTEMS, NOT ONE (doc-verified, code.claude.com/docs/en/memory) ===
+                 CLAUDE.md                      auto memory
+  who writes     YOU                            CLAUDE
+  contains       instructions and rules         learnings and patterns
+  scope          project / user / org           per repository (shared across worktrees)
+  loaded         every session, in full         MEMORY.md index only: first 200 lines
+                                                 or 25KB, whichever comes first
+  use for        standards, workflows,          build commands, debugging insights,
+                 architecture                    preferences Claude discovers
+  Both are context, not enforced configuration. To BLOCK an action regardless of
+  what Claude decides, use a PreToolUse hook — not memory.
+
+=== CAPTURE + EDIT (doc-verified) ===
+  - Natural language decides the destination: "remember that X" -> auto memory;
+    "add this to CLAUDE.md" -> the instructions file.
+  - /memory lists CLAUDE.md, CLAUDE.local.md and memory locations across user and
+    project scope, toggles auto memory, and opens the memory folder; selecting a
+    file opens it in your editor (creating it if absent).
+  - /context shows which files ACTUALLY loaded this session (Memory files section).
+  - Storage: ~/.claude/projects/<project>/memory/, machine-local, shared across
+    worktrees of the same repo; relocatable via autoMemoryDirectory.
+  - Auto memory is ON by default; toggle in /memory, or autoMemoryEnabled in
+    settings, or CLAUDE_CODE_DISABLE_AUTO_MEMORY=1.
+  - v2.1.214+ stamps a `modified` ISO timestamp into memory files that have
+    frontmatter, so you can see how stale a fact is.
+
+=== THE `#` SHORTCUT — HANDLE WITH CARE (stale-naming catch #5) ===
+  The `#` quick-capture (type `#` then an instruction, pick project vs user scope)
+  was a real announced feature and is all over community cheat sheets. BUT it does
+  NOT appear in the CURRENT official memory documentation, which describes natural-
+  language capture and /memory instead — and there is a public issue reporting that
+  `#` stopped saving to CLAUDE.md. Course position: teach /memory and natural-
+  language capture as the doc-supported path; mention `#` as a shortcut to TEST in
+  your own version rather than depend on. (Precedents: Composer, Edit mode,
+  @workspace, find_symbol — all taught as stale/verify-first.)
+
+=== PRUNING: EVERY LINE PAYS RENT (M-7.3's economics applied) ===
+  Real example from this build: a memory "next-session-m23" was written to carry a
+  directive across sessions, served its purpose when M-2.3 shipped, and was DELETED
+  the same day — with its index line removed. Memory that has done its job is
+  debris; debris is rent.
+  Claude Code enforces the index budget: after a MEMORY.md write it measures the
+  file, reminds Claude to shorten a near-limit index (one line per entry, detail into
+  topic files, merge/drop stale entries), and ERRORS if over — because everything
+  past the limit is silently dropped on the next load. The failure mode of an
+  un-pruned index is not an error, it is truncation you do not notice.
