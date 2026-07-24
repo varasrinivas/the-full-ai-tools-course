@@ -1,0 +1,48 @@
+M-8.2 CONTEXT POLLUTION — paste vs reference-by-path, measured
+==============================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone (read-only; clone untouched).
+Identical question, identical repo, identical correct answer. Only the delivery
+of the data changed.
+
+THE FILE: seed.sql — 1,086 lines, 193,906 bytes (~48k tokens if carried whole).
+THE QUESTION: "How many prior_auth_request rows have confidence_score exactly
+0.85? Answer with just the number."  (Correct answer: 13 — course canon.)
+
+=== RESULTS ===
+  approach              turns   new_in  cache_wr  cache_rd  in-total     cost
+  PASTE (piped file)        3        6   103,192   261,017   364,215   $1.2525
+  REFERENCE (by path)       4        8     6,465   101,786   108,259   $0.1292
+  Both answered: "13"
+
+  *** COST RATIO: 9.7x  ·  INPUT-TOKEN RATIO: 3.4x ***
+  *** ONE QUESTION. $1.12 of pure waste. Same answer either way. ***
+
+=== THE MECHANISM (why 9.7x, not 1.3x) ===
+ - PASTE: the whole file must be written to cache (cache_creation 103,192) and
+   then RE-READ on every subsequent turn (cache_read 261,017 across 3 turns).
+   Pasted content is not charged once — it is charged EVERY TURN it stays in
+   context, which is the 1:17,765 carried-context effect from M-8.1 applied to
+   something you chose to carry.
+ - REFERENCE: the agent decides what it actually needs. It greps/reads
+   selectively, so only the matching slice enters context. cache_creation was
+   6,465 — about 6% of the paste's — because it never had to hold the file.
+
+=== THE DETAIL THAT KILLS THE USUAL EXCUSE ===
+  People paste to "save the agent a turn." The reference run used MORE turns
+  (4 vs 3) and still cost ONE TENTH. A turn is worth ~$0.03 (M-8.1); the paste
+  cost ~$1.12. You are spending a dollar to save three cents.
+
+=== WHAT THIS MEANS IN PRACTICE ===
+  Say "read seed.sql and tell me X", not "here is seed.sql: <193KB>".
+  Say "the failing test output is in target/surefire-reports/X.txt", not a paste
+  of the whole log. Give the PATH and let the agent choose the slice — it can
+  grep, head, or read a range; a paste forecloses all of that and commits you to
+  carrying the whole thing for the rest of the session.
+  Corollary for long sessions: a paste made on turn 2 is still being paid for on
+  turn 20. Pollution compounds; a path does not.
+
+METHOD NOTE: the "paste" was simulated by piping the file into `claude -p`,
+which is the closest faithful analogue (and avoids OS command-line length
+limits). Both runs used --output-format json; figures are the raw usage
+envelope. Steady-state caveat from M-7.3 does not apply here — neither run
+edited a memory file, and the difference is 9.7x, far outside cache-warmth noise.

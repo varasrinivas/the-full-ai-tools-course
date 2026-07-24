@@ -355,6 +355,34 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-06: Session Bill Meter ============ */
+.sim06{--s6red:#d0705a;--s6green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim06{--s6red:#B0503C;--s6green:#2d7350}
+.sim06 .s6head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim06 .s6meter{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sim06 .s6big{font-size:30px;font-weight:500;letter-spacing:-.01em;transition:color .3s}
+.sim06 .s6big.hot{color:var(--s6red)}
+.sim06 .s6big.cool{color:var(--s6green)}
+.sim06 .s6mode{font-size:10px;letter-spacing:.1em;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.sim06 .s6track{position:relative;height:52px;border:1px solid var(--line);border-radius:8px;background:var(--panel);overflow:hidden}
+.sim06 .s6step{position:absolute;bottom:0;width:0;background:linear-gradient(180deg,rgba(79,143,181,.35),rgba(79,143,181,.75));transition:width .4s ease,height .4s ease}
+.sim06 .s6spike{position:absolute;bottom:0;background:linear-gradient(180deg,rgba(208,112,90,.4),rgba(208,112,90,.85))}
+.sim06 .s6ann{position:absolute;top:5px;font-size:8.5px;color:var(--s6red);white-space:nowrap;opacity:0;transition:opacity .3s}
+.sim06 .s6ann.on{opacity:1}
+.sim06 .s6turns{display:flex;gap:4px;margin-top:9px}
+.sim06 .s6t{flex:1;text-align:center;font-size:8.5px;color:var(--faint);padding:3px 0;border:1px solid var(--line);border-radius:5px;transition:border-color .3s,color .3s}
+.sim06 .s6t.on{border-color:var(--gold);color:var(--gold)}
+.sim06 .s6t.paid{border-color:var(--s6red);color:var(--s6red)}
+.sim06 .s6ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:11px}
+.sim06 .s6btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim06 .s6btn:hover{border-color:var(--gold)}
+.sim06 .s6btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
+.sim06 .s6say{margin-top:10px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:52px}
+.sim06 .s6say b{color:var(--text);font-weight:500}
+.sim06 .s6say .bad{color:var(--s6red)}
+.sim06 .s6say .good{color:var(--s6green)}
+.sim06 .s6foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ ANIM-24: Anatomy of a Turn ============ */
 .anim24{--a24red:#d0705a;--a24green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim24{--a24red:#B0503C;--a24green:#2d7350}
@@ -3068,6 +3096,47 @@ const MODS = [
       {q:'You edit CLAUDE.md and immediately re-run a task; the cost jumps. What is the correct interpretation?',
        options:['The file made the task genuinely more expensive forever','You paid cache creation because the prefix changed &mdash; an artefact of the edit; compare steady state to steady state before concluding anything','The model got slower','Editing files always doubles cost'], answer:1}
     ]
+  },
+  {
+    id:'M-8.2', path:'eng', track:'T-08', title:'Context pollution', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A consultant asks for the patient&rsquo;s latest potassium. You could tell them the number, or you could courier the entire chart &mdash; every note since admission &mdash; to their desk, and then again tomorrow, and again the day after, because that is now what &ldquo;the patient&rsquo;s file&rdquo; means to them. They only ever needed one line, and you have made them carry the binder forever.',
+      body:
+        '<p><strong>The same question, the same answer, and ten times the bill.</strong> One question was asked twice against the identical repo: <em>how many requests score exactly 0.85?</em> Once with the 193KB seed file handed over up front, once by naming the file and letting the agent go get it. Both answered <b>13</b>. The paste cost <b>$1.2525</b>; the reference cost <b>$0.1292</b>. That is <b>9.7&times;</b>, and <b>$1.12 of pure waste on a single question</b> whose answer was identical either way.</p>' +
+        '<p><strong>Why the gap is tenfold rather than trivial.</strong> M-8.1 established that context is re-sent every turn. Pasting means the whole file is written to cache (<b>103,192 tokens</b> of cache creation) and then re-read on <em>every subsequent turn</em> (<b>261,017</b> of cache reads across three turns). Referencing means the agent decides what it actually needs &mdash; it greps rather than swallowing 1,086 lines &mdash; so its cache creation was <b>6,465</b>, about six percent of the paste&rsquo;s. <b>Pasted content is not charged once; it is charged every turn it remains in context.</b> A paste made on turn two is still being paid for on turn twenty.</p>' +
+        '<p><strong>The excuse this kills.</strong> People paste to save the agent a step. Look closely at the numbers: the reference run took <b>more</b> turns &mdash; four against three &mdash; and still cost a tenth. A turn is worth roughly three cents (M-8.1); the paste cost a dollar twelve. You are spending a dollar to save three cents, and you are doing it while <em>feeling efficient</em>, which is why this particular waste survives code review, retrospectives, and everyone&rsquo;s good intentions.</p>' +
+        '<p><strong>What you give up by pasting is optionality.</strong> Hand over a path and the agent can grep it, read a range, count matches, or open it fully &mdash; it picks, per turn, based on what the question turned out to need. Hand over the contents and you have foreclosed all of that: it holds everything, whether the question needed one line or all of them. The habit generalises well beyond files. Say <em>&ldquo;the failure is in <code>target/surefire-reports/ApprovalServiceTest.txt</code>&rdquo;</em> rather than pasting the log; say <em>&ldquo;compare against the batch method in <code>ClaimRepo</code>&rdquo;</em> rather than quoting it. Paths are cheap, contents are rent.</p>' +
+        '<p><strong>When pasting is right, and the pollution audit.</strong> Paste when the content does not exist on disk &mdash; a stack trace from a colleague&rsquo;s machine, output from a system the agent cannot reach, a snippet from a webpage. Even then, paste the <em>slice</em>, not the file. And run the audit on your own habits: what did you hand over this week that had a path? SIM-06 replays both runs as a ticking meter so you can watch the spike arrive and then keep charging. M-8.3 handles what to do once a session is already polluted &mdash; because the answer is not always &ldquo;keep going and hope&rdquo;.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-06'},
+    labA:{
+      title:'Measure your own pollution — Claude Code',
+      steps:[
+        'Reproduce the experiment on a repo you know. Pick a question answerable from one large file (a seed file, a big log, a fixture). Run it twice with <code>--output-format json</code>: once piping the file in (<code>cat bigfile | claude -p &quot;question&quot;</code>), once naming the file in the prompt and letting the agent fetch it.',
+        'Compare four numbers, not just the total: <code>cache_creation_input_tokens</code> (what had to be written), <code>cache_read_input_tokens</code> (what was re-read per turn), <code>num_turns</code>, and <code>total_cost_usd</code>. Reference: <b>$1.2525 vs $0.1292 &mdash; 9.7&times;</b>, with cache creation <b>103,192 vs 6,465</b>.',
+        'Check the turn counts before you conclude anything. Reference: the cheap run used <em>more</em> turns (4 vs 3). Write the sentence out in your log &mdash; &ldquo;I would have spent $__ to save __ turns worth $__&rdquo; &mdash; because that framing is what actually changes the habit.',
+        'Verify both answers agree. If the paste and the reference disagree, that is a finding worth more than the cost lesson &mdash; investigate before trusting either.',
+        'Audit your week: find one real session where you pasted something that had a path. Estimate what it cost using your per-turn figure from M-8.1 and how long it stayed in context. Success: two metered runs, the cost ratio, the turn-count observation, and one honest example from your own history.'
+      ]
+    },
+    checklist:[
+      'I measured the same question both ways and recorded all four usage numbers.',
+      'I can state my own paste-to-reference cost ratio.',
+      'I noticed whether the cheaper run used more turns &mdash; and why that matters.',
+      'I confirmed both approaches produced the same answer.',
+      'I found one real paste from my own week that should have been a path.'
+    ],
+    quiz:[
+      {q:'The same question was asked with a pasted 193KB file and by naming the file. What happened?',
+       options:['The paste was faster and cheaper','Both returned the same answer, but the paste cost $1.2525 against $0.1292 &mdash; 9.7&times; more, about $1.12 wasted on one question','The reference run failed','The paste was more accurate'], answer:1},
+      {q:'Why is pasted content so much more expensive than a path?',
+       options:['Pasting uses a more expensive model','It is written to cache and then re-read on every subsequent turn &mdash; charged every turn it stays in context, not once','Paths are compressed','Pasting disables caching entirely'], answer:1},
+      {q:'The reference run used MORE turns (4 vs 3) and still cost a tenth. What does that show?',
+       options:['Turn counts are unrelated to cost','Pasting to &ldquo;save a turn&rdquo; is a bad trade &mdash; a turn is worth about three cents while the paste cost a dollar twelve','The measurement was flawed','Fewer turns always means lower cost'], answer:1},
+      {q:'When is pasting the right call?',
+       options:['Whenever the file is large','When the content is not reachable from disk &mdash; a trace from someone else&rsquo;s machine, output from a system the agent cannot open &mdash; and even then, paste the slice, not the file','Never, under any circumstances','When you are in a hurry'], answer:1}
+    ]
   }
 ];
 
@@ -3901,6 +3970,78 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-06 · Session Bill Meter (spec: VISUALS.md) ----------
+   Replays the two recorded runs (recordings/m82-context-pollution.txt):
+   paste $1.2525 over 3 turns vs reference-by-path $0.1292 over 4 turns,
+   same question, same answer "13". Toggle re-runs the cheaper line. */
+VISUALS['SIM-06'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // per-turn cumulative cost, ending on the real totals
+  const RUNS = {
+    paste: {label:'PASTED THE FILE', total:1.2525, turns:[0.62, 0.98, 1.2525],
+      spikeAt:0, ann:'pasted 193KB (~48k tok) ↑', klass:'hot'},
+    ref:   {label:'REFERENCED BY PATH', total:0.1292, turns:[0.041, 0.078, 0.106, 0.1292],
+      spikeAt:-1, ann:'', klass:'cool'}
+  };
+  let mode = 'paste';
+  mount.innerHTML =
+    '<div class="sim06" aria-label="Session bill meter: pasting versus referencing by path">' +
+      '<div class="s6head"><span>SIM-06 · SESSION BILL · ONE QUESTION, ONE ANSWER</span><span data-s6a>answer: 13</span></div>' +
+      '<div class="s6meter"><span class="s6big" data-big>$0.0000</span><span class="s6mode" data-mode></span></div>' +
+      '<div class="s6track" data-track></div>' +
+      '<div class="s6turns" data-turns></div>' +
+      '<div class="s6ctrl">' +
+        '<button class="s6btn" type="button" data-m="paste" aria-pressed="true">paste the file</button>' +
+        '<button class="s6btn" type="button" data-m="ref" aria-pressed="false">reference by path</button>' +
+        '<button class="s6btn" type="button" data-replay>replay ▸</button>' +
+      '</div>' +
+      '<div class="s6say" data-say></div>' +
+      '<div class="s6foot">What to notice: the cheaper run used <b>more</b> turns. A turn costs about three cents; the paste cost a dollar twelve. You cannot save money by saving turns if you pay for it in carried context.</div>' +
+    '</div>';
+  const track = mount.querySelector('[data-track]');
+  const turnsEl = mount.querySelector('[data-turns]');
+  const bigEl = mount.querySelector('[data-big]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function frame(i){
+    const r = RUNS[mode];
+    const n = r.turns.length;
+    const paid = r.turns[i];
+    bigEl.textContent = '$' + paid.toFixed(4);
+    bigEl.className = 's6big ' + r.klass;
+    track.innerHTML = r.turns.slice(0, i + 1).map((v, k) => {
+      const h = Math.max(6, (v / 1.2525) * 100);
+      const w = 100 / n;
+      const isSpike = k === r.spikeAt;
+      return '<span class="' + (isSpike ? 's6spike' : 's6step') + '" style="left:' + (k * w) + '%;width:' + (w - 1) + '%;height:' + h + '%"></span>';
+    }).join('') + (r.spikeAt >= 0 && i >= r.spikeAt
+      ? '<span class="s6ann on" style="left:2%">' + r.ann + '</span>' : '');
+    turnsEl.innerHTML = r.turns.map((v, k) =>
+      '<span class="s6t' + (k === i ? ' on' : (k < i ? ' paid' : '')) + '">turn ' + (k + 1) + '</span>').join('');
+  }
+  function settle(){
+    const r = RUNS[mode];
+    mount.querySelector('[data-mode]').textContent = r.label + ' · ' + r.turns.length + ' turns';
+    mount.querySelector('[data-say]').innerHTML = mode === 'paste'
+      ? 'You handed over <b>193KB (~48k tokens)</b> up front, so it was written to cache and then <b>re-read on every turn</b>. Final bill <span class="bad">$1.2525</span> for an answer of &ldquo;13&rdquo;. Pasted content is not charged once &mdash; it is charged every turn it stays in context.'
+      : 'The agent chose what it needed &mdash; grep, not the whole file &mdash; so almost nothing entered context. Final bill <span class="good">$0.1292</span>, the same answer, in <b>one more turn</b>. That is <b>9.7&times; cheaper</b>: you spent a dollar to save three cents.';
+  }
+  function play(){
+    stop();
+    const r = RUNS[mode];
+    if(reduce){ frame(r.turns.length - 1); settle(); return; }
+    r.turns.forEach((v, i) => timers.push(setTimeout(() => frame(i), 200 + i * 650)));
+    timers.push(setTimeout(settle, 200 + r.turns.length * 650));
+  }
+  mount.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => {
+    mode = b.dataset.m;
+    mount.querySelectorAll('[data-m]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    play();
+  }));
+  mount.querySelector('[data-replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-24 · Anatomy of a Turn (spec: VISUALS.md) ----------
