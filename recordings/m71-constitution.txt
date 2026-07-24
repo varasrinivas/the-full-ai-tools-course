@@ -1,0 +1,62 @@
+M-7.1 CLAUDE.md DEEP DIVE — the before/after the course has been saving up
+===========================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m71-constitution
+(constitution removed afterward — the teaching repos stay BARE by design until the
+student builds one; clone restored pristine). The written constitution is kept
+alongside this file as m71-priorauth-api-CLAUDE.md.txt.
+
+THE QUESTION (identical both times, verbatim):
+  "A new payer integration is being written. At exactly what confidence score does a
+   prior-auth request auto-approve, and what should I implement? Answer definitively
+   and cite your source."
+
+--- BEFORE: bare repo, no CLAUDE.md (90 seconds) ---
+  Opening line: "I can answer definitively about what the code *does*, but not about
+  what the rule *is* — the repo contradicts itself, and that contradiction is the
+  real answer to your question."
+  It did excellent forensics: found `score > 0.85` at ApprovalService.java:99, tabled
+  four sources saying INCLUSIVE (javadoc, entity comment, the log string that prints
+  >=, five seed rows at 0.85 marked AUTO_APPROVED), located the introducing commit
+  ("Guard against borderline auto-approvals"), and explained why it went green (no
+  test between 0.61 and 0.9).
+  *** AND THEN IT RECOMMENDED THE WRONG THING: ***
+  "Match current behavior — exclusive (> 0.85) — so the new payer decides identically
+  to the running engine." Plus: "Get [the commit] confirmed before you ship."
+  A defensible engineering instinct (consistency over correctness) that would have
+  PROPAGATED BUG-API-01 into a brand-new payer integration. The code could not settle
+  policy, so the agent correctly refused to guess — and defaulted to the bug.
+
+--- AFTER: same repo + a 36-line CLAUDE.md (24 seconds) ---
+  Opening line: "A request auto-approves at a confidence score of exactly 0.85 — the
+  threshold is inclusive (>=). Implement score >= 0.85."
+  Cited the authority by name and quoted it: CLAUDE.md → "Domain rules — THE POLICY
+  (signed by the service owner, 2026-07-24)", rule 1.
+  Then, unprompted: "do not copy the current code" — flagged line 99 as violating
+  rule 1, named BUG-API-01, said leave it alone but warn reviewers "so nobody mirrors
+  the bug", and carried forward rule 2 (score may approve or escalate, never deny)
+  and rule 4 (never hardcode a second copy of the threshold).
+
+--- THE MEASURED DELTA ---
+  time to answer      90s  ->  24s   (~3.7x)
+  verdict             "cannot determine the rule"  ->  definitive + cited
+  recommendation      implement `>` (the BUG)      ->  implement `>=` (the POLICY)
+  bug handling        escalate to a human          ->  flagged, contained, not copied
+  The constitution did not make the agent smarter. It settled a question the code
+  CANNOT answer — which of two contradictory readings is the policy of record.
+
+WHAT WENT IN THE 36 LINES: commands (incl. the no-Docker unit invocation), layout,
+four signed domain rules, a "known deviations — do not helpfully fix" section naming
+BUG-API-01, and conventions (Clock injection; tests assert in domain terms). Under
+the docs' 200-line guidance, and every line is something the code cannot tell you.
+
+DOC-VERIFIED HIERARCHY (code.claude.com/docs/en/memory, 2026-07-24), used by ANIM-10:
+  Managed policy: /Library/Application Support/ClaudeCode/CLAUDE.md (macOS),
+    /etc/claude-code/CLAUDE.md (Linux/WSL), C:\Program Files\ClaudeCode\CLAUDE.md
+  User: ~/.claude/CLAUDE.md · Project: ./CLAUDE.md or ./.claude/CLAUDE.md
+  Local (gitignored): ./CLAUDE.local.md · Subdirectory CLAUDE.md: loads ON DEMAND
+    when Claude reads files in that directory.
+  Load order is broadest -> most specific, and files are CONCATENATED, not
+  overriding — "instructions closer to where you launched Claude are read last."
+  @path imports expand at launch, max depth 4 hops; backticks prevent an import.
+  Target under 200 lines. Project-root CLAUDE.md is re-injected after /compact;
+  nested ones are not. It is context, not enforcement — use hooks to actually block.

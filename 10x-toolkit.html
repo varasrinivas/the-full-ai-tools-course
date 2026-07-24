@@ -355,6 +355,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-10: Memory Hierarchy ============ */
+.anim10{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim10 .a10head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim10 .a10stack{display:flex;flex-direction:column;gap:7px}
+.anim10 .a10card{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 12px;transition:border-color .35s,background .35s}
+.anim10 .a10card.lit{border-color:var(--gold);background:rgba(245,184,75,.06)}
+.anim10 .a10top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.anim10 .a10scope{font-size:9.5px;letter-spacing:.12em;color:var(--gold)}
+.anim10 .a10an{font-size:9px;color:var(--faint);font-style:italic}
+.anim10 .a10path{font-size:9.5px;color:var(--dim);margin-top:3px;word-break:break-all}
+.anim10 .a10line{font-size:10px;color:var(--faint);margin-top:6px;padding-left:11px;border-left:2px solid var(--line);opacity:.4;transition:opacity .35s,color .35s,border-color .35s}
+.anim10 .a10line.picked{opacity:1;color:var(--text);border-color:var(--gold)}
+.anim10 .a10beam{margin-top:12px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:52px}
+.anim10 .a10beam b{color:var(--text);font-weight:500}
+.anim10 .a10beam .q{color:var(--gold)}
+.anim10 .a10ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.anim10 .a10btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim10 .a10btn:hover{border-color:var(--gold)}
+.anim10 .a10foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ ANIM-22: Test-First Loop + the Gate ============ */
 .anim22{--a22red:#d0705a;--a22green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim22{--a22red:#B0503C;--a22green:#2d7350}
@@ -2579,6 +2599,63 @@ const MODS = [
       {q:'What is the honest scope of the 100%-vs-40% comparison?',
        options:['It proves test-first always produces better suites','It is one recorded pair, not a law &mdash; what generalizes is the mechanism: assert in the language of the requirement, which test-first makes the easy path','It proves mutation testing is unnecessary with TDD','It only applies to Java'], answer:1}
     ]
+  },
+  {
+    id:'M-7.1', path:'eng', track:'T-07', title:'CLAUDE.md deep dive', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A locum doctor walks onto a ward they have never worked. They can read every chart and infer a great deal &mdash; but they cannot deduce <em>this hospital&rsquo;s</em> policy from the charts, because the charts only record what was done, and some of it was done wrong. The policy binder on the wall exists for exactly the questions the charts cannot settle. CLAUDE.md is that binder, and someone&rsquo;s name is on the front.',
+      body:
+        '<p><strong>The payoff the teaching repos have been saving up.</strong> They have been deliberately bare since M-1.4 &mdash; no constitution &mdash; so this module could show the before and after on the same question. Here it is, recorded: <em>&ldquo;At exactly what confidence score does a request auto-approve, and what should I implement?&rdquo;</em> asked twice against the same codebase, ninety seconds apart in effort and a world apart in outcome.</p>' +
+        '<p><strong>Before: brilliant forensics, wrong answer.</strong> With no constitution the agent did outstanding work &mdash; found the strict comparison at <code>ApprovalService.java:99</code>, tabled four sources saying the rule is inclusive, located the commit that flipped it, and explained why the suite stayed green. Then it opened with the sentence that is the whole argument for this module: <em>&ldquo;I can answer definitively about what the code does, but not about what the rule is &mdash; the repo contradicts itself.&rdquo;</em> And so it recommended matching current behavior, exclusive, <em>the bug</em> &mdash; a defensible instinct, consistency over correctness, that would have propagated BUG-API-01 into a brand-new payer integration. The code cannot settle policy, so a careful agent defaults to whatever is running.</p>' +
+        '<p><strong>After: thirty-six lines, twenty-four seconds, the opposite recommendation.</strong> The same question against the same code, now with a project CLAUDE.md, opened: <em>&ldquo;A request auto-approves at exactly 0.85 &mdash; the threshold is inclusive. Implement <code>score &gt;= 0.85</code>&rdquo;</em>, citing the constitution by name and quoting the signed rule. Unprompted, it added <em>&ldquo;do not copy the current code,&rdquo;</em> flagged line 99 as violating the policy, said to leave the fix to its owner but warn reviewers <em>&ldquo;so nobody mirrors the bug&rdquo;</em> &mdash; and carried forward two rules nobody asked about. The constitution did not make the agent smarter. It settled the one question the code <em>cannot</em> answer: which of two contradictory readings is the policy of record.</p>' +
+        '<p><strong>What earns a line, and what does not.</strong> Every line in that file is something the codebase cannot tell you: the build and test commands (including the no-Docker invocation), the layout with each service&rsquo;s <em>responsibility</em>, four signed domain rules, a <em>known deviations</em> section naming BUG-API-01 so no agent &ldquo;helpfully&rdquo; fixes it, and conventions like clock injection. What does <em>not</em> earn a line: anything an agent can derive by reading &mdash; directory listings, dependency lists, restated architecture. The docs put the target under 200 lines because these files load into every session and longer files reduce adherence; the discipline is that every line pays rent, which is M-7.4&rsquo;s subject.</p>' +
+        '<p><strong>Four scopes, concatenated &mdash; not overridden.</strong> Managed policy (an org-wide file IT deploys, which a user cannot exclude), then user (<code>~/.claude/CLAUDE.md</code>), then project (<code>./CLAUDE.md</code> or <code>./.claude/CLAUDE.md</code>, committed and team-shared), then directory-level files that load <em>on demand</em> when Claude reads files there &mdash; plus a gitignored <code>CLAUDE.local.md</code> for personal notes. Broadest loads first and everything is concatenated, so the instruction nearest where you launched Claude is read last. ANIM-10 runs one prompt through all four. Two facts worth carrying: <code>@path</code> imports expand at launch up to four hops deep, and none of this is enforcement &mdash; it is context. If a rule must <em>always</em> hold, a hook enforces it; CLAUDE.md only persuades. M-7.2 takes the same idea cross-tool.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-10'},
+    labA:{
+      title:'Write the constitution, prove the delta — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-api &mdash; confirm it has no CLAUDE.md. Ask the question <em>before</em> you write anything: <em>&ldquo;A new payer integration is being written. At exactly what confidence score does a request auto-approve, and what should I implement? Answer definitively and cite your source.&rdquo;</em> Save the answer and time it. Reference: 90s, and it recommended implementing the <b>bug</b>.',
+        'Run <code>/init</code> to get a starting draft, then edit it hard. Keep only what the code cannot tell you: commands, layout-with-responsibilities, domain rules, conventions. Delete anything an agent could derive by reading the repo.',
+        'Add the part <code>/init</code> will not write for you &mdash; the signed policy. State the threshold rule as <b>0.85 inclusive, policy of record</b>, with an owner and a date, plus a <em>known deviations</em> section naming the strict comparison so no agent silently fixes it. This is the step M-1.4 called signing the rule.',
+        'Re-ask the identical question. Reference: <b>24s</b>, definitive, cites the constitution, and warns you not to copy line 99. Log both answers side by side &mdash; the delta is the artifact, not the file.',
+        'Check it loaded, and keep it honest: run <code>/context</code> and confirm your file appears under Memory files, then count lines (target under 200). Success: two timed answers with opposite recommendations, a constitution under the limit, and the load confirmed.'
+      ]
+    },
+    labB:{
+      title:'The same constitution, read by Copilot',
+      steps:[
+        'Copilot reads <code>.github/copilot-instructions.md</code> natively (M-1.4). Port your signed domain rules there &mdash; or, if your team is standardizing, keep one source and import it, which is M-7.2&rsquo;s lab.',
+        'Ask <b>Agent</b> the identical threshold question in VS Code and grade the answer against your Claude before/after: definitive or hedging? cites the instructions file or the code?',
+        'Success: the same question answered from written policy in a second tool, and one line on which file your team would treat as the source of truth.'
+      ]
+    },
+    labC:{
+      title:'The same rules in Cursor, then the scope drill',
+      steps:[
+        'Put the rules into <code>.cursor/rules/</code> (verified <code>.mdc</code> format, generated with <code>/create-rule</code>) and re-ask the question in Cursor.',
+        'The scope drill: add a directory-level <code>CLAUDE.md</code> under <code>service/</code> with one convention (clock injection), then ask a question about a file in that directory and one about a file outside it. Notice the difference &mdash; subdirectory files load on demand, when Claude reads files there.',
+        'Write your rule for what belongs where: <em>machine-wide habits in user scope, the policy of record in the committed project file, narrow conventions in the directory they govern, and anything that must be enforced in a hook instead.</em> Success: three tools answering from written policy, the on-demand load observed, the scope rule written.'
+      ]
+    },
+    checklist:[
+      'I asked the threshold question before writing anything and captured the bare-repo answer.',
+      'My constitution contains only what the code cannot tell me &mdash; and is under 200 lines.',
+      'I wrote the policy as signed, with an owner and a date, plus a known-deviations section.',
+      'The re-asked question came back definitive and cited the file.',
+      'I can name the four scopes and state that they concatenate rather than override.'
+    ],
+    quiz:[
+      {q:'With no CLAUDE.md, the agent found the bug, explained it perfectly &mdash; and then recommended implementing the strict comparison. Why?',
+       options:['It misread the code','The code cannot settle which of two contradictory readings is policy, so a careful agent defaults to matching what is currently running &mdash; consistency over correctness','It ignored the documentation','It was optimizing for speed'], answer:1},
+      {q:'What did the 36-line constitution actually change?',
+       options:['It made the agent smarter about Java','It settled the question the code cannot answer &mdash; which reading is the policy of record &mdash; so the answer flipped from copying the bug to implementing the rule and flagging the violation','It fixed the bug automatically','It reduced token usage only'], answer:1},
+      {q:'Which content does NOT belong in CLAUDE.md?',
+       options:['Build and test commands','A directory listing and dependency inventory the agent can derive by reading the repo','Domain rules with an owner','Conventions that differ from tool defaults'], answer:1},
+      {q:'How do the four CLAUDE.md scopes combine?',
+       options:['The most specific file overrides the others','They are concatenated, broadest first, so the instruction closest to where you launched Claude is read last &mdash; and subdirectory files load on demand','Only the project file is loaded','User scope always wins'], answer:1}
+    ]
   }
 ];
 
@@ -3412,6 +3489,63 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-10 · Memory Hierarchy (spec: VISUALS.md) ----------
+   Paths and load semantics doc-verified 2026-07-24 (code.claude.com/docs/en/memory).
+   The beam is one real prompt picking up one line from each scope. */
+VISUALS['ANIM-10'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CARDS = [
+    {scope:'MANAGED POLICY', an:'hospital policy', path:'C:\\Program Files\\ClaudeCode\\CLAUDE.md  ·  /etc/claude-code/CLAUDE.md', line:'PHI never enters a prompt. (cannot be excluded by a user)'},
+    {scope:'USER', an:'your standing habits', path:'~/.claude/CLAUDE.md', line:'Always show me the test command you ran.'},
+    {scope:'PROJECT', an:'department policy', path:'./CLAUDE.md  or  ./.claude/CLAUDE.md  — committed, team-shared', line:'Auto-approve threshold is 0.85 INCLUSIVE. Policy of record.'},
+    {scope:'DIRECTORY', an:'this procedure', path:'service/CLAUDE.md — loads ON DEMAND when Claude reads files here', line:'Time comes from the injected Clock, never Instant.now().'}
+  ];
+  mount.innerHTML =
+    '<div class="anim10" aria-label="The CLAUDE.md memory hierarchy">' +
+      '<div class="a10head"><span>ANIM-10 · FOUR SCOPES, ONE CONTEXT</span>' +
+        '<button class="a10btn" data-a10run>SEND A PROMPT ▸</button></div>' +
+      '<div class="a10stack">' +
+        CARDS.map((c,i) =>
+          '<div class="a10card" data-card="' + i + '">' +
+            '<div class="a10top"><span class="a10scope">' + c.scope + '</span><span class="a10an">' + c.an + '</span></div>' +
+            '<div class="a10path">' + c.path + '</div>' +
+            '<div class="a10line" data-line="' + i + '">' + c.line + '</div>' +
+          '</div>').join('') +
+      '</div>' +
+      '<div class="a10beam" data-beam></div>' +
+      '<div class="a10foot">What to notice: broadest scope loads first and they are <b>concatenated, not overridden</b> &mdash; the instruction closest to where you launched Claude is read last. All of it is context, not enforcement: to actually block an action you need a hook.</div>' +
+    '</div>';
+  const beam = mount.querySelector('[data-beam]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function reset(){
+    mount.querySelectorAll('.a10card').forEach(c => c.classList.remove('lit'));
+    mount.querySelectorAll('.a10line').forEach(l => l.classList.remove('picked'));
+    beam.innerHTML = 'Press <b>SEND A PROMPT</b>: <span class="q">&ldquo;implement the auto-approve check for the new payer&rdquo;</span> &mdash; watch which line each scope contributes.';
+  }
+  function run(){
+    stop(); reset();
+    const done = () => {
+      beam.innerHTML = 'The prompt arrives carrying <b>all four lines at once</b>: no PHI, show the test command, <b>0.85 inclusive is the policy of record</b>, and use the injected Clock. None of that is in the code &mdash; and the third line is the one that stops a new integration from copying a known bug.';
+    };
+    if(reduce){
+      mount.querySelectorAll('.a10card').forEach(c => c.classList.add('lit'));
+      mount.querySelectorAll('.a10line').forEach(l => l.classList.add('picked'));
+      done(); return;
+    }
+    CARDS.forEach((c,i) => {
+      timers.push(setTimeout(() => {
+        mount.querySelector('[data-card="' + i + '"]').classList.add('lit');
+        mount.querySelector('[data-line="' + i + '"]').classList.add('picked');
+        beam.innerHTML = 'picked up from <b>' + c.scope + '</b>: &ldquo;' + c.line + '&rdquo;';
+      }, 300 + i*900));
+    });
+    timers.push(setTimeout(done, 300 + CARDS.length*900));
+  }
+  mount.querySelector('[data-a10run]').addEventListener('click', run);
+  run();
 };
 
 /* ---------- ANIM-22 · Test-First Loop + the Gate (spec: VISUALS.md) ----------

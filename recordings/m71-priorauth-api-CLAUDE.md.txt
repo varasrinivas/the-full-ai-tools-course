@@ -1,0 +1,36 @@
+# CLAUDE.md — priorauth-api
+
+Prior-authorization decision service. Spring Boot 4.1 / Java 21 / Postgres.
+
+## Commands
+- Test (unit only, no Docker): `./mvnw test -Dtest='*ServiceTest,*ControllerTest'`
+- Full suite (integration tests need Docker; they skip cleanly without it): `./mvnw test`
+- Run locally: `docker compose up -d` then `./mvnw spring-boot:run`
+
+## Layout
+- `controller/` — HTTP + validation + DTO mapping. No business rules.
+- `service/` — the pipeline. `ApprovalService` orchestrates; `EligibilityService` owns
+  coverage policy; `ClaimHistoryService` is advisory only; `NotificationService` tells
+  the provider about denials.
+- `repository/` — Spring Data interfaces. `model/` — JPA entities. `config/` — Clock, security.
+- Schema lives in `seed.sql` (`ddl-auto=validate`). There is no migration framework.
+
+## Domain rules — THE POLICY (signed by the service owner, 2026-07-24)
+1. **Auto-approve threshold is 0.85 INCLUSIVE.** A request scoring **exactly 0.85
+   auto-approves**. This is the policy of record. Never re-derive it from code.
+2. **The confidence score may approve or escalate — never deny.** Only deterministic
+   coverage policy (`EligibilityService`) or a human reviewer may produce `DENIED`.
+3. Claim history is advisory context for reviewers. It must never gate a decision.
+4. Never hardcode a second copy of the threshold. Use
+   `ApprovalService.AUTO_APPROVE_THRESHOLD` or route through `ApprovalService.process`.
+
+## Known deviations from policy (do not "helpfully" fix)
+- `ApprovalService.java:99` currently uses strict `>`, which **violates rule 1** at
+  exactly 0.85. Tracked as BUG-API-01; it has an owner and a scheduled fix. If you are
+  asked to implement threshold behavior, implement **the policy (>=)**, and flag the
+  line — do not copy the current behavior into new code.
+
+## Conventions
+- Time comes from the injected `Clock`, never `Instant.now()` directly.
+- Tests assert behavior in domain terms; boundary values are written as literals, not
+  as references to production constants.
