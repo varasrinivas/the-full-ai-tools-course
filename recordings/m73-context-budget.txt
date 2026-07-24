@@ -1,0 +1,59 @@
+M-7.3 THE CONTEXT WINDOW IS A BUDGET — measured, not estimated
+===============================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m73-budget
+(all files removed, clone restored bare/pristine).
+Instrument: `claude -p "Reply with exactly: ok" --output-format json` — the usage
+envelope reports cache_read_input_tokens, cache_creation_input_tokens,
+input_tokens, output_tokens and total_cost_usd. The prompt is held IDENTICAL and
+trivial in all three runs, so every difference is context, not work.
+
+=== TOTAL CONTEXT CARRIED, SAME TRIVIAL PROMPT ===
+  bare repo, no CLAUDE.md      25,514 tokens
+  + lean 36-line CLAUDE.md     26,539 tokens   (delta +1,025)
+  + bloated 170-line CLAUDE.md 30,123 tokens   (delta +4,609)
+  >>> BLOAT PENALTY OVER LEAN: +3,584 tokens carried in every session.
+
+THE FLOOR IS THE HEADLINE: ~25.5k tokens are already in the window before you
+type anything — system prompt, tool definitions, harness. Output for "reply ok"
+was FOUR tokens. You are not filling an empty backpack; you are adding to one
+that is already loaded.
+
+WHAT WENT INTO THE BLOAT (exactly the anti-pattern M-7.1 warned about): the same
+lean constitution PLUS a full src/**.java directory listing, the pom dependency
+block, and 40 lines of restated architecture prose — all of it derivable by
+reading the repo. 134 extra lines bought zero information the agent lacked.
+
+=== HONEST COST READING (do not overclaim) ===
+  bare : cache_read 25,512 · cache_creation     0 · $0.0134
+  lean : cache_read 22,523 · cache_creation 4,014 · $0.0521
+  bloat: cache_read 22,523 · cache_creation 7,598 · $0.0879
+  The cost gap in THESE runs is dominated by CACHE CREATION, not steady state:
+  adding/editing CLAUDE.md invalidates the cached prefix, so those tokens must be
+  written to cache (writes cost more than reads). Steady state, an unchanged file
+  is carried as cheap cache READS every turn.
+  So the correct claims are:
+   - context size delta is real and permanent (+1,025 lean, +4,609 bloat);
+   - the cost spike is paid whenever the prefix CHANGES (every edit, every cold
+     session), then amortises into cheaper reads;
+   - therefore a memory file that CHURNS is more expensive than its size implies,
+     which is an argument for writing it once, carefully, and leaving it alone.
+  What must NOT be claimed from this data: "bloat costs 6.5x per turn forever."
+
+=== /compact vs /clear (doc-verified 2026-07-24, code.claude.com/docs/en/memory) ===
+ - "Project-root CLAUDE.md survives compaction: after /compact, Claude re-reads it
+   from disk and re-injects it into the session."
+ - "Nested CLAUDE.md files in subdirectories are not re-injected automatically;
+   they reload the next time Claude reads a file in that subdirectory."
+ - "If an instruction disappeared after compaction, it was either given only in
+   conversation or lives in a nested CLAUDE.md that hasn't reloaded yet. Add
+   conversation-only instructions to CLAUDE.md to make them persist."
+ >>> The practical rule: anything you want to survive a compaction must be IN A
+ FILE, not merely said in the conversation. /compact keeps a summary + re-injects
+ the project constitution; /clear starts a fresh window (the floor again).
+
+TEACHING BEATS: (1) the window is a budget with a large fixed floor you did not
+choose; (2) every line of memory is rent paid every session — M-7.1's "under 200
+lines" is a budget rule, not style advice; (3) the expensive mistake is loading
+what the agent could derive; (4) durability differs from cost: files survive
+compaction, conversation does not.
+CLEANUP: clone restored bare; no plants touched.

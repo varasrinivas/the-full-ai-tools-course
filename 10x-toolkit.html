@@ -355,6 +355,39 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-03: Context Budget ============ */
+.sim03{--s3red:#d0705a;--s3green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim03{--s3red:#B0503C;--s3green:#2d7350}
+.sim03 .s3head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim03 .s3bar{display:flex;height:30px;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--panel)}
+.sim03 .s3seg{height:100%;transition:width .35s ease;min-width:0}
+.sim03 .s3seg.floor{background:linear-gradient(90deg,#4a4a52,#5f5f68)}
+.sim03 .s3seg.mem{background:linear-gradient(90deg,#2d7350,var(--s3green))}
+.sim03 .s3seg.code{background:linear-gradient(90deg,#3a6b8a,#4f8fb5)}
+.sim03 .s3seg.conv{background:linear-gradient(90deg,#8a7a3a,var(--gold))}
+.sim03 .s3seg.debris{background:linear-gradient(90deg,#B0503C,var(--s3red))}
+.sim03 .s3seg.free{background:transparent}
+.sim03 .s3key{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font-size:9.5px;color:var(--dim)}
+.sim03 .s3key i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.sim03 .s3key .kf{background:#5f5f68}.sim03 .s3key .km{background:var(--s3green)}
+.sim03 .s3key .kc{background:#4f8fb5}.sim03 .s3key .kv{background:var(--gold)}
+.sim03 .s3key .kd{background:var(--s3red)}
+.sim03 .s3ctrl{display:grid;grid-template-columns:auto 1fr auto;gap:9px 11px;align-items:center;margin-top:12px;font-size:10.5px;color:var(--dim)}
+.sim03 .s3ctrl input[type=range]{width:100%;accent-color:var(--gold)}
+.sim03 .s3val{font-size:10px;color:var(--text);white-space:nowrap}
+.sim03 .s3meters{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sim03 .s3m{flex:1;min-width:150px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px}
+.sim03 .s3ml{font-size:9px;letter-spacing:.1em;color:var(--faint)}
+.sim03 .s3mv{font-size:17px;color:var(--text);font-weight:500}
+.sim03 .s3mv.warn{color:var(--s3red)}
+.sim03 .s3mv.ok{color:var(--s3green)}
+.sim03 .s3acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.sim03 .s3btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim03 .s3btn:hover{border-color:var(--gold)}
+.sim03 .s3say{margin-top:10px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:48px}
+.sim03 .s3say b{color:var(--text);font-weight:500}
+.sim03 .s3foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-14: One File, Four Tools ============ */
 .sim14{--s14red:#d0705a;--s14green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim14{--s14red:#B0503C;--s14green:#2d7350}
@@ -2736,6 +2769,62 @@ const MODS = [
       {q:'What is <code>.agent.md</code>?',
        options:['A newer name for AGENTS.md','A Copilot custom agent &mdash; a named role with its own tools and prompt &mdash; not repo-wide instructions','Cursor&rsquo;s rules format','A Claude Code memory file'], answer:1}
     ]
+  },
+  {
+    id:'M-7.3', path:'eng', track:'T-07', title:'The context window is a budget', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'An astronaut&rsquo;s backpack. Every gram is negotiated months in advance, because the pack does not get bigger in orbit &mdash; and a great deal of it is already spoken for by life support before anyone asks what <em>you</em> want to bring. The question is never &ldquo;is there room?&rdquo; It is &ldquo;what am I willing to leave behind to carry this?&rdquo;',
+      body:
+        '<p><strong>You start deep in the hole, and it is measurable.</strong> A trivial prompt &mdash; literally <em>&ldquo;reply with exactly: ok&rdquo;</em> &mdash; against a bare repo carried <b>25,514 tokens</b> of context before the question was even considered: system prompt, tool definitions, harness. The answer was four tokens. That floor is not a choice you made; it is the pack you are handed. Everything you add is negotiated against what is already in there.</p>' +
+        '<p><strong>What a memory file actually costs, measured.</strong> Same trivial prompt, three contexts: bare repo <b>25,514</b>; plus M-7.1&rsquo;s lean 36-line constitution <b>26,539</b> (+1,025); plus a deliberately bloated 170-line version <b>30,123</b> (+4,609). The bloat penalty is <b>+3,584 tokens carried in every single session</b>, and it bought nothing &mdash; the extra 134 lines were a directory listing, a dependency block, and restated architecture, all of it derivable by reading the repo. This is why M-7.1&rsquo;s &ldquo;under 200 lines&rdquo; is a <em>budget</em> rule rather than style advice: every line is rent, charged per session, forever.</p>' +
+        '<p><strong>An honest word about cost, because the naive reading is wrong.</strong> Those three runs cost $0.013, $0.052 and $0.088 &mdash; but that gap is dominated by <em>cache creation</em>, not steady state. Adding or editing a memory file invalidates the cached prefix, so those tokens must be written to cache, and writes cost more than reads. Steady state, an unchanged file rides along as cheap cache reads. The correct conclusions: the size delta is real and permanent, the price spike is paid whenever the prefix <em>changes</em>, and therefore <b>a memory file that churns is more expensive than its length suggests</b> &mdash; an argument for writing it carefully once and leaving it alone. What you may <em>not</em> conclude from this data is that bloat costs six times more per turn forever.</p>' +
+        '<p><strong>Composition is the skill: floor, memory, code, conversation, debris.</strong> The floor is fixed. Memory is rent you choose. Code you open is the working set. Conversation grows with every turn. And debris &mdash; pasted logs, dumped files, output nobody will read again &mdash; is the segment that quietly eats the window, which is M-8.2&rsquo;s whole subject. SIM-03 lets you drag each one and watch the headroom vanish; the useful reflex is noticing <em>which</em> segment is squeezing you before you reach for a bigger model.</p>' +
+        '<p><strong>/compact keeps the file, /clear keeps only the file.</strong> Per current docs, the project-root CLAUDE.md <em>survives compaction</em> &mdash; after <code>/compact</code>, Claude re-reads it from disk and re-injects it &mdash; while nested CLAUDE.md files in subdirectories are not re-injected automatically and reload the next time Claude reads a file there. The consequence is the practical rule of this whole track: <b>if it must survive, it must be in a file.</b> An instruction you merely said in conversation is a candidate for the summariser; an instruction in your constitution comes back. <code>/clear</code> gives you a fresh window &mdash; not a smaller floor &mdash; so you still carry the pack plus your memory files on the very first turn. M-7.4 turns this into a discipline: every line pays rent.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-03'},
+    labA:{
+      title:'Measure your own floor and rent — Claude Code',
+      steps:[
+        'Measure the floor: in a clean clone run <code>claude -p &quot;Reply with exactly: ok&quot; --output-format json</code> and read the usage envelope &mdash; <code>cache_read_input_tokens</code> plus <code>cache_creation_input_tokens</code> plus <code>input_tokens</code> is what you carried. Reference: <b>25,514</b> for four tokens of output.',
+        'Measure the rent: add a lean CLAUDE.md and re-run the identical prompt. Reference delta: <b>+1,025</b> for 36 lines. Then bloat it deliberately &mdash; paste in a directory listing and your dependency block &mdash; and re-run. Reference: <b>+4,609</b>, a penalty of <b>+3,584</b> over lean for information the agent could read off disk.',
+        'Read the cache fields before you draw a cost conclusion. Note how much of the delta is <code>cache_creation</code> (a one-off, paid because you changed the prefix) versus <code>cache_read</code> (the per-turn carry). Write the honest version of the claim in your log &mdash; this is a lesson in not over-reading your own instrument.',
+        'Now audit for real: open your own project&rsquo;s CLAUDE.md and mark every line as <em>rent-paying</em> (the agent cannot derive it) or <em>derivable</em> (it can). Delete the derivable ones and re-measure. Success: three measurements, a correctly-hedged cost statement, and a smaller constitution that lost nothing.'
+      ]
+    },
+    labB:{
+      title:'Composition and compaction — Copilot',
+      steps:[
+        'In VS Code, work a task until the conversation is long, then watch what the surface tells you about context use. Note which segment grew: the code you opened, or the conversation itself.',
+        'Test durability the way this module does: state a preference only in chat (&ldquo;always use the batch query&rdquo;), continue until compaction, then ask whether the rule still holds. Then move the same rule into the instructions file and repeat.',
+        'Success: the durability difference observed first-hand, and one line on which of your habitual instructions belong in a file rather than a message.'
+      ]
+    },
+    labC:{
+      title:'The budget drill in Cursor, then the rent rule',
+      steps:[
+        'Run SIM-03 and find the settings where headroom drops below 40k &mdash; note that pasted logs get you there far faster than a long conversation does. That ratio is the argument for M-8.2&rsquo;s reference-by-path habit.',
+        'In Cursor, compare a session where you paste a large file into chat against one where you reference it by path, and watch the difference in what the tool has to carry.',
+        'Write the rent rule for your team: <em>the floor is fixed, memory is rent paid every session, and anything derivable from the repo should never be memory; if a rule must survive compaction it lives in a file, not a message.</em> Success: the headroom threshold found, the paste-vs-reference contrast felt, the rule written.'
+      ]
+    },
+    checklist:[
+      'I measured my own context floor with the JSON usage envelope.',
+      'I measured what my CLAUDE.md costs and can quote the delta in tokens.',
+      'I checked cache_creation vs cache_read before making any cost claim.',
+      'I deleted derivable content from a memory file and confirmed the drop.',
+      'I can state what survives /compact and what does not &mdash; and why files beat messages.'
+    ],
+    quiz:[
+      {q:'A trivial prompt against a bare repo carried 25,514 tokens. What is that number?',
+       options:['A bug in the measurement','The floor &mdash; system prompt, tool definitions and harness &mdash; loaded before your question is considered; you are adding to a pack that is already heavy','The cost of the CLAUDE.md','The size of the codebase'], answer:1},
+      {q:'The bloated 170-line CLAUDE.md carried +4,609 tokens versus the lean 36-line file&rsquo;s +1,025. What made the difference worthless?',
+       options:['The bloat used longer words','The extra lines were a directory listing, dependency block and restated architecture &mdash; all derivable by reading the repo, so they bought no information the agent lacked','It was badly formatted','It exceeded the file size limit'], answer:1},
+      {q:'The three runs cost $0.013, $0.052 and $0.088. What is the honest conclusion?',
+       options:['Bloat costs 6.5x per turn forever','The gap is dominated by cache creation from changing the prefix; size delta is permanent, the price spike is paid when the file changes, so a churning memory file costs more than its length suggests','Cost is unrelated to context','The measurement is invalid'], answer:1},
+      {q:'Which instruction survives a <code>/compact</code>?',
+       options:['Anything you said clearly enough in conversation','A rule in the project-root CLAUDE.md &mdash; it is re-read from disk and re-injected; conversation-only instructions are candidates for the summariser','Only the most recent message','Nothing survives compaction'], answer:1}
+    ]
   }
 ];
 
@@ -3569,6 +3658,100 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-03 · Context Budget (spec: VISUALS.md) ----------
+   Floor and memory-file numbers are the real measurements
+   (recordings/m73-context-budget.txt): floor 25,514 tok; lean 36-line
+   CLAUDE.md +1,025; bloated 170-line +4,609. Window sized to a round
+   200k for arithmetic students can follow. */
+VISUALS['SIM-03'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const WINDOW = 200000, FLOOR = 25514;
+  let memLines = 36, logsK = 0, turns = 20;
+  mount.innerHTML =
+    '<div class="sim03" aria-label="Context window budget simulator">' +
+      '<div class="s3head"><span>SIM-03 · THE BACKPACK · 200k WINDOW</span><span data-s3mode>' + (reduce ? 'STATIC' : 'LIVE') + '</span></div>' +
+      '<div class="s3bar">' +
+        '<span class="s3seg floor" data-seg="floor" title="floor"></span>' +
+        '<span class="s3seg mem" data-seg="mem" title="memory files"></span>' +
+        '<span class="s3seg code" data-seg="code" title="code you opened"></span>' +
+        '<span class="s3seg conv" data-seg="conv" title="conversation"></span>' +
+        '<span class="s3seg debris" data-seg="debris" title="pasted debris"></span>' +
+        '<span class="s3seg free" data-seg="free"></span>' +
+      '</div>' +
+      '<div class="s3key">' +
+        '<span><i class="kf"></i>floor: system + tools (25,514 &mdash; measured)</span>' +
+        '<span><i class="km"></i>memory files</span><span><i class="kc"></i>code read</span>' +
+        '<span><i class="kv"></i>conversation</span><span><i class="kd"></i>pasted debris</span>' +
+      '</div>' +
+      '<div class="s3ctrl">' +
+        '<span>CLAUDE.md size</span><input type="range" min="0" max="400" step="2" value="36" data-mem aria-label="CLAUDE.md lines"><span class="s3val" data-memv></span>' +
+        '<span>pasted logs</span><input type="range" min="0" max="60" step="1" value="0" data-logs aria-label="Pasted log size in thousands of tokens"><span class="s3val" data-logsv></span>' +
+        '<span>session length</span><input type="range" min="1" max="120" step="1" value="20" data-turns aria-label="Turns so far"><span class="s3val" data-turnsv></span>' +
+      '</div>' +
+      '<div class="s3meters">' +
+        '<div class="s3m"><div class="s3ml">USED</div><div class="s3mv" data-used></div></div>' +
+        '<div class="s3m"><div class="s3ml">HEADROOM</div><div class="s3mv" data-head></div></div>' +
+        '<div class="s3m"><div class="s3ml">CARRIED EVERY SESSION</div><div class="s3mv" data-rent></div></div>' +
+      '</div>' +
+      '<div class="s3acts">' +
+        '<button class="s3btn" type="button" data-act="compact">/compact</button>' +
+        '<button class="s3btn" type="button" data-act="clear">/clear</button>' +
+        '<button class="s3btn" type="button" data-act="reset">reset</button>' +
+      '</div>' +
+      '<div class="s3say" data-say></div>' +
+      '<div class="s3foot">What to notice: you start ~25.5k in the hole before typing. The memory slider is rent &mdash; paid every session, forever &mdash; which is why &ldquo;under 200 lines&rdquo; is a budget rule, not style advice.</div>' +
+    '</div>';
+  const TOK_PER_LINE = 28;   // measured: 36 lines ≈ 1,025 tok; 170 lines ≈ 4,609
+  function parts(){
+    const mem = Math.round(memLines * TOK_PER_LINE);
+    const debris = logsK * 1000;
+    const conv = Math.min(turns * 900, 90000);
+    const code = Math.min(turns * 600, 60000);
+    return {floor:FLOOR, mem, code, conv, debris};
+  }
+  function paint(msg){
+    const p = parts();
+    const used = p.floor + p.mem + p.code + p.conv + p.debris;
+    const free = Math.max(0, WINDOW - used);
+    const set = (k,v) => { mount.querySelector('[data-seg="' + k + '"]').style.width = (Math.min(v, WINDOW) / WINDOW * 100) + '%'; };
+    set('floor', p.floor); set('mem', p.mem); set('code', p.code); set('conv', p.conv); set('debris', p.debris); set('free', free);
+    mount.querySelector('[data-memv]').textContent = memLines + ' lines · ' + p.mem.toLocaleString() + ' tok';
+    mount.querySelector('[data-logsv]').textContent = logsK ? logsK + 'k pasted' : 'none';
+    mount.querySelector('[data-turnsv]').textContent = turns + ' turns';
+    mount.querySelector('[data-used]').textContent = used.toLocaleString() + ' / 200k';
+    const headEl = mount.querySelector('[data-head]');
+    headEl.textContent = free.toLocaleString();
+    headEl.className = 's3mv ' + (free < 40000 ? 'warn' : 'ok');
+    const rentEl = mount.querySelector('[data-rent]');
+    rentEl.textContent = (p.floor + p.mem).toLocaleString();
+    rentEl.className = 's3mv ' + (p.mem > 3000 ? 'warn' : '');
+    mount.querySelector('[data-say]').innerHTML = msg || (
+      p.mem > 3000
+        ? 'That memory file is <b>' + p.mem.toLocaleString() + ' tokens of rent</b>, paid in every session. The measured 170-line bloat carried <b>+4,609</b> over the bare repo &mdash; and 134 of those lines were a directory listing and restated architecture the agent could derive by reading.'
+        : 'A lean constitution is cheap: the measured 36-line file cost <b>+1,025 tokens</b>. Everything above the floor is a choice &mdash; spend it on what the code cannot tell you.');
+  }
+  mount.querySelector('[data-mem]').addEventListener('input', e => { memLines = +e.target.value; paint(); });
+  mount.querySelector('[data-logs]').addEventListener('input', e => { logsK = +e.target.value; paint(); });
+  mount.querySelector('[data-turns]').addEventListener('input', e => { turns = +e.target.value; paint(); });
+  mount.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    if(a === 'compact'){
+      turns = Math.max(1, Math.round(turns * 0.25)); logsK = 0;
+      mount.querySelector('[data-turns]').value = turns; mount.querySelector('[data-logs]').value = 0;
+      paint('<b>/compact</b> — conversation summarised and pasted debris dropped, but the memory file stays: the project-root CLAUDE.md is <b>re-read from disk and re-injected</b>. Anything you only <em>said</em> is gone; anything in a file survives.');
+    } else if(a === 'clear'){
+      turns = 1; logsK = 0;
+      mount.querySelector('[data-turns]').value = 1; mount.querySelector('[data-logs]').value = 0;
+      paint('<b>/clear</b> — back to the floor plus your memory files. A fresh window, not a smaller one: you still carry <b>' + (FLOOR + Math.round(memLines*TOK_PER_LINE)).toLocaleString() + '</b> tokens before you type.');
+    } else {
+      memLines = 36; logsK = 0; turns = 20;
+      mount.querySelector('[data-mem]').value = 36; mount.querySelector('[data-logs]').value = 0; mount.querySelector('[data-turns]').value = 20;
+      paint();
+    }
+  }));
+  paint();
 };
 
 /* ---------- SIM-14 · One File, Four Tools (spec: VISUALS.md) ----------
