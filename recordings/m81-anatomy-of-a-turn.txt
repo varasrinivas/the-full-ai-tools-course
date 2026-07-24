@@ -1,0 +1,52 @@
+M-8.1 WHAT YOU PAY FOR — anatomy of a turn, measured
+=====================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone (read-only questions only;
+clone untouched, no branch needed). Instrument: `--output-format json` usage
+envelope (established in M-7.3), plus the per-model `modelUsage` breakdown.
+
+=== THREE TASKS OF INCREASING AGENTIC DEPTH, SAME REPO ===
+  task                    turns  cache_rd  cache_wr  new_in   out     cost
+  trivial (no tools)          1    25,512         0       2     4   $0.0134
+  single-file question        2    48,042     3,431       4   234   $0.0648
+  multi-step exploration     10   109,867    14,484       7 3,320   $0.2834
+
+=== THE HEADLINE: YOU DO NOT PAY FOR YOUR PROMPT ===
+  On the 10-turn run the user's typed prompt was **7 tokens**. The input side of
+  the bill was **124,358 tokens**. Ratio typed:carried = **1 : 17,765**.
+  You are billed for the conversation the agent has with ITSELF — every tool
+  result, every file it read, re-sent as context on every subsequent turn.
+
+=== COST SCALES WITH TURNS, NOT WITH QUESTION LENGTH ===
+  1 turn  $0.0134
+  2 turns $0.0648   (~4.8x)
+  10 turns $0.2834  (**21.1x** the trivial run; ~$0.0283 per turn)
+  The prompts were 2, 4 and 7 tokens respectively — i.e. the thing the user
+  controls most directly (how much they type) is the thing that matters least.
+  What actually moved the bill: how many times the agent went around the loop.
+  This is why M-5.1's "context quality decides your lap count" is a COST lesson
+  as much as a debugging one, and why M-4.4's misrung analysis matters.
+
+=== PER-MODEL COST ATTRIBUTION (the modelUsage field) ===
+  ONE invocation, TWO models:
+    claude-haiku-4-5      541 in ·    15 out ·        0 cached · $0.000616
+    claude-opus-4-8[1m]     7 in · 3,320 out · 109,867 cached · $0.282809
+  Haiku = **0.22%** of the bill; Opus = **99.78%**.
+  So the envelope already gives per-model attribution for free, and it shows a
+  small fast model doing auxiliary work alongside the main one. This is the
+  data you need before any "use a cheaper model" conversation (M-8.4): the
+  cheap model was never the expense.
+
+=== READING /cost AND THE ENVELOPE ===
+  Interactive: /cost reports session spend. Scripted: --output-format json gives
+  total_cost_usd, num_turns, duration_ms, and usage{cache_read_input_tokens,
+  cache_creation_input_tokens, input_tokens, output_tokens} plus modelUsage.
+  M-7.3's caveat still governs every reading: a run that CHANGES the cached
+  prefix pays cache_creation (writes cost more than reads), so compare
+  steady-state to steady-state, never first-run-after-an-edit to warm-cache.
+
+TEACHING BEATS: (1) the bill is context re-sent per turn, not your typing;
+(2) turns are the cost multiplier — 21x from 1 to 10; (3) output is small in
+volume but expensive per token, input is huge in volume but mostly cached, so
+neither intuition alone predicts the bill — read the envelope; (4) per-model
+attribution is already in the JSON, and it usually shows the expensive work is
+the main model doing the loop, not the helper.

@@ -355,6 +355,35 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-24: Anatomy of a Turn ============ */
+.anim24{--a24red:#d0705a;--a24green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim24{--a24red:#B0503C;--a24green:#2d7350}
+.anim24 .a24head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim24 .a24row{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;margin-bottom:7px;opacity:.35;transition:opacity .4s}
+.anim24 .a24row.on{opacity:1}
+.anim24 .a24name{font-size:10px;color:var(--text);line-height:1.35}
+.anim24 .a24name small{display:block;font-size:8.5px;color:var(--faint)}
+.anim24 .a24track{height:20px;border:1px solid var(--line);border-radius:5px;overflow:hidden;display:flex;background:var(--panel)}
+.anim24 .a24fill{height:100%;width:0;transition:width .6s ease}
+.anim24 .a24fill.rd{background:linear-gradient(90deg,#3a6b8a,#4f8fb5)}
+.anim24 .a24fill.wr{background:linear-gradient(90deg,#8a7a3a,var(--gold))}
+.anim24 .a24fill.out{background:linear-gradient(90deg,#2d7350,var(--a24green))}
+.anim24 .a24cost{font-size:12px;color:var(--text);white-space:nowrap;min-width:64px;text-align:right}
+.anim24 .a24key{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font-size:9.5px;color:var(--dim)}
+.anim24 .a24key i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.anim24 .a24key .r{background:#4f8fb5}.anim24 .a24key .w{background:var(--gold)}.anim24 .a24key .o{background:var(--a24green)}
+.anim24 .a24punch{margin-top:12px;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.65;min-height:56px}
+.anim24 .a24punch b{color:var(--text);font-weight:500}
+.anim24 .a24punch .big{font-size:15px;color:var(--gold)}
+.anim24 .a24split{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.anim24 .a24mod{flex:1;min-width:165px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:var(--panel)}
+.anim24 .a24ml{font-size:9px;letter-spacing:.09em;color:var(--faint)}
+.anim24 .a24mv{font-size:15px;color:var(--text);font-weight:500}
+.anim24 .a24ms{font-size:9px;color:var(--dim)}
+.anim24 .a24btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim24 .a24btn:hover{border-color:var(--gold)}
+.anim24 .a24foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-15: The Constitution Audit ============ */
 .sim15{--s15red:#d0705a;--s15green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim15{--s15red:#B0503C;--s15green:#2d7350}
@@ -2998,6 +3027,47 @@ const MODS = [
       {q:'An audit that deletes five of six lines is&hellip;',
        options:['Complete &mdash; less is always better','Half done &mdash; stripping the file still leaves it with no domain rule, no owner and no date; the other half of an audit is writing what the code cannot say','A mistake; constitutions should grow','Only valid if the file was over 200 lines'], answer:1}
     ]
+  },
+  {
+    id:'M-8.1', path:'eng', track:'T-08', title:'What you pay for', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'The itemised hospital bill everyone has seen a version of: the surgeon&rsquo;s time is a line you expected, and then there are two hundred lines for supplies, room-hours and monitoring you never consciously ordered. Nobody was overcharged &mdash; the line you focused on simply was not where the money was. Agent bills read exactly the same way, and the fix is the same: read the itemisation before you argue about the price.',
+      body:
+        '<p><strong>You are not billed for what you type.</strong> Three tasks were run against the same repo and metered. On the deepest one the typed prompt was <b>seven tokens</b>; the input side of the bill was <b>124,358</b>. That is a ratio of <b>1 : 17,765</b>. What you pay for is the conversation the agent has with <em>itself</em> &mdash; every file it opened and every tool result it received, re-sent as context on every subsequent turn. Prompt brevity is a virtue for clarity; it is almost irrelevant to cost.</p>' +
+        '<p><strong>Turns are the multiplier.</strong> The three runs: a trivial no-tool question, <b>1 turn, $0.0134</b>; a single-file question, <b>2 turns, $0.0648</b>; a multi-step exploration, <b>10 turns, $0.2834</b>. That last one is <b>21.1&times;</b> the trivial run, at roughly <b>$0.028 per turn</b> &mdash; while the prompts were two, four and seven tokens. The variable that moved the bill by twenty-one times is the number of times the agent went around the loop. This is the cost face of things you already learned: M-5.1&rsquo;s &ldquo;context quality decides your lap count&rdquo; is a budget lesson, and M-4.4&rsquo;s misrung analysis &mdash; renting an agent turn for a job a selection could do &mdash; has a price tag attached.</p>' +
+        '<p><strong>Read the itemisation: four numbers, not one.</strong> The envelope splits the input side into <em>cache reads</em> (context re-sent, cheap per token but enormous in volume), <em>cache writes</em> (paid whenever the prefix changes &mdash; M-7.3&rsquo;s caveat, and why editing your CLAUDE.md mid-session costs more than carrying it), <em>fresh input</em> (your actual prompt, trivially small), and <em>output</em> (small in volume, expensive per token). Neither naive intuition survives contact: &ldquo;input is cheap&rdquo; is wrong because the volume is vast, and &ldquo;output is the expensive part&rdquo; is wrong because there is so little of it. Only the itemisation tells you which.</p>' +
+        '<p><strong>Per-model attribution is already in the data.</strong> The ten-turn run used <em>two</em> models in one invocation, and the envelope attributes both: a small fast model at <b>$0.0006</b> for 541 input and 15 output tokens, and the main model at <b>$0.2828</b>. That is <b>0.22% versus 99.78%</b>. Keep that ratio in mind the next time someone proposes saving money by switching to a cheaper model &mdash; the cheap model was never the expense. The savings live in fewer turns and less carried context, which is M-8.2 and M-8.3; genuine model economics arrive in M-8.4 with this data as the baseline.</p>' +
+        '<p><strong>How to read your own bill.</strong> Interactively, <code>/cost</code> reports session spend. For anything you want to compare, use <code>--output-format json</code> and read <code>total_cost_usd</code>, <code>num_turns</code>, the <code>usage</code> block and <code>modelUsage</code>. One methodological rule, inherited from M-7.3 and non-negotiable in this track: <b>compare steady state to steady state</b>. A run immediately after you edited an instruction file pays cache-creation and will look dramatically more expensive than it is &mdash; that is an artefact of your edit, not a property of the task. Measure twice before you conclude anything about cost.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-24'},
+    labA:{
+      title:'Meter your own turns — Claude Code',
+      steps:[
+        'Run the same three shapes of task on a repo you know, each with <code>--output-format json</code>: something trivial with no tool use, a single-file question, and a genuine multi-step exploration. Record <code>num_turns</code>, the four usage numbers, and <code>total_cost_usd</code> for each.',
+        'Compute the ratio that matters: your typed prompt tokens versus the input-side total. Reference: <b>7 versus 124,358, or 1 : 17,765</b>. Say out loud what that means for the habit of agonising over prompt wording to save money.',
+        'Compute cost per turn and the multiple from your cheapest to your dearest run. Reference: <b>$0.028/turn</b> and <b>21.1&times;</b> from one turn to ten. Then identify one task from your week where you spent turns on something a lower rung of M-4.4&rsquo;s ladder would have handled.',
+        'Read <code>modelUsage</code> and attribute the spend per model. Reference: the auxiliary model was <b>0.22%</b> of the bill. If your own split looks similar, write down what that implies about &ldquo;switch to a cheaper model&rdquo; as a savings strategy.',
+        'Prove the methodological trap on purpose: edit your CLAUDE.md, immediately re-run the trivial task, and watch <code>cache_creation_input_tokens</code> spike. Re-run it again unchanged and watch it fall back. Success: three metered runs, the typed-vs-carried ratio, cost per turn, model attribution, and a demonstrated understanding of why you never compare a post-edit run to a warm one.'
+      ]
+    },
+    checklist:[
+      'I metered three tasks of different depth and recorded all four usage numbers.',
+      'I can state my own typed-prompt-to-carried-context ratio.',
+      'I computed cost per turn and know my cheap-to-dear multiple.',
+      'I attributed spend per model and know which one is actually costing me.',
+      'I demonstrated the cache-creation spike and know never to compare across an edit.'
+    ],
+    quiz:[
+      {q:'On the recorded 10-turn run the typed prompt was 7 tokens and the input side was 124,358. What does that ratio mean?',
+       options:['The prompt was inefficiently worded','You are billed for the conversation the agent has with itself &mdash; tool results and files re-sent as context each turn &mdash; so prompt brevity is nearly irrelevant to cost','The measurement double-counts','Most of it was output'], answer:1},
+      {q:'Which variable moved the bill from $0.0134 to $0.2834?',
+       options:['The length of the question','The number of turns &mdash; 1 to 10, a 21.1&times; increase &mdash; while the prompts were 2, 4 and 7 tokens','The model temperature','The size of the repository'], answer:1},
+      {q:'The envelope showed a small model at $0.0006 and the main model at $0.2828. What follows?',
+       options:['Switch everything to the small model','The auxiliary model was 0.22% of the bill, so &ldquo;use a cheaper model&rdquo; is not where the savings are &mdash; fewer turns and less carried context are','Per-model attribution is unavailable','The small model was doing the real work'], answer:1},
+      {q:'You edit CLAUDE.md and immediately re-run a task; the cost jumps. What is the correct interpretation?',
+       options:['The file made the task genuinely more expensive forever','You paid cache creation because the prefix changed &mdash; an artefact of the edit; compare steady state to steady state before concluding anything','The model got slower','Editing files always doubles cost'], answer:1}
+    ]
   }
 ];
 
@@ -3831,6 +3901,72 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-24 · Anatomy of a Turn (spec: VISUALS.md) ----------
+   Every number is the real recorded measurement
+   (recordings/m81-anatomy-of-a-turn.txt). Bars are token volumes scaled to
+   the largest run; the punchline is typed-vs-carried. */
+VISUALS['ANIM-24'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const RUNS = [
+    {n:'trivial', sub:'no tools · 1 turn', prompt:2, rd:25512, wr:0, out:4, cost:0.0134},
+    {n:'single-file question', sub:'2 turns', prompt:4, rd:48042, wr:3431, out:234, cost:0.0648},
+    {n:'multi-step exploration', sub:'10 turns', prompt:7, rd:109867, wr:14484, out:3320, cost:0.2834}
+  ];
+  const MAX = 130000;
+  mount.innerHTML =
+    '<div class="anim24" aria-label="What a turn actually costs">' +
+      '<div class="a24head"><span>ANIM-24 · WHAT YOU TYPE vs WHAT YOU PAY FOR</span>' +
+        '<button class="a24btn" data-a24run>RUN ▸</button></div>' +
+      RUNS.map((r,i) =>
+        '<div class="a24row" data-row="' + i + '">' +
+          '<span class="a24name">' + r.n + '<small>' + r.sub + ' · you typed ' + r.prompt + ' tokens</small></span>' +
+          '<span class="a24track">' +
+            '<span class="a24fill rd" data-f="rd' + i + '"></span>' +
+            '<span class="a24fill wr" data-f="wr' + i + '"></span>' +
+            '<span class="a24fill out" data-f="out' + i + '"></span>' +
+          '</span>' +
+          '<span class="a24cost" data-c="' + i + '">—</span>' +
+        '</div>').join('') +
+      '<div class="a24key"><span><i class="r"></i>context re-read (cached)</span><span><i class="w"></i>cache written</span><span><i class="o"></i>output</span></div>' +
+      '<div class="a24punch" data-punch></div>' +
+      '<div class="a24split">' +
+        '<div class="a24mod"><div class="a24ml">claude-haiku-4-5</div><div class="a24mv">$0.0006</div><div class="a24ms">541 in · 15 out · <b>0.22% of the bill</b></div></div>' +
+        '<div class="a24mod"><div class="a24ml">claude-opus-4-8</div><div class="a24mv">$0.2828</div><div class="a24ms">3,320 out · 109,867 cached · <b>99.78%</b></div></div>' +
+      '</div>' +
+      '<div class="a24foot">Two models ran inside one invocation, and the envelope attributes both. Before anyone proposes &ldquo;use a cheaper model&rdquo;, notice the cheap one was never the expense.</div>' +
+    '</div>';
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function reset(){
+    RUNS.forEach((r,i) => {
+      mount.querySelector('[data-row="' + i + '"]').classList.remove('on');
+      ['rd','wr','out'].forEach(k => { mount.querySelector('[data-f="' + k + i + '"]').style.width = '0'; });
+      mount.querySelector('[data-c="' + i + '"]').textContent = '—';
+    });
+    mount.querySelector('[data-punch]').innerHTML = 'Press <b>RUN</b>: three tasks on the same repo, prompts of 2, 4 and 7 tokens.';
+  }
+  function show(i){
+    const r = RUNS[i];
+    mount.querySelector('[data-row="' + i + '"]').classList.add('on');
+    mount.querySelector('[data-f="rd' + i + '"]').style.width = (r.rd / MAX * 100) + '%';
+    mount.querySelector('[data-f="wr' + i + '"]').style.width = (r.wr / MAX * 100) + '%';
+    mount.querySelector('[data-f="out' + i + '"]').style.width = (r.out / MAX * 100) + '%';
+    mount.querySelector('[data-c="' + i + '"]').textContent = '$' + r.cost.toFixed(4);
+  }
+  function punch(){
+    mount.querySelector('[data-punch]').innerHTML =
+      'On the 10-turn run you typed <b>7 tokens</b> and were billed for <b>124,358</b> on the input side &mdash; a ratio of <span class="big">1 : 17,765</span>. The bill is the conversation the agent has with <em>itself</em>: every file it read, re-sent on every later turn. And the multiplier is <b>turns</b>, not typing &mdash; 1 turn $0.0134, 10 turns $0.2834, <b>21.1&times;</b>.';
+  }
+  function run(){
+    stop(); reset();
+    if(reduce){ RUNS.forEach((r,i) => show(i)); punch(); return; }
+    RUNS.forEach((r,i) => timers.push(setTimeout(() => show(i), 250 + i*900)));
+    timers.push(setTimeout(punch, 250 + RUNS.length*900));
+  }
+  mount.querySelector('[data-a24run]').addEventListener('click', run);
+  run();
 };
 
 /* ---------- SIM-15 · The Constitution Audit (spec: VISUALS.md) ----------
