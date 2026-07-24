@@ -1,0 +1,51 @@
+M-6.3 REACT TESTING LIBRARY — THE UNTESTED FORM — method notes + captures
+==========================================================================
+Recorded: 2026-07-24 · priorauth-web lab/start clone, branch drill/m63-formtests
+(generated test discarded, clone restored pristine). BUG-WEB-03.
+BUG-WEB-03 = commit daee497 "Prune form validation tests ahead of the planned
+validation rework" DELETED 59 lines of usePriorAuthForm tests. The validate()
+function and submit() flow ship with ZERO coverage. Blueprint: "write them."
+
+THE LIVE GENERATION (disciplined M-6.1 contract: spec-anchored, boundary cases,
+STRICT do-not-modify-source, "a failing test is the finding"), 181s:
+  Wrote src/test/usePriorAuthForm.test.ts — a comprehensive suite across:
+  patientRef (required after trim, incl. "  PAT-0001  " survives trim) ·
+  cptCode (4/5/6 digits, 5-with-a-letter, empty) · payerCode (required) ·
+  confidenceScore (exactly 0, exactly 1, mid, just-above 1.01, negative, empty,
+  WHITESPACE-ONLY, non-numeric) · whole-form clean/all-bad · submit() flow
+  (null+errors invalid, typed payload valid, patientRef trimmed in payload,
+  score coerced to number, errors cleared on corrected resubmit) · field state.
+  git diff of src/: EMPTY (source untouched — contract held).
+
+REAL RUN (this session, vitest): Tests 29 · 28 passed · 1 FAILED.
+  The one red: "rejects a whitespace-only score as not a number".
+
+THE BUG THE REGENERATED TESTS CAUGHT (a real latent gap in validate()):
+  Input confidenceScore = '   ' (whitespace only).
+  Code: const score = Number(values.confidenceScore)
+  In JS, Number('   ') === 0 (whitespace coerces to 0, NOT NaN). The guard is
+    confidenceScore === '' || Number.isNaN(score) || score < 0 || score > 1
+  '   ' is not '', 0 is not NaN, 0 is in [0,1] → NO error set. So a
+  whitespace-only confidence field is silently ACCEPTED and submit() produces a
+  payload with confidenceScore: 0 — a value the user never entered.
+  The deleted tests presumably guarded this; regenerating them against the SPEC
+  resurrected the catch.
+
+HONEST VERIFY NOTE (4th occurrence of the pattern): the agent could not run
+vitest (permission layer gated npm/npx/node), so it traced all 33 assertions by
+hand and PREDICTED "32 pass, 1 fail — the whitespace-score test", asking for a
+human run. The human run confirmed it (vitest counts 29 tests; the single
+failure is exactly the predicted one). Manual trace + human confirm = the
+final-human-validation theme, now a documented T-05/T-06 constant.
+
+TEACHING BEATS: (1) "write the missing tests" is not busywork — deleting tests
+doesn't just lower coverage, it hides whatever those tests caught; spec-anchored
+regeneration re-tightens the net AND surfaces what slipped through. (2) RTL vs
+pure-function split: validate() is a pure function (fast unit tests, no render);
+the FORM needs RTL (render, type, click submit, assert aria-invalid + error
+text). (3) The boundary that mattered was a language gotcha (Number('   ')===0),
+exactly the kind of thing only an explicit boundary case finds. (4) The fix (if
+taken) is one line — trim or reject whitespace before the number check — but the
+module's deliverable is the coverage + the catch, source left pristine so the
+artifact reproduces. Sample real test names captured for the module copy.
+CLEANUP: generated test discarded; clone pristine; plant/BUG-WEB-03 intact.

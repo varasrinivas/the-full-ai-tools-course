@@ -355,6 +355,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-13: Boundary Grid — the untested validator ============ */
+.sim13{--s13red:#d0705a;--s13green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim13{--s13red:#B0503C;--s13green:#2d7350}
+.sim13 .s13head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim13 .s13sub{font-size:10px;color:var(--dim);margin-bottom:10px;line-height:1.5}
+.sim13 .s13sub code{color:var(--text)}
+.sim13 table{width:100%;border-collapse:collapse;font-size:10.5px}
+.sim13 th{text-align:left;font-size:9px;letter-spacing:.1em;color:var(--faint);padding:5px 8px;border-bottom:1px solid var(--line);font-weight:400}
+.sim13 td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--dim);vertical-align:top}
+.sim13 tr:last-child td{border-bottom:none}
+.sim13 .inp{color:var(--text);white-space:nowrap}
+.sim13 .want.a{color:var(--s13green)}
+.sim13 .want.r{color:var(--s13red)}
+.sim13 tr.bug{background:rgba(208,112,90,.10)}
+.sim13 tr.bug td{color:var(--text)}
+.sim13 .verdict{font-size:9px;letter-spacing:.06em;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.sim13 .verdict.ok{background:rgba(62,154,107,.15);color:var(--s13green)}
+.sim13 .verdict.gap{background:rgba(208,112,90,.15);color:var(--s13red)}
+.sim13 .s13note{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6}
+.sim13 .s13note b{color:var(--text);font-weight:500}
+.sim13 .s13note code{color:var(--s13red)}
+.sim13 .s13foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ SIM-12: Test Quality — Three Patterns ============ */
 .sim12{--s12red:#d0705a;--s12green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim12{--s12red:#B0503C;--s12green:#2d7350}
@@ -2331,6 +2354,63 @@ const MODS = [
       {q:'M-5.6 measured the N+1 fix as 25 queries to 1 with a mock. Why also write the Testcontainers version?',
        options:['To make the suite longer','The mock proves the call count; only a real database proves the batch IN query returns the right claims grouped correctly &mdash; count vs correctness are different guarantees','Mocks are deprecated','To test the container itself'], answer:1}
     ]
+  },
+  {
+    id:'M-6.3', path:'eng', track:'T-06', title:'React Testing Library', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'Someone quietly unplugs the smoke detector because it kept chirping during cooking. The kitchen looks identical, dinner is fine, everyone forgets. Deleting a test is that unplug: nothing breaks today, coverage drops silently, and the thing the detector was watching for is now unwatched. This module plugs it back in &mdash; and the alarm goes off immediately, because there was smoke the whole time.',
+      body:
+        '<p><strong>BUG-WEB-03 is a deletion, not a defect.</strong> A commit titled &ldquo;prune form validation tests ahead of the planned validation rework&rdquo; removed 59 lines of tests for the submission form&rsquo;s validation hook. The code still runs; the form still submits. What changed is that <code>validate()</code> and <code>submit()</code> now ship with <em>zero</em> coverage &mdash; the most dangerous kind of bug because nothing is red. The task is the blunt one from the blueprint: write them. And writing them well, against the spec, does more than restore a number.</p>' +
+        '<p><strong>Two shapes of test for two shapes of code.</strong> The validator is a <em>pure function</em> &mdash; <code>values in, errors out</code> &mdash; so it gets fast unit tests with no rendering: call <code>validate()</code> with a value, assert the error. The form is a <em>component</em>, so it gets React Testing Library: render it, <code>userEvent.type</code> into a field, click submit, and assert what the user would see &mdash; the error text appearing, <code>aria-invalid</code> flipping, the payload firing only when clean. RTL&rsquo;s discipline is to test through the accessible surface (labels, roles, text) the way a user meets it, not the component&rsquo;s internals. Split the work by the code&rsquo;s shape and each test stays simple.</p>' +
+        '<p><strong>Spec-anchored regeneration re-catches what the deletion hid.</strong> Prompted with the disciplined M-6.1 contract &mdash; assert the documented field rules, cover boundary cases explicitly, don&rsquo;t touch the source, a failing test is the finding &mdash; the recorded generation wrote a boundary-thorough suite and left the source untouched. The real run: <b>29 tests, 28 green, 1 red</b>. The red is a genuine latent bug: a <em>whitespace-only</em> confidence score is silently accepted. In JavaScript <code>Number(&#39;   &#39;) === 0</code>, not <code>NaN</code>, and the guard only checks for the empty string and <code>NaN</code> &mdash; so three spaces sail through as a valid <code>0</code>, and <code>submit()</code> sends a score the user never typed. The deleted tests had been holding that line; regenerating them against the spec found it on the first run. SIM-13 lays out all eight boundary cases with the one gap flagged.</p>' +
+        '<p><strong>Boundary cases are where language gotchas live.</strong> Seven of the eight score cases pass &mdash; exactly 0, exactly 1, just over, negative, empty, non-numeric &mdash; and the eighth, whitespace, is the one no one writes by hand because it looks like empty. It isn&rsquo;t: <code>&#39;&#39; === &#39;&#39;</code> is caught, <code>&#39;   &#39; === &#39;&#39;</code> is not. This is why &ldquo;cover boundary cases explicitly&rdquo; is in the contract: the agent tests what you name, and the bugs that survive are the inputs nobody thought to name. A generated suite that only exercises the happy path would have restored the coverage number and re-hidden the bug.</p>' +
+        '<p><strong>The verification pattern, one more time.</strong> The recorded agent could not run vitest headless, so it traced all its assertions by hand, predicted <em>&ldquo;one red &mdash; the whitespace-score test&rdquo;</em>, and asked for a human run; the human run confirmed exactly that. Fourth module in a row where the agent writes the test and a person confirms the green (or here, the informative red). Whether to <em>fix</em> the whitespace gap is a scope call &mdash; it is one line &mdash; but the deliverable of &ldquo;write the tests&rdquo; is the coverage plus the catch. M-6.4 makes the whole idea rigorous: a test only counts if it can fail, proven by mutation.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-13'},
+    labA:{
+      title:'Restore the net, keep what it catches — Claude Code',
+      steps:[
+        'Fresh clone of priorauth-web, scratch branch. Confirm the gap: <code>git log</code> shows the commit that pruned the validation tests, and <code>src/hooks/usePriorAuthForm.ts</code> has no test file. That untested pure function is your target.',
+        'Generate with the disciplined contract: <em>&ldquo;Write Vitest tests for validate() and submit(), anchored to the documented field rules, covering boundary cases explicitly &mdash; score exactly 0, exactly 1, just above 1, empty, whitespace-only, non-numeric; cpt 4/5/6 digits; each required field. Behavioral names. Do not modify any source file; if a test fails, leave it and report what it caught.&rdquo;</em>',
+        'Run it. Reference: <b>29 tests, 28 green, 1 red</b> &mdash; the whitespace-score case. Read the red as a finding, not a failure: trace why <code>Number(&#39;   &#39;)</code> is <code>0</code> and how it slips the guard. If your suite went all-green, it skipped the boundary that matters &mdash; regenerate demanding the whitespace case explicitly.',
+        'Add the RTL half for the form: render <code>SubmitRequest</code>, type an invalid CPT, click submit, and assert the error text shows and <code>aria-invalid</code> is set &mdash; testing through the accessible surface, not the component internals.',
+        'Decide the scope question in your log: fix the whitespace gap (one line &mdash; trim before the number check) or file it. Either way keep the source pristine for the artifact. Success: the pure-function suite with its red finding, the RTL form test, and the scope decision written down.'
+      ]
+    },
+    labB:{
+      title:'The form under RTL — Copilot',
+      steps:[
+        'Ask <b>Agent</b> for RTL tests for <code>SubmitRequest</code> &mdash; render, fill fields, submit &mdash; and insist assertions use accessible queries (<code>getByLabelText</code>, <code>getByRole</code>, error text), not test ids or internals.',
+        'Separately, ask for pure-function tests of <code>validate()</code> with explicit boundary cases. Run both; confirm the whitespace-score boundary goes red and name the JavaScript reason.',
+        'Success: an RTL form suite queried through the accessible surface, a boundary-complete validator suite, and the caught gap explained.'
+      ]
+    },
+    labC:{
+      title:'The same suite in Cursor, then the coverage rule',
+      steps:[
+        'Same two-shape split in Cursor with <code>@usePriorAuthForm</code> anchored. Watch whether the generation covers whitespace without being told &mdash; and if not, that omission is the lesson.',
+        'Open SIM-13 and read the eight boundary rows: seven correct, one gap. Confirm your generated red matches the flagged row.',
+        'Write the coverage rule for your team: <em>regenerating deleted tests is not busywork &mdash; anchor to the spec, force the boundary cases, and the net catches what the deletion hid; a red on regeneration is the whole point.</em> Then find one other pure function in the app with thin boundary coverage. Success: the eight rows mapped, the rule, the audit target.'
+      ]
+    },
+    checklist:[
+      'I confirmed BUG-WEB-03 is a test deletion, not a code change &mdash; the validator ships untested.',
+      'I split the work: pure-function unit tests for validate(), RTL for the form.',
+      'My RTL tests query the accessible surface (labels, roles, text), not internals.',
+      'My boundary suite caught the whitespace-score gap &mdash; and I can explain <code>Number(&#39;   &#39;) === 0</code>.',
+      'I made a conscious scope decision on the gap and kept the source pristine for the artifact.'
+    ],
+    quiz:[
+      {q:'BUG-WEB-03 is what kind of bug?',
+       options:['A broken validation rule','A deletion &mdash; a commit pruned the validation tests, so the code runs untested; nothing is red, which is what makes it dangerous','A rendering error','A type error'], answer:1},
+      {q:'How should the validator and the form be tested differently?',
+       options:['Both with RTL renders','The validator is a pure function &mdash; fast unit tests, no render; the form is a component &mdash; RTL: render, type, submit, assert what the user sees','Both with snapshot tests','Neither needs tests'], answer:1},
+      {q:'The regenerated suite went 28 green, 1 red on a whitespace-only score. Why?',
+       options:['The test is wrong','<code>Number(&#39;   &#39;)</code> is <code>0</code>, not <code>NaN</code>, and the guard only checks the empty string and NaN &mdash; so whitespace slips through as a valid 0; the boundary test caught a real latent gap','Vitest miscounts whitespace','React trims inputs automatically'], answer:1},
+      {q:'What does regenerating deleted tests against the spec accomplish beyond restoring a coverage number?',
+       options:['Nothing &mdash; it just restores the number','It re-catches whatever the deleted tests were guarding &mdash; a spec-anchored, boundary-complete regeneration surfaces the bug the deletion hid, on the first run','It makes the suite slower','It rewrites the production code'], answer:1}
+    ]
   }
 ];
 
@@ -3164,6 +3244,56 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-13 · Boundary Grid — the untested validator (spec: VISUALS.md) ----------
+   confidenceScore boundary cases the regenerated tests cover. Each row is the
+   real validate() behavior; the whitespace-only row is the bug the spec-anchored
+   generation caught live (recordings/m63-rtl-form.txt): Number('   ')===0 slips
+   through. Rows model validate() exactly (no Date/Math.random). */
+VISUALS['SIM-13'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // [input display, spec verdict a/r, the raw string validate() sees, bug?]
+  const CASES = [
+    {inp:'"0.85"', want:'a', raw:'0.85', bug:false},
+    {inp:'"0"  (exactly 0)', want:'a', raw:'0', bug:false},
+    {inp:'"1"  (exactly 1)', want:'a', raw:'1', bug:false},
+    {inp:'"1.01"  (just over)', want:'r', raw:'1.01', bug:false},
+    {inp:'"-0.2"  (negative)', want:'r', raw:'-0.2', bug:false},
+    {inp:'""  (empty)', want:'r', raw:'', bug:false},
+    {inp:'"abc"  (non-numeric)', want:'r', raw:'abc', bug:false},
+    {inp:'"␣␣␣"  (whitespace only)', want:'r', raw:'   ', bug:true}
+  ];
+  // faithful port of validate()'s confidenceScore rule
+  function rejects(raw){
+    const score = Number(raw);
+    return raw === '' || Number.isNaN(score) || score < 0 || score > 1;
+  }
+  const rows = CASES.map(c => {
+    const codeRejects = rejects(c.raw);
+    const wantReject = c.want === 'r';
+    const agrees = codeRejects === wantReject;
+    return {...c, codeRejects, agrees};
+  });
+  mount.innerHTML =
+    '<div class="sim13" aria-label="Boundary grid for the confidence-score validator">' +
+      '<div class="s13head"><span>SIM-13 · THE UNTESTED VALIDATOR · confidenceScore &isin; [0,1]</span><span>BUG-WEB-03</span></div>' +
+      '<div class="s13sub">The form-validation tests were deleted. Each row is a boundary case the regenerated suite asserts against the <b>spec</b> &mdash; and what <code>validate()</code> actually does.</div>' +
+      '<table><thead><tr><th>INPUT</th><th>SPEC WANTS</th><th>validate() DOES</th><th></th></tr></thead><tbody>' +
+        rows.map(r =>
+          '<tr class="' + (r.agrees ? '' : 'bug') + '">' +
+            '<td class="inp">' + r.inp + '</td>' +
+            '<td class="want ' + r.want + '">' + (r.want === 'a' ? 'accept' : 'reject') + '</td>' +
+            '<td>' + (r.codeRejects ? 'rejects' : 'accepts as ' + Number(r.raw)) + '</td>' +
+            '<td><span class="verdict ' + (r.agrees ? 'ok' : 'gap') + '">' + (r.agrees ? '✓ tested &amp; correct' : '✗ SPEC GAP') + '</span></td>' +
+          '</tr>').join('') +
+      '</tbody></table>' +
+      '<div class="s13note" data-note></div>' +
+      '<div class="s13foot">What to notice: seven boundary cases pass; one fails &mdash; and the failing one is a real bug, not a bad test. Deleting the tests didn&rsquo;t just drop coverage, it hid this.</div>' +
+    '</div>';
+  const gap = rows.find(r => !r.agrees);
+  mount.querySelector('[data-note]').innerHTML =
+    'The caught bug: a <b>whitespace-only</b> score. In JavaScript <code>Number(\'   \') === 0</code> (not <code>NaN</code>), and the guard only checks <code>=== \'\'</code> and <code>Number.isNaN</code> &mdash; so <code>\'   \'</code> slips through as a valid <b>0</b>, and <code>submit()</code> sends a score the user never typed. The regenerated boundary test found it on the first run.';
 };
 
 /* ---------- SIM-12 · Test Quality — Three Patterns (spec: VISUALS.md) ----------
