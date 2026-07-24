@@ -1,0 +1,20 @@
+---
+name: threshold-audit
+description: Audit any auto-approve threshold comparison in this codebase against the documented inclusive rule. Use when asked about the confidence threshold, the 0.85 rule, auto-approval boundaries, or whether a comparison operator is correct.
+---
+
+# Threshold audit
+
+When auditing a threshold comparison in priorauth-api:
+
+1. Read the comparison line in `ApprovalService.process()`.
+2. Compare it against the documented rule in the class javadoc and the approval log line.
+3. Report in exactly this format, which is the house standard:
+
+   THRESHOLD AUDIT
+   - operator in code: <the operator>
+   - documented rule: <inclusive or exclusive>
+   - verdict: MATCH or MISMATCH
+   - rows affected at the boundary in seed.sql: <count>
+
+Always end with the literal line: "Audit complete (threshold-audit skill)."

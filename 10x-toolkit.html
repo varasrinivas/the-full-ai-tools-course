@@ -355,6 +355,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-26: The Description Is the Trigger ============ */
+.anim26{--a26red:#d0705a;--a26green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim26{--a26red:#B0503C;--a26green:#2d7350}
+.anim26 .a26head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim26 .a26skill{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:10px}
+.anim26 .a26fm{font-size:9.5px;color:var(--dim);line-height:1.6}
+.anim26 .a26fm .k{color:var(--gold)}
+.anim26 .a26fm .desc{color:var(--text)}
+.anim26 .a26q{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin-bottom:7px;cursor:pointer;transition:border-color .3s,background .3s}
+.anim26 .a26q:hover{border-color:var(--gold)}
+.anim26 .a26q.fired{border-color:var(--a26green);background:rgba(62,154,107,.08)}
+.anim26 .a26q.quiet{border-color:var(--line);background:rgba(255,255,255,.02)}
+.anim26 .a26qt{font-size:10px;color:var(--text);line-height:1.4}
+.anim26 .a26qt small{display:block;font-size:8.5px;color:var(--faint)}
+.anim26 .a26badge{font-size:8.5px;letter-spacing:.07em;padding:3px 9px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.anim26 .a26badge.on{opacity:1}
+.anim26 .a26badge.fired{background:rgba(62,154,107,.16);color:var(--a26green)}
+.anim26 .a26badge.quiet{background:rgba(208,112,90,.14);color:var(--dim)}
+.anim26 .a26out{margin-top:10px;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.65;min-height:66px;white-space:pre-wrap}
+.anim26 .a26out b{color:var(--text);font-weight:500}
+.anim26 .a26out .g{color:var(--a26green)}
+.anim26 .a26foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-16: Grind or Judgment ============ */
 .sim16{--s16red:#d0705a;--s16green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim16{--s16red:#B0503C;--s16green:#2d7350}
@@ -3276,6 +3299,63 @@ const MODS = [
       {q:'How should a fallback chain decide to escalate?',
        options:['When the small model reports low confidence','On task type &mdash; the small model was maximally confident while being wrong, so confidence is not a usable signal','After three failed attempts','Based on file count'], answer:1}
     ]
+  },
+  {
+    id:'M-9.1', path:'eng', track:'T-09', title:'SKILL.md anatomy', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'The laminated card taped inside the crash cart. Nobody reads it on a quiet Tuesday &mdash; it costs nothing sitting there &mdash; but the moment someone calls a code, it is in your hand and it tells you the steps <em>and the order</em>. The value is not that it contains knowledge you lack. It is that it turns up exactly when the situation matches, and it dictates the form of what you do next.',
+      body:
+        '<p><strong>A skill is a procedure that shows up when it is relevant.</strong> Put a <code>SKILL.md</code> in <code>.claude/skills/&lt;name&gt;/</code> and you get two things: a slash command (<code>/name</code>) you can invoke deliberately, and the possibility that Claude reaches for it on its own when your request matches. The documented moment to create one is precise: <em>&ldquo;when you keep pasting the same instructions, checklist, or multi-step procedure into chat, or when a section of CLAUDE.md has grown into a procedure rather than a fact.&rdquo;</em></p>' +
+        '<p><strong>And it is the answer to the problem T-08 spent four modules measuring.</strong> The docs put it plainly: <em>&ldquo;Unlike CLAUDE.md content, a skill&rsquo;s body loads only when it&rsquo;s used, so long reference material costs almost nothing until you need it.&rdquo;</em> Remember M-7.3 &mdash; every line of your constitution is rent charged in every session, and a 170-line file cost <b>+3,584 tokens</b> forever. A skill is the release valve: the procedure lives on disk, costs nothing while irrelevant, and arrives in full when it matters. So the rule that closes T-07 and opens T-09 is simply <b>facts in the constitution, procedures in skills</b>.</p>' +
+        '<p><strong>Autonomous triggering, tested rather than asserted.</strong> A real skill was installed in the repo &mdash; a threshold audit with a mandatory output format so that firing would be <em>detectable</em>. Then a prompt that never named it: <em>&ldquo;Is the auto-approve threshold comparison in this codebase correct?&rdquo;</em> It fired, and answered in the enforced house format with all four values correct: operator <code>&gt;</code>, documented rule inclusive, verdict MISMATCH, 13 rows at the boundary. Notice what that demonstrates beyond &ldquo;it worked&rdquo; &mdash; the skill did not merely supply knowledge, it <b>enforced a contract for the answer</b>. That is the difference between a skill and a note in a file.</p>' +
+        '<p><strong>The control is the half everyone skips.</strong> A second prompt on the same repo with the same skill installed &mdash; <em>&ldquo;What does NotificationService do when the gateway throws?&rdquo;</em> &mdash; and the skill stayed silent, answering the actual question instead. That negative case is what makes the positive one meaningful: <b>a skill that fires on everything is just an expensive preamble</b>. Which puts the craft where it actually lives &mdash; the <code>description</code> field is not documentation, it is the <em>matching surface</em>. Ours enumerated the phrasings a user would really type (&ldquo;the confidence threshold&rdquo;, &ldquo;the 0.85 rule&rdquo;, &ldquo;auto-approval boundaries&rdquo;, &ldquo;whether a comparison operator is correct&rdquo;). Write it vague and it never fires; write it broad and it fires constantly. Test both directions, every time.</p>' +
+        '<p><strong>Two things that will surprise you, and one that matters cross-tool.</strong> First: <b>custom commands have been merged into skills</b> &mdash; <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> both produce <code>/deploy</code>, existing command files keep working, and skills simply add a directory for supporting files, invocation control, and autonomous loading. Second, the optional frontmatter is where the control lives: <code>allowed-tools</code> restricts what the skill may touch, <code>disable-model-invocation: true</code> makes it user-only so Claude will never fire it on its own, and <code>context: fork</code> runs it in a subagent (T-09&rsquo;s later subject). And the one that matters beyond this tool: skills follow the <b>Agent Skills open standard</b>, which is why M-9.2 can write one file and have a second tool honour it.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-26'},
+    labA:{
+      title:'Write a skill and prove it fires — Claude Code',
+      steps:[
+        'Create <code>.claude/skills/&lt;name&gt;/SKILL.md</code> for a procedure you actually repeat. Frontmatter needs <code>name</code> and a <code>description</code> written in the words a user would type, enumerating the triggers. In the body, include a <b>mandatory output format and a closing marker line</b> &mdash; without a marker you cannot tell whether the skill fired or the model just answered well.',
+        'Test the positive case with a prompt that never names the skill. Reference: the audit skill fired on &ldquo;Is the auto-approve threshold comparison in this codebase correct?&rdquo; and produced the house format with all four values right.',
+        'Test the control &mdash; a question in the same repo that should <em>not</em> match. Reference: it stayed silent and answered the real question. If yours fires on both, the description is too broad; if it fires on neither, too vague. Tune the description, not the body.',
+        'Now do the migration that pays for itself: find a section of your CLAUDE.md that is a <em>procedure</em> rather than a fact, move it into a skill, and re-measure your constitution with M-7.3&rsquo;s method. The tokens you free were being paid in every session.',
+        'Try <code>disable-model-invocation: true</code> on something dangerous or expensive so it can only be run deliberately. Success: a skill with a detectable marker, a passing positive test, a passing control, one procedure migrated out of CLAUDE.md, and a considered decision about who may invoke it.'
+      ]
+    },
+    labB:{
+      title:'The same procedure — Copilot',
+      steps:[
+        'Copilot&rsquo;s durable instruction surface is <code>.github/copilot-instructions.md</code>, and its named-role equivalent is a custom agent (<code>.agent.md</code>) &mdash; not the same thing as a skill, as M-7.2 warned. Encode the same procedure in whichever fits and ask a question that should trigger it.',
+        'Grade it on the same two axes you used in labA: does it produce the enforced output format, and does it stay out of the way on an unrelated question?',
+        'Success: the same procedure honoured in a second tool, and one line on where it lives there versus in Claude Code.'
+      ]
+    },
+    labC:{
+      title:'The same procedure in Cursor, then the skills-vs-constitution rule',
+      steps:[
+        'Encode the procedure in <code>.cursor/rules/</code> and test the positive and negative cases again. Note whether rules load always or on match &mdash; that difference is a cost difference (T-08), not just a mechanic.',
+        'Open ANIM-26 and compare its two recorded prompts against your own results.',
+        'Write the rule this module exists for: <em>facts belong in the constitution and are paid for every session; procedures belong in skills and cost nothing until they fire; and the description field is the trigger, so it is written in the user&rsquo;s words and tested in both directions.</em> Then list two more procedures from your week worth extracting. Success: three tools tested, the rule written, two extraction candidates named.'
+      ]
+    },
+    checklist:[
+      'My SKILL.md has a detectable marker so I can prove whether it fired.',
+      'The positive test fired without me naming the skill.',
+      'The control stayed silent &mdash; my description discriminates.',
+      'I moved at least one procedure out of CLAUDE.md and re-measured the saving.',
+      'I can state when to use <code>disable-model-invocation</code> and <code>allowed-tools</code>.'
+    ],
+    quiz:[
+      {q:'Why is a skill the right home for a long procedure, where CLAUDE.md is not?',
+       options:['Skills are easier to write','A skill&rsquo;s body loads only when used, so it costs almost nothing until needed &mdash; while every CLAUDE.md line is rent charged in every session','Skills can be longer than 200 lines','CLAUDE.md cannot contain steps'], answer:1},
+      {q:'The skill fired on a prompt that never mentioned it. What did the matching?',
+       options:['The file name','The <code>description</code> field &mdash; it is the matching surface, so it should enumerate the phrasings a user would actually type','The body&rsquo;s first heading','Claude scans every skill body each turn'], answer:1},
+      {q:'Why does the module insist on a control test where the skill should NOT fire?',
+       options:['To measure latency','Because a skill that fires on everything is just an expensive preamble &mdash; without the negative case the positive one proves nothing','To check the marker line','Because skills fail silently'], answer:1},
+      {q:'What is the current relationship between custom commands and skills?',
+       options:['Commands were removed','They have merged &mdash; <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> both create <code>/deploy</code>; existing command files keep working, and skills add supporting files, invocation control and autonomous loading','Skills replaced commands with no migration path','Commands are for teams, skills for individuals'], answer:1}
+    ]
   }
 ];
 
@@ -4109,6 +4189,49 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-26 · The Description Is the Trigger (spec: VISUALS.md) ----------
+   Both prompts and both outcomes are the real recorded runs
+   (recordings/m91-skill-anatomy.txt): fired on the match, silent on the control. */
+VISUALS['ANIM-26'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const Q = [
+    {t:'&ldquo;Is the auto-approve threshold comparison in this codebase correct?&rdquo;',
+     s:'8 turns · $0.4971 · the prompt never names the skill', fired:true,
+     out:'<b class="g">SKILL FIRED</b> &mdash; and answered in the enforced house format:\n\n## THRESHOLD AUDIT\n- operator in code: `&gt;` (strict) &mdash; ApprovalService.java:99\n- documented rule: inclusive (javadoc :20-21; log at :101 prints &gt;=)\n- verdict: MISMATCH\n- rows affected at the boundary in seed.sql: 13\n\nAll four values correct. A skill does not just supply knowledge &mdash; it enforces a <b>contract</b> for the answer.'},
+    {t:'&ldquo;What does NotificationService do when the gateway throws?&rdquo;',
+     s:'3 turns · $0.1047 · same repo, same skill installed', fired:false,
+     out:'<b>Skill stayed silent</b> &mdash; correctly. It answered the actual question: &ldquo;It swallows it. <code>notifyDenial</code> wraps the call in <code>catch (Exception e) { }</code> with an empty body.&rdquo;\n\nThis control is the half everyone skips. Without it, the first test proves nothing: a skill that fires on <em>everything</em> is just an expensive preamble.'}
+  ];
+  mount.innerHTML =
+    '<div class="anim26" aria-label="How a skill decides to fire">' +
+      '<div class="a26head"><span>ANIM-26 · THE DESCRIPTION IS THE TRIGGER</span><span>REAL RUNS</span></div>' +
+      '<div class="a26skill"><div class="a26fm">' +
+        '<span class="k">name:</span> threshold-audit<br>' +
+        '<span class="k">description:</span> <span class="desc">Audit any auto-approve threshold comparison&hellip; <b>Use when asked about the confidence threshold, the 0.85 rule, auto-approval boundaries, or whether a comparison operator is correct.</b></span>' +
+      '</div></div>' +
+      Q.map((q,i) =>
+        '<div class="a26q" role="button" tabindex="0" data-q="' + i + '">' +
+          '<span class="a26qt">' + q.t + '<small>' + q.s + '</small></span>' +
+          '<span class="a26badge ' + (q.fired ? 'fired' : 'quiet') + '" data-b="' + i + '">' + (q.fired ? '✓ FIRED' : '— SILENT') + '</span>' +
+        '</div>').join('') +
+      '<div class="a26out" data-out>Click a prompt. The skill was installed for both &mdash; only one matched its description.</div>' +
+      '<div class="a26foot">The description is not documentation, it is the matching surface. Write it in the words a user would actually type, list the triggers, and always test the negative case too.</div>' +
+    '</div>';
+  function show(i){
+    Q.forEach((q,k) => {
+      mount.querySelector('[data-q="' + k + '"]').className = 'a26q' + (k === i ? (q.fired ? ' fired' : ' quiet') : '');
+      mount.querySelector('[data-b="' + k + '"]').classList.toggle('on', k === i);
+    });
+    mount.querySelector('[data-out]').innerHTML = Q[i].out;
+  }
+  mount.querySelectorAll('[data-q]').forEach(el => {
+    const hit = () => show(+el.dataset.q);
+    el.addEventListener('click', hit);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); hit(); } });
+  });
+  if(reduce) show(1); else show(0);
 };
 
 /* ---------- SIM-16 · Grind or Judgment (spec: VISUALS.md) ----------

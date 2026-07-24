@@ -1,0 +1,63 @@
+M-9.1 SKILL.md ANATOMY — autonomous triggering, tested with a control
+======================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m91-skills
+(skill removed, clone restored bare/pristine). The SKILL.md written for this
+experiment is kept alongside as m91-SKILL.md.txt.
+
+=== THE SKILL (real file, .claude/skills/threshold-audit/SKILL.md) ===
+  Frontmatter: name: threshold-audit
+               description: "Audit any auto-approve threshold comparison in this
+                 codebase against the documented inclusive rule. Use when asked
+                 about the confidence threshold, the 0.85 rule, auto-approval
+                 boundaries, or whether a comparison operator is correct."
+  Body: a 3-step procedure plus a MANDATORY output format (THRESHOLD AUDIT with
+  four named fields) and a required closing line, so firing is detectable.
+
+=== TEST 1 · AUTONOMOUS TRIGGER (prompt never names the skill) ===
+  Prompt: "Is the auto-approve threshold comparison in this codebase correct?"
+  Result: 8 turns, $0.4971 — **SKILL FIRED**, and used the house format exactly:
+    ## THRESHOLD AUDIT
+    - operator in code: `>` (strict greater-than) — ApprovalService.java:99
+    - documented rule: inclusive (javadoc :20-21; log line at :101 prints >=)
+    - verdict: MISMATCH
+    - rows affected at the boundary in seed.sql: 13
+  All four values correct against ground truth. It did not merely answer — it
+  answered in the ENFORCED CONTRACT, which is the point of a skill.
+
+=== TEST 2 · CONTROL (unrelated question, same repo, same skill present) ===
+  Prompt: "What does NotificationService do when the gateway throws?"
+  Result: 3 turns, $0.1047 — **skill did NOT fire** (correct). It answered the
+  actual question ("It swallows it... catch (Exception e) { } with an empty body").
+  >>> So the description is doing real DISCRIMINATIVE work: it fires on match and
+  stays silent otherwise. Without this control, test 1 proves nothing — a skill
+  that fires on everything is just an expensive preamble.
+
+=== THE CRAFT LESSON: THE DESCRIPTION IS THE TRIGGER ===
+  The description is not documentation, it is the MATCHING SURFACE. Ours listed
+  the phrasings a user would actually type ("the confidence threshold", "the 0.85
+  rule", "auto-approval boundaries", "whether a comparison operator is correct"),
+  and the test prompt matched it almost word-for-word in intent. Write the
+  description in the user's words, not the implementer's, and enumerate the
+  triggers. A vague description ("helps with thresholds") never fires; an
+  over-broad one fires constantly. Test both directions — a positive AND a control.
+
+=== DOC-VERIFIED FACTS (code.claude.com/docs/en/skills, 2026-07-24) ===
+ - A SKILL.md lives at .claude/skills/<name>/SKILL.md (project) or
+   ~/.claude/skills/<name>/SKILL.md (personal); plugins can ship them too.
+ - Invoke directly with /skill-name, or Claude uses it when relevant.
+ - **"Unlike CLAUDE.md content, a skill's body loads only when it's used, so long
+   reference material costs almost nothing until you need it."**  <-- the direct
+   answer to T-08/M-7.3: procedures belong in skills, not in the constitution.
+ - Guidance on WHEN to create one: "when you keep pasting the same instructions,
+   checklist, or multi-step procedure into chat, or when a section of CLAUDE.md
+   has grown into a procedure rather than a fact."
+ - **Custom commands have been MERGED into skills**: `.claude/commands/deploy.md`
+   and `.claude/skills/deploy/SKILL.md` both create `/deploy` and work the same
+   way; existing .claude/commands/ files keep working. Skills add a directory for
+   supporting files, frontmatter invocation control, and autonomous loading.
+ - Optional frontmatter seen in the docs: `allowed-tools` (restrict the skill's
+   tools), `disable-model-invocation: true` (user-only — Claude will not fire it
+   autonomously), `context: fork` (run in a subagent).
+ - Skills follow the **Agent Skills open standard** (agentskills.io) and work
+   across multiple AI tools; Claude Code extends it with invocation control,
+   subagent execution and dynamic context injection. (M-9.2's cross-tool lab.)
