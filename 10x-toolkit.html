@@ -355,6 +355,37 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-25: Two Levers (re-anchor vs scope) ============ */
+.anim25{--a25red:#d0705a;--a25green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim25{--a25red:#B0503C;--a25green:#2d7350}
+.anim25 .a25head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim25 .a25v{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;margin-bottom:8px;opacity:.35;transition:opacity .4s}
+.anim25 .a25v.on{opacity:1}
+.anim25 .a25vn{font-size:10px;color:var(--text);line-height:1.35}
+.anim25 .a25vn small{display:block;font-size:8.5px;color:var(--faint)}
+.anim25 .a25bar{height:22px;border:1px solid var(--line);border-radius:5px;background:var(--panel);overflow:hidden}
+.anim25 .a25fill{height:100%;width:0;transition:width .6s ease}
+.anim25 .a25fill.hi{background:linear-gradient(90deg,#B0503C,var(--a25red))}
+.anim25 .a25fill.mid{background:linear-gradient(90deg,#8a7a3a,var(--gold))}
+.anim25 .a25fill.lo{background:linear-gradient(90deg,#2d7350,var(--a25green))}
+.anim25 .a25c{font-size:12px;color:var(--text);white-space:nowrap;min-width:96px;text-align:right}
+.anim25 .a25c small{display:block;font-size:8.5px;color:var(--faint)}
+.anim25 .a25punch{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.65;min-height:58px}
+.anim25 .a25punch b{color:var(--text);font-weight:500}
+.anim25 .a25punch .no{color:var(--a25red)}
+.anim25 .a25punch .yes{color:var(--a25green)}
+.anim25 .a25steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.anim25 .a25s{flex:1;min-width:120px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--panel)}
+.anim25 .a25s.acc{border-color:var(--gold)}
+.anim25 .a25s.eco{border-color:var(--a25green)}
+.anim25 .a25sn{font-size:9px;letter-spacing:.09em;color:var(--faint);margin-bottom:3px}
+.anim25 .a25s.acc .a25sn{color:var(--gold)}
+.anim25 .a25s.eco .a25sn{color:var(--a25green)}
+.anim25 .a25sd{font-size:9.5px;color:var(--dim);line-height:1.45}
+.anim25 .a25btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim25 .a25btn:hover{border-color:var(--gold)}
+.anim25 .a25foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-06: Session Bill Meter ============ */
 .sim06{--s6red:#d0705a;--s6green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim06{--s6red:#B0503C;--s6green:#2d7350}
@@ -3137,6 +3168,47 @@ const MODS = [
       {q:'When is pasting the right call?',
        options:['Whenever the file is large','When the content is not reachable from disk &mdash; a trace from someone else&rsquo;s machine, output from a system the agent cannot open &mdash; and even then, paste the slice, not the file','Never, under any circumstances','When you are in a hurry'], answer:1}
     ]
+  },
+  {
+    id:'M-8.3', path:'eng', track:'T-08', title:'Compaction strategy', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'Handover at shift change. The outgoing nurse can summarise twelve hours &mdash; and a summary is lossy in a particular way: it keeps what felt important at the time and quietly drops the thing nobody realised mattered yet. The safeguard is not a longer handover. It is that the important findings were <em>written in the chart</em> as they happened, so they are still there when the summary is not.',
+      body:
+        '<p><strong>Compaction is a summariser, and summaries lose things.</strong> When a session runs long, <code>/compact</code> replaces the conversation with a condensed version so work can continue. That is usually fine and occasionally not: it keeps what looked salient and can drop a constraint you stated once, forty turns ago. The documented behaviour is precise and worth memorising &mdash; the project-root <code>CLAUDE.md</code> <em>survives</em>, because it is re-read from disk and re-injected; nested <code>CLAUDE.md</code> files are <em>not</em> re-injected automatically and reload only when Claude next reads a file in that directory; and anything you said only in conversation is summariser fodder. Which gives the rule this whole track keeps arriving at from different directions: <b>if it must survive, it must be in a file.</b></p>' +
+        '<p><strong>I predicted that re-anchoring would save money. It did not.</strong> The test: the same question asked three ways against the same repo. Rediscovering from scratch took <b>9 turns and $0.3267</b>. Handing the agent three verified facts up front &mdash; the classic re-anchor &mdash; took <b>9 turns and $0.4447</b>. <em>More</em> expensive than rediscovery, with more output. The anchor did not stop a capable agent from going to verify the facts anyway; it treated them as a starting point and went deeper. That result is worth sitting with, because &ldquo;give it more context so it does less work&rdquo; is exactly the intuition most people carry into this.</p>' +
+        '<p><strong>The third variant is where the lesson actually is.</strong> Same three facts, plus one sentence: <em>&ldquo;answer from these facts alone &mdash; do not read or search any files.&rdquo;</em> Result: <b>1 turn, $0.0611 &mdash; nineteen percent of the rediscovery run</b>, with the correct answer. So the pattern has two separable levers that everyone conflates. <b>Re-anchoring buys accuracy</b>: it stops the agent reasoning from a degraded summary or half-remembering something it will get subtly wrong. <b>Scoping buys economy</b>: telling it what <em>not</em> to do is what collapses nine turns into one. Pull the first and your answers get better; pull the second and the bill drops; pull only the first and the bill can rise.</p>' +
+        '<p><strong>The full pattern, in order.</strong> When a session has lost the plot &mdash; wrong turns accumulated, the summary drifting, headroom gone: <b>checkpoint</b> by writing what you have learned into a file, because that is the only form that survives; <b>/clear</b> to take a fresh window, remembering it returns you to the floor plus your memory files (about 25.5k tokens, M-7.3) rather than to zero; <b>re-anchor</b> with the three to five verified facts that matter; and <b>scope</b> the turn by naming what is out of bounds. The fourth step is the one that gets skipped, and it is the one that pays.</p>' +
+        '<p><strong>When to compact and when to start over.</strong> Compact when the thread is sound and you simply need room &mdash; the work is going well, the context is just heavy. Start fresh when the thread itself is the problem: the agent has been down a wrong path, the summary would faithfully preserve a mistake, or you have polluted the window with something you now regret (M-8.2). A compaction inherits your errors; a clear plus a re-anchor lets you choose what carries forward. That choice &mdash; deciding what the next session is allowed to know &mdash; is the actual skill. M-8.4 closes the track on model economics, where the baseline from M-8.1 already tells you the cheap model was never the expense.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-25'},
+    labA:{
+      title:'Test the two levers yourself — Claude Code',
+      steps:[
+        'Pick a question about your codebase that requires real exploration to answer. Run it three ways with <code>--output-format json</code>: (A) cold, no context; (B) with three verified facts handed over up front; (C) the same three facts plus <em>&ldquo;answer from these facts alone &mdash; do not read or search any files.&rdquo;</em>',
+        'Record turns and cost for each. Reference: <b>A 9 turns $0.3267 · B 9 turns $0.4447 · C 1 turn $0.0611</b>. Notice whether your B also came out <em>above</em> A &mdash; if so, you have reproduced the result that disproved the obvious hypothesis.',
+        'Check C&rsquo;s answer for correctness, not just cheapness. A scoped answer is only a saving if it is right; if your three facts were wrong or incomplete, C will be confidently wrong and cheap, which is worse than expensive and right.',
+        'Now practise the full pattern on a real session that has gone long: write your findings to a file first (checkpoint), <code>/clear</code>, then re-anchor from that file and scope the next turn. Note what you chose <em>not</em> to carry forward &mdash; that omission is the point.',
+        'Success: three metered runs, the anchor-versus-scope distinction demonstrated in your own numbers, C verified correct, and one real session restarted deliberately rather than allowed to drift.'
+      ]
+    },
+    checklist:[
+      'I measured all three variants and recorded turns and cost for each.',
+      'I can state which lever buys accuracy and which buys economy.',
+      'I verified the cheap scoped answer was actually correct.',
+      'I checkpointed findings to a file before clearing &mdash; not into the conversation.',
+      'I can say what survives a compaction and what does not.'
+    ],
+    quiz:[
+      {q:'Handing the agent three verified facts (an anchor) with no other change produced 9 turns and $0.4447, against $0.3267 for rediscovering cold. Why?',
+       options:['The anchor was wrong','The anchor did not stop a capable agent verifying and going deeper &mdash; it treated the facts as a starting point, so context grew and output grew','The measurement was invalid','Anchoring always costs more'], answer:1},
+      {q:'Adding one sentence &mdash; &ldquo;answer from these facts alone, do not read any files&rdquo; &mdash; changed the run to 1 turn and $0.0611. What does that separate?',
+       options:['Nothing; it is the same lever','Two levers: re-anchoring buys accuracy, scoping buys economy &mdash; and only the second collapses the turn count','Model choice from context size','Cache reads from cache writes'], answer:1},
+      {q:'Which instruction survives a <code>/compact</code>?',
+       options:['Anything stated emphatically in conversation','A rule in the project-root CLAUDE.md &mdash; re-read from disk and re-injected; nested files reload only on next access, and conversation-only instructions are summariser fodder','The most recent ten turns verbatim','Nothing'], answer:1},
+      {q:'When should you clear and re-anchor rather than compact?',
+       options:['Whenever the session is long','When the thread itself is the problem &mdash; a wrong path, a mistake the summary would faithfully preserve, or context you regret adding; compaction inherits your errors, a clear lets you choose what carries forward','Never; compaction is always better','Only when the tool refuses to continue'], answer:1}
+    ]
   }
 ];
 
@@ -3970,6 +4042,68 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-25 · Two Levers (spec: VISUALS.md) ----------
+   The three measured variants (recordings/m83-compaction-reanchor.txt),
+   including the one that DISPROVED the hypothesis: anchoring alone cost
+   MORE than rediscovering. */
+VISUALS['ANIM-25'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const V = [
+    {n:'A · rediscover', sub:'no anchor · 9 turns', cost:0.3267, k:'mid'},
+    {n:'B · anchored', sub:'facts given, no scope limit · 9 turns', cost:0.4447, k:'hi'},
+    {n:'C · anchored + scoped', sub:'&ldquo;answer from these facts alone&rdquo; · 1 turn', cost:0.0611, k:'lo'}
+  ];
+  const MAX = 0.4447;
+  mount.innerHTML =
+    '<div class="anim25" aria-label="Re-anchoring versus scope-limiting: the two levers">' +
+      '<div class="a25head"><span>ANIM-25 · SAME QUESTION · THREE FRAMINGS</span>' +
+        '<button class="a25btn" data-a25run>RUN ▸</button></div>' +
+      V.map((v,i) =>
+        '<div class="a25v" data-v="' + i + '">' +
+          '<span class="a25vn">' + v.n + '<small>' + v.sub + '</small></span>' +
+          '<span class="a25bar"><span class="a25fill ' + v.k + '" data-f="' + i + '"></span></span>' +
+          '<span class="a25c" data-c="' + i + '">—</span>' +
+        '</div>').join('') +
+      '<div class="a25punch" data-punch></div>' +
+      '<div class="a25steps">' +
+        '<div class="a25s"><div class="a25sn">1 · CHECKPOINT</div><div class="a25sd">write findings to a <b>file</b> &mdash; conversation does not survive</div></div>' +
+        '<div class="a25s"><div class="a25sn">2 · /clear</div><div class="a25sd">fresh window; back to floor + memory, not to zero</div></div>' +
+        '<div class="a25s acc"><div class="a25sn">3 · RE-ANCHOR</div><div class="a25sd">hand back 3&ndash;5 verified facts &rarr; <b>accuracy</b></div></div>' +
+        '<div class="a25s eco"><div class="a25sn">4 · SCOPE</div><div class="a25sd">say what is out of bounds &rarr; <b>economy</b></div></div>' +
+      '</div>' +
+      '<div class="a25foot">Steps 3 and 4 are different levers. Everybody does 3 and skips 4 &mdash; then wonders why &ldquo;giving it more context&rdquo; made the bill worse.</div>' +
+    '</div>';
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function reset(){
+    V.forEach((v,i) => {
+      mount.querySelector('[data-v="' + i + '"]').classList.remove('on');
+      mount.querySelector('[data-f="' + i + '"]').style.width = '0';
+      mount.querySelector('[data-c="' + i + '"]').textContent = '—';
+    });
+    mount.querySelector('[data-punch]').innerHTML = 'Press <b>RUN</b>: the identical question, asked three ways against the same repo.';
+  }
+  function show(i){
+    const v = V[i];
+    mount.querySelector('[data-v="' + i + '"]').classList.add('on');
+    mount.querySelector('[data-f="' + i + '"]').style.width = (v.cost / MAX * 100) + '%';
+    const c = mount.querySelector('[data-c="' + i + '"]');
+    c.innerHTML = '$' + v.cost.toFixed(4) + (i === 2 ? '<small>19% of A</small>' : (i === 1 ? '<small>worse than A</small>' : ''));
+  }
+  function punch(){
+    mount.querySelector('[data-punch]').innerHTML =
+      'The prediction was that handing back verified facts would cut the bill. <span class="no">It did not.</span> Variant B &mdash; anchored but unconstrained &mdash; cost <b>more</b> than rediscovering ($0.4447 vs $0.3267), same nine turns, <em>more</em> output: the agent treated the facts as a starting point and went deeper. Only when the anchor was paired with a scope limit did it collapse to <span class="yes">one turn and $0.0611</span>. <b>Anchoring buys accuracy; scoping buys economy.</b>';
+  }
+  function run(){
+    stop(); reset();
+    if(reduce){ V.forEach((v,i) => show(i)); punch(); return; }
+    V.forEach((v,i) => timers.push(setTimeout(() => show(i), 250 + i*850)));
+    timers.push(setTimeout(punch, 250 + V.length*850));
+  }
+  mount.querySelector('[data-a25run]').addEventListener('click', run);
+  run();
 };
 
 /* ---------- SIM-06 · Session Bill Meter (spec: VISUALS.md) ----------

@@ -1,0 +1,59 @@
+M-8.3 COMPACTION STRATEGY — a hypothesis, tested and CORRECTED
+===============================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone (read-only; untouched).
+Three fresh sessions, identical question, same repo, no memory-file edits (so
+M-7.3's cache-creation caveat does not confound the comparison).
+
+THE QUESTION (all three): "what happens to a request scoring exactly 0.85, and
+is that correct?"
+
+  variant                      turns   in-tokens    out      cost
+  A  rediscover (no anchor)        9     198,015   2,566   $0.3267
+  B  anchored, unconstrained       9     273,724   3,334   $0.4447
+  C  anchored + scope-limited      1      25,647     711   $0.0611
+
+  C is **19% of A's cost** (5.3x cheaper) and 1 turn instead of 9 — with the
+  correct answer ("not auto-approved; 0.85 is not greater than 0.85").
+
+=== THE HYPOTHESIS I SET OUT TO CONFIRM — AND DID NOT ===
+  Predicted: handing back verified facts (a "re-anchor") would cut the bill.
+  Measured: variant B, anchored but otherwise unconstrained, cost MORE than
+  rediscovering from scratch — $0.4447 vs $0.3267, same 9 turns, MORE output
+  (3,334 vs 2,566). The anchor did not stop a capable agent from going and
+  verifying the facts anyway; it raised the ceiling on how thorough the answer
+  became. Facts given were treated as a starting point, not a stopping point.
+
+=== THE CORRECTED, MORE USEFUL LESSON: TWO SEPARABLE LEVERS ===
+  1. RE-ANCHORING restores ACCURACY. After a compaction (or a /clear) you hand
+     back verified ground truth so the agent is not reasoning from a degraded
+     summary or rediscovering things it will get subtly wrong. This is a
+     correctness lever. On its own it does NOT save money (variant B).
+  2. SCOPE-LIMITING restores ECONOMY. Telling the agent what NOT to do —
+     "answer from these facts alone, do not read or search any files" — is what
+     collapses 9 turns into 1 and the bill into 19%. This is the cost lever.
+  People conflate the two, "give it more context" as a cost strategy, and are
+  then puzzled when the bill goes UP. Both levers are useful; they do different
+  jobs and must be pulled deliberately.
+
+=== WHAT SURVIVES COMPACTION (doc-verified, carried from M-7.3) ===
+ - Project-root CLAUDE.md SURVIVES: after /compact it is re-read from disk and
+   re-injected into the session.
+ - Nested CLAUDE.md files in subdirectories are NOT re-injected automatically;
+   they reload the next time Claude reads a file in that directory.
+ - Anything stated only in conversation is summariser fodder. "If an instruction
+   disappeared after compaction, it was either given only in conversation or
+   lives in a nested CLAUDE.md that hasn't reloaded yet."
+ => The practical rule (same as M-7.3): if it must survive, it must be in a file.
+
+=== THE PATTERN, STATED PRECISELY ===
+  When a session has lost the plot (wrong turns accumulated, summary drifting,
+  headroom gone):
+    1. CHECKPOINT — write what you have learned into a FILE (the map from M-3.1,
+       a finding, a decision). Files survive; conversation does not.
+    2. /clear — take the fresh window. You return to the floor plus memory
+       (M-7.3: ~25.5k), not to zero.
+    3. RE-ANCHOR — hand back the 3-5 verified facts that matter, so accuracy
+       does not restart from nothing.
+    4. SCOPE — say what is out of bounds for this turn. THIS is the step that
+       makes it cheap, and the one everybody skips.
+  Steps 3 and 4 are different levers. Measured: 3 alone costs more; 3+4 costs 19%.
