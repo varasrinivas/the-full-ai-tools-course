@@ -355,6 +355,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-09: Coverage vs Mutation Heatmap ============ */
+.anim09{--a9red:#d0705a;--a9green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim09{--a9red:#B0503C;--a9green:#2d7350}
+.anim09 .a9head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim09 .a9grid{display:flex;flex-direction:column;gap:6px}
+.anim09 .a9cell{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;transition:border-color .3s,background .3s}
+.anim09 .a9cell.testing{border-color:var(--gold)}
+.anim09 .a9cell.caught{border-color:var(--a9green);background:rgba(62,154,107,.08)}
+.anim09 .a9cell.survived{border-color:var(--a9red);background:rgba(208,112,90,.10)}
+.anim09 .a9what{font-size:10.5px;color:var(--text);line-height:1.45;min-width:0}
+.anim09 .a9what small{display:block;font-size:9px;color:var(--faint)}
+.anim09 .a9cov{font-size:9px;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.anim09 .a9res{font-size:9px;letter-spacing:.07em;padding:3px 10px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.anim09 .a9res.on{opacity:1}
+.anim09 .a9res.caught{background:rgba(62,154,107,.16);color:var(--a9green)}
+.anim09 .a9res.survived{background:rgba(208,112,90,.16);color:var(--a9red)}
+.anim09 .a9score{margin-top:12px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6}
+.anim09 .a9score b{color:var(--text);font-weight:500}
+.anim09 .a9score .bad{color:var(--a9red);font-size:14px}
+.anim09 .a9ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.anim09 .a9btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim09 .a9btn:hover{border-color:var(--gold)}
+.anim09 .a9foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ SIM-13: Boundary Grid — the untested validator ============ */
 .sim13{--s13red:#d0705a;--s13green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim13{--s13red:#B0503C;--s13green:#2d7350}
@@ -2411,6 +2435,63 @@ const MODS = [
       {q:'What does regenerating deleted tests against the spec accomplish beyond restoring a coverage number?',
        options:['Nothing &mdash; it just restores the number','It re-catches whatever the deleted tests were guarding &mdash; a spec-anchored, boundary-complete regeneration surfaces the bug the deletion hid, on the first run','It makes the suite slower','It rewrites the production code'], answer:1}
     ]
+  },
+  {
+    id:'M-6.4', path:'eng', track:'T-06', title:'Did the test actually catch it?', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A fire drill nobody has ever run. The alarm is installed, the extinguishers are mounted, the certificate on the wall says compliant &mdash; and no one has once pulled the handle to see whether the building empties. Mutation testing is pulling the handle: you deliberately start a small fire and find out whether anything actually responds.',
+      body:
+        '<p><strong>A test only counts if it can fail.</strong> That is the whole idea, and it is unfalsifiable until you try to break the code and see whether the suite objects. Mutation testing does exactly that: make one small semantic change &mdash; flip an operator, nudge a constant &mdash; and re-run. If a test fails, the mutation was <b>caught</b> and that behavior is genuinely defended. If everything stays green, the mutation <b>survived</b>, and whatever you just changed is unguarded no matter how many tests execute it.</p>' +
+        '<p><strong>The recorded campaign, and the number that should worry you.</strong> Five mutations against the shipped suite &mdash; 31 tests, green before and after every revert. Caught: the CPT format rule (<code>\\d{5}</code> to <code>\\d{4}</code>, six failures) and the recent-claims limit. Survived: <em>flipping the auto-approve comparison</em>, <em>moving the threshold constant from 0.85 to 0.84</em>, and the advisory history gate. <b>Mutation score: 2 of 5, forty percent</b> &mdash; and all three survivors are the auto-approve decision, the one rule this entire domain turns on. Flipping that operator changes the outcome for every request scoring exactly 0.85, and not one of the thirty-one tests notices.</p>' +
+        '<p><strong>Coverage measures execution; mutation measures protection.</strong> <code>ApprovalService.process()</code> is exercised by ten tests. A coverage report would light that method up green and you would move on. But ten tests can run a decision and defend none of it &mdash; they call the method, assert the outcomes they were given, and never pin the boundary where the decision actually lives. Coverage answers &ldquo;did a test run this line?&rdquo; Mutation answers &ldquo;would a test have stopped me breaking it?&rdquo; Only the second question is about safety, and it is the one your coverage badge never asks.</p>' +
+        '<p><strong>Three modules, one thread, now closed.</strong> M-6.1&rsquo;s mirror test is the degenerate case &mdash; a test that asserts what the code does mutates along with the code and can never be killed by anything. M-5.2 added two real boundary tests and pinned the operator, and even then mutating the <em>constant</em> to 0.84 stayed green, because both tests reference the constant and follow it wherever it goes. Now the shipped baseline is measured too: <b>zero of three</b> on the decision. The mutation score is what made all three states legible &mdash; it is the instrument that turns &ldquo;we have tests&rdquo; into a number you can argue with.</p>' +
+        '<p><strong>The drill, and the cure.</strong> Run it on your most important rule first, because that is where a survivor is most expensive. When one survives, the fix is not <em>more</em> tests &mdash; it is the one test that pins the behavior at the boundary, then re-running the same mutation to prove the survivor is now caught. That last step matters: a test written in response to a survivor is itself unproven until the mutation dies. And a caution worth stating plainly &mdash; an agent asked to &ldquo;improve mutation score&rdquo; will happily generate assertions that game it, so read what it writes. T-06 closes on M-6.5, where the test comes first and the code answers to it.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-09'},
+    labA:{
+      title:'Run a mutation campaign — Claude Code',
+      steps:[
+        'Scratch branch off <code>lab/start</code>. Baseline first: <code>./mvnw test -Dtest=&#39;*ServiceTest,*ControllerTest&#39;</code> &mdash; 31 tests, all green. Everything below assumes that green start.',
+        'Mutate one at a time, run the suite, record CAUGHT or SURVIVED, then revert before the next. Start with the rule that matters: change <code>score &gt; AUTO_APPROVE_THRESHOLD</code> to <code>&gt;=</code>. Reference: <b>SURVIVED</b> &mdash; you just changed the routing of every 0.85 request and the suite applauded.',
+        'Continue the campaign: the constant <code>0.85 &rarr; 0.84</code> (reference: SURVIVED), the history gate <code>&gt; 3 &rarr; &gt;= 3</code> (SURVIVED), the CPT regex <code>\\d{5} &rarr; \\d{4}</code> (CAUGHT, 6 failures), the claims limit <code>limit &rarr; limit + 1</code> (CAUGHT, 1 failure). Compute your score. Reference: <b>2/5 = 40%</b>.',
+        'Now cure one survivor properly: write the single boundary test that pins the threshold behavior (M-5.2&rsquo;s pattern &mdash; assert at exactly the constant), then <em>re-run the operator mutation</em> and confirm it now dies. A test written against a survivor is unproven until the mutation fails.',
+        'Log the before/after score and one sentence on why coverage did not warn you &mdash; ten tests execute <code>process()</code>. Success: five recorded verdicts, a computed score, one survivor killed and proven killed, clean tree.'
+      ]
+    },
+    labB:{
+      title:'The same campaign — Copilot',
+      steps:[
+        'Same five mutations, driven from the Test Explorer so you watch each run go green or red. Ask <b>Agent</b> to predict each verdict <em>before</em> you run it, then grade its predictions &mdash; a model that can reason about what a suite defends is genuinely useful; one that guesses is not.',
+        'Ask it to write the boundary test that kills the operator survivor, then re-run the mutation yourself to confirm the kill.',
+        'Success: five verdicts, the agent&rsquo;s prediction accuracy logged, one proven kill.'
+      ]
+    },
+    labC:{
+      title:'The same campaign — Cursor, then the mutation rule',
+      steps:[
+        'Repeat on the web side for variety: mutate the gauge&rsquo;s comparison (<code>&gt;</code> to <code>&gt;=</code>) and run the Vitest suite. Given what M-6.1 showed about that component&rsquo;s mirror-style test, predict the verdict first.',
+        'Open ANIM-09 and run the heatmap beside your own results &mdash; every row executed, three defending nothing.',
+        'Write the rule for your team: <em>coverage measures execution, mutation measures protection; run the drill on your most important rule first; cure a survivor with one boundary test and prove the kill by re-mutating.</em> Then pick the one rule in your own codebase you would least like to be unguarded, and go mutate it tonight. Success: the web verdict predicted and confirmed, the rule written, one real-work mutation target named.'
+      ]
+    },
+    checklist:[
+      'I ran five mutations against a green suite and recorded CAUGHT or SURVIVED for each.',
+      'I computed a mutation score and can state what it means that the survivors clustered on one rule.',
+      'I can explain why ten tests executing a method defend none of its decision.',
+      'I killed one survivor with a boundary test and re-ran the mutation to prove the kill.',
+      'I named the one rule in my own codebase I would least like to find unguarded.'
+    ],
+    quiz:[
+      {q:'The shipped suite is 31 tests and fully green. Flipping the auto-approve comparison changed nothing about that. What does the survivor prove?',
+       options:['The mutation was invalid','That behavior is unguarded &mdash; no test pins the threshold decision, so the suite cannot tell the correct rule from the broken one','The tests run too fast','The operator flip is harmless'], answer:1},
+      {q:'What is the difference between line coverage and mutation coverage?',
+       options:['Nothing &mdash; both measure test quality','Coverage counts executed lines; mutation counts defended behaviors &mdash; ten tests can execute a decision and stop none of its mutations','Mutation coverage is just slower coverage','Coverage is for units, mutation is for integration'], answer:1},
+      {q:'Why did the constant mutation (0.85 to 0.84) survive even in M-5.2, after two real boundary tests were added?',
+       options:['The tests were disabled','Both boundary tests reference the constant, so they follow it wherever it moves &mdash; the operator got pinned, the value did not','0.84 and 0.85 are equivalent','Mutation testing cannot mutate constants'], answer:1},
+      {q:'A mutation survives. What is the correct response?',
+       options:['Add many more tests until something fails','Write the one test that pins that behavior at its boundary, then re-run the same mutation to prove it now dies &mdash; a test written against a survivor is unproven until the mutation fails','Raise the coverage threshold in CI','Remove the mutation from the list'], answer:1}
+    ]
   }
 ];
 
@@ -3244,6 +3325,73 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-09 · Coverage vs Mutation Heatmap (spec: VISUALS.md) ----------
+   Runs the REAL recorded campaign (recordings/m64-mutation-campaign.txt):
+   5 mutations vs the shipped 31-test suite, 2 caught / 3 survived = 40%.
+   Deviation from the v1.0 spec noted in VISUALS.md: green = CAUGHT (good),
+   red = SURVIVED (danger), matching this course's colour semantics. */
+VISUALS['ANIM-09'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CELLS = [
+    {what:'threshold decision &mdash; the comparison', sub:'ApprovalService: score &gt; T  &rarr;  score &gt;= T', cov:'10 tests execute it', res:'survived'},
+    {what:'threshold decision &mdash; the value', sub:'AUTO_APPROVE_THRESHOLD 0.85 &rarr; 0.84', cov:'10 tests execute it', res:'survived'},
+    {what:'advisory history gate', sub:'deniedClaims &gt; 3  &rarr;  &gt;= 3', cov:'covered by 2 tests', res:'survived'},
+    {what:'CPT format rule', sub:'EligibilityService: \\d{5} &rarr; \\d{4}', cov:'covered by 8 tests', res:'caught'},
+    {what:'recent-claims limit', sub:'ClaimHistoryService: limit &rarr; limit + 1', cov:'covered by 4 tests', res:'caught'}
+  ];
+  mount.innerHTML =
+    '<div class="anim09" aria-label="Coverage versus mutation results for the shipped test suite">' +
+      '<div class="a9head"><span>ANIM-09 · COVERAGE SAYS TESTED &middot; MUTATION SAYS PROTECTED</span>' +
+        '<button class="a9btn" data-a9run>RUN MUTATIONS ▸</button></div>' +
+      '<div class="a9grid">' +
+        CELLS.map((c,i) =>
+          '<div class="a9cell" data-cell="' + i + '">' +
+            '<span class="a9what">' + c.what + '<small>' + c.sub + '</small></span>' +
+            '<span class="a9cov">' + c.cov + '</span>' +
+            '<span class="a9res" data-res="' + i + '"></span>' +
+          '</div>').join('') +
+      '</div>' +
+      '<div class="a9score" data-score></div>' +
+      '<div class="a9foot">What to notice: every cell is <em>executed</em> by tests &mdash; line coverage looks healthy everywhere. Three of them defend nothing, and all three are the auto-approve decision.</div>' +
+    '</div>';
+  const scoreEl = mount.querySelector('[data-score]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function clearAll(){
+    CELLS.forEach((c,i) => {
+      mount.querySelector('[data-cell="' + i + '"]').className = 'a9cell';
+      const r = mount.querySelector('[data-res="' + i + '"]');
+      r.className = 'a9res'; r.textContent = '';
+    });
+    scoreEl.innerHTML = 'Press <b>RUN MUTATIONS</b>: each row&rsquo;s operator or constant is flipped and the 31-test suite is re-run. A row is <b>caught</b> if any test fails.';
+  }
+  function settle(i){
+    const c = CELLS[i];
+    const cell = mount.querySelector('[data-cell="' + i + '"]');
+    const r = mount.querySelector('[data-res="' + i + '"]');
+    cell.className = 'a9cell ' + c.res;
+    r.className = 'a9res on ' + c.res;
+    r.innerHTML = c.res === 'caught' ? '✓ CAUGHT' : '✗ SURVIVED';
+  }
+  function score(){
+    const caught = CELLS.filter(c => c.res === 'caught').length;
+    scoreEl.innerHTML = 'Mutation score: <b class="bad">' + caught + '/' + CELLS.length + ' = ' +
+      Math.round(caught / CELLS.length * 100) + '%</b> &mdash; and the three survivors are all the <b>auto-approve decision</b>, the rule the whole domain turns on. The suite was green the entire time.';
+  }
+  function run(){
+    stop(); clearAll();
+    if(reduce){ CELLS.forEach((c,i) => settle(i)); score(); return; }
+    CELLS.forEach((c,i) => {
+      timers.push(setTimeout(() => { mount.querySelector('[data-cell="' + i + '"]').className = 'a9cell testing'; }, 150 + i*700));
+      timers.push(setTimeout(() => settle(i), 150 + i*700 + 450));
+    });
+    timers.push(setTimeout(score, 150 + CELLS.length*700 + 500));
+  }
+  mount.querySelector('[data-a9run]').addEventListener('click', run);
+  clearAll();
+  if(reduce) run();
 };
 
 /* ---------- SIM-13 · Boundary Grid — the untested validator (spec: VISUALS.md) ----------

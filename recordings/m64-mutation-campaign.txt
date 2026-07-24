@@ -1,0 +1,51 @@
+M-6.4 DID THE TEST ACTUALLY CATCH IT? — mutation campaign, real results
+========================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m64-mutation
+(each mutation applied, suite run, reverted; clone restored pristine).
+Suite under test: the SHIPPED unit suite — 31 tests (*ServiceTest + *ControllerTest),
+all green before and after every revert. No Docker needed (~15s per run).
+
+METHOD: apply one small semantic mutation to production code, run the suite.
+  CAUGHT   = at least one test failed (the suite defends that behavior)
+  SURVIVED = suite stayed all-green (the behavior is unguarded)
+  mutation score = caught / total
+
+RESULTS (verbatim from the campaign):
+  SURVIVED | threshold operator: score > T  ->  score >= T
+  SURVIVED | threshold constant: 0.85 -> 0.84
+  SURVIVED | history gate: deniedClaims > 3 -> >= 3
+  CAUGHT   | CPT format: \d{5} -> \d{4}            (6 failures — cf. M-5.1)
+  CAUGHT   | recentClaims limit: limit -> limit+1  (1 failure)
+
+  *** MUTATION SCORE: 2/5 = 40% ***
+
+THE FINDING THAT MATTERS: all three survivors live in the THRESHOLD DECISION —
+the single rule the entire domain turns on. ApprovalService.process() is
+exercised by 10 tests in ApprovalServiceTest; line coverage of that method looks
+excellent. Yet:
+  - flipping the comparison operator (which is literally FIXING BUG-API-01)
+    changes routing for every 0.85 request and NOT ONE TEST NOTICES;
+  - moving the constant to 0.84 re-routes real requests, all green;
+  - changing the advisory history gate, all green.
+Coverage says "tested." Mutation says "unguarded." They are different questions
+and only one of them is about protection.
+
+CROSS-MODULE CONFIRMATION (the two artifacts this module was seeded from):
+ - M-5.2 mutation-B: after ADDING the two boundary tests and fixing the operator,
+   mutating the CONSTANT 0.85->0.84 still left all 12 tests green — the new tests
+   reference the constant, so they follow it. Operator pinned, value unpinned.
+ - Here, on the SHIPPED suite, even the OPERATOR is unpinned (no boundary test
+   exists at all). So: shipped = 0/3 on the decision; after M-5.2's fix = 1/2
+   (operator pinned, constant still free). The mutation score is the metric that
+   made both states legible.
+ - M-6.1's mirror test is the degenerate case: a test that asserts what the code
+   does can never be killed by any mutation — it mutates with the code.
+
+TEACHING BEATS: (1) a test only counts if it CAN fail; mutation testing is how
+you find out. (2) Line coverage measures execution, mutation coverage measures
+protection — 10 tests can execute a decision and defend none of it. (3) Run the
+drill on your MOST IMPORTANT rule first; that is where a survivor is most
+expensive. (4) The fix for a survivor is not more tests, it is the ONE test that
+pins the behavior at the boundary (M-5.2's pattern), then re-run the mutation to
+prove the survivor is now caught.
+CLEANUP: all mutations reverted; clone pristine; plants intact.
