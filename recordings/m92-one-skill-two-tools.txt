@@ -1,0 +1,56 @@
+M-9.2 ONE SKILL, TWO TOOLS — and WHERE the one file must live
+==============================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m92-interop
+(all skill dirs removed, clone restored bare/pristine).
+
+=== THE BLUEPRINT'S CLAIM — VERIFIED (rare: it held) ===
+  "Copilot discovers .claude/skills/ too."  CONFIRMED by current docs:
+   - GitHub changelog "GitHub Copilot now supports Agent Skills": "If you've
+     already set up skills for Claude Code in the .claude/skills directory in
+     your repository, Copilot will pick them up automatically."
+   - VS Code docs: VS Code also recognises **.claude/skills/** and
+     **.agents/skills/** as project skill directories, alongside its own
+     .github/skills/ (repo) and ~/.copilot/skills/ (user profile).
+   - Skills follow the agentskills.io specification — an open standard.
+   - Reach: Copilot coding/cloud agent, Copilot CLI, code review, VS Code agent
+     mode, Visual Studio, JetBrains IDEs.
+  (Cursor: NOT verified here — treat as verify-in-your-version.)
+
+=== THE QUESTION THE DOCS DON'T ANSWER: which directory gets the one file? ===
+  If the file is shared, it needs ONE home. So: does the interop run BOTH ways —
+  does Claude Code read Copilot's .github/skills/ ?
+
+  TEST 1 (naive, and MISLEADING): put the skill ONLY in .github/skills/ and ask
+  the trigger question. Result: 10 turns, $0.3439, and the house THRESHOLD AUDIT
+  format appeared — "SKILL FIRED: YES".
+  >>> If I had stopped here I would have published a false conclusion.
+
+  TEST 2 (the M-7.2 probe — registration vs discovery): "Do NOT read or open any
+  files. From your loaded session context alone: list the names of any project
+  skills available to you right now."
+    with skill in .github/skills/  -> "From the session context alone, I can't
+        identify any as project skills."          == NOT REGISTERED
+    with skill in .claude/skills/  -> "exactly one skill looks project-scoped:
+        **threshold-audit** — 'Audit any auto-approve threshold comparison...'"
+                                                  == REGISTERED, zero file reads
+  >>> Test 1's "firing" was the agent EXPLORING and reading the file (10 turns),
+  not the skill registry. Same discovered-vs-loaded distinction as M-7.2's
+  AGENTS.md, in a new domain — and again the naive test said the opposite.
+
+=== THE ACTIONABLE ANSWER ===
+  The interop is ONE-DIRECTIONAL:
+    Copilot  reads .claude/skills/   (documented, automatic)
+    Claude   does NOT register .github/skills/  (measured — it can only stumble
+             on the file by reading it, at full exploration cost)
+  THEREFORE the single shared file belongs in **.claude/skills/<name>/SKILL.md**.
+  Put it in .github/skills/ and you get a skill for Copilot and an expensive
+  accident for Claude Code.
+
+TEACHING BEATS: (1) write once, in .claude/skills/, and both tools honour it —
+the blueprint's "killer lab" premise is real; (2) the file is an open-standard
+artifact (agentskills.io), not a vendor lock-in; (3) BUT interop is asymmetric,
+and the only way to know was to probe registration rather than trust an apparent
+firing; (4) Claude-only extensions to the standard — invocation control
+(disable-model-invocation), subagent execution (context: fork), dynamic context
+injection — degrade to plain skill bodies elsewhere, so keep portable content in
+the body and treat the extensions as enhancements, not requirements.

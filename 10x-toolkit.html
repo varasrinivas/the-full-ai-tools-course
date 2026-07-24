@@ -355,6 +355,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-17: Where Does the One File Live? ============ */
+.sim17{--s17red:#d0705a;--s17green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim17{--s17red:#B0503C;--s17green:#2d7350}
+.sim17 .s17head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim17 .s17pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.sim17 .s17opt{flex:1;min-width:180px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;cursor:pointer;text-align:left;font-family:var(--mono)}
+.sim17 .s17opt[aria-pressed="true"]{border-color:var(--gold)}
+.sim17 .s17on{display:block;font-size:10px;color:var(--text);margin-bottom:3px}
+.sim17 .s17os{display:block;font-size:8.5px;color:var(--faint)}
+.sim17 .s17tools{display:flex;gap:9px;flex-wrap:wrap}
+.sim17 .s17tool{flex:1;min-width:200px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--panel)}
+.sim17 .s17tool.ok{border-color:var(--s17green)}
+.sim17 .s17tool.bad{border-color:var(--s17red)}
+.sim17 .s17tn{font-size:9px;letter-spacing:.09em;color:var(--faint);margin-bottom:5px}
+.sim17 .s17st{font-size:12px;font-weight:500;margin-bottom:4px}
+.sim17 .s17tool.ok .s17st{color:var(--s17green)}
+.sim17 .s17tool.bad .s17st{color:var(--s17red)}
+.sim17 .s17td{font-size:9.5px;color:var(--dim);line-height:1.5}
+.sim17 .s17probe{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.65;min-height:62px}
+.sim17 .s17probe b{color:var(--text);font-weight:500}
+.sim17 .s17probe .warn{color:var(--s17red)}
+.sim17 .s17probe .good{color:var(--s17green)}
+.sim17 .s17foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ ANIM-26: The Description Is the Trigger ============ */
 .anim26{--a26red:#d0705a;--a26green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim26{--a26red:#B0503C;--a26green:#2d7350}
@@ -3356,6 +3380,63 @@ const MODS = [
       {q:'What is the current relationship between custom commands and skills?',
        options:['Commands were removed','They have merged &mdash; <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> both create <code>/deploy</code>; existing command files keep working, and skills add supporting files, invocation control and autonomous loading','Skills replaced commands with no migration path','Commands are for teams, skills for individuals'], answer:1}
     ]
+  },
+  {
+    id:'M-9.2', path:'eng', track:'T-09', title:'One skill, two tools', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'Two hospitals that finally agreed on one referral form. The win is not the paper &mdash; it is that a clinician writes the patient&rsquo;s story once and both institutions act on it. But agreement on a <em>format</em> is not agreement on a <em>filing cabinet</em>: put the form in the wrong drawer and one of them will still swear it never arrived.',
+      body:
+        '<p><strong>The promise: write the procedure once, and every tool honours it.</strong> Skills follow the <b>Agent Skills open standard</b> (agentskills.io) &mdash; a <code>SKILL.md</code> with YAML frontmatter in a folder that can carry supporting scripts and templates. It is genuinely cross-vendor: skills work across Copilot&rsquo;s coding and cloud agents, the Copilot CLI, code review, VS Code agent mode, Visual Studio, and JetBrains IDEs. And the specific claim this module was built on holds up: per the GitHub changelog, <em>&ldquo;if you&rsquo;ve already set up skills for Claude Code in the .claude/skills directory in your repository, Copilot will pick them up automatically&rdquo;</em> &mdash; VS Code lists <code>.claude/skills/</code> and <code>.agents/skills/</code> as project skill directories alongside its own <code>.github/skills/</code>.</p>' +
+        '<p><strong>Which leaves the question the documentation does not answer: where does the one file go?</strong> If the point is a single shared artifact, it needs a single home. Copilot reads Claude&rsquo;s directory &mdash; but does Claude read Copilot&rsquo;s? That is a testable question, and the answer decides your repository layout.</p>' +
+        '<p><strong>The naive test said yes. The naive test was wrong.</strong> With the skill placed <em>only</em> in <code>.github/skills/</code>, the trigger question produced the full house output format &mdash; apparent success. But it took <b>10 turns</b>, and M-7.2 taught the habit of asking a sharper question: <em>&ldquo;do not read any files &mdash; from your loaded context alone, list the project skills available to you.&rdquo;</em> From <code>.github/skills/</code> the answer was <em>&ldquo;I can&rsquo;t identify any as project skills.&rdquo;</em> From <code>.claude/skills/</code> it was <em>&ldquo;exactly one skill looks project-scoped: threshold-audit&hellip;&rdquo;</em>, with zero file reads. So the earlier &ldquo;firing&rdquo; was never a skill at all &mdash; it was the agent <b>exploring the repo and reading a file it happened to find</b>, at full exploration cost.</p>' +
+        '<p><strong>The interop is one-directional, and that is the actionable finding.</strong> Copilot reads <code>.claude/skills/</code>; Claude Code does not <em>register</em> <code>.github/skills/</code>. So the shared file belongs in <b><code>.claude/skills/&lt;name&gt;/SKILL.md</code></b> &mdash; put it in Copilot&rsquo;s directory instead and you get a real skill for one tool and an expensive accident for the other. Notice how thin the line was between the right conclusion and a confident wrong one: a single probe. This is the third time in this course that distinguishing <em>discovered</em> from <em>loaded</em> has flipped an answer, and it is worth adopting as a permanent reflex.</p>' +
+        '<p><strong>Write for the standard, treat the extras as extras.</strong> Claude Code <em>extends</em> the open standard with features other tools will not honour: <code>disable-model-invocation</code> for user-only invocation, <code>context: fork</code> to run a skill in a subagent, dynamic context injection. Those degrade gracefully &mdash; another tool simply reads the body and ignores what it does not understand &mdash; so keep the portable substance in the body and let the extensions be enhancements rather than requirements. That is what makes one file genuinely serve a mixed-tool team, which is the situation nearly every real team is actually in. M-9.3 draws the boundary between skills, hooks and subagents.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-17'},
+    labA:{
+      title:'Prove the registration, not the firing — Claude Code',
+      steps:[
+        'Take the skill you wrote in M-9.1 and place it in <code>.github/skills/&lt;name&gt;/SKILL.md</code> only. Ask your trigger question and note that it may well appear to work &mdash; mine produced the full house format in 10 turns.',
+        'Now run the registration probe: <em>&ldquo;Do NOT read or open any files. From your loaded session context alone: list the names of any project skills available to you right now. If none are registered, say so plainly.&rdquo;</em> Reference: from <code>.github/skills/</code> it reported none.',
+        'Move the identical file to <code>.claude/skills/&lt;name&gt;/SKILL.md</code> and re-probe. Reference: the skill is named back to you with zero file reads. Write down the difference between those two results in your own words &mdash; that is the whole module.',
+        'Draw the conclusion for your repo: the shared file lives in <code>.claude/skills/</code>. If your team also wants Copilot-only skills, those can live in <code>.github/skills/</code> &mdash; but anything shared has one home.',
+        'Success: the misleading firing observed, the probe run in both locations, and your repo&rsquo;s skill directory decided on evidence rather than on a plausible-looking test.'
+      ]
+    },
+    labB:{
+      title:'The same file, honoured by Copilot',
+      steps:[
+        'With the skill in <code>.claude/skills/</code>, open the repo in VS Code and confirm Copilot picks it up &mdash; per the docs it does so automatically, and VS Code recognises that directory as a project skill location.',
+        'Ask the trigger question in agent mode and check for your enforced output format and marker line. Then ask an unrelated question and confirm it stays quiet &mdash; the same positive-and-control discipline as M-9.1, now in a second tool.',
+        'Success: one file, two tools, both honouring the same procedure and the same output contract &mdash; and a note of anything Claude-specific in your frontmatter that Copilot ignored.'
+      ]
+    },
+    labC:{
+      title:'Cursor and the portability rule',
+      steps:[
+        'Check whether your Cursor version honours <code>.claude/skills/</code> &mdash; this course did <em>not</em> verify that, so treat it as verify-in-your-version rather than assumption, and record what you find with the date.',
+        'Audit your own SKILL.md for portability: is the substance in the body (portable), or does it depend on Claude-only frontmatter like <code>context: fork</code> or <code>disable-model-invocation</code> (an enhancement other tools will ignore)?',
+        'Write the team rule: <em>one shared skill file, in <code>.claude/skills/</code>, portable substance in the body, vendor extensions as enhancements only &mdash; and verify registration with a probe, never with an apparent firing.</em> Success: your Cursor finding dated, one skill made portable, the rule written.'
+      ]
+    },
+    checklist:[
+      'I saw a skill appear to fire from a directory where it was never registered.',
+      'I ran the registration probe in both directories and can state the difference.',
+      'My shared skill lives in <code>.claude/skills/</code> on evidence, not assumption.',
+      'I confirmed a second tool honours the same file, positive and control.',
+      'My skill&rsquo;s substance is in the body; vendor-specific frontmatter is optional.'
+    ],
+    quiz:[
+      {q:'A skill placed only in <code>.github/skills/</code> produced the correct house output when asked the trigger question. What actually happened?',
+       options:['It was registered and fired normally','It was never registered &mdash; the agent explored the repo and read the file (10 turns); the registration probe reported no project skills','Copilot answered instead','The directory is an alias'], answer:1},
+      {q:'Where should a skill shared between Claude Code and Copilot live?',
+       options:['<code>.github/skills/</code>, since Copilot owns the repo tooling','<code>.claude/skills/</code> &mdash; Copilot picks that up automatically, while Claude Code does not register <code>.github/skills/</code>; the interop is one-directional','Both, duplicated','Wherever the team prefers &mdash; it makes no difference'], answer:1},
+      {q:'What made the difference between the right answer and a confident wrong one?',
+       options:['Reading the changelog','A registration probe &mdash; asking what is loaded without reading files &mdash; because an apparent firing can just be the agent reading a file it found','Running the test twice','Checking the frontmatter syntax'], answer:1},
+      {q:'How should you treat Claude-only frontmatter such as <code>context: fork</code> in a shared skill?',
+       options:['Avoid skills entirely if you use multiple tools','As enhancements &mdash; keep the portable substance in the body, since other tools read the body and ignore what they do not understand','As required fields','They break other tools, so the file cannot be shared'], answer:1}
+    ]
   }
 ];
 
@@ -4189,6 +4270,52 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-17 · Where Does the One File Live? (spec: VISUALS.md) ----------
+   The measured asymmetry (recordings/m92-one-skill-two-tools.txt): Copilot
+   reads .claude/skills/ (documented); Claude does NOT register .github/skills/
+   (probed). Naive firing test said otherwise — that's the lesson. */
+VISUALS['SIM-17'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const OPTS = [
+    {n:'.claude/skills/&lt;name&gt;/SKILL.md', s:'Claude Code&rsquo;s project skill directory',
+     claude:{ok:true, st:'REGISTERED', d:'Probe with zero file reads returned: &ldquo;exactly one skill looks project-scoped: <b>threshold-audit</b>&rdquo;. It is in the skill registry.'},
+     copilot:{ok:true, st:'PICKED UP', d:'Documented: &ldquo;If you&rsquo;ve already set up skills for Claude Code in the .claude/skills directory&hellip; Copilot will pick them up automatically.&rdquo; VS Code lists it as a project skill directory.'},
+     verdict:'<span class="good">This is the home.</span> One file, both tools honour it &mdash; which is the whole promise of the open standard.'},
+    {n:'.github/skills/&lt;name&gt;/SKILL.md', s:'Copilot&rsquo;s repo skill directory',
+     claude:{ok:false, st:'NOT REGISTERED', d:'Probe returned: &ldquo;From the session context alone, I can&rsquo;t identify any as project skills.&rdquo; The registry does not contain it.'},
+     copilot:{ok:true, st:'NATIVE', d:'This is Copilot&rsquo;s own repo location, alongside ~/.copilot/skills/ for the user profile.'},
+     verdict:'<span class="warn">The trap.</span> A naive test <em>looked</em> like success &mdash; the trigger question produced the house format in 10 turns. But that was the agent <b>exploring and reading the file</b>, not a registered skill. You get a skill for Copilot and an expensive accident for Claude Code.'}
+  ];
+  let cur = 0;
+  mount.innerHTML =
+    '<div class="sim17" aria-label="Choosing the directory for a shared skill file">' +
+      '<div class="s17head"><span>SIM-17 · ONE SKILL FILE &mdash; WHICH DIRECTORY?</span><span>MEASURED</span></div>' +
+      '<div class="s17pick" role="tablist">' +
+        OPTS.map((o,i) => '<button class="s17opt" type="button" role="tab" data-o="' + i + '" aria-pressed="' + (i===0) + '">' +
+          '<span class="s17on">' + o.n + '</span><span class="s17os">' + o.s + '</span></button>').join('') +
+      '</div>' +
+      '<div class="s17tools">' +
+        '<div class="s17tool" data-t="claude"><div class="s17tn">CLAUDE CODE</div><div class="s17st" data-st="claude"></div><div class="s17td" data-td="claude"></div></div>' +
+        '<div class="s17tool" data-t="copilot"><div class="s17tn">GITHUB COPILOT</div><div class="s17st" data-st="copilot"></div><div class="s17td" data-td="copilot"></div></div>' +
+      '</div>' +
+      '<div class="s17probe" data-probe></div>' +
+      '<div class="s17foot">What to notice: the interop is <b>one-directional</b>. Only a registration probe reveals it &mdash; an apparent &ldquo;firing&rdquo; can just be the agent reading a file it happened to find.</div>' +
+    '</div>';
+  function show(i){
+    cur = i;
+    const o = OPTS[i];
+    mount.querySelectorAll('[data-o]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.o === i)));
+    ['claude','copilot'].forEach(k => {
+      mount.querySelector('[data-t="' + k + '"]').className = 's17tool ' + (o[k].ok ? 'ok' : 'bad');
+      mount.querySelector('[data-st="' + k + '"]').textContent = o[k].st;
+      mount.querySelector('[data-td="' + k + '"]').innerHTML = o[k].d;
+    });
+    mount.querySelector('[data-probe]').innerHTML = o.verdict;
+  }
+  mount.querySelectorAll('[data-o]').forEach(b => b.addEventListener('click', () => show(+b.dataset.o)));
+  show(reduce ? 1 : 0);
 };
 
 /* ---------- ANIM-26 · The Description Is the Trigger (spec: VISUALS.md) ----------
