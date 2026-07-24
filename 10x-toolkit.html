@@ -355,6 +355,36 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ ANIM-22: Test-First Loop + the Gate ============ */
+.anim22{--a22red:#d0705a;--a22green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim22{--a22red:#B0503C;--a22green:#2d7350}
+.anim22 .a22head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim22 .a22steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.anim22 .a22step{flex:1;min-width:150px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;opacity:.35;transition:opacity .4s,border-color .4s}
+.anim22 .a22step.on{opacity:1}
+.anim22 .a22step.red{border-color:var(--a22red)}
+.anim22 .a22step.green{border-color:var(--a22green)}
+.anim22 .a22step.gate{border-color:var(--gold)}
+.anim22 .a22sname{font-size:9px;letter-spacing:.12em;color:var(--faint);margin-bottom:5px}
+.anim22 .a22step.red .a22sname{color:var(--a22red)}
+.anim22 .a22step.green .a22sname{color:var(--a22green)}
+.anim22 .a22step.gate .a22sname{color:var(--gold)}
+.anim22 .a22out{font-size:10px;color:var(--dim);line-height:1.5;white-space:pre-wrap}
+.anim22 .a22out b{color:var(--text);font-weight:500}
+.anim22 .a22compare{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.anim22 .a22card{flex:1;min-width:190px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:var(--panel)}
+.anim22 .a22cl{font-size:9px;letter-spacing:.1em;color:var(--faint);margin-bottom:4px}
+.anim22 .a22big{font-size:20px;font-weight:500}
+.anim22 .a22big.lo{color:var(--a22red)}
+.anim22 .a22big.hi{color:var(--a22green)}
+.anim22 .a22cs{font-size:9.5px;color:var(--dim);line-height:1.45;margin-top:3px}
+.anim22 .a22why{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6}
+.anim22 .a22why b{color:var(--text);font-weight:500}
+.anim22 .a22why code{color:var(--gold)}
+.anim22 .a22btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim22 .a22btn:hover{border-color:var(--gold)}
+.anim22 .a22foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ ANIM-09: Coverage vs Mutation Heatmap ============ */
 .anim09{--a9red:#d0705a;--a9green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim09{--a9red:#B0503C;--a9green:#2d7350}
@@ -2492,6 +2522,63 @@ const MODS = [
       {q:'A mutation survives. What is the correct response?',
        options:['Add many more tests until something fails','Write the one test that pins that behavior at its boundary, then re-run the same mutation to prove it now dies &mdash; a test written against a survivor is unproven until the mutation fails','Raise the coverage threshold in CI','Remove the mutation from the list'], answer:1}
     ]
+  },
+  {
+    id:'M-6.5', path:'eng', track:'T-06', title:'Test-first with agents', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'Prior authorization itself, one last time. The payer writes the criteria <em>before</em> the procedure, in the payer&rsquo;s own words &mdash; not after, and not copied from the surgeon&rsquo;s notes. That ordering is the whole safeguard: criteria written afterwards from the operative report will always approve the operation that happened. Write the test first and it describes what you <em>wanted</em>; write it last and it describes what you <em>got</em>.',
+      body:
+        '<p><strong>Test-first flips who is in charge.</strong> Every other module in this track wrote tests for code that already existed, and each time the same gravity pulled: the test drifted toward describing the implementation. Here the order inverts &mdash; the agent writes the failing test first, from the requirement, with no implementation to copy from. The recorded loop built a genuinely new PA behavior: review-queue SLA ageing, classifying a queued request FRESH (0&ndash;2 days), AGING (3&ndash;6), or BREACHED (7+), reading the clock through the injected <code>Clock</code>. Note the deliberate contrast with M-5.4: there the code did <em>not</em> read time and injecting a clock would have been a seam for nothing; here it genuinely does, so the seam is right. Same tool, opposite verdict, decided by the same question.</p>' +
+        '<p><strong>A test that will not compile is the correct first red.</strong> Step one produced exactly that: <em>&ldquo;package com.priorauth.service.ReviewAgeService does not exist &mdash; cannot find symbol&rdquo;</em>, from eleven tests that pin every boundary the spec names &mdash; day 0, exactly 2, exactly 3, exactly 6, exactly 7, well past, whole-day counting, and a partial day that must not round up. Beginners flinch at a red that is a compile error; it is the purest possible statement that the behavior does not exist yet. Step two asked for the <em>minimal</em> implementation and got 11/11 green with the test file untouched.</p>' +
+        '<p><strong>Then the gate M-6.4 earned.</strong> Green is a claim; the mutation campaign is the proof. Five mutations against the new code &mdash; both boundary comparisons, both constants, and the day-truncation &mdash; and <b>all five were caught: 5/5, one hundred percent</b>. Set that against M-6.4&rsquo;s measurement of the retrofitted suite on the same repo: <b>2/5, forty percent</b>, with every survivor sitting on the auto-approve decision. Two suites, two orderings, two very different amounts of actual protection.</p>' +
+        '<p><strong>The mechanism, checked in the source rather than assumed.</strong> Why did the test-first suite kill the <em>constant</em> mutations when M-5.2&rsquo;s carefully-written retrofit could not? Because the test-first assertions speak the language of the requirement &mdash; <code>Duration.ofDays(2)</code>, <code>ofDays(5)</code> &mdash; and never mention <code>AGING_AFTER_DAYS</code>. Move the constant and the test still demands three days, so it fails. M-5.2&rsquo;s retrofit referenced <code>AUTO_APPROVE_THRESHOLD</code>, so it <em>followed</em> the constant wherever it went, which is precisely why <code>0.85 &rarr; 0.84</code> survived. Writing the test first makes spec-language assertions the path of least resistance; writing it afterwards makes code-language assertions the path of least resistance. Order changes what is easy, and what is easy is what gets written.</p>' +
+        '<p><strong>An honest boundary on the claim, and the close.</strong> This is one recorded pair, not proof that test-first always scores higher &mdash; but the mechanism is reproducible on purpose, and you can apply it without changing your workflow at all: <em>assert in the language of the requirement, not of the implementation</em>. That is T-06 complete. Generation quality is a prompt contract (M-6.1), the database seam needs a real database (M-6.2), deleted tests hide what they caught (M-6.3), a test only counts if it can fail (M-6.4), and writing it first is the cheapest way to make it count (M-6.5). Next comes T-07, where the instructions you give agents become a durable asset rather than a prompt you retype.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-22'},
+    labA:{
+      title:'Run the full loop — Claude Code',
+      steps:[
+        'Scratch branch off <code>lab/start</code>. Step one, <b>red</b>: ask for the failing test ONLY &mdash; <em>&ldquo;write src/test/.../ReviewAgeServiceTest.java against a ReviewAgeService that does not exist yet; classify a queued request FRESH 0&ndash;2, AGING 3&ndash;6, BREACHED 7+ using the injected Clock; pin day 0, exactly 2, 3, 6, 7, and a partial day; do NOT create any production file.&rdquo;</em> Run it and read the compile error &mdash; that is your first red.',
+        'Step two, <b>green</b>: ask for the minimal implementation, forbidding edits to the test. Reference: 11/11 green, an <code>@Service</code> with a constructor-injected <code>Clock</code> following the repo&rsquo;s existing convention.',
+        'Step three, <b>the gate</b>: run M-6.4&rsquo;s campaign on your new code &mdash; mutate both comparisons, both constants, and <code>toDays()</code>. Reference: <b>5/5 caught</b>. If any survive, you have found a boundary your test-first pass missed &mdash; add the test, prove the kill.',
+        'Now the diagnostic that matters: open your test and check whether the assertions reference the implementation&rsquo;s constants or express the requirement in literal domain terms. The reference run used <code>Duration.ofDays(...)</code> throughout and never named a constant &mdash; that is why the constant mutations died.',
+        'Log both scores side by side &mdash; your TDD suite versus M-6.4&rsquo;s 2/5 on the retrofitted suite &mdash; then delete the branch. Success: a compile-error red, an untouched-test green, a mutation score you computed, and the spec-language mechanism confirmed in your own test file.'
+      ]
+    },
+    labB:{
+      title:'The same loop — Copilot',
+      steps:[
+        'Same three steps in Agent mode, running each stage in the Test Explorer so you watch red become green. Insist on the ordering: no production file until the test exists and fails.',
+        'Grade the generated test on one axis before you accept it: does it assert in requirement terms (literal days) or reach for the implementation&rsquo;s constants? Ask for the rewrite if it reaches.',
+        'Run the mutation gate. Success: the loop completed with the test never edited after the fact, and a mutation score you measured yourself.'
+      ]
+    },
+    labC:{
+      title:'The same loop — Cursor, then your own TDD rule',
+      steps:[
+        'Repeat the loop in Cursor. Try one variation deliberately: let it write the implementation <em>first</em> for a second small behavior, then generate tests afterwards, and mutate both. Compare the two scores from your own runs.',
+        'Open ANIM-22 and run it beside your results &mdash; compile-error red, green, and the 5/5-versus-2/5 comparison.',
+        'Write your TDD rule and take it to work: <em>write the assertion in the language of the requirement, not the implementation &mdash; test-first just makes that the easy path &mdash; and prove the suite with a mutation before you call it done.</em> Success: two scores from your own runs, the rule written, and one behavior at work you will build test-first this week.'
+      ]
+    },
+    checklist:[
+      'My first red was a compile error &mdash; the behavior genuinely did not exist yet.',
+      'The implementation was written to the test, and the test was never edited to fit the code.',
+      'I ran a mutation gate on the new code and computed a score.',
+      'I checked whether my assertions speak requirement-language or code-language, and can say why it matters.',
+      'I compared my test-first score against the retrofitted suite&rsquo;s 2/5 and drew my own conclusion.'
+    ],
+    quiz:[
+      {q:'In the recorded loop the first run failed to compile. Why is that the right first red?',
+       options:['It is a mistake &mdash; the test should run and fail an assertion','It is the purest statement that the behavior does not exist yet; the test was written from the requirement with nothing to copy from','Compile errors are always ignored in TDD','It proves the build is broken'], answer:1},
+      {q:'The test-first suite killed 5/5 mutations including both constants; M-5.2&rsquo;s retrofitted boundary tests could not kill a constant mutation. The verified reason?',
+       options:['The new code is simpler','Test-first assertions spoke the requirement&rsquo;s language (literal days) and never referenced the implementation&rsquo;s constants, so a moved constant still fails the test &mdash; the retrofit referenced the constant and followed it','More tests were written','The mutation tool differed'], answer:1},
+      {q:'This module injects a Clock into the new service, but M-5.4 refused to inject one into EligibilityService. What reconciles the two?',
+       options:['The modules disagree','Different tools were used','The same question, answered differently: this code genuinely reads time (so pin it with a seam), eligibility does not (so a seam there is complexity for nothing)','TDD always requires dependency injection'], answer:2},
+      {q:'What is the honest scope of the 100%-vs-40% comparison?',
+       options:['It proves test-first always produces better suites','It is one recorded pair, not a law &mdash; what generalizes is the mechanism: assert in the language of the requirement, which test-first makes the easy path','It proves mutation testing is unnecessary with TDD','It only applies to Java'], answer:1}
+    ]
   }
 ];
 
@@ -3325,6 +3412,58 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- ANIM-22 · Test-First Loop + the Gate (spec: VISUALS.md) ----------
+   The real recorded TDD loop (recordings/m65-test-first.txt): compile-failure
+   red → 11/11 green → 5/5 mutation gate, compared against M-6.4's retrofitted
+   2/5. The "why" panel carries the verified mechanism. */
+VISUALS['ANIM-22'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STEPS = [
+    {k:'red', name:'1 · RED — TEST ONLY', out:'<b>COMPILATION ERROR</b>\npackage com.priorauth.service\n.ReviewAgeService does not exist\ncannot find symbol ×4\n\n11 tests · every boundary pinned'},
+    {k:'green', name:'2 · GREEN — MINIMAL CODE', out:'<b>Tests run: 11, Failures: 0</b>\nBUILD SUCCESS\n\n@Service · injected Clock\nconstants 3 / 7 · toDays()'},
+    {k:'gate', name:'3 · GATE — MUTATE IT', out:'CAUGHT × 5:\n&lt; 3 → &lt;= 3 · &lt; 7 → &lt;= 7\n3 → 4 · 7 → 8\ntoDays() → toHours()\n\n<b>5/5 killed</b>'}
+  ];
+  mount.innerHTML =
+    '<div class="anim22" aria-label="Test-first loop with a mutation gate">' +
+      '<div class="a22head"><span>ANIM-22 · RED → GREEN → PROVE IT</span>' +
+        '<button class="a22btn" data-a22run>RUN THE LOOP ▸</button></div>' +
+      '<div class="a22steps">' +
+        STEPS.map((s,i) => '<div class="a22step" data-step="' + i + '"><div class="a22sname">' + s.name + '</div><div class="a22out">' + s.out + '</div></div>').join('') +
+      '</div>' +
+      '<div class="a22compare">' +
+        '<div class="a22card"><div class="a22cl">TESTS WRITTEN AFTER (M-6.4)</div><div class="a22big lo" data-after>—</div><div class="a22cs">the shipped 31-test suite; all three decision mutations survived</div></div>' +
+        '<div class="a22card"><div class="a22cl">TESTS WRITTEN FIRST (this loop)</div><div class="a22big hi" data-first>—</div><div class="a22cs">11 tests; operators <em>and</em> constants both pinned</div></div>' +
+      '</div>' +
+      '<div class="a22why" data-why hidden></div>' +
+      '<div class="a22foot">One recorded pair, not a law &mdash; but the mechanism below is reproducible on purpose.</div>' +
+    '</div>';
+  const whyEl = mount.querySelector('[data-why]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function reset(){
+    mount.querySelectorAll('.a22step').forEach(s => s.className = 'a22step');
+    mount.querySelector('[data-after]').textContent = '—';
+    mount.querySelector('[data-first]').textContent = '—';
+    whyEl.hidden = true;
+  }
+  function finish(){
+    mount.querySelector('[data-after]').textContent = '2/5 · 40%';
+    mount.querySelector('[data-first]').textContent = '5/5 · 100%';
+    whyEl.hidden = false;
+    whyEl.innerHTML = '<b>Why the difference, verified in the test source:</b> the test-first suite asserts in the language of the <em>requirement</em> &mdash; <code>Duration.ofDays(2)</code>, <code>ofDays(5)</code> &mdash; and never mentions the implementation&rsquo;s constants. So when a constant moves, the test still demands the specified behavior and fails. Tests written <em>after</em> reach for the code&rsquo;s own constants and follow them wherever they go &mdash; which is exactly why M-5.2&rsquo;s <code>0.85 &rarr; 0.84</code> mutation survived.';
+  }
+  function run(){
+    stop(); reset();
+    if(reduce){ STEPS.forEach((s,i) => mount.querySelector('[data-step="' + i + '"]').className = 'a22step on ' + s.k); finish(); return; }
+    STEPS.forEach((s,i) => timers.push(setTimeout(() => {
+      mount.querySelector('[data-step="' + i + '"]').className = 'a22step on ' + s.k;
+    }, 250 + i*1100)));
+    timers.push(setTimeout(finish, 250 + STEPS.length*1100));
+  }
+  mount.querySelector('[data-a22run]').addEventListener('click', run);
+  run();
 };
 
 /* ---------- ANIM-09 · Coverage vs Mutation Heatmap (spec: VISUALS.md) ----------

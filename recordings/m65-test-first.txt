@@ -1,0 +1,51 @@
+M-6.5 TEST-FIRST WITH AGENTS — real red/green/mutation-gate loop
+================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m65-tdd
+(both files deleted afterward; clone restored pristine). Nothing planted touched.
+
+THE NEW BEHAVIOR (chosen to be additive + boundary-rich + genuinely time-reading,
+the OPPOSITE of M-5.4's flaky test where the code did NOT read the clock):
+  review-queue SLA ageing — age in whole days from submittedAt to now via the
+  INJECTED Clock; classify FRESH (0-2) / AGING (3-6) / BREACHED (7+).
+
+STEP 1 — RED (agent wrote ONLY the test, no production file), verbatim red:
+  [ERROR] COMPILATION ERROR
+  package com.priorauth.service.ReviewAgeService does not exist
+  cannot find symbol  (x4)
+  11 tests, every boundary pinned. Real names it chose:
+    requestSubmittedTodayIsFresh · requestAtTwoDaysIsStillFresh
+    requestAtThreeDaysBecomesAging · requestAtSixDaysIsStillAging
+    requestAtSevenDaysIsBreached · requestWellPastTheSlaIsBreached
+    ageIsCountedInWholeDays · partialDayDoesNotCountTowardsTheAge
+  A test that does not compile IS the correct first red in TDD.
+
+STEP 2 — GREEN (agent wrote the MINIMAL implementation, test file untouched):
+  Tests run: 11, Failures: 0 · BUILD SUCCESS
+  Implementation: @Service, constructor-injected Clock (repo convention),
+  constants AGING_AFTER_DAYS=3 / BREACHED_AFTER_DAYS=7, Duration.between(...).toDays().
+
+STEP 3 — THE MUTATION GATE (M-6.4's instrument as the acceptance test):
+  CAUGHT | aging boundary: age < 3  -> age <= 3     (1 failure)
+  CAUGHT | breach boundary: age < 7  -> age <= 7     (2 failures)
+  CAUGHT | aging constant: 3 -> 4                    (1 failure)
+  CAUGHT | breach constant: 7 -> 8                   (2 failures)
+  CAUGHT | truncation: toDays() -> toHours()         (6 failures)
+  *** MUTATION SCORE: 5/5 = 100% *** (vs M-6.4's retrofitted suite: 2/5 = 40%)
+  Final state re-verified green: 11/11.
+
+THE MECHANISM (verified in the test source, not assumed):
+  The TDD tests express the spec in LITERAL DOMAIN TERMS —
+    queued(Duration.ofDays(days)) · Duration.ofDays(2).plusHours(23) · ofDays(5)
+  and NEVER reference AGING_AFTER_DAYS / BREACHED_AFTER_DAYS.
+  So when a constant moves, the test still demands the SPECIFIED behavior and fails.
+  Contrast M-5.2's retrofitted boundary tests, which referenced
+  ApprovalService.AUTO_APPROVE_THRESHOLD and therefore FOLLOWED the constant —
+  which is exactly why the 0.85->0.84 mutation survived there.
+  Test written FIRST from the spec  -> asserts in spec terms -> pins operator AND value.
+  Test written AFTER from the code  -> reaches for the code's constants -> pins the
+                                       operator at best, never the value.
+
+HONEST SCOPE: this is one recorded pair (n=1), not proof that TDD always scores
+higher. What IS demonstrated is the MECHANISM above, and it is reproducible:
+write the assertion in the language of the requirement, not of the implementation.
+CLEANUP: ReviewAgeService + its test removed; clone pristine; all plants intact.
