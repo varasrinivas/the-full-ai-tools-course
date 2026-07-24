@@ -1,0 +1,64 @@
+M-7.2 AGENTS.md & THE CROSS-TOOL STANDARD — a three-run experiment
+===================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m72-agentsmd
+(files removed, clone restored bare/pristine). The written AGENTS.md is kept
+alongside this file as m72-AGENTS.md.txt.
+
+THE CLAIM UNDER TEST (docs, code.claude.com/docs/en/memory): "Claude Code reads
+CLAUDE.md, not AGENTS.md. If your repository already uses AGENTS.md ... create a
+CLAUDE.md that imports it." Stated tersely — so it was tested three ways.
+
+THE PROBE FILE: AGENTS.md with a house rule that CANNOT be derived from the code
+and in fact CONTRADICTS it — "new domain-rule classes use the suffix `Policy`,
+never `Service`; existing *Service classes are grandfathered." Every class in the
+repo is a *Service, so any agent stating "Policy" must have got it from the file.
+
+--- RUN A · AGENTS.md alone, agent free to explore (30s) ---
+  ANSWER: "Name it PayerOverridePolicy — suffix Policy ... The convention comes
+  from `AGENTS.md:5-8` in the repo root". It even noted the file was untracked
+  and that nothing in the source independently attests to the rule.
+  >>> So "Claude ignores AGENTS.md" is FALSE. A thorough agent FINDS it — by
+  READING IT AS A FILE (note the line-number citation: it went and looked).
+
+--- RUN A2 · AGENTS.md alone, but "do NOT read or open any files" (11s) ---
+  ANSWER, verbatim: "My loaded context does not contain that rule. What I
+  actually have loaded: the environment/harness instructions ... No repo
+  conventions have been loaded — there's no CLAUDE.md content in my context ...
+  while git status shows an untracked AGENTS.md, I haven't read it."
+  >>> DEFINITIVE: AGENTS.md is NOT auto-loaded into session context.
+
+--- RUN B · add a 4-line CLAUDE.md whose first line is `@AGENTS.md`, same
+    no-file-reads probe (6s) ---
+  CLAUDE.md was literally:
+      @AGENTS.md
+      ## Claude Code
+      Use plan mode for any change under `service/`.
+  ANSWER: "The rule IS in my loaded context: new domain-rule classes must use the
+  `Policy` suffix — never `Service`." It also reproduced the grandfathering clause.
+  >>> The import converts a file the agent MIGHT find into context it ALWAYS has.
+
+THE LESSON (sharper than the doc sentence): the distinction is not
+ignored-vs-read, it is DISCOVERED vs LOADED.
+  discovered = the agent has to choose to look; likely in a small repo with a
+    broad prompt (Run A), progressively less likely as the repo grows, the task
+    narrows, or context gets tight — and you never find out which happened.
+  loaded = present in every session by construction, survives /compact (for the
+    project-root file), costs context every time.
+  The one-line @AGENTS.md import buys the guarantee without duplicating the file.
+
+CROSS-TOOL SUPPORT (verified 2026-07-24 unless noted):
+ - Claude Code: reads CLAUDE.md; AGENTS.md only via `@AGENTS.md` import (or a
+   symlink — but on Windows symlinks need Administrator/Developer Mode, so the
+   import is the portable choice). /init incorporates .cursor/rules, .cursorrules
+   and .github/copilot-instructions.md; with CLAUDE_CODE_NEW_INIT=1 it also reads
+   AGENTS.md, .devin/rules/, .windsurf/rules/, .clinerules.
+ - VS Code Copilot: AGENTS.md at the workspace root is picked up automatically
+   since v1.104; controlled by `chat.useAgentsMdFile`, ENABLED BY DEFAULT.
+   Native file remains .github/copilot-instructions.md.
+ - Visual Studio 2026: does NOT read AGENTS.md (verified 2026-07-20) — its
+   instructions file is opt-in via Tools > Options.
+ - Cursor: reads AGENTS.md (root and subdirectories) as a simple alternative to
+   .cursor/rules/*.mdc (verified 2026-07-20).
+ - .agent.md is a DIFFERENT thing: Copilot custom agents (a named role with its
+   own tools/prompt), not repo-wide instructions. Do not conflate.
+CLEANUP: both files removed; the teaching repo stays bare by design; clone pristine.

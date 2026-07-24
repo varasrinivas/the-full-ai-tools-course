@@ -355,6 +355,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-14: One File, Four Tools ============ */
+.sim14{--s14red:#d0705a;--s14green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim14{--s14red:#B0503C;--s14green:#2d7350}
+.sim14 .s14head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim14 .s14runs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.sim14 .s14run{flex:1;min-width:165px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;cursor:pointer;text-align:left;font-family:var(--mono)}
+.sim14 .s14run[aria-pressed="true"]{border-color:var(--gold)}
+.sim14 .s14rn{font-size:9px;letter-spacing:.1em;color:var(--faint);display:block;margin-bottom:3px}
+.sim14 .s14run[aria-pressed="true"] .s14rn{color:var(--gold)}
+.sim14 .s14rs{font-size:10px;color:var(--text);line-height:1.4}
+.sim14 .s14ans{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:74px}
+.sim14 .s14ans b{color:var(--text);font-weight:500}
+.sim14 .s14ans .no{color:var(--s14red)}
+.sim14 .s14ans .yes{color:var(--s14green)}
+.sim14 table{width:100%;border-collapse:collapse;font-size:10px;margin-top:12px}
+.sim14 th{text-align:left;font-size:9px;letter-spacing:.09em;color:var(--faint);padding:5px 7px;border-bottom:1px solid var(--line);font-weight:400}
+.sim14 td{padding:5px 7px;border-bottom:1px solid var(--line);color:var(--dim)}
+.sim14 tr:last-child td{border-bottom:none}
+.sim14 td.tool{color:var(--text);white-space:nowrap}
+.sim14 .y{color:var(--s14green)}
+.sim14 .n{color:var(--s14red)}
+.sim14 .s14foot{font-size:10.5px;color:var(--faint);margin-top:11px;line-height:1.5}
+
 /* ============ ANIM-10: Memory Hierarchy ============ */
 .anim10{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 .anim10 .a10head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
@@ -2656,6 +2679,63 @@ const MODS = [
       {q:'How do the four CLAUDE.md scopes combine?',
        options:['The most specific file overrides the others','They are concatenated, broadest first, so the instruction closest to where you launched Claude is read last &mdash; and subdirectory files load on demand','Only the project file is loaded','User scope always wins'], answer:1}
     ]
+  },
+  {
+    id:'M-7.2', path:'eng', track:'T-07', title:'AGENTS.md & the cross-tool standard', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'The ward policy binder is on the shelf in the break room. Every clinician <em>can</em> read it, and the conscientious ones do. But the drug allergy that must never be missed is not on a shelf &mdash; it is stapled to the front of the chart, so it arrives with the patient whether anyone went looking or not. Same words, two very different guarantees.',
+      body:
+        '<p><strong>One file, many agents &mdash; that is the promise of AGENTS.md.</strong> Teams run more than one coding tool, and nobody wants to maintain the same conventions in four places that drift apart. The open <code>AGENTS.md</code> convention is the answer, and the interesting question is not whether your tools <em>can</em> read it, but whether they <em>always</em> do. The documentation says Claude Code reads CLAUDE.md, not AGENTS.md &mdash; a sentence terse enough to be misread, so this module tested it three ways on the real repo.</p>' +
+        '<p><strong>Run A: &ldquo;Claude ignores AGENTS.md&rdquo; is false.</strong> With an <code>AGENTS.md</code> in the root carrying a house rule the code actively contradicts &mdash; new domain-rule classes take a <code>Policy</code> suffix, though every existing class is a <code>*Service</code> &mdash; the agent answered correctly in thirty seconds and cited <code>AGENTS.md:5-8</code>. Look closely at that citation: a file path and line numbers. It <em>went and read the file</em>. Discovery, not memory.</p>' +
+        '<p><strong>Runs A2 and B: the distinction that actually matters.</strong> Asked the same question but forbidden to open any files, the agent was unambiguous: <em>&ldquo;My loaded context does not contain that rule &hellip; there&rsquo;s no CLAUDE.md content in my context, and while git status shows an untracked AGENTS.md, I haven&rsquo;t read it.&rdquo;</em> Then a four-line <code>CLAUDE.md</code> whose first line is <code>@AGENTS.md</code> &mdash; same probe, no file reads &mdash; produced: <em>&ldquo;The rule <b>is</b> in my loaded context,&rdquo;</em> grandfathering clause included, in six seconds. So the real axis is <b>discovered versus loaded</b>. Discovery depends on the agent choosing to look, which is likely in a small repo with a broad prompt and progressively less likely as the repo grows, the task narrows, or context tightens &mdash; and you never learn which happened. Loading is a guarantee, bought with one import line and no duplicated file.</p>' +
+        '<p><strong>The cross-tool map, verified.</strong> Copilot in VS Code picks up a workspace-root <code>AGENTS.md</code> automatically &mdash; since v1.104, governed by <code>chat.useAgentsMdFile</code>, on by default &mdash; while its native file remains <code>.github/copilot-instructions.md</code>. Cursor reads <code>AGENTS.md</code> at the root and in subdirectories, alongside its own <code>.cursor/rules/*.mdc</code>. Visual Studio 2026 does <em>not</em> read it. Claude Code bridges with the import (a symlink also works, but on Windows that needs Administrator or Developer Mode, so the import is the portable choice). One caution: <code>.agent.md</code> is a different thing entirely &mdash; a Copilot <em>custom agent</em>, a named role with its own tools and prompt &mdash; not repo-wide instructions. Do not conflate the two.</p>' +
+        '<p><strong>So what should a team actually do?</strong> Put the shared, tool-neutral content in <code>AGENTS.md</code> &mdash; the domain rules, the commands, the conventions any agent needs. Then give each tool a thin native file that <em>points at it</em> rather than copying it: a <code>CLAUDE.md</code> that imports it and adds Claude-specific lines below, and the equivalent for the others. One source of truth, four guaranteed loads, and no drift &mdash; because the fastest way to end up with contradictory instructions is to maintain the same paragraph in four files. M-7.3 asks what all this costs, because every loaded line is spending your context budget.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-14'},
+    labA:{
+      title:'Run the discovered-vs-loaded experiment — Claude Code',
+      steps:[
+        'On a fresh clone, write an <code>AGENTS.md</code> with a rule that <em>contradicts</em> what the code would suggest &mdash; e.g. &ldquo;new domain-rule classes use the suffix <code>Policy</code>, never <code>Service</code>; existing ones are grandfathered.&rdquo; A rule the agent cannot derive is the only rule that proves anything.',
+        'Run A &mdash; ask what to name a new domain-rule class, agent free to explore. Reference: it found the rule in 30s and cited <code>AGENTS.md</code> by line number. Note that a citation with line numbers means it <em>read a file</em>.',
+        'Run A2 &mdash; ask again with &ldquo;<em>do NOT read or open any files; from your loaded context alone &mdash; and if the rule isn&rsquo;t there, say so plainly</em>.&rdquo; Reference: &ldquo;My loaded context does not contain that rule.&rdquo; This is the step that proves the point; without it you would have concluded AGENTS.md was loaded.',
+        'Run B &mdash; add a <code>CLAUDE.md</code> whose first line is <code>@AGENTS.md</code>, plus one Claude-specific line below it. Re-run the identical no-file-reads probe. Reference: &ldquo;The rule is in my loaded context,&rdquo; 6s. Confirm with <code>/context</code> that the file shows under Memory files.',
+        'Write the conclusion in your own words: what changed between A2 and B, and what it would cost you to rely on discovery in a large repo. Success: three logged answers, the import bridge in place, and the discovered-vs-loaded distinction stated in one sentence.'
+      ]
+    },
+    labB:{
+      title:'The same file, read by Copilot',
+      steps:[
+        'Open the same repo in VS Code. Confirm <code>chat.useAgentsMdFile</code> is enabled (it is by default) and ask <b>Agent</b> the identical naming question &mdash; the workspace-root <code>AGENTS.md</code> should inform the answer without any bridge.',
+        'Now the divergence worth knowing: note that Visual Studio 2026 does <em>not</em> read AGENTS.md, and that Copilot&rsquo;s native file is <code>.github/copilot-instructions.md</code>. If your team spans both IDEs, decide which file is the source of truth and which merely points at it.',
+        'Success: the same rule honored in a second tool from one file, and a written decision about your team&rsquo;s source of truth.'
+      ]
+    },
+    labC:{
+      title:'The same file in Cursor, then the one-source rule',
+      steps:[
+        'Ask the same question in Cursor, which reads <code>AGENTS.md</code> at the root and in subdirectories. Three tools, one file, one answer &mdash; that is the payoff.',
+        'Deliberately create the drift you are trying to avoid: change the rule in <code>AGENTS.md</code> only, leave a stale copy in a tool-native file, and ask both tools. Watch them disagree. Then delete the copy and replace it with a pointer.',
+        'Write your team&rsquo;s rule: <em>shared conventions live in AGENTS.md; each tool gets a thin native file that imports or points at it and adds only tool-specific lines; nothing is ever copied.</em> Success: the drift reproduced and fixed, the one-source rule written down.'
+      ]
+    },
+    checklist:[
+      'My test rule contradicts the codebase, so honoring it proves the file was read.',
+      'I ran the no-file-reads probe and saw the difference between discovered and loaded.',
+      'My CLAUDE.md imports AGENTS.md rather than duplicating it, and /context confirms it loads.',
+      'I verified the same file is honored by a second tool without a bridge.',
+      'I can name what <code>.agent.md</code> is, and why it is not repo-wide instructions.'
+    ],
+    quiz:[
+      {q:'With only an AGENTS.md present, the agent answered correctly and cited <code>AGENTS.md:5-8</code>. What does the line-number citation reveal?',
+       options:['The file was loaded into context automatically','It read the file as a file &mdash; discovery, not memory; loaded instructions arrive as content, not as a path it had to go find','AGENTS.md replaced CLAUDE.md','The rule was inferred from the code'], answer:1},
+      {q:'Forbidden to read files, the agent said &ldquo;my loaded context does not contain that rule&rdquo; &mdash; then a one-line import fixed it. The distinction being demonstrated?',
+       options:['Read vs ignored','Discovered vs loaded &mdash; discovery depends on the agent choosing to look, loading is guaranteed every session','Fast vs slow','Committed vs untracked'], answer:1},
+      {q:'Which statement about cross-tool support is correct?',
+       options:['All four tools read AGENTS.md natively','VS Code Copilot picks up a workspace-root AGENTS.md by default; Cursor reads it too; Visual Studio 2026 does not; Claude Code needs the @AGENTS.md import','Only Claude Code reads it','AGENTS.md replaces .github/copilot-instructions.md everywhere'], answer:1},
+      {q:'What is <code>.agent.md</code>?',
+       options:['A newer name for AGENTS.md','A Copilot custom agent &mdash; a named role with its own tools and prompt &mdash; not repo-wide instructions','Cursor&rsquo;s rules format','A Claude Code memory file'], answer:1}
+    ]
   }
 ];
 
@@ -3489,6 +3569,45 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-14 · One File, Four Tools (spec: VISUALS.md) ----------
+   Tabs replay the real three-run experiment (recordings/m72-agents-md.txt);
+   the table is the doc-verified cross-tool support matrix. */
+VISUALS['SIM-14'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const RUNS = [
+    {n:'RUN A · 30s', s:'AGENTS.md alone, free to explore',
+     ans:'<span class="yes">Found it.</span> &ldquo;Name it <b>PayerOverridePolicy</b> &hellip; the convention comes from <b>AGENTS.md:5-8</b> in the repo root.&rdquo; Note <em>how</em>: a line-number citation. It went and <b>read the file</b>. So &ldquo;Claude ignores AGENTS.md&rdquo; is simply false.'},
+    {n:'RUN A2 · 11s', s:'AGENTS.md alone, forbidden to read files',
+     ans:'<span class="no">Not there.</span> &ldquo;<b>My loaded context does not contain that rule.</b> &hellip; there&rsquo;s no CLAUDE.md content in my context &hellip; while git status shows an untracked AGENTS.md, I haven&rsquo;t read it.&rdquo; Definitive: AGENTS.md is <b>not auto-loaded</b>.'},
+    {n:'RUN B · 6s', s:'+ a 4-line CLAUDE.md starting @AGENTS.md',
+     ans:'<span class="yes">Loaded.</span> &ldquo;<b>The rule IS in my loaded context</b>: new domain-rule classes must use the <code>Policy</code> suffix &mdash; never <code>Service</code>,&rdquo; grandfathering clause and all &mdash; with no file reads at all. One import line bought the guarantee.'}
+  ];
+  const TOOLS = [
+    ['Claude Code', 'CLAUDE.md', 'n', 'via <code>@AGENTS.md</code> import (or symlink; Windows needs admin)'],
+    ['Copilot · VS Code', '.github/copilot-instructions.md', 'y', 'auto since v1.104, <code>chat.useAgentsMdFile</code> on by default'],
+    ['Copilot · VS 2026', 'opt-in via Tools &gt; Options', 'n', 'does not read AGENTS.md'],
+    ['Cursor', '.cursor/rules/*.mdc', 'y', 'reads AGENTS.md at root and in subdirectories']
+  ];
+  mount.innerHTML =
+    '<div class="sim14" aria-label="AGENTS.md across four tools, with the discovered-versus-loaded experiment">' +
+      '<div class="s14head"><span>SIM-14 · ONE FILE, FOUR TOOLS · DISCOVERED vs LOADED</span><span>REAL RUNS</span></div>' +
+      '<div class="s14runs" role="tablist">' +
+        RUNS.map((r,i) => '<button class="s14run" type="button" role="tab" data-r="' + i + '" aria-pressed="' + (i===0) + '"><span class="s14rn">' + r.n + '</span><span class="s14rs">' + r.s + '</span></button>').join('') +
+      '</div>' +
+      '<div class="s14ans" data-ans></div>' +
+      '<table><thead><tr><th>TOOL</th><th>ITS NATIVE FILE</th><th>READS AGENTS.md?</th><th>NOTE</th></tr></thead><tbody>' +
+        TOOLS.map(t => '<tr><td class="tool">' + t[0] + '</td><td>' + t[1] + '</td><td class="' + t[2] + '">' + (t[2]==='y'?'yes':'no') + '</td><td>' + t[3] + '</td></tr>').join('') +
+      '</tbody></table>' +
+      '<div class="s14foot">What to notice: the question is never &ldquo;does the tool read it&rdquo; but <b>does it load it every time</b>. Discovery depends on the agent choosing to look &mdash; and you never find out which happened.</div>' +
+    '</div>';
+  function show(i){
+    mount.querySelectorAll('[data-r]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.r === i)));
+    mount.querySelector('[data-ans]').innerHTML = RUNS[i].ans;
+  }
+  mount.querySelectorAll('[data-r]').forEach(b => b.addEventListener('click', () => show(+b.dataset.r)));
+  show(reduce ? 2 : 0);
 };
 
 /* ---------- ANIM-10 · Memory Hierarchy (spec: VISUALS.md) ----------

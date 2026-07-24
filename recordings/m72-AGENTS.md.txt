@@ -1,0 +1,11 @@
+# AGENTS.md — priorauth-api
+
+Shared instructions for every coding agent on this repo.
+
+## Naming convention (house rule, signed 2026-07-24)
+New domain-rule classes are named with the suffix **`Policy`**, never `Service`.
+The existing `*Service` classes predate this rule and are grandfathered — do not
+rename them, but any NEW class encoding a domain rule must be `SomethingPolicy`.
+
+## Domain rule
+Auto-approve threshold is 0.85 INCLUSIVE — a request scoring exactly 0.85 auto-approves.
