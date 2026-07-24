@@ -1,0 +1,72 @@
+M-7.5 CONSTITUTION ANTI-PATTERNS — the stale-command trap, tested
+=================================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone, branch drill/m75-antipatterns
+(file removed, clone restored bare/pristine).
+
+THE EXPERIMENT: write a short, plausible-looking CLAUDE.md containing TWO stale
+commands and one paragraph of derivable architecture prose, then ask the agent to
+"run the test suite and tell me the result" — i.e. force it to USE the file.
+
+  ## Commands
+  - Run the test suite: `./mvnw verify -Pfast-tests`     <- profile does not exist
+  - Start the app: `npm run dev`                          <- wrong ecosystem entirely
+  ## Architecture
+  (four lines of "the service layer contains business logic..." — derivable)
+
+RESULT (55s): the agent caught BOTH, and the difference between them is the lesson.
+
+  LOUD STALENESS — caught by inspection:
+    "`npm run dev` can't be right. This is a Spring Boot 4.1 / Java 21 Maven
+     project with no package.json. Starting the app is ./mvnw spring-boot:run."
+
+  QUIET STALENESS — the dangerous one:
+    "The `fast-tests` profile doesn't exist. pom.xml has no <profiles> block at
+     all ... Maven will warn that the requested profile could not be activated and
+     RUN THE FULL SUITE ANYWAY, so -Pfast-tests is doing nothing. Plain
+     `./mvnw verify` is the accurate command."
+    >>> This is the trap: the command does not FAIL. It succeeds while doing
+    something different from what it claims. In a normal session nobody reads the
+    Maven warning, so the line survives for months, and every reader — human or
+    agent — believes the project has a fast test profile. A stale line that errors
+    gets fixed; a stale line that silently no-ops is load-bearing misinformation.
+
+  It also refused to invent a result when it could not run the suite ("I have no
+  test result to report ... I'm not going to infer a pass/fail from anything
+  else") — the same final-human-validation honesty seen throughout T-05/T-06.
+
+  BONUS CATCH (on the course's own mess): it flagged leftover
+  target/surefire-reports/ from earlier drills — BoundaryProbeTest,
+  FlakyCalendarProbeTest, NPlusOneProbeTest, ReviewAgeServiceTest — as "stale
+  artifacts, not current results; don't read them as the suite's state." Those
+  were my probe tests from M-5.3/5.4/5.6/6.5. Cleaned up. Staleness is not only a
+  documentation problem; build output rots too.
+
+=== THE FOUR ANTI-PATTERNS, EACH MEASURED IN THIS TRACK (not generic advice) ===
+ 1. THE ESSAY — derivable content bloating the file.
+    Measured (M-7.3): a 170-line CLAUDE.md carried +4,609 tokens vs +1,025 for a
+    36-line one — a +3,584-token penalty every session for a directory listing,
+    dependency block and restated architecture the agent can read off disk.
+ 2. THE STALE COMMAND — measured here. Loud staleness is caught; QUIET staleness
+    (a flag that no-ops with a warning) is the one that survives and misleads.
+ 3. THE DUPLICATE — the same paragraph maintained in AGENTS.md and a tool-native
+    file. M-7.2's labC reproduces the drift deliberately: change one, ask both
+    tools, watch them disagree. Fix is a pointer, never a copy.
+ 4. THE UN-PRUNED INDEX — measured (M-7.4): an over-cap MEMORY.md is SILENTLY
+    TRUNCATED, not errored; you never learn which line was dropped.
+
+=== THE AUDIT CHECKLIST (one pass over any constitution) ===
+  [ ] Can the agent derive this line by reading the repo? -> delete it.
+  [ ] Has every command been RUN, today, exactly as written? -> or delete it.
+  [ ] Does any flag/profile/script in it silently no-op? -> the quiet trap.
+  [ ] Is this paragraph duplicated anywhere else? -> replace with a pointer.
+  [ ] Does every rule have an owner and a date? -> unsigned policy is a rumour.
+  [ ] Is anything here contradicted by a newer decision? -> the file is now wrong.
+  [ ] Under 200 lines, index under its cap? -> or it is being truncated.
+  [ ] Would a new teammate need this? -> if not, it is ceremony.
+
+SELF-AUDIT FINDING (this course's OWN authoring CLAUDE.md, flagged not fixed —
+editing the owner's constitution is the owner's call): it still says "ONE module
+per session. Never build two." That was superseded on 2026-07-23 by an explicit
+continuous-mode directive. A constitution whose owner has verbally overridden it
+is exactly anti-pattern #2, and this one was found by applying the module's own
+checklist to the repo that teaches it.

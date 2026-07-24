@@ -355,6 +355,35 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
 .anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
+/* ============ SIM-15: The Constitution Audit ============ */
+.sim15{--s15red:#d0705a;--s15green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim15{--s15red:#B0503C;--s15green:#2d7350}
+.sim15 .s15head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim15 .s15doc{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px}
+.sim15 .s15line{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:baseline;font-size:10px;padding:5px 6px;border-radius:6px;cursor:pointer;transition:background .2s,opacity .3s}
+.sim15 .s15line:hover{background:rgba(245,184,75,.07)}
+.sim15 .s15line.flagged{background:rgba(208,112,90,.10)}
+.sim15 .s15line.cleared{opacity:.35;text-decoration:line-through}
+.sim15 .s15line.keep{background:rgba(62,154,107,.09)}
+.sim15 .s15num{color:var(--faint);font-size:9px}
+.sim15 .s15txt{color:var(--dim);word-break:break-word}
+.sim15 .s15line.keep .s15txt{color:var(--text)}
+.sim15 .s15tag{font-size:8.5px;letter-spacing:.06em;padding:2px 7px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.sim15 .s15tag.on{opacity:1}
+.sim15 .s15tag.bad{background:rgba(208,112,90,.16);color:var(--s15red)}
+.sim15 .s15tag.good{background:rgba(62,154,107,.16);color:var(--s15green)}
+.sim15 .s15why{margin-top:10px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6;min-height:50px}
+.sim15 .s15why b{color:var(--text);font-weight:500}
+.sim15 .s15meter{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.sim15 .s15m{flex:1;min-width:140px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:var(--panel)}
+.sim15 .s15ml{font-size:9px;letter-spacing:.1em;color:var(--faint)}
+.sim15 .s15mv{font-size:16px;color:var(--text);font-weight:500}
+.sim15 .s15mv.good{color:var(--s15green)}
+.sim15 .s15acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sim15 .s15btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;padding:5px 13px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim15 .s15btn:hover{border-color:var(--gold)}
+.sim15 .s15foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+
 /* ============ ANIM-23: Two-Tier Memory ============ */
 .anim23{--a23red:#d0705a;--a23green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .anim23{--a23red:#B0503C;--a23green:#2d7350}
@@ -2912,6 +2941,63 @@ const MODS = [
       {q:'Where does the signed 0.85 threshold rule belong?',
        options:['Auto memory, so Claude can refine it','A committed CLAUDE.md a human owns and the team reviews &mdash; learnings may be discovered, but rules must be signed','Either one; they are equivalent','A topic file, to save context'], answer:1}
     ]
+  },
+  {
+    id:'M-7.5', path:'eng', track:'T-07', title:'Constitution anti-patterns', minutes:40,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'The allergy list on a chart that nobody has reconciled since admission. It is not blank &mdash; blank would make you check. It is <em>populated</em>, plausible, and three weeks out of date, and every clinician who reads it stops looking further. A trusted document that is quietly wrong is more dangerous than no document, because trust is exactly what it was built to earn.',
+      body:
+        '<p><strong>A constitution fails in four ways, and this track measured every one of them.</strong> Not generic advice &mdash; each anti-pattern below has a number attached from an experiment in these modules. That matters, because the failure mode of instruction files is that they look fine. Nothing here is obviously false; that is precisely why it survives review.</p>' +
+        '<p><strong>One: the essay.</strong> Content the agent could derive by reading the repo &mdash; directory listings, dependency inventories, restated architecture. M-7.3 priced it: a 170-line file carried <b>+4,609 tokens</b> against a 36-line file&rsquo;s <b>+1,025</b>, a <b>+3,584-token penalty in every session forever</b>, for information available in one <code>ls</code>. The test is blunt: if an agent can learn it by looking, it does not belong in the thing that loads before it looks.</p>' +
+        '<p><strong>Two: the stale command &mdash; and there are two kinds.</strong> A deliberately outdated constitution was put in front of an agent with the instruction &ldquo;run the test suite.&rdquo; It caught both errors, and the <em>difference</em> is the lesson. <code>npm run dev</code> was <b>loud staleness</b>: &ldquo;can&rsquo;t be right &mdash; this is a Spring Boot Maven project with no <code>package.json</code>.&rdquo; Obvious, caught on sight, therefore relatively harmless. But <code>./mvnw verify -Pfast-tests</code> was <b>quiet staleness</b>: the profile does not exist, so Maven <em>warns and runs the full suite anyway</em>. The command does not fail. It succeeds while doing something other than what it claims, nobody reads the warning, and the line survives for months teaching every reader that this project has a fast test profile. <b>A stale line that errors gets fixed; a stale line that silently no-ops becomes load-bearing misinformation.</b></p>' +
+        '<p><strong>Three: the duplicate.</strong> The same paragraph maintained in <code>AGENTS.md</code> and in a tool-native file. M-7.2&rsquo;s lab reproduces the drift on purpose: change one copy, ask both tools, watch them disagree &mdash; and note that neither tool reports a conflict, because from each one&rsquo;s side nothing is wrong. The fix is never a better copy; it is a pointer, so there is only one place to be right. <strong>Four: the un-pruned index.</strong> M-7.4 measured the failure mode &mdash; an over-cap <code>MEMORY.md</code> is <b>silently truncated</b>, not errored, so you never learn which line was dropped.</p>' +
+        '<p><strong>The audit, and a finding from applying it here.</strong> One pass, seven questions: can the agent derive this? has every command been run <em>today</em>, exactly as written? does any flag silently no-op? is this duplicated anywhere? does every rule carry an owner and a date? is anything contradicted by a newer decision? is the file under its limits? Run it on this course&rsquo;s own authoring constitution and it fails question six: the file still says &ldquo;one module per session&rdquo; after the owner verbally moved to continuous building &mdash; policy overridden in conversation and never written down, which is anti-pattern two wearing a different hat. Nobody is exempt, including the repo that teaches the checklist. And the last word on audits: one that only <em>deletes</em> is half done. Strip SIM-15&rsquo;s example to nothing and you are left with a title and still no domain rule, no owner, no date. That closes T-07 &mdash; the instruction file is an asset, and like any asset it depreciates unless someone maintains it. T-08 asks what all of this costs.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-15'},
+    labA:{
+      title:'Run the stale-command experiment, then audit for real — Claude Code',
+      steps:[
+        'Reproduce the trap on a scratch branch: write a short CLAUDE.md whose test command carries a flag or profile that <em>does not exist</em> (e.g. <code>-Pfast-tests</code>) plus one command from the wrong ecosystem entirely. Then ask the agent to run the tests and report the result.',
+        'Grade what happens. Reference: it caught both, but note which kind needed <em>execution</em> to expose. The quiet one &mdash; a flag Maven warns about and ignores &mdash; is the pattern to hunt in your own files, because it never produces a failure anyone notices.',
+        'Now audit a real constitution: yours, or your team&rsquo;s. Walk the seven questions line by line and mark each line derive / stale / duplicate / unsigned / contradicted / keep. Delete on the spot; do not collect a to-do list you will not action.',
+        'Verify every surviving command by <em>running it</em>, today, exactly as written &mdash; copy-paste, no adjustments from memory. Any command you fix, note whether it was loud or quiet staleness.',
+        'Finish the other half of the audit: for each rule you kept, add an owner and a date, and write down anything the code cannot tell you that is currently missing. Success: a shorter file, every command executed today, every rule signed, and a count of loud vs quiet staleness found.'
+      ]
+    },
+    labB:{
+      title:'The same audit — Copilot',
+      steps:[
+        'Run the checklist against <code>.github/copilot-instructions.md</code>. Ask <b>Agent</b> to list every command in the file and tell you which it can verify against the repo &mdash; then run the survivors yourself rather than trusting the report.',
+        'Hunt duplicates specifically: ask it to compare the instructions file against any AGENTS.md or other rules files and report contradictions. Contradiction-hunting is the one audit step an agent does better than a human, because it has all the files open at once.',
+        'Success: a verified command list, a duplicate report, and every duplicate replaced by a pointer.'
+      ]
+    },
+    labC:{
+      title:'The audit in Cursor, then the maintenance habit',
+      steps:[
+        'Same pass over <code>.cursor/rules/</code>. Use SIM-15 first as a warm-up &mdash; audit its six lines and notice that only the title survives, and that the file is <em>still</em> missing a domain rule, an owner, and a date.',
+        'Pick your worst offender across all three tools and fix it properly: delete the derivable, verify the commands, collapse the duplicates into pointers, sign the rules.',
+        'Then make it a habit rather than an event: write down when the audit runs (a calendar entry, or a rule that any command touched in a PR gets re-verified), because a constitution depreciates silently and the failure mode is that nobody notices for a year. Success: one file genuinely repaired, and a scheduled trigger for the next audit.'
+      ]
+    },
+    checklist:[
+      'I reproduced the stale-command trap and can tell loud from quiet staleness.',
+      'I ran the seven audit questions over a real constitution and deleted on the spot.',
+      'Every surviving command was executed today, exactly as written.',
+      'Every duplicated paragraph is now a pointer to one source.',
+      'Every rule I kept has an owner and a date &mdash; and I added what was missing.'
+    ],
+    quiz:[
+      {q:'Which stale command is more dangerous?',
+       options:['<code>npm run dev</code> in a Maven project &mdash; obviously wrong','<code>-Pfast-tests</code> for a profile that does not exist &mdash; Maven warns and runs everything anyway, so it succeeds while doing something other than it claims, and nobody notices for months','They are equally harmful','Neither; agents always verify commands'], answer:1},
+      {q:'Why does derivable content in a constitution cost more than it looks?',
+       options:['It slows down file reads','It is rent charged every session forever &mdash; measured at +3,584 tokens for a 170-line file versus a 36-line one &mdash; to carry information available from one <code>ls</code>','It confuses the syntax highlighter','It does not; only wrong content costs'], answer:1},
+      {q:'Two tools disagree because the same rule is copied into two files and only one was updated. Why is this hard to catch?',
+       options:['The tools log a conflict warning','Neither tool sees a conflict &mdash; from each one&rsquo;s side nothing is wrong; the fix is a pointer so there is only one place to be right','Only one tool reads files','It is caught automatically at commit time'], answer:1},
+      {q:'An audit that deletes five of six lines is&hellip;',
+       options:['Complete &mdash; less is always better','Half done &mdash; stripping the file still leaves it with no domain rule, no owner and no date; the other half of an audit is writing what the code cannot say','A mistake; constitutions should grow','Only valid if the file was over 200 lines'], answer:1}
+    ]
   }
 ];
 
@@ -3745,6 +3831,70 @@ VISUALS['ANIM-21'] = function(mount, opts){
   }
   mount.querySelector('[data-a21replay]').addEventListener('click', play);
   meter(); play();
+};
+
+/* ---------- SIM-15 · The Constitution Audit (spec: VISUALS.md) ----------
+   The flawed file is the one actually used in the recorded stale-command
+   experiment (recordings/m75-antipatterns.txt). Click a line to audit it. */
+VISUALS['SIM-15'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LINES = [
+    {t:'# CLAUDE.md — priorauth-api', v:'keep', tag:'KEEP', why:'A title costs nothing and orients the reader. Fine.'},
+    {t:'- Run the test suite: `./mvnw verify -Pfast-tests`', v:'bad', tag:'STALE — QUIET', why:'<b>The dangerous one.</b> Recorded verdict: &ldquo;the <code>fast-tests</code> profile doesn&rsquo;t exist &hellip; Maven will warn and <b>run the full suite anyway</b>, so <code>-Pfast-tests</code> is doing nothing.&rdquo; It does not fail &mdash; it succeeds while doing something other than what it claims. A line that errors gets fixed; a line that silently no-ops survives for months.'},
+    {t:'- Start the app: `npm run dev`', v:'bad', tag:'STALE — LOUD', why:'Recorded verdict: &ldquo;can&rsquo;t be right. This is a Spring Boot 4.1 / Java 21 Maven project with no <code>package.json</code>.&rdquo; Loud staleness gets caught on sight &mdash; which is precisely why it is the <em>less</em> harmful kind.'},
+    {t:'## Architecture', v:'bad', tag:'ESSAY', why:'Heading for content the agent can derive by reading the repo. M-7.3 measured this class of filler at <b>+3,584 tokens every session</b> in a 170-line file.'},
+    {t:'The service layer contains business logic. The controller', v:'bad', tag:'ESSAY', why:'Derivable prose. If an agent can learn it in one <code>ls</code> and one file read, it is not worth rent in every session forever.'},
+    {t:'layer handles HTTP. Repositories talk to the database.', v:'bad', tag:'ESSAY', why:'Same. Note what is <em>missing</em> instead: no domain rule, no owner, no date &mdash; the things the code genuinely cannot tell you.'}
+  ];
+  const state = LINES.map(() => false);
+  mount.innerHTML =
+    '<div class="sim15" aria-label="Audit a flawed constitution line by line">' +
+      '<div class="s15head"><span>SIM-15 · AUDIT THIS CONSTITUTION · click any line</span><span data-s15n></span></div>' +
+      '<div class="s15doc">' +
+        LINES.map((l,i) => '<div class="s15line" role="button" tabindex="0" data-l="' + i + '">' +
+          '<span class="s15num">' + (i+1) + '</span><span class="s15txt">' + l.t.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>' +
+          '<span class="s15tag ' + (l.v === 'keep' ? 'good' : 'bad') + '" data-tag="' + i + '">' + l.tag + '</span></div>').join('') +
+      '</div>' +
+      '<div class="s15why" data-why>Click each line and decide: does it earn its rent? Six lines &mdash; only one survives an honest audit.</div>' +
+      '<div class="s15meter">' +
+        '<div class="s15m"><div class="s15ml">AUDITED</div><div class="s15mv" data-aud></div></div>' +
+        '<div class="s15m"><div class="s15ml">FLAGGED</div><div class="s15mv" data-flag></div></div>' +
+        '<div class="s15m"><div class="s15ml">SURVIVES</div><div class="s15mv good" data-keep></div></div>' +
+      '</div>' +
+      '<div class="s15acts">' +
+        '<button class="s15btn" type="button" data-act="all">audit every line</button>' +
+        '<button class="s15btn" type="button" data-act="reset">reset</button>' +
+      '</div>' +
+      '<div class="s15foot">What to notice: nothing here is <em>false</em> in an obvious way &mdash; that is what makes it survive review. The audit question is never &ldquo;is this wrong?&rdquo; but &ldquo;has this been run today, and could the agent derive it anyway?&rdquo;</div>' +
+    '</div>';
+  function refresh(msg){
+    let aud = 0, flagged = 0;
+    LINES.forEach((l,i) => {
+      const row = mount.querySelector('[data-l="' + i + '"]');
+      const tag = mount.querySelector('[data-tag="' + i + '"]');
+      row.className = 's15line' + (state[i] ? (l.v === 'keep' ? ' keep' : ' flagged cleared') : '');
+      tag.className = 's15tag ' + (l.v === 'keep' ? 'good' : 'bad') + (state[i] ? ' on' : '');
+      if(state[i]){ aud++; if(l.v !== 'keep') flagged++; }
+    });
+    mount.querySelector('[data-aud]').textContent = aud + '/' + LINES.length;
+    mount.querySelector('[data-flag]').textContent = String(flagged);
+    mount.querySelector('[data-keep]').textContent = aud ? String(aud - flagged) : '—';
+    mount.querySelector('[data-s15n]').textContent = aud === LINES.length ? '5 OF 6 CUT' : '';
+    if(msg) mount.querySelector('[data-why]').innerHTML = msg;
+  }
+  mount.querySelectorAll('[data-l]').forEach(el => {
+    const hit = () => { const i = +el.dataset.l; state[i] = true; refresh(LINES[i].why); };
+    el.addEventListener('click', hit);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); hit(); } });
+  });
+  mount.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+    if(b.dataset.act === 'all'){
+      state.fill(true);
+      refresh('Five of six lines cut. What remains is a title &mdash; and the file still contains <b>no domain rule, no owner, no date</b>. An audit that only deletes is half done: the other half is writing down what the code cannot say.');
+    } else { state.fill(false); refresh('Click each line and decide: does it earn its rent? Six lines &mdash; only one survives an honest audit.'); }
+  }));
+  refresh();
+  if(reduce){ state.fill(true); refresh('Five of six lines cut. What remains is a title &mdash; and the file still contains <b>no domain rule, no owner, no date</b>. An audit that only deletes is half done: the other half is writing down what the code cannot say.'); }
 };
 
 /* ---------- ANIM-23 · Two-Tier Memory (spec: VISUALS.md) ----------
