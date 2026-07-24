@@ -1,0 +1,50 @@
+M-6.2 JUNIT + TESTCONTAINERS — method notes + captures
+=======================================================
+Recorded: 2026-07-24 · priorauth-api lab/start clone (pristine; test run only,
+no source changes). Docker/Rancher Desktop DOWN this session (same machine-state
+issue as M-2.2 on 2026-07-21) — which turned into the module's live artifact.
+
+THE SETUP (real, committed, read from the repo):
+  TestcontainersConfiguration.java — Spring Boot's modern Testcontainers wiring:
+    @Bean @ServiceConnection PostgreSQLContainer(postgres:16-bookworm)
+    (@ServiceConnection auto-wires the JDBC URL/user/pass — no manual datasource;
+     -bookworm keeps legacy tz aliases some host JVMs report.)
+  RepositoryIntegrationTest.java — 6 real-Postgres round trips, guarded by
+    @Testcontainers(disabledWithoutDocker = true) @Import(TestcontainersConfiguration)
+    @SpringBootTest @Transactional. Notable test:
+    claimBatchQueryReturnsClaimsForAllPatientsAtOnce — exercises
+    findByPatientRefInOrderByServiceDateDesc, i.e. it proves M-5.6's N+1 FIX
+    returns correct grouped rows against a REAL database (the M-5.6 mock only
+    counted invocations; the container proves the IN query actually works).
+
+LIVE RUN THIS SESSION (Docker down) — the skip-clean behavior, verbatim:
+  ./mvnw test  →
+    RepositoryIntegrationTest : Tests run 5, Skipped 5   (disabledWithoutDocker)
+    PriorauthApiApplicationTests : Tests run 1, Skipped 1 (context load needs DB)
+    ApprovalServiceTest 10 · ClaimHistoryServiceTest 4 · EligibilityServiceTest 8
+    PriorAuthControllerTest 7 · DenialControllerTest 2   (all pass, mocked)
+    TOTAL: Tests run: 37, Failures: 0, Errors: 0, Skipped: 6 · BUILD SUCCESS
+  Testcontainers logged "Could not find a valid Docker environment" and the
+  guard SKIPPED the 6 DB tests instead of failing the build. 31 pass + 6 skip,
+  still green — exactly what a well-designed integration suite does for a dev
+  (or CI shard) without Docker.
+
+RECORDED PRIOR RESULT (repo build, 2026-07-20, Docker UP): the same suite ran
+37/37 GREEN against real Postgres via Testcontainers (see PROGRESS 2026-07-20
+priorauth-api BUILT entry). So: Docker up → 37/37; Docker down → 31 pass/6 skip.
+The number that changes is the skip count, never the failure count.
+
+TEACHING BEATS:
+ (1) A mock proves your LOGIC; a real database proves your SQL, JPA mapping,
+     constraints, @EntityGraph fetch, and type coercion actually work. The
+     mocked ApprovalServiceTest cannot catch a broken @Query or a bad column
+     map; the integration test can.
+ (2) @ServiceConnection is the modern Spring Boot Testcontainers seam — no
+     hand-wired JDBC URL; the container's connection details flow in automatically.
+ (3) disabledWithoutDocker=true is the discipline that lets integration tests
+     live in the same suite without blocking people who lack Docker — skip, don't
+     fail. Proven live this session.
+ (4) Honest limitation: the live 37/37 GREEN re-run needs Docker, which is down
+     (machine state, documented). The skip-clean run IS real and complete; the
+     all-green run is cited from the repo build. When the full stack is up this
+     is a 2-minute re-confirm (same standing note as M-2.2).

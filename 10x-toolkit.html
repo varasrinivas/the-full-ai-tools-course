@@ -332,6 +332,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim15 .a15replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim15 .a15replay:hover{border-color:var(--gold)}
 
+/* ============ ANIM-21: Mock vs Container ============ */
+.anim21{--a21amber:#f5b84b;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim21 .a21head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim21 .a21cols{display:flex;gap:10px;flex-wrap:wrap}
+.anim21 .a21col{flex:1;min-width:215px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px}
+.anim21 .a21cname{font-size:10px;letter-spacing:.13em;margin-bottom:2px}
+.anim21 .a21col.mock .a21cname{color:var(--cyan)}
+.anim21 .a21col.real .a21cname{color:var(--gold)}
+.anim21 .a21csub{font-size:8.5px;color:var(--faint);margin-bottom:9px;min-height:20px}
+.anim21 .a21row{display:grid;grid-template-columns:16px 1fr;gap:7px;align-items:baseline;font-size:10px;color:var(--dim);line-height:1.5;padding:3px 0;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.anim21 .a21row.on{opacity:1;transform:none}
+.anim21 .a21row .m{color:var(--faint);font-weight:700}
+.anim21 .a21row .y{color:var(--gold);font-weight:700}
+.anim21 .a21row b{color:var(--text);font-weight:500}
+.anim21 .a21meter{margin-top:11px;border:1px dashed var(--line);border-radius:8px;padding:9px 11px;font-size:10.5px;color:var(--dim);line-height:1.6}
+.anim21 .a21meter b{color:var(--text);font-weight:500}
+.anim21 .a21meter .ok{color:var(--a21amber)}
+.anim21 .a21meter .grn{color:var(--gold)}
+.anim21 .a21toggle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:10.5px;color:var(--dim)}
+.anim21 .a21btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim21 .a21btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);font-weight:700}
+.anim21 .a21foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+
 /* ============ SIM-12: Test Quality — Three Patterns ============ */
 .sim12{--s12red:#d0705a;--s12green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim12{--s12red:#B0503C;--s12green:#2d7350}
@@ -2251,6 +2274,63 @@ const MODS = [
       {q:'Which test name signals a test that asserts behavior rather than mirroring code?',
        options:['returnsTrueWhenScoreGreaterThan85','testMeetsFunction','autoApprovesARequestScoredExactlyAtTheThreshold','gaugeTest3'], answer:2}
     ]
+  },
+  {
+    id:'M-6.2', path:'eng', track:'T-06', title:'JUnit + Testcontainers', minutes:45,
+    lastVerified:'2026-07-24',
+    concept:{
+      analogy:'A pilot who has only ever flown the simulator. Every emergency handled, every checklist perfect &mdash; against a model of the aircraft that a human decided how to behave. Testcontainers is the check ride in the real plane: same pilot, same procedures, but now the weather, the hydraulics, and the runway are real, and they get a vote. Mocks certify your reasoning; a real database certifies your reasoning against something that can disagree.',
+      body:
+        '<p><strong>A mock can only tell you what you told it.</strong> <code>ApprovalServiceTest</code> mocks the repositories, and it should &mdash; it is testing decision logic, and it runs in milliseconds. But a mocked repo returns exactly what you programmed, so it can never catch a broken <code>@Query</code>, a wrong column mapping, a missing constraint, or an <code>@EntityGraph</code> fetch that doesn&rsquo;t fetch. Those bugs live in the seam between your code and the database &mdash; the one place a mock replaces with a polite fiction. To test that seam you need a real database, and Testcontainers gives you a disposable one per run.</p>' +
+        '<p><strong>The setup is smaller than you expect.</strong> One config: a <code>@Bean</code> <code>PostgreSQLContainer(&quot;postgres:16-bookworm&quot;)</code> annotated <code>@ServiceConnection</code>. That annotation is the modern Spring Boot seam &mdash; it wires the container&rsquo;s JDBC URL, user, and password into your test context automatically, so there is no hand-written datasource to drift out of sync. The integration test declares <code>@Import(TestcontainersConfiguration.class)</code>, <code>@SpringBootTest</code>, <code>@Transactional</code>, and writes plain repository calls that hit real SQL. The <code>-bookworm</code> image tag is not incidental: newer Postgres images drop legacy timezone aliases that some host JVMs still report, and the mismatch breaks the JDBC handshake &mdash; a real-world detail a mock would never surface.</p>' +
+        '<p><strong>This is where M-5.6&rsquo;s fix gets its real proof.</strong> The N+1 fix was measured with a <em>mocked</em> repo &mdash; 25 invocations down to 1. But a mock counting calls cannot prove the batch <code>findByPatientRefInOrderByServiceDateDesc</code> query actually returns the right claims, grouped correctly, from a real database. The integration test <code>claimBatchQueryReturnsClaimsForAllPatientsAtOnce</code> does exactly that: it saves two patients&rsquo; claims to real Postgres and asserts the one <code>IN</code> query returns both. Mock proves the <em>count</em>; container proves the <em>correctness</em>. You want both, and they are different tests for a reason.</p>' +
+        '<p><strong>Skip, don&rsquo;t fail &mdash; and this course proves it live.</strong> The integration test is guarded <code>@Testcontainers(disabledWithoutDocker = true)</code>. Recorded this session with Docker down: <code>./mvnw test</code> reported <b>37 run, 6 skipped, 31 green, BUILD SUCCESS</b> &mdash; Testcontainers found no Docker environment and <em>skipped</em> the database tests rather than failing the build. With Docker up (the repo build, 2026-07-20) the same command is <b>37/37 green</b>. The number that moves is the skip count, never the failure count. That is the discipline: integration tests that live in the same suite as unit tests must degrade to a skip for the developer without Docker, and run for real in CI &mdash; a red build over a missing daemon trains people to ignore red.</p>' +
+        '<p><strong>Where AI helps, and where it needs the container.</strong> An agent writes Testcontainers boilerplate well &mdash; the config bean, the annotations, the arrange/act/assert. What it cannot do headless is <em>run</em> the container to see the test truly pass; the recorded T-05 pattern holds here too, and the final green is yours to confirm with Docker up. Ask the agent for the integration test <em>and</em> the exact command to prove it, then run that command yourself. M-6.3 moves to the React side and writes tests for code that has none; M-6.4 proves the whole testing idea with mutation &mdash; a test only counts if it can fail.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-21'},
+    labA:{
+      title:'Prove the seam with a real database — Claude Code',
+      steps:[
+        'On a fresh clone of priorauth-api, read <code>TestcontainersConfiguration.java</code> and <code>RepositoryIntegrationTest.java</code>. Note the one-line container bean, the <code>@ServiceConnection</code> wiring, and the <code>disabledWithoutDocker = true</code> guard.',
+        'Run the suite with Docker <em>down</em> first (if that is your state): <code>./mvnw test</code>. Reference: <b>37 run, 6 skipped, 31 green, BUILD SUCCESS</b>. Confirm the integration tests <em>skipped</em> &mdash; a green build with a skip count, not a red one. That is the behavior to copy into your own repos.',
+        'Ask the agent to add one new <em>service-layer</em> integration test: process a request at exactly <code>AUTO_APPROVE_THRESHOLD</code> through the real stack and assert it persists as <code>AUTO_APPROVED</code> (the M-5.2 boundary, now end-to-end through Postgres). Demand the exact command to prove it, and forbid touching production code.',
+        'Start Docker, run that command. Reference (repo build): the full suite is <b>37/37 green</b> with the container up. The agent can write the test; only you, with Docker, can watch it truly pass &mdash; log both the skip run and the green run.',
+        'Success: the skip-clean run captured, one new boundary integration test written (source untouched), and &mdash; Docker permitting &mdash; a real green run; if Docker won&rsquo;t start, record that honestly, exactly as this module did.'
+      ]
+    },
+    labB:{
+      title:'The integration suite in Copilot',
+      steps:[
+        'Open priorauth-api in Visual Studio / VS Code. Ask <b>Agent</b> to explain how <code>@ServiceConnection</code> replaces a hand-written test datasource, then to add a repository test for <code>fetchForRequest</code> that saves a denial and reads it back.',
+        'Run it in the Test Explorer with Docker up; watch the container start in the logs. Note the startup tax versus the unit tests &mdash; that cost is why integration tests are a thinner layer, not the whole suite.',
+        'Success: a new repo test that round-trips through real Postgres, and one line on when the container tax is worth paying (the seam) versus when a mock is right (the logic).'
+      ]
+    },
+    labC:{
+      title:'The same suite in Cursor, then the layering rule',
+      steps:[
+        'Same exploration in Cursor with <code>@RepositoryIntegrationTest @TestcontainersConfiguration</code> anchored. Have it identify which existing behaviors are proven by a mock and which need the container &mdash; and check it against ANIM-21&rsquo;s two columns.',
+        'Toggle ANIM-21&rsquo;s Docker switch and read the two meters: 37/37 up, 31-pass/6-skip down. That is the exact behavior your CI and your laptop should both show.',
+        'Write the layering rule for your team: <em>mock the collaborators to test logic fast; use a real container to test the database seam; guard the container tests to skip without Docker so the build never goes red over a missing daemon.</em> Then list which PA behaviors sit on each layer. Success: the mock/container split mapped, the meters read, the rule and the list.'
+      ]
+    },
+    checklist:[
+      'I ran the suite with Docker down and saw a green build with a skip count, not a failure.',
+      'I can explain what a mocked service test proves that a container can&rsquo;t, and vice versa.',
+      'I know what <code>@ServiceConnection</code> wires so I never hand-write a test datasource.',
+      'I added a boundary integration test through real Postgres (source untouched) &mdash; and confirmed it green with Docker up, or recorded honestly why I couldn&rsquo;t.',
+      'I can state the layering rule: mock for logic, container for the seam, skip-not-fail without Docker.'
+    ],
+    quiz:[
+      {q:'What can a Testcontainers repository test catch that a mocked service test structurally cannot?',
+       options:['A wrong branch in the decision logic','A broken @Query, a bad column mapping, or an @EntityGraph fetch that fails &mdash; bugs in the code-to-database seam a mock replaces with a fiction','A typo in a log message','A missing null check'], answer:1},
+      {q:'With Docker down, the recorded <code>./mvnw test</code> reported 37 run, 6 skipped, 31 green, BUILD SUCCESS. Why is skipping the right behavior?',
+       options:['Skipped tests are faster','A red build over a missing Docker daemon trains developers to ignore red &mdash; integration tests should skip locally and run in CI, never fail the build for lacking a container','The tests are broken','Docker is optional in production'], answer:1},
+      {q:'What does <code>@ServiceConnection</code> on the container bean do?',
+       options:['Speeds up the container','Wires the container&rsquo;s JDBC URL, user, and password into the test context automatically &mdash; no hand-written datasource to drift out of sync','Marks the test as integration','Disables the test without Docker'], answer:1},
+      {q:'M-5.6 measured the N+1 fix as 25 queries to 1 with a mock. Why also write the Testcontainers version?',
+       options:['To make the suite longer','The mock proves the call count; only a real database proves the batch IN query returns the right claims grouped correctly &mdash; count vs correctness are different guarantees','Mocks are deprecated','To test the container itself'], answer:1}
+    ]
   }
 ];
 
@@ -3019,6 +3099,71 @@ VISUALS['SIM-07'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { placed[i] = c.q; }); revealed = true; }
   paint();
+};
+
+/* ---------- ANIM-21 · Mock vs Container (spec: VISUALS.md) ----------
+   What each test layer can prove, and the doc-down skip meter with the real
+   recorded numbers (recordings/m62-testcontainers.txt: Docker up 37/37;
+   Docker down 31 pass + 6 skip, build green). */
+VISUALS['ANIM-21'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MOCK = [
+    ['y','Your <b>logic</b>: branches, guards, the threshold decision'],
+    ['y','Fast &mdash; no container, milliseconds (the 31 unit tests here)'],
+    ['m','A broken <b>@Query</b> or JPQL &mdash; the mock never runs SQL'],
+    ['m','A wrong column map, a missing constraint, a bad <b>@EntityGraph</b> fetch'],
+    ['m','That the batch <code>IN</code> query actually returns grouped rows']
+  ];
+  const REAL = [
+    ['y','The <b>SQL executes</b> against real Postgres and returns what you expect'],
+    ['y','Constraints, JPA mapping, type coercion, transaction semantics &mdash; for real'],
+    ['y','That M-5.6&rsquo;s <code>findByPatientRefIn</code> fix returns correct grouped rows'],
+    ['y','Wired by <b>@ServiceConnection</b> &mdash; no hand-written JDBC URL'],
+    ['m','Speed &mdash; it pays a container-startup tax the mock never does']
+  ];
+  mount.innerHTML =
+    '<div class="anim21" aria-label="What a mock proves versus what a Testcontainers database proves">' +
+      '<div class="a21head"><span>ANIM-21 · WHAT EACH TEST LAYER CAN PROVE</span>' +
+        '<button class="a21btn" data-a21replay>REPLAY ▸</button></div>' +
+      '<div class="a21cols">' +
+        '<div class="a21col mock"><div class="a21cname">MOCKED SERVICE TEST</div><div class="a21csub">ApprovalServiceTest — Mockito, no DB</div>' +
+          MOCK.map((r,i) => '<div class="a21row" data-m="' + i + '"><span class="' + r[0] + '">' + (r[0]==='y'?'✓':'✗') + '</span><span>' + r[1] + '</span></div>').join('') + '</div>' +
+        '<div class="a21col real"><div class="a21cname">TESTCONTAINERS INTEGRATION TEST</div><div class="a21csub">RepositoryIntegrationTest — real postgres:16</div>' +
+          REAL.map((r,i) => '<div class="a21row" data-r="' + i + '"><span class="' + r[0] + '">' + (r[0]==='y'?'✓':'✗') + '</span><span>' + r[1] + '</span></div>').join('') + '</div>' +
+      '</div>' +
+      '<div class="a21meter" data-meter></div>' +
+      '<div class="a21toggle"><span>Docker on this machine:</span>' +
+        '<button class="a21btn" type="button" data-docker="up" aria-pressed="false">UP</button>' +
+        '<button class="a21btn" type="button" data-docker="down" aria-pressed="true">DOWN</button>' +
+      '</div>' +
+      '<div class="a21foot">What to notice: <code>disabledWithoutDocker=true</code> makes the 6 DB tests <b>skip</b>, not fail &mdash; the build stays green for anyone without Docker, and runs them for real in CI.</div>' +
+    '</div>';
+  let docker = 'down';
+  function meter(){
+    const el = mount.querySelector('[data-meter]');
+    if(docker === 'up'){
+      el.innerHTML = '<b>Docker UP</b> (repo build, 2026-07-20): <code>./mvnw test</code> &rarr; <span class="grn">37 run &middot; 0 skipped &middot; 37 green</span>. The 6 integration tests spin a real Postgres container and round-trip.';
+    } else {
+      el.innerHTML = '<b>Docker DOWN</b> (recorded this session): <code>./mvnw test</code> &rarr; <span class="ok">37 run &middot; 6 skipped &middot; 31 green &middot; BUILD SUCCESS</span>. Testcontainers found no Docker and the guard <b>skipped</b> the DB tests &mdash; it did not fail them.';
+    }
+  }
+  mount.querySelectorAll('[data-docker]').forEach(b => b.addEventListener('click', () => {
+    docker = b.dataset.docker;
+    mount.querySelectorAll('[data-docker]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    meter();
+  }));
+  const rows = [...mount.querySelectorAll('.a21row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 200 + i*260)));
+    timers.push(setTimeout(play, 200 + rows.length*260 + 5000));
+  }
+  mount.querySelector('[data-a21replay]').addEventListener('click', play);
+  meter(); play();
 };
 
 /* ---------- SIM-12 · Test Quality — Three Patterns (spec: VISUALS.md) ----------
