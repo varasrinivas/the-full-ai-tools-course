@@ -1033,6 +1033,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim21 .s21why b{color:var(--text);font-weight:500}
 .sim21 .s21foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim21 .s21foot b{color:var(--text);font-weight:500}
+.sim22{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim22 .s22head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim22 .s22intent{border:1px solid rgba(245,184,75,.5);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:8px}
+.sim22 .s22il{font-size:9px;letter-spacing:.08em;color:var(--gold);margin-bottom:2px}
+.sim22 .s22itext{font-size:10.5px;color:var(--text)}
+.sim22 .s22reshape{font-size:9.5px;color:var(--dim);margin:2px 0 10px;line-height:1.5}
+.sim22 .s22reshape b{color:var(--text);font-weight:500}
+.sim22 .s22sec{font-size:9px;letter-spacing:.1em;color:var(--cyan);margin:10px 0 6px}
+.sim22 .s22q{font-size:9.5px;color:var(--dim);line-height:1.5;margin-bottom:4px;padding-left:14px;position:relative}
+.sim22 .s22q::before{content:'?';position:absolute;left:0;color:var(--gold);font-weight:700}
+.sim22 .s22q b{color:var(--text);font-weight:500}
+.sim22 .s22unit{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:7px 10px;margin-bottom:5px;cursor:pointer}
+.sim22 .s22utop{display:flex;align-items:center;gap:8px}
+.sim22 .s22un{font-size:9px;color:var(--faint);min-width:16px}
+.sim22 .s22uname{flex:1;font-size:10px;color:var(--text)}
+.sim22 .s22uname code{font-size:9px}
+.sim22 .s22gate{font-size:8px;letter-spacing:.05em;padding:1px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim22 .s22gate.build{color:#3E9A6B;border-color:#3E9A6B}
+[data-theme="light"] .sim22 .s22gate.build{color:#2d7350;border-color:#2d7350}
+.sim22 .s22gate.decide{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim22 .s22gate.hard{color:var(--s10red,#d0705a);border-color:var(--s10red,#d0705a)}
+.sim22 .s22why{font-size:9px;color:var(--dim);line-height:1.5;margin-top:5px;padding-left:24px;display:none}
+.sim22 .s22why code{font-size:8.5px}
+.sim22 .s22unit.open .s22why{display:block}
+.sim22 .s22foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.sim22 .s22foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4521,6 +4547,63 @@ const MODS = [
       {q:'In the slot map, where does parallel subagent fan-out (T-09) belong?',
        options:['Inception','<b>Construction / Mob Construction</b> &mdash; that is the building phase where agents act as the crew on the units of work; Inception is for elaborating intent into those units','Operations','It doesn&rsquo;t fit AI-DLC'], answer:1}
     ]
+  },
+  {
+    id:'M-12.2', path:'eng', track:'T-12', title:'Mob Elaboration', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The intake huddle before surgery. Before anyone cuts, the team gathers around the actual chart &mdash; not the referral note&rsquo;s one-line summary &mdash; and the lead surfaces what is really true (the referral said &ldquo;routine&rdquo;; the labs say otherwise), asks the questions that would change the plan, and breaks the case into the specific things that must happen, marking which ones need the attending&rsquo;s sign-off. Elaboration is where a vague goal becomes a real, sized, gated plan &mdash; and where &ldquo;we cannot actually do what was asked without a decision from above&rdquo; gets said out loud, while it is still cheap to hear.',
+      body:
+        '<p><strong>Mob Elaboration is the Inception ceremony: intent becomes units of work.</strong> AWS: the AI <em>&ldquo;transforms business intent into detailed requirements, stories and units,&rdquo;</em> and it <em>&ldquo;asks clarifying questions to seek context, and implements solutions only after receiving human validation.&rdquo;</em> The whole ceremony runs <b>before any code</b> &mdash; its job is to turn a sentence a stakeholder said into a plan the team can actually execute, or to prove it cannot be executed as stated. We ran it for real on the canonical intent, read-only, and it did exactly that.</p>' +
+        '<p><strong>First it reshaped the intent &mdash; that is the ceremony&rsquo;s real first move.</strong> Given <em>&ldquo;cut the manual-review queue by 20%,&rdquo;</em> the agent read the system and reported what the sentence assumed but the code did not support: <em>&ldquo;there is no queue entity &mdash; it&rsquo;s <code>WHERE status = MANUAL_REVIEW</code>&hellip; there is no baseline&hellip; nothing can leave the queue via the API.&rdquo;</em> It pulled a real baseline from <code>seed.sql</code> (179 in review, 35.8%; 23.5% of them in [0.75, 0.85)) and caught that line 99&rsquo;s strict <code>&gt;</code> inflates the queue against every stated contract. A weaker agent would have started building against the words; elaboration builds against the <em>truth of the system</em> instead.</p>' +
+        '<p><strong>The clarifying questions are the point, not a delay.</strong> It put three to the team, and they are the questions a senior engineer asks: <em>&ldquo;20% of what?&rdquo;</em> (backlog depth, arrival rate, or reviewer hours &mdash; which are not even recoverable, since <code>decidedAt</code> is stamped at routing); <em>&ldquo;what false-approve rate buys it?&rdquo;</em> (a threshold-only 20% means auto-approving cases the model is 75&ndash;79% sure of &mdash; whose risk is that?); and <em>&ldquo;which threshold contract is authoritative?&rdquo;</em> Each answer changes the plan. The ceremony&rsquo;s value is that it surfaces these <em>before</em> anyone commits to the wrong one.</p>' +
+        '<p><strong>Then the decomposition &mdash; grounded, sized, and honest about a human gate on each.</strong> It produced six units of work, every one tied to real files and a reason it moves the queue: <b>instrument first</b> (you cannot claim &minus;20% against a number nobody measures &mdash; the T-11 lesson, rediscovered), a <b>resolve endpoint</b> (the drain rate is currently zero &mdash; the M-3.3 gap), <b>restore inclusive <code>&gt;=</code></b> (~2% misrouted &mdash; the cheapest win), a <b>config-driven threshold</b> (a dial, not a redeploy), <b>claim history as a decision input</b> (the largest lever, <em>yield unknown</em>), and the <b>batch history load</b> (drain-side speed). Most of them carry a human-validation gate &mdash; a contract call, a risk-appetite call, a clinical sign-off &mdash; because most of them are not purely technical.</p>' +
+        '<p><strong>And the payoff is the sentence no dashboard gives you.</strong> The honest read: <em>&ldquo;the intent can&rsquo;t be met by engineering judgment alone &mdash; the only lever with a known yield is the threshold, and it doesn&rsquo;t reach 20% until ~0.75,&rdquo;</em> which trades false-approvals. That is Mob Elaboration doing its actual job: it did not just plan the work, it discovered that &ldquo;cut the queue 20%&rdquo; is a <b>risk decision, not a coding task</b>, and it said so while changing course was still free. Humans now validate these units &mdash; and M-12.3&rsquo;s Mob Construction builds the ones that survive the gate.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-22'},
+    labA:{
+      title:'Run Mob Elaboration on a real intent',
+      steps:[
+        'State a business intent in AI-DLC form for the PA repos (ours: <em>&ldquo;Using AI-DLC, cut the manual-review queue by 20%&rdquo;</em>). Run the agent <b>read-only</b> (plan mode) &mdash; Inception writes no code. Ask it to reshape the intent against the real system, ask its clarifying questions, decompose into units of work, and mark the human gates.',
+        'Judge the reshape, not the plan&rsquo;s neatness: did it surface what the intent assumed but the code doesn&rsquo;t support? Reference: ours found there is no queue entity, no baseline, and no way to drain the queue via the API.',
+        'Read the clarifying questions as the deliverable they are &mdash; each should be one whose answer would change the units. If the agent asked none, your intent was under-specified <em>or</em> the agent skipped the ceremony; push it.',
+        'Check the units of work: is each tied to real files and a reason it serves the intent, and does each carry the right gate (build vs a human decision)? Confirm <code>git status</code> is clean &mdash; elaboration builds nothing.',
+        'Success: a read-only elaboration doc &mdash; reshaped intent, sharp questions, grounded and gated units of work &mdash; and, ideally, one honest finding about whether the intent is even achievable as stated.'
+      ]
+    },
+    labB:{
+      title:'Elaboration with Copilot',
+      steps:[
+        'Run the same intent through Copilot&rsquo;s Plan agent (the read-only research + structured plan surface, T-3.3). Confirm it stays read-only and produces units of work, not edits.',
+        'Compare its clarifying questions and its reshape against labA &mdash; the ceremony is the same; only the crew differs.',
+        'Success: the same intent elaborated in Copilot, and one line on where its plan output lives versus Claude&rsquo;s.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the elaboration rule',
+      steps:[
+        'Elaborate once more in Cursor Plan Mode, read-only, so you have seen Mob Elaboration run tool-agnostically.',
+        'Write the rule this ceremony exists for: <em>Mob Elaboration turns a business intent into units of work before any code &mdash; it reshapes the intent against the real system, asks the questions whose answers change the plan, sizes and grounds each unit, marks the human gate on each, and is honest when the intent isn&rsquo;t achievable as stated; that honesty, surfaced early, is the whole value.</em>',
+        'Success: the ceremony run in all three tools, the rule written, and your validated units ready for Mob Construction.'
+      ]
+    },
+    checklist:[
+      'I ran elaboration read-only &mdash; Inception writes no code (<code>git status</code> clean).',
+      'The agent reshaped the intent against the real system, not just the words.',
+      'It asked clarifying questions whose answers would change the plan.',
+      'Each unit of work is grounded in real files with a reason and a human/build gate.',
+      'I got an honest read on whether the intent is achievable as stated.'
+    ],
+    quiz:[
+      {q:'What is the first real job of Mob Elaboration, before decomposing into units of work?',
+       options:['Write the code fast','<b>Reshape the intent against the real system</b> &mdash; surface what the business sentence assumes but the code doesn&rsquo;t support (ours: no queue entity, no baseline, no way to drain the queue via the API)','Assign story points','Pick the model'], answer:1},
+      {q:'Why are the agent&rsquo;s clarifying questions the point of the ceremony, not a delay?',
+       options:['They pad the meeting','Each is a question whose answer <b>changes the plan</b> (&ldquo;20% of what?&rdquo;, &ldquo;what false-approve rate buys it?&rdquo;) &mdash; surfacing them before construction stops the team building the wrong thing','They show the AI is confused','Questions aren&rsquo;t allowed in Inception'], answer:1},
+      {q:'What made the elaboration&rsquo;s units of work good rather than generic?',
+       options:['There were exactly six','Each was <b>grounded in real files with a reason it moves the queue</b> and a human/build gate &mdash; they mapped to actual levers (the missing resolve endpoint, the threshold misroute, the N+1), and instrumenting first echoed T-11&rsquo;s &ldquo;no delta without a baseline&rdquo;','They were sorted alphabetically','They avoided the codebase'], answer:1},
+      {q:'What was the ceremony&rsquo;s most valuable output on &ldquo;cut the queue 20%&rdquo;?',
+       options:['A finished feature','The honest read that the intent is a <b>risk decision, not a coding task</b> &mdash; the only known-yield lever trades false-approvals &mdash; surfaced while changing course was still free','A cost estimate','A new AI model'], answer:1}
+    ]
   }
 ];
 
@@ -6647,6 +6730,42 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-22 · Mob Elaboration (spec: VISUALS.md) ----------
+   The REAL Inception-phase run (recordings/m122-mob-elaboration.txt, read-only, git
+   clean): intent reshaped, senior clarifying questions, six grounded units of work each
+   with its human-validation gate, and the honest read that the intent needs a human
+   decision. Click a unit to see why it cuts the queue. Every unit maps to a real repo
+   lever (incl. BUG-API-01/03 and the missing resolve endpoint). */
+VISUALS['SIM-22'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const UNITS = [
+    ['1','Instrument queue depth + routing counters','decide','DECIDE','It doesn&rsquo;t cut the queue &mdash; it makes every other unit <b>provable</b>. You can&rsquo;t claim &minus;20% against a number nobody measures (T-11).'],
+    ['2','<code>POST /api/requests/{id}/resolve</code>','build','BUILD','The service method <code>resolveManualReview()</code> exists and is tested but has <b>no HTTP endpoint</b> &mdash; drain rate is currently zero (the M-3.3 gap).'],
+    ['3','Restore inclusive <code>&gt;=</code> + pin 0.85','decide','DECIDE','Line 99 uses strict <code>&gt;</code> vs the inclusive docs &mdash; ~2% of volume misrouted into the queue against every stated contract. The cheapest real win (BUG-API-01).'],
+    ['4','Threshold &rarr; <code>@ConfigurationProperties</code>','decide','DECIDE','Turns the goal from a redeploy into a <b>dial</b> &mdash; but the value is a risk-appetite call, not an engineering one.'],
+    ['5','Claim history as a decision input','hard','HARD GATE','The largest non-threshold lever &mdash; discriminate by patient risk, not just confidence. <b>Yield unknown</b>; needs clinical + compliance sign-off and a dry-run.'],
+    ['6','Restore the batch history load','decide','DECIDE','Drain-side speed: the dead batch method would replace ~179 queries per worklist open (BUG-API-03 / M-3.5).'],
+  ];
+  mount.innerHTML =
+    '<div class="sim22" aria-label="Mob Elaboration: intent to units of work">' +
+      '<div class="s22head"><span>SIM-22 · MOB ELABORATION &middot; INTENT &rarr; UNITS OF WORK</span><span>INCEPTION · READ-ONLY</span></div>' +
+      '<div class="s22intent"><div class="s22il">INTENT</div><div class="s22itext">&ldquo;Using AI-DLC: cut the manual-review queue by 20%.&rdquo;</div></div>' +
+      '<div class="s22reshape"><b>Reshaped first:</b> there is no queue <em>entity</em> (it&rsquo;s <code>WHERE status = &#39;MANUAL_REVIEW&#39;</code>), no baseline metric, and <b>nothing drains the queue via the API</b>. Real baseline from <code>seed.sql</code>: 179 in review (35.8%); 23.5% sit in [0.75, 0.85).</div>' +
+      '<div class="s22sec">CLARIFYING QUESTIONS &mdash; put to the team</div>' +
+      '<div class="s22q"><b>20% of what?</b> backlog depth (179), arrival rate (35.8%), or reviewer hours (not recoverable)?</div>' +
+      '<div class="s22q"><b>What false-approve rate buys it?</b> threshold-only &minus;20% means 0.85&rarr;~0.75 &mdash; who owns that risk?</div>' +
+      '<div class="s22q"><b>Which threshold contract is authoritative</b> &mdash; the docs (<code>&gt;=</code>) or the code (<code>&gt;</code>)?</div>' +
+      '<div class="s22sec">UNITS OF WORK &mdash; click for why it cuts the queue</div>' +
+      UNITS.map((u,i) =>
+        '<div class="s22unit" data-u="' + i + '"><div class="s22utop"><span class="s22un">' + u[0] + '</span>' +
+          '<span class="s22uname">' + u[1] + '</span><span class="s22gate ' + u[2] + '">' + u[3] + '</span></div>' +
+          '<div class="s22why">' + u[4] + '</div></div>').join('') +
+      '<div class="s22foot"><b>The honest read:</b> the intent can&rsquo;t be met by engineering judgment alone &mdash; the only lever with a <em>known</em> yield is the threshold, and it doesn&rsquo;t reach 20% until ~0.75, which trades false-approves. That trade is a <b>human decision</b>, surfaced now, before a line is built. That is what the ceremony is for.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s22unit').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s22unit').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-21 · Measure or Refuse (spec: VISUALS.md) ----------

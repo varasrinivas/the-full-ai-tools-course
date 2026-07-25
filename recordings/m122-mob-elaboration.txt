@@ -1,0 +1,71 @@
+M-12.2 — Mob Elaboration (AI-DLC Inception: intent -> units of work, agent-facilitated)
+Live artifact: a real Mob Elaboration ceremony run on the canonical intent, read-only
+(Inception is elaboration, NOT construction). It reshaped the intent, asked the team's
+questions, decomposed into grounded units of work, marked the human-validation gates, and
+delivered an honest read that the intent needs a HUMAN decision. Recorded 2026-07-25/26,
+claude 2.1.220. Disposable clone (deleted after; teaching repo untouched, plants intact).
+
+AI-DLC facts (verified 2026-07-25, see recordings/m121-ai-dlc.txt for full sourcing)
+  Inception "Determines WHAT to build and WHY"; Mob Elaboration = AI "transforms business
+  intent into detailed requirements, stories and units"; "AI creates a plan, asks clarifying
+  questions to seek context, and implements solutions only after receiving human validation";
+  "Humans decide and validate, AI plans and executes." All AWS-primary.
+
+THE RUN  (`claude -p "Using AI-DLC, run the Mob Elaboration ceremony for the intent 'cut the
+  manual-review queue by 20%'. Inception phase — do NOT write code. Read the repo, then:
+  (1) ask 2-3 clarifying questions; (2) decompose into concrete UNITS OF WORK (desc, files,
+  why it cuts the queue); (3) flag which units humans must validate before Construction."
+  --permission-mode plan`)   398s. **git status --porcelain = 0 changes** — the read-only
+  Inception gate held (plan written to ~/.claude/plans/, headless-plan-mode as M-2.3 noted).
+
+WHAT IT PRODUCED (the ceremony working, verbatim-trimmed)
+  INTENT RESHAPED FIRST (the "transforms business intent" move):
+   - "There is no queue entity — it's WHERE status = 'MANUAL_REVIEW'. No assignee, priority,
+     SLA, or enqueue timestamp."
+   - "There is no baseline ... You cannot prove -20% against a number nobody measures." (= M-11.1)
+   - "Nothing can leave the queue via the API. resolveManualReview() exists and is tested but
+     has no HTTP endpoint." (= the M-3.3 architecture-gap finding, independently rediscovered)
+   - Real baseline from seed.sql: 179 in MANUAL_REVIEW (35.8%); 23.5% of the queue in [0.75,0.85);
+     and BUG-API-01 caught (line 99 strict `>` vs inclusive docs) as queue inflation.
+
+  CLARIFYING QUESTIONS (the "asks clarifying questions to seek context" ceremony — and they're senior):
+   1. "20% of what?" — backlog depth (179), arrival rate (35.8%), or reviewer hours? (recommends
+      arrival rate; notes reviewer hours aren't recoverable because decidedAt is stamped at routing).
+   2. "What false-approve rate buys it?" — threshold-only -20% means 0.85->~0.75, auto-approving
+      cases the model is 75-79% confident about; who owns that risk (clinical/compliance/payer)?
+   3. "Which threshold contract is authoritative — docs (>=) or code (>)?"
+
+  SIX UNITS OF WORK (desc | files | why it cuts the queue) — all grounded in the real repo:
+   1. Instrument queue depth + counters | Repo/ApprovalService/pom | makes every other unit PROVABLE (T-11)
+   2. POST /api/requests/{id}/resolve      | PriorAuthController (service method exists) | drain rate is currently ZERO (M-3.3 gap)
+   3. Restore inclusive >= + pin 0.85      | ApprovalService:99, test | ~2% misrouted vs every contract — cheapest real win (BUG-API-01)
+   4. Threshold -> @ConfigurationProperties| ApprovalService:26, props | goal becomes a dial, not a redeploy
+   5. Claim history as decision input       | ApprovalService:85-107 | largest non-threshold lever — YIELD UNKNOWN
+   6. Restore batch history load            | ClaimHistoryService:34-43 (dead batch method) | drain-side: ~179 queries/worklist (BUG-API-03 / M-3.5)
+
+  HUMAN-VALIDATION GATES (the "Humans decide and validate" gate, per unit):
+   - UoW-5 HARD GATE: clinical + compliance sign-off + a dry-run yield measurement (highest risk).
+   - UoW-4 value HARD GATE: mechanism safe, the number is a risk-appetite call.
+   - UoW-3 CONTRACT gate: code changes or four docs do — product rules first.
+   - UoW-1 DEFINITION gate: answer Q1 or we instrument the wrong thing.
+   - UoW-6 ACCOUNTING ruling: does throughput count toward -20%?
+
+  THE HONEST READ (the ceremony's payoff):
+   "The intent can't be met by engineering judgment alone. The only lever with a known yield is
+   the threshold, and it doesn't reach 20% until ~0.75. Recommended slice: 1 -> 3 -> 2 -> 4 (all
+   low-risk, answerable now), then take UoW-5's measured yield to clinical with data instead of an
+   estimate." Also listed 3 unrelated defects as out-of-scope (didn't act on them).
+
+WHY THIS IS THE MODULE
+  Mob Elaboration is NOT "the AI plans the sprint." It is: the agent reads the real system,
+  RESHAPES a vague business intent into what's actually true, asks the questions a senior would
+  ask, decomposes into grounded, sized units of work with the reason each matters, and marks
+  where a HUMAN must decide — culminating in the honest finding that "cut the queue 20%" is a
+  risk-trade-off decision, not an engineering task. The value of the ceremony is that it surfaces
+  that BEFORE construction, when changing course is free. Units map onto the course's own planted
+  issues (BUG-API-01/03, the no-resolve-endpoint gap) because they ARE real levers on the queue.
+  Ties to T-11: you literally cannot claim -20% without instrumenting first (UoW-1).
+
+HYGIENE
+  Disposable clone scratchpad/m122-api deleted after. git clean throughout (read-only Inception).
+  Teaching repo priorauth-api untouched (main, clean); BUG-API-01 line 99 still `>` — plants intact.
