@@ -1,0 +1,65 @@
+M-12.1 — From tools to method: AI-DLC (AWS AI-Driven Development Life Cycle)
+Overview/orientation module (T-12 opens). No live headless run (method overview;
+M-12.2 runs the first ceremony live). Record = this dated, AWS-primary-verified sheet.
+Verified 2026-07-25. ALL facts sourced to AWS-owned primary material.
+
+PRIMARY SOURCES (AWS, fetched 2026-07-25)
+  A. aws.amazon.com/blogs/devops/ai-driven-development-life-cycle/  (31 Jul 2025 — the
+     original announcement; where the vivid vocabulary lives: bolts, Mob ceremonies, speed claim)
+  B. aws.amazon.com/blogs/devops/open-sourcing-adaptive-workflows-for-ai-driven-development-life-cycle-ai-dlc/ (29 Nov 2025)
+  C. aws.amazon.com/blogs/devops/building-with-ai-dlc-using-amazon-q-developer/ (29 Nov 2025)
+  D. github.com/awslabs/aidlc-workflows  (MIT-0; the open-source, tool-agnostic version)
+
+WHAT IS AI-DLC (verbatim)
+  - "a new methodology designed to fully ingrain AI capabilities into the very fabric of software development." (A)
+  - Problem: "Simply retrofitting AI as an assistant not only constrains its capabilities but also reinforces outdated inefficiencies." (A)
+  - "strategically assigning routine tasks to AI while maintaining human oversight for critical decisions." (C)
+  - "keeps you in control of the process." (D)
+
+THREE PHASES (verbatim)
+  - "The workflow has three phases. These phases are Inception, Construction, and Operations. Inception involves planning and architecture. Construction focuses on design and implementation. Operations cover deployment and monitoring." (C)
+  - Repo: Inception "Determines WHAT to build and WHY"; Construction "Determines HOW to build it"; Operations "Deployment and monitoring (future)". (D) — NOTE: Operations marked "(future)".
+  - Per-phase (A): Inception — "AI transforms business intent into detailed requirements, stories and units through 'Mob Elaboration'"; Construction — "AI proposes a logical architecture, domain models, code solution and tests through 'Mob Construction'"; Operations — "manage infrastructure as code and deployments".
+
+INTENT -> UNITS OF WORK (verbatim)
+  - State intent: "Start any software development project by stating your intent starting with the phrase 'Using AI-DLC, ...'" (D)
+  - "AI creates a plan, asks clarifying questions to seek context, and implements solutions only after receiving human validation." (A)
+  - "Traditional 'sprints' are replaced by 'bolts' – shorter, more intense work cycles measured in hours or days rather than weeks; Epics are replaced by Units of Work." (A)
+  - "creating units of work for parallel development" (D)
+  - HEDGE: "bolts" appears in the Jul 2025 blog (A) but NOT in the Nov 2025 posts/repo -> early vocabulary; module presents "units of work" as the durable term and flags "bolts" as original vocabulary. The "hours/days vs weeks" speed claim is A only -> presented as AWS's claim, not established fact.
+
+MOB CEREMONIES (verbatim, richest in A)
+  - Mob Elaboration (Inception): "entire team actively validates AI's questions and proposals" (A)
+  - Mob Construction (Construction): "team provides clarification on technical decisions and architectural choices in real time" (A)
+  - "These rituals, defined as Mob Elaboration and Mob Construction in AI-DLC." (B)
+  - HEDGE: detailed who-does-what is best cited to A; Nov 2025 posts only name-check them.
+
+HUMAN ROLE (verbatim — the module's spine)
+  - "Humans decide and validate, AI plans and executes." (B, Figure 1 caption)
+  - "The agent proposes, the human approves." / "Always in Control — Review execution plans and approve each phase." (D)
+  - "At each phase, AI-DLC asks clarifying questions, creates execution plans, and waits for approval." (C)
+  - "defers critical decisions to humans" / "only humans possess the contextual understanding and knowledge of business requirements needed to make informed choices." (A)
+  - NOTE: "human as bouncer, not typist" is the COURSE's/blueprint's gloss (M-12.3 title), NOT AWS wording. M-12.1 uses AWS's actual quotes and doesn't attribute "bouncer/typist" to AWS.
+
+TOOL-AGNOSTIC (verbatim — why the whole course slots in)
+  - "Agnostic. The methodology works with any IDE, agent, or model. We don't tie ourselves to specific tools or vendors." (D) — repo lists Kiro, Amazon Q, Cursor, Cline, Claude Code, GitHub Copilot, OpenAI Codex.
+  - AWS's own how-to blogs demonstrate it via Amazon Q Developer + Kiro (steering files / Q Rules) (A,B,C) — but the method itself is positioned as vendor-neutral. Module teaches it as a method above the tools.
+
+THE MODULE'S CORE MANDATE — "where each tool skill slots" (the map, taught + in ANIM-12)
+  Inception / Mob Elaboration: onboarding + Plan Mode (T-03), spec-vs-vibe (T-02), the
+    signed constitution + data/decision boundaries (T-07, M-1.6).
+  Construction / Mob Construction: subagents + fan-out (T-09), slash commands + workflows
+    (T-10), test-first + testing (T-06, T-05), MCP for live policy (T-10), autocomplete
+    (T-04); every commit through the hooks + quality gates (M-10.2, M-9.7).
+  Converge: M-10.5's issue->PR pipeline. Operations: cloud/CI (M-10.4) + the metrics panel (T-11).
+  The human gate at every phase = the course's plan-gate / review-the-diff / sign-the-rule
+  / don't-fabricate discipline (T-03, M-10.5, T-07, M-10.3).
+
+VISUAL: ANIM-12 (pre-specced, built here; shared M-12.1-12.4 + L-6.1) — INTENT card ->
+  INCEPTION/Mob Elaboration (3 tagged units of work) -> CONSTRUCTION/Mob Construction (3
+  tagged build rows) -> CONVERGE->PR (green) -> Operations "future" + measure; each node's
+  human gate labelled; caption = "Humans decide and validate, AI plans and executes" + method-not-tool.
+
+SCOPE: M-12.1 = the one-hour overview + the slot map. M-12.2 = Mob Elaboration LIVE on
+  "cut the queue 20%". M-12.3 = Mob Construction. M-12.4 = capstone (ship 3x + metrics,
+  ANIM-12 reused). M-12.5 = pharmacy-PA migration (REPO-SPECS.md). No teaching-repo change.

@@ -1183,6 +1183,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim11 .a11cap b{color:var(--text);font-weight:500}
 .anim11 .a11replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim11 .a11replay:hover{border-color:var(--gold)}
+.anim12{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim12 .a12head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim12 .a12node{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:8px 11px;margin-bottom:8px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim12 .a12node.on{opacity:1;transform:none}
+.anim12 .a12node.intent{border-color:rgba(245,184,75,.5)}
+.anim12 .a12node.pr{border-color:#3E9A6B}
+[data-theme="light"] .anim12 .a12node.pr{border-color:#2d7350}
+.anim12 .a12ntop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.anim12 .a12ntitle{font-size:10px;color:var(--text);font-weight:600}
+.anim12 .a12ntitle.gold{color:var(--gold)} .anim12 .a12ntitle.green{color:#3E9A6B}
+[data-theme="light"] .anim12 .a12ntitle.green{color:#2d7350}
+.anim12 .a12human{font-size:8px;letter-spacing:.05em;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.anim12 .a12ndesc{font-size:9.5px;color:var(--dim);line-height:1.5;margin-top:3px}
+.anim12 .a12ndesc code{font-size:9px}
+.anim12 .a12lane{margin:0 0 8px 16px;border-left:2px solid var(--line);padding-left:12px}
+.anim12 .a12phase{font-size:9px;letter-spacing:.12em;color:var(--cyan);margin:2px 0 6px}
+.anim12 .a12unit{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline;font-size:9.5px;margin-bottom:5px;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.anim12 .a12unit.on{opacity:1;transform:none}
+.anim12 .a12uname{color:var(--text)} .anim12 .a12uname code{font-size:9px}
+.anim12 .a12slot{font-size:8px;letter-spacing:.04em;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.anim12 .a12cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim12 .a12cap b{color:var(--text);font-weight:500}
+.anim12 .a12replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim12 .a12replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -4441,6 +4465,62 @@ const MODS = [
       {q:'What is the order of the improvement playbook, and why that order?',
        options:['Agents first &mdash; they&rsquo;re the most powerful','<b>Instruction files, then workflows, then agents</b> &mdash; cheapest and highest-leverage first (a 36-line constitution took a task from 90s to 24s); you reach for the heavy agent fleet only after the constitution and workflows are in place','Whatever the vendor recommends','Random &mdash; order doesn&rsquo;t matter'], answer:1}
     ]
+  },
+  {
+    id:'M-12.1', path:'eng', track:'T-12', title:'From tools to method: AI-DLC', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The shift from knowing the instruments to running the department. For eleven tracks you learned to use the scalpel, the monitor, the chart. AI-DLC is the clinical protocol on top: it says which instrument at which phase, who signs off before the case advances, and how one admission moves all the way to discharge. The instruments do not change. What changes is that you stop thinking &ldquo;which tool&rdquo; and start thinking &ldquo;which phase, whose sign-off, what unit of work next.&rdquo;',
+      body:
+        '<p><strong>You have a toolkit; AI-DLC is a method to point it with.</strong> AWS describes the AI-Driven Development Lifecycle as <em>&ldquo;a new methodology designed to fully ingrain AI capabilities into the very fabric of software development,&rdquo;</em> the alternative to <em>&ldquo;simply retrofitting AI as an assistant,&rdquo;</em> which <em>&ldquo;reinforces outdated inefficiencies.&rdquo;</em> Crucially for everything you have built, it is <b>tool-agnostic</b> &mdash; the open-source version <em>&ldquo;works with any IDE, agent, or model&rdquo;</em> and names Claude Code, Copilot and Cursor among its supported agents. So AI-DLC is not a rival to your toolkit; it is the frame that tells your toolkit what to do next.</p>' +
+        '<p><strong>Three phases, and the first move is the one that matters: intent becomes units of work.</strong> The loop is <b>Inception</b> (&ldquo;determines WHAT to build and WHY&rdquo;), <b>Construction</b> (&ldquo;determines HOW to build it&rdquo;), and <b>Operations</b> (deploy and monitor &mdash; AWS marks this &ldquo;future&rdquo;). You start by <em>stating an intent</em> &mdash; literally <em>&ldquo;Using AI-DLC, &hellip;&rdquo;</em>, e.g. &ldquo;cut the manual-review queue 20%&rdquo; &mdash; and in Inception the AI, through a ceremony AWS calls <b>Mob Elaboration</b>, <em>&ldquo;transforms business intent into detailed requirements, stories and units.&rdquo;</em> The vocabulary shifts with it: <em>&ldquo;Epics are replaced by Units of Work,&rdquo;</em> and (in the original announcement) sprints by &ldquo;bolts &mdash; shorter, more intense work cycles measured in hours or days rather than weeks.&rdquo; Treat that speed claim as AWS&rsquo;s, and &ldquo;bolts&rdquo; as early vocabulary; the durable idea is <b>intent &rarr; units of work</b>.</p>' +
+        '<p><strong>The part that should feel familiar is the human gate &mdash; it is this whole course, named.</strong> AI-DLC&rsquo;s core principle is <em>&ldquo;Humans decide and validate, AI plans and executes,&rdquo;</em> and it is enforced at every phase: <em>&ldquo;the agent proposes, the human approves,&rdquo;</em> and <em>&ldquo;at each phase, AI-DLC asks clarifying questions, creates execution plans, and waits for approval.&rdquo;</em> You have been practising exactly this for eleven tracks &mdash; Plan Mode&rsquo;s approve-or-steer gate (T-03), reviewing the diff instead of watching it typed (M-10.5), signing the rule rather than letting the model guess it (T-07), the agent that refused to fabricate a coverage answer (M-10.3). AI-DLC did not invent the discipline; it makes it the shape of the whole lifecycle.</p>' +
+        '<p><strong>And here is where each skill you learned slots in.</strong> <b>Inception / Mob Elaboration</b> is your reading-and-planning kit: onboarding and Plan Mode (T-03), spec-vs-vibe judgement (T-02), the signed constitution and the data/decision boundaries (T-07, M-1.6) &mdash; this is where intent is pinned to units of work and the humans validate. <b>Construction / Mob Construction</b> is your building kit: subagents and parallel fan-out as the crew (T-09), slash commands and workflows to run the rituals (T-10), test-first and the testing track for correctness (T-06, T-05), an MCP server when a unit needs live policy (T-10), autocomplete for the line-level work (T-04) &mdash; every commit passing through the hooks and quality gates (M-10.2, M-9.7). <b>Converge</b> is M-10.5&rsquo;s issue-to-PR pipeline; <b>Operations</b> is cloud/CI (M-10.4) and then the measurement panel (T-11) that tells you whether the bolt actually paid off. The toolkit was never a pile of features; it was the crew for this lifecycle.</p>' +
+        '<p><strong>So the graduate move is a change of altitude.</strong> Stop asking &ldquo;which tool for this?&rdquo; and start asking &ldquo;which phase am I in, what is the next unit of work, and whose sign-off unblocks it?&rdquo; &mdash; then reach for the skill that phase calls for. That is the one-hour version of AI-DLC. The rest of this track makes it real: M-12.2 runs the first ceremony &mdash; Mob Elaboration on &ldquo;cut the queue 20%&rdquo; &mdash; for real; M-12.3 builds the units; M-12.4 ships a full feature three ways and reads the final metrics; M-12.5 ports the whole domain to pharmacy PA.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-12'},
+    labA:{
+      title:'Map your toolkit onto the lifecycle',
+      steps:[
+        'Read the AI-DLC loop as three phases &mdash; Inception (WHAT/WHY, Mob Elaboration), Construction (HOW, Mob Construction), Operations (deploy/measure). State one intent for the PA repos in the AI-DLC form: <em>&ldquo;Using AI-DLC, cut the manual-review queue 20%.&rdquo;</em>',
+        'Build the slot map for yourself: for each phase, list the course skills you would reach for (e.g. Inception &rarr; Plan Mode + the constitution; Construction &rarr; subagents + hooks + tests + MCP; Converge &rarr; the issue-to-PR pipeline; Operations &rarr; the metrics panel). ANIM-12 shows one such mapping.',
+        'Mark the human gate at each phase &mdash; who validates the units of work, who approves the architecture, who signs the PR. Confirm every phase has a &ldquo;the agent proposes, the human approves&rdquo; checkpoint.',
+        'Success: an intent stated in AI-DLC form, a phase-by-phase map of which skills you use where, and a human sign-off named at each phase &mdash; the plan you will execute across M-12.2&ndash;12.4.'
+      ]
+    },
+    labB:{
+      title:'The method in Copilot',
+      steps:[
+        'AI-DLC is tool-agnostic, so run the same framing with Copilot: state the intent, and use the Plan agent for the Inception decomposition into units of work, then note where Copilot&rsquo;s custom agents / cloud agent would do the Construction.',
+        'Confirm the human gate survives the tool change &mdash; you still validate the units and approve the PR; the ceremony is the same, only the crew differs.',
+        'Success: the same intent taken through Inception in Copilot, and one line on which Copilot features fill each phase.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the method rule',
+      steps:[
+        'Do the Inception framing once more in Cursor (Plan Mode for the decomposition), so you have seen the method run tool-agnostically across all three.',
+        'Write the rule this track exists for: <em>AI-DLC is a method, not a tool &mdash; state an intent, let Mob Elaboration turn it into units of work, build them in Mob Construction, converge on a reviewable PR, and keep a human gate at every phase (humans decide and validate, AI plans and executes); every skill you learned slots into a phase.</em>',
+        'Success: the method seen in all three tools, the rule written, and your slot map ready for the capstone.'
+      ]
+    },
+    checklist:[
+      'I can name the three AI-DLC phases and what each determines (WHAT/WHY, HOW, deploy).',
+      'I can state an intent in AI-DLC form and explain intent &rarr; units of work.',
+      'I mapped each phase to the specific course skills it calls for.',
+      'I placed a human sign-off gate at every phase (the agent proposes, the human approves).',
+      'I can explain why AI-DLC being tool-agnostic means my whole toolkit slots in.'
+    ],
+    quiz:[
+      {q:'What is AI-DLC, and how does it relate to the tools you learned?',
+       options:['A new AI model','A <b>methodology</b> &mdash; AWS: &ldquo;designed to fully ingrain AI capabilities into the very fabric of software development&rdquo; &mdash; that is <b>tool-agnostic</b> (&ldquo;works with any IDE, agent, or model&rdquo;), so your toolkit slots into its phases rather than competing with it','A replacement for Claude Code','An AWS-only product you must buy'], answer:1},
+      {q:'What is the first move of AI-DLC, in the Inception phase?',
+       options:['Writing code','Stating an <b>intent</b> and letting <b>Mob Elaboration</b> transform it into <b>units of work</b> (&ldquo;detailed requirements, stories and units&rdquo;) &mdash; WHAT and WHY before HOW','Deploying to production','Picking a model'], answer:1},
+      {q:'What is AI-DLC&rsquo;s stance on the human&rsquo;s role, and why should it feel familiar?',
+       options:['Humans are optional','<b>&ldquo;Humans decide and validate, AI plans and executes&rdquo;</b> &mdash; the agent proposes and the human approves at every phase; it is the plan-gate / review-the-diff / sign-the-rule discipline you practised for eleven tracks, now the shape of the whole lifecycle','The AI decides everything','Humans only write tests'], answer:1},
+      {q:'In the slot map, where does parallel subagent fan-out (T-09) belong?',
+       options:['Inception','<b>Construction / Mob Construction</b> &mdash; that is the building phase where agents act as the crew on the units of work; Inception is for elaborating intent into those units','Operations','It doesn&rsquo;t fit AI-DLC'], answer:1}
+    ]
   }
 ];
 
@@ -6915,6 +6995,54 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-12 · AI-DLC Ceremony Flow (spec: VISUALS.md) ----------
+   Intent card explodes into units of work (Inception / Mob Elaboration), agents
+   pick them up (Construction / Mob Construction), converge into a PR node. Each
+   unit tagged with the course skill that powers it (M-12.1's "where each tool skill
+   slots"). AI-DLC doc-verified 2026-07-25 (AWS DevOps blog + awslabs/aidlc-workflows).
+   Shared M-12.1-12.4 + L-6.1. */
+VISUALS['ANIM-12'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ELAB = [
+    ['<code>queue-depth</code> metric + endpoint', 'Plan Mode · T-03'],
+    ['SLA-breach reviewer notification', 'spec-first · T-02'],
+    ['reviewer-assist ranking of the queue', 'constitution · T-07'],
+  ];
+  const CONS = [
+    ['three subagents build the units in parallel', 'subagents / fan-out · T-09'],
+    ['each commit gated: tests + pre-commit hook', 'hooks / testing · T-06,T-10'],
+    ['coverage answered by the payer-policy MCP', 'MCP · T-10'],
+  ];
+  mount.innerHTML =
+    '<div class="anim12" aria-label="AI-DLC ceremony flow from intent to PR">' +
+      '<div class="a12head"><span>ANIM-12 · AI-DLC &mdash; INTENT &rarr; UNITS OF WORK &rarr; PR</span>' +
+        '<button class="a12replay" data-a12replay>REPLAY &#9656;</button></div>' +
+      '<div class="a12node intent"><div class="a12ntop"><span class="a12ntitle gold">INTENT</span><span class="a12human">human: states it</span></div>' +
+        '<div class="a12ndesc"><em>&ldquo;Using AI-DLC: cut the manual-review queue 20%.&rdquo;</em></div></div>' +
+      '<div class="a12node"><div class="a12ntop"><span class="a12ntitle">INCEPTION &middot; Mob Elaboration</span><span class="a12human">human: validates</span></div>' +
+        '<div class="a12ndesc">AI turns intent into <b>units of work</b> (WHAT &amp; WHY):</div>' +
+        '<div class="a12lane">' + ELAB.map(u => '<div class="a12unit"><span class="a12uname">&bull; ' + u[0] + '</span><span class="a12slot">' + u[1] + '</span></div>').join('') + '</div></div>' +
+      '<div class="a12node"><div class="a12ntop"><span class="a12ntitle">CONSTRUCTION &middot; Mob Construction</span><span class="a12human">human: clarifies</span></div>' +
+        '<div class="a12ndesc">AI proposes architecture, code and tests (HOW); agents build the units:</div>' +
+        '<div class="a12lane">' + CONS.map(u => '<div class="a12unit"><span class="a12uname">&bull; ' + u[0] + '</span><span class="a12slot">' + u[1] + '</span></div>').join('') + '</div></div>' +
+      '<div class="a12node pr"><div class="a12ntop"><span class="a12ntitle green">CONVERGE &rarr; PR</span><span class="a12human">human: approves</span></div>' +
+        '<div class="a12ndesc">one reviewable pull request (M-10.5&rsquo;s pipeline) &rarr; Operations: deploy &amp; <b>measure the delta</b> (T-11). <span style="color:var(--faint)">[Operations: &ldquo;future&rdquo;]</span></div></div>' +
+      '<div class="a12cap">What to notice: AI-DLC is a <b>method, not a tool</b> &mdash; AWS: it &ldquo;works with any IDE, agent, or model.&rdquo; Every course skill slots into a phase, and every phase has a human gate: <b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b></div>' +
+    '</div>';
+  const steps = [...mount.querySelectorAll('.a12node, .a12unit')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ steps.forEach(s => s.classList.add('on')); return; }
+    steps.forEach(s => s.classList.remove('on'));
+    steps.forEach((s,i) => timers.push(setTimeout(() => s.classList.add('on'), 300 + i*380)));
+    timers.push(setTimeout(play, 300 + steps.length*380 + 5000));
+  }
+  mount.querySelector('[data-a12replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-11 · Personal Delta Dashboard (spec: VISUALS.md) ----------
