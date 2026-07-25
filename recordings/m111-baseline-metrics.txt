@@ -1,0 +1,82 @@
+M-11.1 — Your baseline (capture cycle time, defects, rework — week 1, no AI)
+Methodology module: no headless artifact by nature (like M-1.6 / M-4.1). The
+"recording" is this dated, doc-verified definitions sheet. Verified 2026-07-25.
+
+WHY THIS MODULE
+  You cannot claim a delta without a BEFORE-reading. Week 1 = capture the no-AI
+  baseline for one repeatable task class; M-11.3 re-runs the same class WITH the full
+  toolkit and subtracts. A vendor's "40% faster" is marketing; the only productivity
+  number that changes how YOU work is one you took yourself.
+
+SCOPE (per BLUEPRINT — do not steal M-11.2/M-11.3)
+  M-11.1 = baseline CAPTURE, three metrics (cycle time / escaped defects / rework).
+  M-11.2 = the frameworks (DORA, SPACE, DX Core 4) + the vanity-metrics refuse-list
+           (acceptance rate, LOC, %AI). M-11.1 only lightly teases those.
+  M-11.3 = the delta + ANIM-11 personal dashboard.
+
+THE LOAD-BEARING THESIS
+  Baseline SPEED and QUALITY together. The documented AI-era risk is going faster while
+  getting sloppier, so a speed-only baseline flatters you. Two of the three metrics are
+  quality metrics on purpose.
+
+DOC-VERIFIED DEFINITIONS (2026-07-25, with the hedges kept honest)
+  CYCLE TIME (speed)
+   - DORA "lead time for changes" (the neighbouring, canonical metric): "The amount of
+     time it takes for a change to go from committed to version control to deployed in
+     production." (dora.dev/guides/dora-metrics-four-keys)
+   - "Cycle time" (tooling term, NOT a DORA metric): first commit -> released, subdivided
+     coding/pickup/review/deploy (linearb.io/blog/cycle-time). HEDGE: no single canonical
+     definition; start point varies by tool (first-commit vs ticket-start) -> module says
+     "as commonly defined by engineering-metrics tools" and tells students to fix one start
+     point so before/after are apples-to-apples.
+  ESCAPED DEFECTS (quality)
+   - "Defects that make it through your development and testing process and reach users in
+     production"; broader: "any defect found after the development team has declared the
+     work done." (plandek.com/blog/escaped-defects). HEDGE: reputable vendor, not a
+     standards body; "commonly defined as". NOT bugs caught in dev (those = process working).
+  REWORK / CHURN (quality)
+   - GitClear churn definition: "For a line to qualify as 'churned,' it must have been
+     authored, pushed to the git repo, and then reverted or substantially revised within
+     the subsequent two weeks." Abstract: churn = "the percentage of lines that are reverted
+     or updated less than two weeks after being authored."
+   - AI link (GitClear's measured figures): 2021=3.6%, 2022=4.0%, 2023=5.5%, 2024 projected
+     ~7.1%; "the rise of AI Assistants are strongly correlated with 'mistake code'."
+   - HEDGE (stated in-module): GitClear is a commercial analytics vendor, not peer-reviewed;
+     2024 is THEIR projection; correlation != causation (they say so). Cited as "GitClear's
+     analysis" and "the shape is the warning," never as law. Newer 2025/26 figures NOT quoted
+     (source 403'd; unverified).
+  VANITY-METRIC ANCHOR (light tease; M-11.2 owns the deep cut)
+   - SPACE paper (Forsgren/Storey/Maddila/Zimmermann/Houck/Butler, ACM Queue 2021), verbatim:
+     "productivity cannot be reduced to a single dimension (or metric!)"; "Even straightforward
+     metrics such as number of pull requests, commits, or code reviews are prone to errors...
+     [activity metrics] should never be used in isolation." (queue.acm.org/detail.cfm?id=3454124)
+   - Acceptance rate = engagement/adoption, not productivity (GitHub's framing; well-attested,
+     but no single pinned verbatim GitHub/DX sentence extracted today -> anchored on SPACE).
+  FRAMEWORK FRAMING (for M-11.2; one line each)
+   - SPACE: "satisfaction and well-being; performance; activity; communication and
+     collaboration; and efficiency and flow."
+   - DX Core 4: "speed, effectiveness, quality, and business impact." (getdx.com/research)
+  MEASUREMENT PITFALLS
+   - Hawthorne effect: "When individuals modify an aspect of their behaviour in response to
+     their awareness of being observed." (catalogofbias.org/biases/hawthorne-effect, Oxford CEBM).
+     Relevance: timing yourself briefly inflates your numbers until novelty fades.
+   - Small-n: stated in the module's own words (a solo, few-week baseline is a tiny non-random
+     sample; high variance; one hard bug skews it -> "directional, not precise"). No crisp
+     citable primary sentence found -> not quoted, hedged in prose.
+
+ILLUSTRATIONS (real course timings, framed honestly)
+  Used as "what a measured task looks like", NOT as the student's baseline (all course
+  timings are WITH-AI runs): 90s -> 24s (M-7.1, a repo question without vs with a
+  constitution) and 141s (M-10.5, issue -> PR). Module is explicit that the student's
+  baseline is THEIR task class, measured WITHOUT AI.
+
+VISUAL
+  SIM-20 "The Baseline Ledger": 3 clickable metric tiles (CYCLE TIME=speed cyan,
+  ESCAPED DEFECTS + REWORK=quality gold), each revealing IS / IS-NOT / WHY; sub + caption
+  carry the speed-vs-quality thesis, the same-task-class / n>=3 / Hawthorne discipline, and
+  the M-11.2 deferral.
+
+HONEST SCOPE
+  No live run (methodology module). Every definition doc-verified and dated; the GitClear
+  figures and the acceptance-rate position are hedged as vendor analysis / widely-held
+  framing rather than pinned law. Frameworks + vanity refuse-list deliberately deferred to M-11.2.

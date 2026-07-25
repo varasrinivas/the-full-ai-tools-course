@@ -988,6 +988,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim19 .s19pill.off{color:var(--faint)}
 .sim19 .s19cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim19 .s19cap b{color:var(--text);font-weight:500}
+.sim20{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim20 .s20head{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px;gap:10px}
+.sim20 .s20sub{font-size:10px;color:var(--dim);margin-bottom:12px;line-height:1.5}
+.sim20 .s20sub b{color:var(--text);font-weight:500}
+.sim20 .s20tiles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sim20 .s20tile{flex:1;min-width:130px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 10px;cursor:pointer;text-align:left;transition:border-color .2s}
+.sim20 .s20tile[aria-pressed="true"]{border-color:var(--gold)}
+.sim20 .s20tk{font-size:10.5px;color:var(--text);font-weight:600;display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.sim20 .s20dim{font-size:8px;letter-spacing:.06em;padding:1px 6px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim20 .s20dim.speed{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim20 .s20dim.quality{color:var(--gold);border-color:rgba(245,184,75,.45)}
+.sim20 .s20base{font-size:9px;color:var(--faint);margin-top:5px}
+.sim20 .s20detail{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:11px 13px;margin-bottom:10px}
+.sim20 .s20drow{display:grid;grid-template-columns:56px 1fr;gap:10px;margin-bottom:6px;font-size:10px;line-height:1.5}
+.sim20 .s20dlbl{font-size:8.5px;letter-spacing:.06em;color:var(--faint);text-align:right;padding-top:1px}
+.sim20 .s20is{color:var(--text)} .sim20 .s20is code{font-size:9px}
+.sim20 .s20not{color:var(--dim)}
+.sim20 .s20why{color:var(--dim)} .sim20 .s20why b{color:var(--text);font-weight:500}
+.sim20 .s20cap{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
+.sim20 .s20cap b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4205,6 +4225,63 @@ const MODS = [
       {q:'The live run stopped before pushing a real PR. How does the arc actually complete?',
        options:['It cannot be completed','Via M-10.4&rsquo;s handoff &mdash; <code>@claude</code> + the GitHub Action open the PR on your runners, or Copilot&rsquo;s cloud agent on GitHub&rsquo;s &mdash; so it becomes issue &rarr; pipeline &rarr; remote PR &rarr; your review','You merge without review','The agent deploys it directly'], answer:1}
     ]
+  },
+  {
+    id:'M-11.1', path:'eng', track:'T-11', title:'Your baseline', minutes:35,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The pre-treatment vitals. No clinician claims a drug worked without the reading they took <em>before</em> the first dose &mdash; and they chart the outcome that matters (did the patient recover?), not a proxy (did they swallow more pills?). A productivity baseline is the same discipline pointed at yourself: a set of before-readings taken in week one, on the outcomes you actually care about, so that when you re-measure with the full toolkit there is an honest number to compare against &mdash; instead of a vendor&rsquo;s slide or a feeling that you are faster.',
+      body:
+        '<p><strong>You cannot claim a delta without a before.</strong> Every &ldquo;AI made me 40% faster&rdquo; you have read is either someone else&rsquo;s number or a feeling. This whole track exists to replace both with <em>your</em> measured delta &mdash; and a delta needs two readings. Week one, before you lean on the toolkit, you capture the baseline; T-11 closes (M-11.3) by re-running the same work with everything you&rsquo;ve learned and subtracting. The vendors&rsquo; numbers are marketing; the only figure that can change how <em>you</em> work is one you took yourself.</p>' +
+        '<p><strong>Measure three things &mdash; one for speed, two for quality &mdash; and the pairing is the whole point.</strong> <b>Cycle time</b> is your speed: how long a change takes from first commit to merged and running (DORA&rsquo;s neighbouring metric, &ldquo;lead time for changes,&rdquo; is <em>&ldquo;the amount of time it takes for a change to go from committed to version control to deployed in production&rdquo;</em>). <b>Escaped defects</b> and <b>rework</b> are your quality: a defect that reached review, QA, or production after you called the work done; and code you <em>&ldquo;reverted or substantially revised within&rdquo;</em> about two weeks of committing it &mdash; the &ldquo;wrote it, un-wrote it&rdquo; churn signal. Speed alone will flatter you, because the documented risk of AI assistance is going faster while getting sloppier.</p>' +
+        '<p><strong>That risk is not hypothetical, which is why quality is in the baseline.</strong> GitClear&rsquo;s analysis of millions of changed lines found code churn <em>rising in step with AI adoption</em> &mdash; roughly 3.6% of lines churned in 2021, 5.5% by 2023, with a projection past 7%. Treat the exact figures as one vendor&rsquo;s analysis, not law (correlation is not causation, and they say so) &mdash; but the shape is the warning: a tool can lift your cycle time and raise your rework at the same time, and a baseline that only timed you would call that a win. If you capture just one number, capture cycle time; if you want the truth, capture all three.</p>' +
+        '<p><strong>How to take an honest reading.</strong> Pick one <em>repeatable</em> task class &mdash; &ldquo;fix a reported bug,&rdquo; &ldquo;add a small endpoint,&rdquo; &ldquo;review a teammate&rsquo;s PR&rdquo; &mdash; and measure that same class both times, because comparing a hard bug against an easy one tells you nothing. Aim for at least a few instances (n&ge;3); a solo, few-week baseline is a tiny sample with high variance, so treat it as <em>directional, not precise</em>. And beware the <b>Hawthorne effect</b> &mdash; <em>&ldquo;when individuals modify an aspect of their behaviour in response to their awareness of being observed&rdquo;</em> &mdash; the simple act of timing yourself will briefly make you look faster until the novelty fades. This course has been timing its own work all along (a repo question answered in <b>90s without a constitution and 24s with one</b>; an issue driven to a PR in <b>141s</b>); those are what real readings look like &mdash; yours will be about <em>your</em> task class.</p>' +
+        '<p><strong>And a word on what <em>not</em> to write down.</strong> Lines of code, an AI &ldquo;acceptance rate,&rdquo; &ldquo;percent of code written by AI&rdquo; &mdash; these feel like productivity and are not; the SPACE researchers are blunt that <em>&ldquo;productivity cannot be reduced to a single dimension (or metric!),&rdquo;</em> and that activity counts <em>&ldquo;should never be used in isolation.&rdquo;</em> M-11.2 takes those apart properly (DORA, SPACE, DX Core 4, and the vanity metrics to refuse). For now the job is small and concrete: this week, before the toolkit does the work for you, write down your cycle time, your escaped defects, and your rework for one task class &mdash; the two readings that will, at the end of this track, become the only productivity number you actually own.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-20'},
+    labA:{
+      title:'Capture your week-1 baseline',
+      steps:[
+        'Choose ONE repeatable task class you do often &mdash; e.g. fix a reported bug, add a small endpoint, or review a PR. Write it down; you will measure this same class again in M-11.3.',
+        'For the next handful of instances (aim n&ge;3), log three numbers each: <b>cycle time</b> (first commit &rarr; merged &amp; running), <b>escaped defects</b> (bugs found after you called it done), and <b>rework</b> (did you revert or substantially rewrite this within ~2 weeks?). A simple table or spreadsheet is enough.',
+        'Do this <em>before</em> you reach for the toolkit on that task class &mdash; this is the no-AI reading. Note the date and keep the log somewhere M-11.3 can find it.',
+        'Sanity-check your own numbers: are you accidentally timing keystrokes instead of delivery? Did you write down a vanity metric (lines, acceptance rate)? Cross those out &mdash; M-11.2 explains why. And expect a mild Hawthorne bump; do not over-read week one.',
+        'Success: a dated baseline log for one task class with cycle time, escaped defects, and rework for at least three instances &mdash; the before-reading M-11.3 subtracts from.'
+      ]
+    },
+    labB:{
+      title:'The same baseline, tool-agnostic',
+      steps:[
+        'This module is about <em>you</em>, not a tool &mdash; so the baseline is captured the same way whichever assistant you use later. If your team already has an engineering-metrics tool (LinearB, DX, Swarmia, or GitHub&rsquo;s own), note where it reports cycle time and change-failure/rework so you can corroborate your hand log.',
+        'Confirm the tool&rsquo;s cycle-time <em>start point</em> (first commit vs ticket-start) so your before and after use the same definition &mdash; an apples-to-apples delta depends on it.',
+        'Success: your hand-logged baseline plus a note on where a tool reports the same metrics, using one consistent definition.'
+      ]
+    },
+    labC:{
+      title:'Corroborate and commit to the method',
+      steps:[
+        'Pick a second task class as a control if you can &mdash; measuring two classes guards against one weird week skewing your whole conclusion.',
+        'Write the rule this module exists for: <em>you cannot claim a delta without a before-reading; measure speed (cycle time) and quality (escaped defects, rework) together, because AI can move them in opposite directions; keep the same task class, treat a small solo baseline as directional not precise, and refuse the vanity metrics.</em>',
+        'Success: at least one dated baseline (ideally two task classes), the method written down, and a calendar note to re-run it in M-11.3.'
+      ]
+    },
+    checklist:[
+      'I chose one repeatable task class and will measure the same class again later.',
+      'I logged cycle time, escaped defects, and rework &mdash; speed and quality together.',
+      'I captured the reading BEFORE leaning on the toolkit for that class.',
+      'I aimed for n&ge;3 and treat the result as directional, not precise.',
+      'I did not record a vanity metric (lines, acceptance rate) as productivity.'
+    ],
+    quiz:[
+      {q:'Why capture a baseline at all, before adopting the toolkit?',
+       options:['To satisfy your manager','Because you <b>cannot claim a delta without a before-reading</b> &mdash; a vendor&rsquo;s number or a feeling isn&rsquo;t yours; only two of your own readings, before and after, prove what changed','Baselines are required by DORA','So you can stop measuring later'], answer:1},
+      {q:'The module says to measure three things. Why include escaped defects and rework, not just cycle time?',
+       options:['To make the log longer','Because AI can make you <b>faster while quality degrades</b> (rework/churn has been observed rising with AI adoption) &mdash; a speed-only baseline would call that a win; you measure speed and quality <em>together</em>','Quality is easier to measure','Cycle time is unreliable'], answer:1},
+      {q:'What is &ldquo;rework&rdquo; as a baseline metric?',
+       options:['Any code you write twice','Code <b>reverted or substantially revised within ~2 weeks</b> of committing it &mdash; the churn signal that catches &ldquo;wrote it, un-wrote it&rdquo;, not the healthy volume of new code','Refactoring old code on purpose','Lines deleted in review'], answer:1},
+      {q:'Why treat a personal, few-week baseline as directional rather than precise?',
+       options:['Because measurement is pointless','It is a tiny, non-random sample with high variance and confounds (one hard bug skews it), and the <b>Hawthorne effect</b> &mdash; changing behaviour because you&rsquo;re observing yourself &mdash; briefly inflates it','Because AI tools are inaccurate','Because cycle time can&rsquo;t be measured solo'], answer:1}
+    ]
   }
 ];
 
@@ -6331,6 +6408,53 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-20 · The Baseline Ledger (spec: VISUALS.md) ----------
+   Three metric tiles (click to reveal is / is-not / why), split SPEED vs QUALITY.
+   Definitions doc-verified 2026-07-25 (DORA lead-time; LinearB cycle-time; GitClear
+   churn "reverted or substantially revised within ~2 weeks", rising with AI; Plandek
+   escaped-defect; Hawthorne effect from Oxford CEBM). The load-bearing point: baseline
+   quality alongside speed, because AI can speed you up while rework gets worse. */
+VISUALS['SIM-20'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const METRICS = [
+    { k:'cycle', name:'CYCLE TIME', dim:'speed', base:'baseline: median hours, first-commit → merged',
+      is:'The time a change takes from <b>first commit to merged &amp; running</b> (a tooling term; DORA&rsquo;s &ldquo;lead time for changes&rdquo; is commit&rarr;production). Record the median for one task class.',
+      not:'NOT typing time, and NOT lines-per-hour &mdash; those measure motion, not delivery.',
+      why:'Speed is the number everyone expects AI to move. Capture it &mdash; but never <em>alone</em>.' },
+    { k:'defects', name:'ESCAPED DEFECTS', dim:'quality', base:'baseline: count per task class that reached review/QA/prod',
+      is:'A bug found <b>after you called the work done</b> &mdash; in review, QA, or production (commonly defined). Count them per task class.',
+      not:'NOT bugs you caught in development &mdash; those are the process <em>working</em>, not a defect metric.',
+      why:'A change can ship faster and be more wrong. Escaped defects are the &ldquo;more wrong&rdquo;.' },
+    { k:'rework', name:'REWORK / CHURN', dim:'quality', base:'baseline: % of lines revised/reverted within ~2 weeks',
+      is:'Code <b>reverted or substantially revised within ~2 weeks</b> of being committed (GitClear&rsquo;s churn definition) &mdash; the &ldquo;wrote it, un-wrote it&rdquo; signal.',
+      not:'NOT the total volume of change &mdash; lots of new code can be healthy; churned code is the tell.',
+      why:'GitClear&rsquo;s analysis found churn <b>rising with AI adoption</b> (&asymp;3.6% in 2021 &rarr; 5.5% in 2023). This is the metric that catches &ldquo;faster but sloppier&rdquo; &mdash; the exact trap a speed-only baseline hides.' },
+  ];
+  let open = 'rework';
+  function render(){
+    mount.innerHTML =
+      '<div class="sim20" aria-label="The baseline ledger: three metrics to capture before AI">' +
+        '<div class="s20head"><span>SIM-20 · THE BASELINE LEDGER</span><span>WEEK 1 · NO AI</span></div>' +
+        '<div class="s20sub">You cannot claim a delta without a <b>before</b>-reading. Capture these three for one repeatable task class now; M-11.3 re-runs it <em>with</em> the toolkit and computes your delta. Measure <b>speed and quality together</b>.</div>' +
+        '<div class="s20tiles">' + METRICS.map(m =>
+          '<button class="s20tile" type="button" data-k="' + m.k + '" aria-pressed="' + (open===m.k) + '">' +
+            '<span class="s20tk">' + m.name + '<span class="s20dim ' + m.dim + '">' + m.dim.toUpperCase() + '</span></span>' +
+            '<span class="s20base">' + m.base + '</span>' +
+          '</button>').join('') + '</div>' +
+        (function(){ const m = METRICS.find(x=>x.k===open); return m ?
+          '<div class="s20detail">' +
+            '<div class="s20drow"><span class="s20dlbl">IS</span><span class="s20is">' + m.is + '</span></div>' +
+            '<div class="s20drow"><span class="s20dlbl">IS NOT</span><span class="s20not">' + m.not + '</span></div>' +
+            '<div class="s20drow"><span class="s20dlbl">WHY</span><span class="s20why">' + m.why + '</span></div>' +
+          '</div>' : ''; })() +
+        '<div class="s20cap">What to notice: two of the three are <b>quality</b> metrics on purpose &mdash; the AI-era risk is going faster while rework climbs, so a speed-only baseline flatters you. Keep the same task class, aim for n&ge;3, and remember the <b>Hawthorne effect</b> (measuring yourself briefly inflates your numbers). Frameworks (DORA/SPACE/DX) and the vanity metrics to refuse are M-11.2.</div>' +
+      '</div>';
+    mount.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => { open = b.dataset.k; render(); }));
+  }
+  render();
+  if(reduce){ /* detail already shown for one metric; static is fine */ }
 };
 
 /* ---------- SIM-19 · The Team & the Quality Gate (spec: VISUALS.md) ----------
