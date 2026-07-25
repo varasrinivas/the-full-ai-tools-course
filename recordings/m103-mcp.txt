@@ -1,0 +1,95 @@
+M-10.3 — MCP servers (connect a payer-policy lookup MCP; enterprise allowlists)
+Live artifact: a real stdio MCP server (payer-policy) built with the official SDK,
+connected to Claude Code, and QUERIED live headless — plus the allowlist proven to
+gate it. Recorded 2026-07-25, claude 2.1.220.
+Standalone server dir scratchpad/m103-mcp (deleted after; teaching repo untouched).
+
+WHAT THE MODULE TEACHES
+  MCP (Model Context Protocol) connects an agent to an OUTSIDE tool or data source.
+  The domain hook is real: priorauth-api's payer coverage rules are HARD-CODED in
+  EligibilityService.COVERED — an MCP server externalises them, so the agent QUERIES
+  the policy (as it would a live payer service) instead of the code embedding it.
+  Then: enterprise allowlists — how an org controls which MCP servers/tools are usable.
+
+DOC VERIFICATION (code.claude.com/docs mcp.md / mcp-quickstart.md / headless.md /
+permissions.md, 2026-07-25, exact quotes)
+  - Add: `claude mcp add <name> -- <command> [args...]` (stdio default);
+    `claude mcp add --transport http <name> <url>`. Scopes: local (~/.claude.json),
+    project (.mcp.json at repo root, shared), user (~/.claude.json top-level mcpServers).
+    "Pass --scope user ... or --scope project to share it with teammates."
+  - .mcp.json shape (stdio): {"mcpServers":{"<name>":{"type":"stdio","command":"npx",
+    "args":[...],"env":{}}}}.
+  - Transports: "Stdio transport — Uses standard input/output streams ... Streamable
+    HTTP transport — Uses HTTP POST ... with optional Server-Sent Events." SSE deprecated;
+    `streamable-http` is an alias for `http`.
+  - Namespacing (verbatim): "MCP tools are exposed to Claude as mcp__<server>__<tool>."
+    (Our tool: mcp__payer-policy__lookup_payer_policy — the hyphen in the server name is
+    preserved; the allowlist string matched it exactly.)
+  - Permissions: allow/deny patterns mcp__<server> (whole server), mcp__<server>__<tool>,
+    mcp__<server>__* (wildcard); deny ["mcp__*"] blocks all MCP tools.
+    Project enable settings (enableAllProjectMcpServers / enabledMcpjsonServers) are
+    "ignored in an untrusted folder."
+  - ENTERPRISE (verbatim): "allowManagedMcpServersOnly — When true, only allowedMcpServers
+    from managed settings are respected. deniedMcpServers still merges from all sources."
+    claude.ai org connector controls: a tool set to "blocked" is "filtered out before
+    Claude sees it"; "ask" prompts every call.
+  - Headless: `--mcp-config <file-or-json>` passes servers; `--allowedTools
+    "mcp__server__tool"` pre-approves. "dontAsk denies anything not in your
+    permissions.allow rules." Whether `-p` AUTO-loads .mcp.json = NOT documented -> TESTED.
+  - Minimal SDK server (verified pattern): import { McpServer } from
+    '@modelcontextprotocol/sdk/server/mcp.js'; import { StdioServerTransport } from
+    '.../server/stdio.js'; server.registerTool(name,{description,inputSchema:{...zod}},
+    async handler=>({content:[{type:'text',text}]})); await server.connect(new StdioServerTransport()).
+
+THE SERVER  (payer-policy-server.js, @modelcontextprotocol/sdk + zod, ESM)
+  new McpServer({name:'payer-policy',version:'1.0.0'}).registerTool('lookup_payer_policy',
+  {inputSchema:{payer:z.string(), cptCode:z.string()}}, handler) over StdioServerTransport.
+  Data mirrors EligibilityService.COVERED: MERIDIAN={97110,29881}, NORTHSTAR={97110,70553,29881};
+  returns {covered, reasonCode, reasonText} with PA reason codes CPT-001 (malformed CPT),
+  PAYER-001 (unknown payer), CPT-002 (not covered).
+  Connected via mcp-config.json: {"mcpServers":{"payer-policy":{"type":"stdio","command":
+  "node","args":["<abs>/payer-policy-server.js"]}}}.
+
+LIVE RUN 1 — TOOL ALLOWED  (`claude -p "... does MERIDIAN cover CPT 97110? ... 70553? ...
+  give each with its reason code." --mcp-config mcp-config.json --allowedTools
+  "mcp__payer-policy__lookup_payer_policy"`)
+  Result: the agent CALLED the MCP tool and returned:
+    97110 -> Covered, reasonCode none (null)
+    70553 -> NOT covered, reasonCode CPT-002 "Procedure not covered by payer"
+  Both match EligibilityService ground truth EXACTLY (MERIDIAN covers 97110/29881, not
+  70553). The agent even noted "the covered result returns reasonCode: null — the tool
+  only emits a reason code on denials", a detail it could only have from the tool's real
+  JSON output -> proof the tool was actually invoked, not recalled.
+  => ANSWERS THE UNDOCUMENTED QUESTION: `claude -p` loads an MCP server via --mcp-config
+     and calls its tool headless, given --allowedTools. Verified, not assumed.
+
+LIVE RUN 2 — TOOL NOT ALLOWLISTED (enterprise-control beat)  (same query,
+  --mcp-config mcp-config.json --permission-mode dontAsk, NO --allowedTools)
+  Result: the tool call was BLOCKED. Agent: "the tool call was blocked ... permission was
+  denied because Claude Code is running in 'don't ask' mode, which auto-denies MCP tool
+  calls that aren't pre-allowlisted." And crucially it REFUSED TO GUESS: "I won't guess at
+  the coverage answer — a payer/CPT coverage determination is exactly the kind of thing
+  that shouldn't come from my recollection." It named the fix: add
+  "mcp__payer-policy__lookup_payer_policy" to permissions.allow.
+  => The allowlist is the control surface: an org decides which MCP tools an agent may
+     call (per-tool mcp__server__tool, whole-server mcp__server__*, or managed
+     allowManagedMcpServersOnly + allowedMcpServers). Ties to M-1.6's decision boundary:
+     denied the tool, the agent does NOT fabricate a coverage determination.
+
+THE LESSON
+  1. An MCP server is how the agent reaches OUTSIDE its context — a tool/data source it
+     calls, exposed as mcp__<server>__<tool>. Build one with the SDK (one registerTool +
+     a stdio transport), wire it with .mcp.json or `claude mcp add`, scope it local/project/user.
+  2. Externalising the payer policy is the point: the rule that was hard-coded in
+     EligibilityService becomes a queryable service — update the policy without touching
+     the app, and every tool/agent asks the same source of truth.
+  3. The allowlist is governance: allow/deny by tool or server; enterprise managed settings
+     can restrict to an approved server list (allowManagedMcpServersOnly). Proven live —
+     un-allowlisted = blocked, and a well-behaved agent refuses to guess the answer.
+  Honest scope: built + run on stdio locally; HTTP/remote transports and OAuth are named
+  and doc-quoted but not exercised this session (no /mcp OAuth in non-interactive mode).
+
+HYGIENE
+  Standalone server dir scratchpad/m103-mcp deleted after. No teaching-repo change (the
+  payer-policy externalisation is taught as a pattern; EligibilityService is left as-is so
+  the T-05/T-06 plants and the "policy lives in code" starting point are intact).

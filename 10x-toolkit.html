@@ -1061,6 +1061,24 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim29 .a29cap b{color:var(--text);font-weight:500}
 .anim29 .a29replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim29 .a29replay:hover{border-color:var(--gold)}
+.anim30{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim30 .a30head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim30 .a30lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim30 .a30lname{font-size:10px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.anim30 .a30row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim30 .a30row.on{opacity:1;transform:none}
+.anim30 .a30key{font-size:9px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap;font-family:var(--mono)}
+.anim30 .a30key.g{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.anim30 .a30key.green{border-color:#3E9A6B;color:#3E9A6B}
+.anim30 .a30key.red{border-color:var(--s10red,#d0705a);color:var(--s10red,#d0705a)}
+[data-theme="light"] .anim30 .a30key.green{color:#2d7350;border-color:#2d7350}
+.anim30 .a30out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim30 .a30out b{color:var(--text);font-weight:500}
+.anim30 .a30out code{font-size:9px}
+.anim30 .a30cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim30 .a30cap b{color:var(--text);font-weight:500}
+.anim30 .a30replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim30 .a30replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -3979,6 +3997,63 @@ const MODS = [
       {q:'The pre-commit gate blocked a commit even though the agent itself wasn&rsquo;t allowed to run the tests. How?',
        options:['It guessed','The hook runs the tests in its own process, independent of the agent&rsquo;s permissions &mdash; that is why a gate (deterministic code on the event) is stronger than asking the agent to check','It skipped the tests','It read a cached result'], answer:1}
     ]
+  },
+  {
+    id:'M-10.3', path:'eng', track:'T-10', title:'MCP servers', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The formulary terminal on the desk of every prior-auth reviewer. It is not part of your chart software and it is not knowledge the reviewer memorised &mdash; it is a live line to the payer&rsquo;s own coverage database, and when a reviewer needs to know whether MERIDIAN covers a code, they <em>query it</em>. The payer updates the policy on their end; every reviewer&rsquo;s next lookup reflects it, with no software release. And the hospital decides which terminals are wired to which databases &mdash; that wiring is a governance decision, not a personal one. MCP is that terminal for an agent: a standard socket into an outside tool or data source, that the org controls.',
+      body:
+        '<p><strong>An MCP server is how an agent reaches outside its own context.</strong> The Model Context Protocol is a standard socket: a small server exposes <em>tools</em> (and data), and Claude Code calls them. The tools show up to the model under a predictable namespace &mdash; the docs are exact: <em>&ldquo;MCP tools are exposed to Claude as <code>mcp__&lt;server&gt;__&lt;tool&gt;</code>.&rdquo;</em> You wire a server with <code>claude mcp add &lt;name&gt; -- &lt;command&gt;</code> or a <code>.mcp.json</code> file, at one of three scopes: <b>local</b> (just you, this project), <b>project</b> (a <code>.mcp.json</code> checked in for the team), or <b>user</b> (all your projects). Transports are <b>stdio</b> for a local process and <b>streamable-http</b> for a remote one.</p>' +
+        '<p><strong>The point, in this domain: stop hard-coding the policy.</strong> priorauth-api&rsquo;s payer rules live baked into <code>EligibilityService.COVERED</code> &mdash; change a payer&rsquo;s coverage and you edit and redeploy the app. So we built a <code>payer-policy</code> MCP server: one <code>registerTool(\'lookup_payer_policy\')</code> over a stdio transport, its data mirroring the repo&rsquo;s real rules. Now the coverage rule is a <em>queryable service</em>, the shape a real payer feed would take. Connected headless with <code>--mcp-config</code>, the agent called <code>mcp__payer-policy__lookup_payer_policy</code> and answered from the tool, not its memory: MERIDIAN / 97110 &rarr; <b>covered</b>; MERIDIAN / 70553 &rarr; <b>CPT-002, not covered</b> &mdash; matching <code>EligibilityService</code> exactly, down to the reason code. (It even noticed the covered case returns a null reason code &mdash; a detail only the tool&rsquo;s real output carries, which is how you know the tool actually ran.)</p>' +
+        '<p><strong>Building one is genuinely small.</strong> The official SDK (<code>@modelcontextprotocol/sdk</code>) is the whole job: <code>new McpServer({name, version})</code>, one <code>registerTool(name, {description, inputSchema}, handler)</code> whose handler returns <code>{content:[{type:\'text\', text}]}</code>, then <code>server.connect(new StdioServerTransport())</code>. The <code>description</code> is the matching surface, exactly like a skill&rsquo;s (M-9.1): write it in the words a user would use (&ldquo;does payer X cover CPT Y&rdquo;) so the model reaches for the tool. That is the entire server &mdash; a data source and a socket.</p>' +
+        '<p><strong>The allowlist is the governance, and it is not optional in a regulated shop.</strong> An MCP tool is an outside connection, so who may call it is a decision the org makes, not the agent. Proven live: run the same query with the tool <em>not</em> allowlisted under <code>dontAsk</code> and the call is <b>denied</b> &mdash; and a well-behaved agent does the right thing, refusing to invent an answer: <em>&ldquo;I won&rsquo;t guess at the coverage answer &mdash; a payer/CPT coverage determination is exactly the kind of thing that shouldn&rsquo;t come from my recollection.&rdquo;</em> That is M-1.6&rsquo;s decision boundary, enforced by the allowlist. You grant by tool (<code>mcp__payer-policy__lookup_payer_policy</code>), by whole server (<code>mcp__payer-policy__*</code>), or deny across the board (<code>mcp__*</code>); and at enterprise scale, managed settings can set <code>allowManagedMcpServersOnly</code> with an <code>allowedMcpServers</code> list so only approved servers connect at all.</p>' +
+        '<p><strong>Two honest edges.</strong> First, project <code>.mcp.json</code> enable-settings are <em>&ldquo;ignored in an untrusted folder&rdquo;</em> and there is no OAuth prompt in non-interactive mode &mdash; a cloned repo&rsquo;s servers do not silently light up, which is a feature. Second, we built and ran on <b>stdio</b> locally; HTTP/remote servers and their OAuth are real and doc-named but not exercised here &mdash; verify those in your environment before you lean on them. The through-line for T-10: a slash command invokes your ritual, a hook enforces your rule, and an MCP server connects your world &mdash; each with an allowlist deciding who may. M-10.4 takes this off your laptop entirely: cloud and background agents.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-30'},
+    labA:{
+      title:'Build and connect the payer-policy MCP — Claude Code',
+      steps:[
+        'Write a minimal stdio server with <code>@modelcontextprotocol/sdk</code>: <code>new McpServer(&hellip;)</code>, one <code>registerTool(\'lookup_payer_policy\', {description, inputSchema:{payer, cptCode}}, handler)</code> returning <code>{content:[{type:\'text\', text}]}</code>, then <code>connect(new StdioServerTransport())</code>. Put the real coverage table in it (mirror <code>EligibilityService.COVERED</code>). Write the <code>description</code> in the user&rsquo;s words so the model reaches for it.',
+        'Wire it: <code>claude mcp add payer-policy -- node payer-policy-server.js</code>, or a <code>.mcp.json</code> with <code>{"mcpServers":{"payer-policy":{"type":"stdio","command":"node","args":["&hellip;"]}}}</code>. Confirm the tool appears as <code>mcp__payer-policy__lookup_payer_policy</code>.',
+        'Query it: ask &ldquo;does MERIDIAN cover 97110? 70553?&rdquo;. Reference: 97110 covered, 70553 CPT-002 &mdash; matching the app. Headless, allow it with <code>--allowedTools "mcp__payer-policy__lookup_payer_policy"</code> and pass <code>--mcp-config</code>. Verify the answer came from the tool (the reason codes, the null-on-covered detail), not from memory.',
+        'Now the governance half: run the same query with the tool NOT allowlisted (<code>--permission-mode dontAsk</code>). Reference: the call is denied and the agent refuses to guess the coverage answer. Then allow it by tool, and try the whole-server form <code>mcp__payer-policy__*</code> and a blanket <code>deny: ["mcp__*"]</code>.',
+        'Success: a working stdio MCP server, a live query answered from the tool matching the app, and the allowlist demonstrated both ways &mdash; plus one line on when you would scope it project vs user, and where enterprise <code>allowManagedMcpServersOnly</code> fits.'
+      ]
+    },
+    labB:{
+      title:'MCP with Copilot',
+      steps:[
+        'Connect the same stdio server in Copilot (VS Code supports MCP servers; check your version for the config location and the tool-approval UI). Ask the same payer/CPT question and confirm it calls the tool.',
+        'Find where Copilot governs MCP tools &mdash; the per-tool allow/ask/block control &mdash; and set the payer-policy tool to require approval, the analogue of labA&rsquo;s allowlist.',
+        'Success: the same server answering in Copilot, and one line on how Copilot&rsquo;s MCP tool governance compares to Claude&rsquo;s allow/deny rules.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the MCP rule',
+      steps:[
+        'Connect the server in Cursor (it supports MCP servers via its own config; verify the current form in your version). Run the payer/CPT query.',
+        'Write the rule this module exists for: <em>put outside tools and live data behind an MCP server rather than baking them into the app; expose one well-described tool per job under <code>mcp__&lt;server&gt;__&lt;tool&gt;</code>; and treat the allowlist as governance &mdash; in a regulated domain the org decides which servers and tools an agent may call, and a denied agent must not fabricate the answer.</em>',
+        'Success: the server connected in a third tool, the rule written, and one thing in your own codebase that is hard-coded today and would be better as an MCP-queried service.'
+      ]
+    },
+    checklist:[
+      'My server exposes one well-described tool and connects over stdio.',
+      'The tool appears as <code>mcp__&lt;server&gt;__&lt;tool&gt;</code> and the model calls it on a natural question.',
+      'A live query answered from the tool and matched the app&rsquo;s real policy.',
+      'With the tool un-allowlisted the call was denied &mdash; and the agent did not guess.',
+      'I can name the enterprise control (<code>allowManagedMcpServersOnly</code> + an approved server list).'
+    ],
+    quiz:[
+      {q:'How are an MCP server&rsquo;s tools exposed to the model, and how do you allow just one?',
+       options:['As plain tool names; you can&rsquo;t scope them','As <code>mcp__&lt;server&gt;__&lt;tool&gt;</code> &mdash; so you allow one with <code>mcp__payer-policy__lookup_payer_policy</code>, a whole server with <code>mcp__payer-policy__*</code>, or deny all with <code>mcp__*</code>','Only through a GUI','They are always allowed'], answer:1},
+      {q:'Why move the payer coverage rule out of <code>EligibilityService</code> into an MCP server?',
+       options:['It runs faster','It becomes a <b>queryable service</b> &mdash; the policy can change on the server without editing and redeploying the app, and every agent asks the same source of truth','MCP is required by Java','To hide the rule'], answer:1},
+      {q:'Run un-allowlisted under <code>dontAsk</code>, the payer-policy tool call was denied. What did the agent correctly NOT do?',
+       options:['It edited the allowlist itself','It did <b>not</b> guess the coverage answer &mdash; a payer/CPT determination shouldn&rsquo;t come from the model&rsquo;s memory (M-1.6&rsquo;s decision boundary), so it reported the block instead','It crashed','It called a different tool'], answer:1},
+      {q:'What is the enterprise-level control over which MCP servers an agent may use?',
+       options:['There is none','Managed settings can set <code>allowManagedMcpServersOnly</code> with an <code>allowedMcpServers</code> list, so only approved servers connect (and <code>deniedMcpServers</code> merges from all sources)','Only the individual user decides','You must uninstall servers to block them'], answer:1}
+    ]
   }
 ];
 
@@ -6337,6 +6412,46 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-30 · The MCP Connection (spec: VISUALS.md) ----------
+   Abstract staged diagram. Lane 1 = what an MCP server is + how it's wired (config,
+   scopes, transports, mcp__server__tool namespacing). Lane 2 = the REAL live results
+   (recordings/m103-mcp.txt): the payer-policy tool call matching EligibilityService,
+   and the allowlist blocking it under dontAsk. MCP doc-verified 2026-07-25. */
+VISUALS['ANIM-30'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim30" aria-label="Connecting an MCP server and gating it with an allowlist">' +
+      '<div class="a30head"><span>ANIM-30 · THE MCP CONNECTION</span>' +
+        '<button class="a30replay" data-a30replay>REPLAY &#9656;</button></div>' +
+      '<div class="a30lane">' +
+        '<div class="a30lname">AN OUTSIDE TOOL, CONNECTED</div>' +
+        '<div class="a30row"><span class="a30key g">server</span><span class="a30out"><code>payer-policy</code> &mdash; one <code>registerTool(lookup_payer_policy)</code> over a stdio transport (the SDK + a data source)</span></div>' +
+        '<div class="a30row"><span class="a30key">wire it</span><span class="a30out"><code>claude mcp add</code> or <code>.mcp.json</code> &mdash; scope <b>local</b> / <b>project</b> (shared) / <b>user</b></span></div>' +
+        '<div class="a30row"><span class="a30key">transport</span><span class="a30out"><b>stdio</b> (local process) · <b>streamable-http</b> (remote); SSE deprecated</span></div>' +
+        '<div class="a30row"><span class="a30key">tools</span><span class="a30out">exposed to Claude as <code>mcp__&lt;server&gt;__&lt;tool&gt;</code> &mdash; here <code>mcp__payer-policy__lookup_payer_policy</code></span></div>' +
+      '</div>' +
+      '<div class="a30lane">' +
+        '<div class="a30lname">THE LIVE CALL, AND THE ALLOWLIST &mdash; REAL RESULTS</div>' +
+        '<div class="a30row"><span class="a30key green">allowed</span><span class="a30out">agent calls the tool: MERIDIAN / 97110 &rarr; <b>covered</b>; MERIDIAN / 70553 &rarr; <b>CPT-002</b> not covered &mdash; matching <code>EligibilityService</code> exactly (headless via <code>--mcp-config</code>)</span></div>' +
+        '<div class="a30row"><span class="a30key red">blocked</span><span class="a30out">un-allowlisted under <code>dontAsk</code>: the call is <b>denied</b> &mdash; and the agent <b>refuses to guess</b> the coverage answer (M-1.6&rsquo;s decision boundary)</span></div>' +
+        '<div class="a30row"><span class="a30key g">govern</span><span class="a30out">allow/deny <code>mcp__server__*</code> or a single tool; enterprise <code>allowManagedMcpServersOnly</code> + <code>allowedMcpServers</code> restrict to approved servers</span></div>' +
+      '</div>' +
+      '<div class="a30cap">What to notice: the payer rule that was <b>hard-coded in <code>EligibilityService</code></b> becomes a <b>queryable service</b> &mdash; update the policy without touching the app, and the allowlist decides which agents may ask.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a30row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*470)));
+    timers.push(setTimeout(play, 300 + rows.length*470 + 5000));
+  }
+  mount.querySelector('[data-a30replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-29 · The Hook Lifecycle (spec: VISUALS.md) ----------
