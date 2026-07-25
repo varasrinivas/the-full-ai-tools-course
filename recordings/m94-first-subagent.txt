@@ -1,0 +1,102 @@
+M-9.4 — Your first subagent (read-only PA-domain code-review subagent)
+Live artifact: a real .claude/agents/pa-reviewer.md, three runs measured.
+Recorded 2026-07-25, claude 2.1.220. Disposable clone of priorauth-api on branch
+drill/m94-subagent (deleted after; teaching repo untouched, BUG-API-xx plants intact).
+
+WHAT THE MODULE TEACHES
+  A subagent is the ISOLATION primitive (M-9.3's third role): it runs in its own
+  context window, has its own tools, and returns only a result. This module builds
+  the first real one — a read-only reviewer that checks priorauth-api against the
+  signed PA domain rules — and measures three things: (1) delegation is not automatic
+  headless; (2) an explicitly-invoked subagent reviews in its own context and returns
+  a compact verdict (isolation); (3) read-only tool scoping is a hard capability
+  boundary — the reviewer cannot edit even when told to, even in acceptEdits.
+
+DOC VERIFICATION (code.claude.com/docs/en/sub-agents.md, 2026-07-25, exact quotes)
+  - Location: project ".claude/agents/" ("check them into version control so your
+    team can use and improve them"); user "~/.claude/agents/".
+  - Frontmatter: name (required), description (required, "When Claude should delegate
+    to this subagent"), tools ("Tools the subagent can use. Inherits every tool
+    available to subagents if omitted."), disallowedTools, model ("Defaults to inherit"),
+    permissionMode, plus maxTurns/skills/mcpServers/hooks/memory/background/isolation/...
+  - READ-ONLY scoping (the module's crux): set tools to an allowlist of read tools.
+    The docs' OWN code-reviewer example uses `tools: Read, Grep, Glob, Bash` and is
+    described as "a focused subagent with limited tool access that excludes Edit and Write."
+    We used `tools: Read, Grep, Glob` (no Bash) — pure read-only.
+  - Proactive delegation: "To encourage proactive delegation, include phrases like
+    'use proactively' in your subagent's description field."
+  - Explicit invocation, three escalating patterns: natural language (name it, "Claude
+    decides whether to delegate"); @-mention ("guarantees the subagent runs for one
+    task"); session-wide `--agent <name>` ("the main thread itself takes on that
+    subagent's system prompt, tool restrictions, and model").
+  - Isolation / the benefit: "Use one when a side task would flood your main
+    conversation with search results, logs, or file contents you won't reference again:
+    the subagent does that work in its own context and returns only the summary."
+    "Preserve context by keeping exploration and implementation out of your main conversation."
+  - /agents (v2.1.198+) "no longer opens the interactive creation wizard ... create
+    files directly in .claude/agents/." Task tool renamed Agent in v2.1.63 (Task still aliases).
+  - HEADLESS + project subagent auto-delegation: NOT documented explicitly — so we
+    tested it (Run 1) rather than asserting it.
+
+THE SUBAGENT  (.claude/agents/pa-reviewer.md)
+  frontmatter: name: pa-reviewer; description names the triggers + "Use PROACTIVELY...
+  Reviews only — it never edits."; tools: Read, Grep, Glob; model: inherit.
+  body: system prompt with the 4 signed PA rules and a MANDATORY output format
+  (PA DOMAIN REVIEW ... ) ending in the marker line "Review complete (pa-reviewer subagent)."
+  — so, like the M-9.1 skill, firing is DETECTABLE.
+  Rules encoded: (1) threshold INCLUSIVE, `>=` correct, strict `>` is a defect;
+  (2) the decision may say yes alone but never no alone (score -> AUTO_APPROVED or
+  MANUAL_REVIEW only; DENIED only from eligibility policy or a human); (3) history is
+  advisory, must not gate; (4) CPT codes are 5 digits.
+
+RUN 1 — natural language, headless  (`claude -p "Review the auto-approve threshold ...
+  Is the comparison correct?"`)
+  Result: CORRECT answer, but the MAIN agent did it itself — "Confirmed by reading the
+  file directly" — and there was NO marker line. So delegation did NOT happen; the
+  subagent never ran. Same probe discipline as M-9.2: apparent success is not proof the
+  mechanism fired; without the marker you can't tell a delegated review from the main
+  agent reading the file. (It still caught BUG-API-01 and added edge-case notes — the
+  base model is good; that's exactly why the marker matters.)
+
+RUN 2 — explicit delegation  (`claude -p "Use the pa-reviewer subagent to review ..."`)
+  Result: DELEGATED. Output opened "The pa-reviewer found one violation and three passes."
+  The subagent read ApprovalService, EligibilityService, PriorAuthRequest and the test
+  file IN ITS OWN CONTEXT and returned a compact summary to the parent:
+    VIOLATION — Rule 1: line 99 `score > AUTO_APPROVE_THRESHOLD`; exactly-0.85 -> MANUAL_REVIEW,
+      contradicts the javadoc "INCLUSIVE (score >= 0.85 approves...)" and the line-101 log
+      that already prints ">="; no test pins 0.85.
+    PASS — score never auto-denies (DENIED only via eligibility ELIG-001/CPT-001/PAYER-001/CPT-002
+      or human REV-001); history advisory (deniedClaims>3 only logs); CPT `\d{5}`.
+  This is the isolation payoff: the parent context received the verdict, not the four
+  files' contents. That is the T-08 token argument (M-9.3's third role) shown live.
+
+RUN 3 — read-only proof  (`claude --agent pa-reviewer -p "Fix the threshold bug ... now."
+  --permission-mode acceptEdits`)
+  Running AS the read-only reviewer, under acceptEdits (which would auto-approve any edit),
+  explicitly told to FIX. Result: it did NOT — "I don't apply code changes — my role is
+  review only" — and emitted the exact enforced format + marker:
+    PA DOMAIN REVIEW
+    - file:line reviewed: .../ApprovalService.java:99
+    - rule checked: Rule 1 — THRESHOLD IS INCLUSIVE
+    - finding: VIOLATION
+    - evidence: line 99 `score > AUTO_APPROVE_THRESHOLD` ... contradicts the javadoc ...
+    - fix (describe, do not apply): change to `score >= AUTO_APPROVE_THRESHOLD`
+    Review complete (pa-reviewer subagent).
+  git diff EMPTY; line 99 unchanged. The tool scoping (no Edit/Write in `tools`) is a
+  HARD boundary — the reviewer physically has no editing tool, so "fix it" cannot land,
+  regardless of prompt or permission mode. Contrast with M-9.3: a hook DENIES an action;
+  read-only tool scoping means the capability was never granted in the first place.
+
+THE THREE-BEAT LESSON
+  1. Delegation is a choice, not a default — name the subagent (or @-mention / --agent)
+     when you need it; a detectable marker is how you KNOW it ran (probe discipline again).
+  2. A subagent reviews in its own window and returns a summary — that is the isolation
+     you buy: exploration stays out of the main conversation (docs, verbatim).
+  3. Least privilege is enforced by the tool list — a read-only reviewer cannot edit
+     even when told to; scoping is capability, not etiquette. Design the door, not the sign.
+  Bonus: the reviewer did a REAL domain review — one VIOLATION (the plant) + three PASSES —
+  not just bug-hunting; the value is that it checks the rules the domain turns on.
+
+HYGIENE
+  Disposable clone at scratchpad/m94-api, branch drill/m94-subagent, deleted after.
+  Teaching repo priorauth-api untouched (main, clean); no plant disturbed.

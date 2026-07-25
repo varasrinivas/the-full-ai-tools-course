@@ -937,6 +937,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim18 .s18pcode{font-size:10px;color:var(--text)}
 .sim18 .s18pnote{font-size:10px;color:var(--dim)}
 .sim18 .s18foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+.sim05{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim05 .s5head{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px;gap:10px}
+.sim05 .s5modes{display:flex;gap:6px}
+.sim05 .s5mb{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim05 .s5mb.on{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
+.sim05 .s5node{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:8px}
+.sim05 .s5parent{border-color:rgba(245,184,75,.45)}
+.sim05 .s5nrow{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.sim05 .s5name{font-size:10.5px;color:var(--text);font-weight:600;min-width:132px}
+.sim05 .s5name .s5role{display:block;font-size:9px;color:var(--dim);font-weight:400;letter-spacing:.04em}
+.sim05 .s5tag{font-size:8.5px;letter-spacing:.06em;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.sim05 .s5barwrap{flex:1;min-width:0}
+.sim05 .s5barlbl{font-size:8.5px;color:var(--faint);letter-spacing:.05em;margin-bottom:3px;display:flex;justify-content:space-between}
+.sim05 .s5bar{height:9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.sim05 .s5fill{height:100%;width:0;border-radius:999px;transition:width .7s ease}
+.sim05 .s5fill.par{background:linear-gradient(90deg,rgba(245,184,75,.5),var(--gold))}
+.sim05 .s5fill.child{background:linear-gradient(90deg,rgba(110,90,174,.5),var(--purple))}
+.sim05 .s5fill.flood{background:linear-gradient(90deg,rgba(208,112,90,.5),#d0705a)}
+.sim05 .s5kids{margin-left:20px;border-left:2px solid var(--line);padding-left:14px}
+.sim05 .s5kid{opacity:0;transform:translateY(4px);transition:opacity .4s ease,transform .4s ease}
+.sim05 .s5kid.on{opacity:1;transform:none}
+.sim05 .s5ret{font-size:9px;color:var(--purple);margin-top:2px;opacity:0;transition:opacity .4s ease}
+[data-theme="light"] .sim05 .s5ret{color:#5a4a92}
+.sim05 .s5kid.done .s5ret{opacity:1}
+.sim05 .s5cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.sim05 .s5cap b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -3531,6 +3557,63 @@ const MODS = [
       {q:'What is the honest limit of the regression-guard hook, shown when the agent noticed it could have nudged the constant instead of the operator?',
        options:['Hooks are slow','A hook is deterministic in that it always <em>runs</em>, but it only checks the predicate you wrote &mdash; a guardrail is only as good as what it inspects, so write the predicate carefully','Hooks cannot read file content','Hooks only work in Claude Code'], answer:1}
     ]
+  },
+  {
+    id:'M-9.4', path:'eng', track:'T-09', title:'Your first subagent', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The utilization-review nurse you send a complex case to. You hand over the file; they pull the payer&rsquo;s policy, the member&rsquo;s history, the coding guidelines &mdash; a whole desk of references you never see &mdash; and hand back one thing: a determination with the rule cited. You did not read the policy manual; their reading stayed on their desk. And their badge, by design, opens the review room and not the claims-adjustment terminal &mdash; they can <em>recommend</em> a denial, they cannot cut the cheque. The scope of the badge is the safety, and the fact that their pile of references never landed on your desk is the point.',
+      body:
+        '<p><strong>A subagent is the isolation role from M-9.3, made concrete.</strong> Drop a Markdown file in <code>.claude/agents/&lt;name&gt;.md</code> &mdash; YAML frontmatter (<code>name</code>, a <code>description</code> that says <em>when to delegate</em>, an optional <code>tools</code> list and <code>model</code>) over a body that is the agent&rsquo;s system prompt &mdash; and you have a specialist the main thread can hand work to. The docs name the moment to reach for one exactly: <em>&ldquo;use one when a side task would flood your main conversation with search results, logs, or file contents you won&rsquo;t reference again: the subagent does that work in its own context and returns only the summary.&rdquo;</em> That last clause is the whole value.</p>' +
+        '<p><strong>We built a real one: a read-only PA-domain reviewer.</strong> Its <code>tools</code> line is just <code>Read, Grep, Glob</code> &mdash; the docs&rsquo; own code-reviewer example scopes it this way precisely to &ldquo;exclude Edit and Write.&rdquo; Its body carries the four signed domain rules (the threshold is inclusive; the decision may say yes alone but never no alone; history is advisory; CPT codes are five digits) and a <b>mandatory output format ending in a marker line</b>, so &mdash; exactly like the M-9.1 skill &mdash; you can tell whether it actually ran. Then three runs measured what a subagent is and isn&rsquo;t.</p>' +
+        '<p><strong>Delegation is a choice, not a default &mdash; and the marker is how you know.</strong> Asked in plain language (<em>&ldquo;review the threshold, is the comparison correct?&rdquo;</em>), the headless main agent answered correctly &mdash; <em>&ldquo;confirmed by reading the file directly&rdquo;</em> &mdash; and produced <b>no marker</b>. It did the work itself; the subagent never ran. This is the M-9.2 probe discipline once more: a good answer is not proof the mechanism fired. Name it explicitly (<em>&ldquo;use the pa-reviewer subagent to&hellip;&rdquo;</em>) and it delegated: the reply opened <em>&ldquo;the pa-reviewer found one violation and three passes,&rdquo;</em> having read <code>ApprovalService</code>, <code>EligibilityService</code>, <code>PriorAuthRequest</code> and the test file <b>in its own window</b> and handed back a compact verdict. Your main context received the finding, not the four files &mdash; the T-08 token argument, paid for real.</p>' +
+        '<p><strong>Read-only is a capability boundary, not a polite request.</strong> The sharpest run: adopt the reviewer as the session agent (<code>--agent pa-reviewer</code>), tell it to <em>fix</em> the bug, and set <code>--permission-mode acceptEdits</code> so nothing would stop an edit. It still did not edit &mdash; <em>&ldquo;I don&rsquo;t apply code changes, my role is review only&rdquo;</em> &mdash; emitted the enforced PA DOMAIN REVIEW with its marker, and <code>git diff</code> stayed empty. Not because it chose to behave: because its tool list contains no <code>Edit</code> or <code>Write</code>, so the capability was never granted. Set this beside M-9.3: a hook <em>denies</em> an action at the gate; tool scoping means the action was never possible. Least privilege is the door you build, not the sign you hang.</p>' +
+        '<p><strong>What you actually get is a rules reviewer, not a bug hunter.</strong> The pa-reviewer returned one <b>VIOLATION</b> (the strict <code>&gt;</code> at the boundary, cited against the javadoc and the contradicting log line) and three <b>PASSES</b> &mdash; it confirmed the score path can never auto-deny, that history stays advisory, and that CPT stays five digits. That is the difference between &ldquo;find bugs&rdquo; and &ldquo;check the rules the domain turns on&rdquo;: a scoped specialist audits the whole contract every time, in its own context, and cannot wander off and start editing. M-9.5 takes exactly this reviewer and fans out three of them &mdash; controller, service, repository &mdash; at once.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-05'},
+    labA:{
+      title:'Build a read-only reviewer and prove it ran — Claude Code',
+      steps:[
+        'Create <code>.claude/agents/pa-reviewer.md</code>. Frontmatter: <code>name</code>, a <code>description</code> that says when to delegate (include &ldquo;use proactively&rdquo; and &ldquo;reviews only, never edits&rdquo;), <code>tools: Read, Grep, Glob</code> (no Edit/Write &mdash; that is the whole safety), <code>model: inherit</code>. Body: your signed domain rules and a <b>mandatory output format ending in a marker line</b> so firing is detectable.',
+        'Test delegation the honest way. First ask in plain language and watch what happens &mdash; reference: the main agent answered correctly but produced <em>no marker</em>, so it never delegated. Then name it: <em>&ldquo;use the pa-reviewer subagent to review the threshold decision.&rdquo;</em> Reference: it delegated and returned &ldquo;one violation and three passes.&rdquo; The marker is the difference between knowing and guessing.',
+        'Prove the isolation: note that the subagent read several files but only a summary came back to your main thread. That is the reason to use one &mdash; exploration stays out of your conversation (and off your bill).',
+        'Prove read-only is real, not etiquette: run <code>claude --agent pa-reviewer -p "fix the bug now" --permission-mode acceptEdits</code>. Reference: it refused to edit and <code>git diff</code> stayed empty &mdash; because its tool list grants no Edit/Write. Least privilege is enforced by the door, not the sign.',
+        'Success: a checked-in read-only reviewer, a delegated run with a marker, one line on what isolation saved you, and a demonstration that the scoped agent cannot edit even when told to under acceptEdits.'
+      ]
+    },
+    labB:{
+      title:'The same reviewer — Copilot',
+      steps:[
+        'Define a custom agent as a <code>.agent.md</code> file. When Copilot delegates to it, the runtime runs it &ldquo;as a sub-agent &mdash; in an isolated context&rdquo; (the same isolation idea). Encode the same PA rules and the same marker-ended output format.',
+        'Scope it to review-only by limiting its tools (exclude edit tools), the Copilot analogue of labA&rsquo;s <code>tools: Read, Grep, Glob</code>. Delegate the threshold review and confirm the marker.',
+        'Success: a Copilot sub-agent that reviews the same rules in an isolated context and cannot edit, plus one line on where its definition lives versus Claude Code&rsquo;s.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the least-privilege rule',
+      steps:[
+        'Build the same reviewer as a Cursor subagent &mdash; they &ldquo;start with a clean context&rdquo; and have &ldquo;their own context window,&rdquo; the same isolation you proved in labA. Restrict its tools to read-only and run the threshold review.',
+        'Write the rule this module exists for: <em>a subagent is for isolation &mdash; its own context, its own tools; delegate to it deliberately (a marker tells you it ran); and scope it to least privilege, because a read-only reviewer that has no edit tool cannot edit even when told to.</em>',
+        'Success: the three tools&rsquo; subagent mechanisms located, the least-privilege rule written, and one honest note on a task in your week you would hand to a scoped reviewer to keep your main context clean.'
+      ]
+    },
+    checklist:[
+      'My reviewer lives in <code>.claude/agents/</code> and its <code>tools</code> line grants only read tools.',
+      'A plain-language ask did <em>not</em> reliably delegate &mdash; I saw the missing marker.',
+      'Naming the subagent delegated it, and the marker proved it ran.',
+      'I can state the isolation benefit: it read several files, my main thread got only the summary.',
+      'Told to fix under <code>acceptEdits</code>, it could not edit &mdash; because it has no Edit/Write tool.'
+    ],
+    quiz:[
+      {q:'What makes a subagent worth using instead of just asking the main agent?',
+       options:['It is always faster','<b>Isolation</b> &mdash; it does the side work (reading many files, logs) in its own context window and returns only a summary, keeping your main conversation and bill lean','It can use tools the main agent cannot','It never makes mistakes'], answer:1},
+      {q:'In plain language the headless agent reviewed the code correctly but produced no marker line. What does that tell you?',
+       options:['The subagent ran silently','The subagent did <em>not</em> run &mdash; the main agent did the work itself; a correct answer is not proof of delegation, which is why a detectable marker matters','The marker feature is broken','Delegation always fails headless'], answer:1},
+      {q:'Told to fix the bug under <code>--permission-mode acceptEdits</code>, the read-only reviewer still did not edit and <code>git diff</code> stayed empty. Why?',
+       options:['It decided the fix was risky','Its <code>tools</code> list grants no Edit or Write, so the capability was never there &mdash; scoping is a hard boundary, not a request the model may honour','acceptEdits was ignored','It edited a different file'], answer:1},
+      {q:'How does read-only tool scoping differ from the hook in M-9.3?',
+       options:['They are the same','A hook <em>denies</em> an attempted action at the gate; tool scoping means the action was never possible because the tool was never granted &mdash; design the door, not the sign','Scoping is slower','Hooks cannot be read-only'], answer:1}
+    ]
   }
 ];
 
@@ -5571,6 +5654,85 @@ VISUALS['ANIM-08'] = function(mount, opts){
    12 PA tasks vs the four rungs of ANIM-18's ladder. Agent-rung rationales
    carry the recorded $0.89/9-turn envelope; card 6's answer (13 rows) is
    repo canon. One contested card accepts either defended pick. */
+/* ---------- SIM-05 · Subagent Org Chart (spec: VISUALS.md) ----------
+   Delegate: parent spawns three read-scoped children, each fills its OWN context
+   bar and returns a summary; the parent bar stays lean. No-subagents: the parent
+   bar floods (all that reading lands in the main context). Bars are schematic (the
+   isolation MECHANISM, not a token measurement); the foot carries the one real
+   measured result from recordings/m94-first-subagent.txt. Shared M-9.4 / M-9.5. */
+VISUALS['SIM-05'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const KIDS = [
+    {name:'pa-reviewer', role:'read-only · service rules', lvl:72, ret:'&#8617; returns: 1 violation + 3 passes'},
+    {name:'test-writer', role:'read-only · boundary tests', lvl:54, ret:'&#8617; returns: 0.85 test missing'},
+    {name:'security-scan', role:'read-only · PHI &amp; secrets', lvl:83, ret:'&#8617; returns: no PHI in logs'}
+  ];
+  const PAR_LEAN = 24, PAR_FLOOD = 94;
+  mount.innerHTML =
+    '<div class="sim05" aria-label="Subagent org chart: delegate vs no subagents">' +
+      '<div class="s5head"><span>SIM-05 · SUBAGENT ORG CHART</span>' +
+        '<span class="s5modes">' +
+          '<button class="s5mb on" type="button" data-mode="delegate">DELEGATE</button>' +
+          '<button class="s5mb" type="button" data-mode="solo">NO SUBAGENTS</button>' +
+        '</span></div>' +
+      '<div class="s5node s5parent">' +
+        '<div class="s5nrow"><span class="s5name">MAIN THREAD<span class="s5role">your conversation</span></span>' +
+          '<span class="s5barwrap"><span class="s5barlbl"><span>main context</span><span data-parpct>lean</span></span>' +
+            '<span class="s5bar"><span class="s5fill par" data-parfill></span></span></span>' +
+        '</div></div>' +
+      '<div class="s5kids" data-kids>' + KIDS.map((k,i) =>
+        '<div class="s5node s5kid" data-kid="' + i + '">' +
+          '<div class="s5nrow"><span class="s5name">' + k.name + '<span class="s5role">' + k.role + '</span></span>' +
+            '<span class="s5tag">own context window</span></div>' +
+          '<div class="s5nrow"><span class="s5barwrap"><span class="s5barlbl"><span>reads in its own window</span><span></span></span>' +
+            '<span class="s5bar"><span class="s5fill child" data-kidfill="' + i + '"></span></span></span></div>' +
+          '<div class="s5ret">' + k.ret + '</div>' +
+        '</div>').join('') + '</div>' +
+      '<div class="s5cap" data-cap></div>' +
+    '</div>';
+  const parFill = mount.querySelector('[data-parfill]');
+  const parPct = mount.querySelector('[data-parpct]');
+  const kidsWrap = mount.querySelector('[data-kids]');
+  const cap = mount.querySelector('[data-cap]');
+  const kidEls = [...mount.querySelectorAll('.s5kid')];
+  const CAP_DELEGATE = 'What to notice: each child reads in its <b>own</b> context and returns only a summary &mdash; the main bar stays lean. Real run: the read-only <b>pa-reviewer</b> returned <b>1 violation + 3 passes</b> and could not edit even when told to (recordings/m94-first-subagent.txt).';
+  const CAP_SOLO = 'What to notice: with no subagents, every file the work touches lands in the <b>main</b> context &mdash; the bar floods, and you carry all of it, every turn (the T-08 bill). Isolation is what keeps it lean.';
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function setMode(mode){
+    mount.querySelectorAll('.s5mb').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    stop();
+    if(mode === 'solo'){
+      kidsWrap.style.display = 'none';
+      kidEls.forEach(k => { k.classList.remove('on','done'); });
+      parFill.className = 's5fill flood';
+      cap.innerHTML = CAP_SOLO;
+      const flood = () => { parFill.style.width = PAR_FLOOD + '%'; parPct.textContent = 'flooded'; };
+      if(reduce) flood(); else { parFill.style.width = '0'; timers.push(setTimeout(flood, 60)); }
+      return;
+    }
+    // delegate
+    kidsWrap.style.display = '';
+    parFill.className = 's5fill par';
+    cap.innerHTML = CAP_DELEGATE;
+    kidEls.forEach(k => k.classList.remove('on','done'));
+    KIDS.forEach((k,i) => mount.querySelector('[data-kidfill="' + i + '"]').style.width = '0');
+    if(reduce){
+      parFill.style.width = PAR_LEAN + '%'; parPct.textContent = 'lean';
+      kidEls.forEach((k,i) => { k.classList.add('on','done'); mount.querySelector('[data-kidfill="' + i + '"]').style.width = KIDS[i].lvl + '%'; });
+      return;
+    }
+    parFill.style.width = '0'; parPct.textContent = 'lean';
+    timers.push(setTimeout(() => { parFill.style.width = PAR_LEAN + '%'; }, 500));
+    kidEls.forEach((k,i) => {
+      timers.push(setTimeout(() => { k.classList.add('on'); mount.querySelector('[data-kidfill="' + i + '"]').style.width = KIDS[i].lvl + '%'; }, 300 + i*550));
+      timers.push(setTimeout(() => { k.classList.add('done'); }, 300 + i*550 + 800));
+    });
+  }
+  mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  setMode('delegate');
+};
+
 /* ---------- SIM-18 · Three Primitives, One Job Each (spec: VISUALS.md) ----------
    Route nine PA needs to skill / hook / subagent, then a proof strip carrying
    the real measured with-hook vs control result (recordings/m93-skill-hook-subagent.txt):
