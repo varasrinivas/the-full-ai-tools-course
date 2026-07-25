@@ -1162,6 +1162,27 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim32 .a32cap b{color:var(--text);font-weight:500}
 .anim32 .a32replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim32 .a32replay:hover{border-color:var(--gold)}
+.anim11{--a11green:#3E9A6B;--a11red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .anim11{--a11green:#2d7350;--a11red:#B0503C}
+.anim11 .a11head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim11 .a11g{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:10px 12px;margin-bottom:8px}
+.anim11 .a11top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.anim11 .a11name{font-size:10.5px;color:var(--text);font-weight:600}
+.anim11 .a11dir{font-size:8px;letter-spacing:.05em;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.anim11 .a11nums{font-size:9.5px;color:var(--dim)}
+.anim11 .a11nums .a11to{color:var(--text);font-weight:600}
+.anim11 .a11track{position:relative;height:9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.anim11 .a11fill{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:999px;transition:width 1.1s ease}
+.anim11 .a11fill.good{background:linear-gradient(90deg,rgba(62,154,107,.5),var(--a11green))}
+.anim11 .a11fill.bad{background:linear-gradient(90deg,rgba(208,112,90,.5),var(--a11red))}
+.anim11 .a11delta{font-size:9px;margin-top:4px}
+.anim11 .a11delta.good{color:var(--a11green)} .anim11 .a11delta.bad{color:var(--a11red)}
+.anim11 .a11verdict{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 12px;font-size:10px;color:var(--dim);line-height:1.5;margin-top:2px}
+.anim11 .a11verdict b{color:var(--text);font-weight:500}
+.anim11 .a11cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.anim11 .a11cap b{color:var(--text);font-weight:500}
+.anim11 .a11replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim11 .a11replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -4363,6 +4384,63 @@ const MODS = [
       {q:'What does DORA mean by &ldquo;AI amplifies what&rsquo;s already there&rdquo;?',
        options:['AI makes code louder','AI doesn&rsquo;t fix a team &mdash; strong practices (tests, version control, feedback loops) turn AI&rsquo;s speed into a gain, while weak practices let the extra change volume intensify existing problems','It only helps large teams','Amplification is a hardware term'], answer:1}
     ]
+  },
+  {
+    id:'M-11.3', path:'eng', track:'T-11', title:'Your delta', minutes:35,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The re-test at the end of the training block. You took your baseline lifts in week one; now you run the <em>exact same</em> test with everything you&rsquo;ve trained and read the full chart on the wall &mdash; not the one number that went up. A heavier lift with a wrecked knee is not progress, and a faster cycle time with rising rework is not a win. The delta is only real when the whole panel says so.',
+      body:
+        '<p><strong>Re-run the same task class &mdash; the sameness is the measurement.</strong> Take the class you baselined in M-11.1 (&ldquo;fix a reported bug,&rdquo; &ldquo;add a small endpoint&rdquo;) and do it again, now with the full toolkit: the instruction files, the workflows, the agents. Measure the same three things &mdash; cycle time, escaped defects, rework &mdash; and subtract. If you change the task class, or the definition of cycle time, or who&rsquo;s doing it, you are measuring noise, not a delta. This is the payoff the whole track was built for: not a vendor&rsquo;s number and not a feeling, but your before and your after on the same ruler.</p>' +
+        '<p><strong>Read the panel, not the number &mdash; and this is where it bites.</strong> Almost everyone&rsquo;s cycle time drops; that is the easy, expected half, and on its own it is a trap. The 2025 DORA finding is now <em>personal</em>: AI lifts your throughput while pressing <em>down</em> on stability, so the honest question is not &ldquo;am I faster?&rdquo; but &ldquo;am I faster <em>and</em> is my rework flat or down?&rdquo; If your cycle time fell 60% and your rework doubled, you did not get a 60% win &mdash; you got the amplifier, and the delta to celebrate is negative. A win is a speed gain <b>with the quality metrics holding</b>. That is the entire reason M-11.1 made you log three numbers instead of one.</p>' +
+        '<p><strong>Read your own delta honestly.</strong> It is still a small, non-random sample, so treat it as <em>directional</em>. Two confounds to name out loud: you also just got <em>better at the task</em> over these weeks, independent of any tool, and the Hawthorne bump from M-11.1 may have faded into complacency &mdash; the after can be understated as easily as the before was inflated. Attribute carefully, claim modestly, and trust the shape (faster, quality held) more than the exact percentage.</p>' +
+        '<p><strong>Then improve it deliberately &mdash; and the order is the whole playbook.</strong> When your delta is smaller than you hoped, reach for the levers in this order, cheapest and highest-leverage first. <b>Instruction files first</b>: a signed CLAUDE.md / AGENTS.md is the release valve &mdash; T-07 measured a single question going from <b>90 seconds without a constitution to 24 with one</b>, and the recommendation flipping from bug to policy, for the cost of 36 lines. <b>Then workflows</b>: encode your repeated rituals as slash commands and enforce your rules as hooks (T-10) so the good procedure runs the same way every time. <b>Then agents</b>: subagents, skills, and fan-out (T-09) are the heaviest tool &mdash; powerful, but you reach for them <em>after</em> the constitution and the workflows are in place, not instead of them. Most teams invert this, buy the fleet first, and wonder why the delta is thin.</p>' +
+        '<p><strong>What you walk away with.</strong> One number that is actually yours: a before-and-after panel on a task class you own, read honestly, with the confounds named and the quality metrics kept in view. That is the only productivity claim in this whole space that can survive a skeptic &mdash; because you can show the ruler. And a playbook for moving it: instruction files, then workflows, then agents. That closes the measurement track; T-12 is the graduate arc, where you put the entire toolkit to work on a real feature, end to end.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-11'},
+    labA:{
+      title:'Compute your delta and read the panel',
+      steps:[
+        'Re-run your M-11.1 task class with the full toolkit. Keep everything else the same &mdash; same class, same cycle-time definition, same person &mdash; so the only variable is the toolkit. Aim for the same n as your baseline.',
+        'Fill the panel: cycle time, escaped defects, and rework, before &rarr; after. Compute each delta. Reference the shape in ANIM-11 (an example: cycle 90s&rarr;24s), but your gauges use your own numbers.',
+        'Apply the M-11.2 test before you celebrate: did quality <em>hold</em>? A cycle-time drop with rising rework or escaped defects is the amplifier, not a win. Only claim the speed gain if the quality metrics are flat or better.',
+        'Name your confounds in one line each: how much of the after is the toolkit vs you simply getting better at the task, and whether a faded Hawthorne effect understated it. Claim modestly &mdash; the shape, not the exact percent.',
+        'Success: a dated before/after panel for one task class, the quality check applied, and one honest sentence attributing the delta.'
+      ]
+    },
+    labB:{
+      title:'Build your improvement playbook',
+      steps:[
+        'Pick the <em>next</em> lever in order, not the flashiest. If you don&rsquo;t have a signed instruction file for this repo yet, that is almost always the highest-leverage move (T-07) &mdash; do it first and re-measure.',
+        'Only once instruction files and a couple of workflows (a slash command, a hook &mdash; T-10) are in place should you invest in agents (T-09). Write down which lever you are on and what you expect it to move on the panel.',
+        'Success: a one-page playbook ordered instruction-files &rarr; workflows &rarr; agents, with the next concrete step chosen and a metric you expect it to change.'
+      ]
+    },
+    labC:{
+      title:'Make the delta defensible',
+      steps:[
+        'Assemble the evidence a skeptic would demand: the task class, the same-ruler definition, n, the three-metric panel before/after, and your confound note. If you can show the ruler, the number survives.',
+        'Write the rule this module &mdash; and the track &mdash; exists for: <em>re-run the same task class, read the whole panel not one number (a speed gain only counts if quality held), treat a small solo delta as directional and name your confounds; then improve deliberately &mdash; instruction files first, then workflows, then agents.</em>',
+        'Success: a defensible personal delta you could show in a review, the rule written, and your ordered playbook for the next quarter.'
+      ]
+    },
+    checklist:[
+      'I re-ran the SAME task class with the same cycle-time definition &mdash; only the toolkit changed.',
+      'I filled the whole panel (cycle time, escaped defects, rework) before &rarr; after.',
+      'I applied the quality check: a speed gain only counts if rework/defects held.',
+      'I named my confounds (skill growth, faded Hawthorne) and claimed modestly.',
+      'My improvement playbook is ordered: instruction files &rarr; workflows &rarr; agents.'
+    ],
+    quiz:[
+      {q:'When you re-run your baseline task class to compute the delta, what must stay the same?',
+       options:['Nothing &mdash; just go faster','The task class, the metric definitions, and the person &mdash; so the only variable is the toolkit; change any of those and you&rsquo;re measuring noise, not a delta','The exact wall-clock time','The AI model version'], answer:1},
+      {q:'Your cycle time dropped 60% but your rework doubled. What is the honest read?',
+       options:['A 60% productivity win','<b>Not a win</b> &mdash; a speed gain with rising rework is the amplifier (M-11.2); a delta only counts when the <b>quality metrics hold</b>, which is why you logged three numbers, not one','Ship it &mdash; speed is what matters','Rework doesn&rsquo;t count'], answer:1},
+      {q:'Why treat your personal delta as directional and name your confounds?',
+       options:['To be modest for its own sake','It&rsquo;s a small non-random sample, and you also got better at the task independent of AI while a faded Hawthorne effect can understate the after &mdash; so trust the <b>shape</b> (faster, quality held), not the exact percentage','Because AI metrics are fake','Confounds don&rsquo;t exist in software'], answer:1},
+      {q:'What is the order of the improvement playbook, and why that order?',
+       options:['Agents first &mdash; they&rsquo;re the most powerful','<b>Instruction files, then workflows, then agents</b> &mdash; cheapest and highest-leverage first (a 36-line constitution took a task from 90s to 24s); you reach for the heavy agent fleet only after the constitution and workflows are in place','Whatever the vendor recommends','Random &mdash; order doesn&rsquo;t matter'], answer:1}
+    ]
   }
 ];
 
@@ -6837,6 +6915,51 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-11 · Personal Delta Dashboard (spec: VISUALS.md) ----------
+   Gauges animate from week-1 baseline to final-week values (cycle time, rework,
+   tests-per-feature). Example fills (cycle time 90s->24s is the course's own real
+   M-7.1 anchor; rework/tests are illustrative) — the student's own logged numbers
+   replace them. The verdict drives the M-11.2 lesson: a win only if the PANEL held. */
+VISUALS['ANIM-11'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const G = [
+    {name:'CYCLE TIME', dir:'lower', base:90, final:24, unit:'s', max:100, note:'first commit &rarr; merged'},
+    {name:'REWORK', dir:'lower', base:8, final:6, unit:'%', max:12, note:'reverted/revised &lt;2 wks &mdash; watch this one'},
+    {name:'TESTS / FEATURE', dir:'higher', base:2, final:6, unit:'', max:8, note:'the T-06 discipline'},
+  ];
+  const good = g => g.dir==='lower' ? g.final < g.base : g.final > g.base;
+  const pct = g => Math.round((g.final - g.base)/g.base*100);
+  mount.innerHTML =
+    '<div class="anim11" aria-label="Personal delta dashboard: baseline to final across the panel">' +
+      '<div class="a11head"><span>ANIM-11 · YOUR DELTA &mdash; READ THE PANEL</span>' +
+        '<button class="a11replay" data-a11replay>REPLAY &#9656;</button></div>' +
+      G.map((g,i) =>
+        '<div class="a11g">' +
+          '<div class="a11top"><span class="a11name">' + g.name + ' <span class="a11dir">' + (g.dir==='lower'?'&darr; better':'&uarr; better') + '</span></span>' +
+            '<span class="a11nums">' + g.base + g.unit + ' &rarr; <span class="a11to">' + g.final + g.unit + '</span></span></div>' +
+          '<div class="a11track"><span class="a11fill ' + (good(g)?'good':'bad') + '" data-fill="' + i + '"></span></div>' +
+          '<div class="a11delta ' + (good(g)?'good':'bad') + '">' + (pct(g)>0?'+':'') + pct(g) + '% &mdash; ' + g.note + '</div>' +
+        '</div>').join('') +
+      '<div class="a11verdict" data-verdict></div>' +
+      '<div class="a11cap">What to notice: this is an <b>example</b> panel (cycle 90s&rarr;24s is the course&rsquo;s own M-7.1 measurement; the rest illustrative) &mdash; your gauges use <b>your</b> logged baseline&rarr;final. Improvement playbook, in order: <b>instruction files first</b> (cheapest, highest leverage), <b>then workflows</b>, <b>then agents</b>.</div>' +
+    '</div>';
+  const verdict = mount.querySelector('[data-verdict]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function setW(g,i,val){ mount.querySelector('[data-fill="'+i+'"]').style.width = Math.round(val/g.max*100) + '%'; }
+  function play(){
+    stop();
+    const panelHeld = good(G[1]); // rework did not rise
+    verdict.innerHTML = '<b>Verdict: a win &mdash; because the panel held.</b> Cycle time fell ' + Math.abs(pct(G[0])) + '% <em>and</em> rework did not rise. A speed gain with <em>rising</em> rework would be the amplifier (M-11.2), not a win &mdash; so you read all three, never just the fast one.';
+    if(reduce){ G.forEach((g,i)=>setW(g,i,g.final)); return; }
+    G.forEach((g,i)=>setW(g,i,g.base)); // start at baseline
+    timers.push(setTimeout(()=>{ G.forEach((g,i)=>setW(g,i,g.final)); }, 400)); // animate to final
+    timers.push(setTimeout(play, 400 + 1100 + 4500));
+  }
+  mount.querySelector('[data-a11replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-32 · Issue to PR (spec: VISUALS.md) ----------
