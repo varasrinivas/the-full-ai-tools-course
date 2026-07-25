@@ -1,0 +1,74 @@
+M-10.5 — The full workflow (issue -> plan -> branch -> build -> test -> PR, agent-driven)
+Live artifact: ONE headless invocation drove the whole pipeline end to end on a
+disposable priorauth-api clone, producing a real branch, a green build, a commit, and
+a PR-ready artifact — every claim verified against the repo afterward.
+Recorded 2026-07-25, claude 2.1.220. Disposable clone scratchpad/m105-api (deleted
+after; teaching repo untouched, BUG-API plants intact).
+
+WHAT THE MODULE TEACHES (the T-10 synthesis / close-out)
+  Everything in T-10 composes into one agent-driven pipeline:
+    a slash command (M-10.1) or the Claude GitHub Action (M-10.4) KICKS it ->
+    Plan Mode (T-03) PLANS it -> the agent branches + BUILDS it ->
+    a pre-commit hook (M-10.2) GATES the commit -> an MCP server (M-10.3) can SUPPLY
+    live policy -> the output is a reviewable PR (M-10.4 cloud/Action opens it).
+  The human's job shifts from typist to REVIEWER: you read a diff and a PR, you don't
+  watch code being typed. The live run proves the spine; each tool was proven in its own module.
+
+THE "ISSUE" (ISSUE.md, committed as the starting point)
+  "Report the manual-review queue depth" — a small ADDITIVE feature: add a method to an
+  existing service returning the count of PriorAuthRequest in MANUAL_REVIEW, via
+  PriorAuthRequestRepo (add a derived countByStatus if needed), + a mocked-repo unit test;
+  keep it minimal; don't touch unrelated code or any planted-bug file.
+
+LIVE RUN  (`claude -p "<7-step orchestration: plan / branch feat/queue-depth / implement /
+  test / build+test green / commit / write PR.md; don't push>" --dangerously-skip-permissions`)
+  141s, one invocation. The agent reported a 7-row step table; ALL of it verified true
+  against the repo afterward:
+   1 PLAN  — 3 files (repo query, service method, unit test).
+   2 BRANCH— feat/queue-depth off lab/start-m105 (git confirms).
+   3 IMPLEMENT — PriorAuthRequestRepo.countByStatus(RequestStatus) [derived query] +
+     ApprovalService.manualReviewQueueDepth() [@Transactional(readOnly=true)].
+   4 TEST  — ApprovalServiceTest: mocks the repo to return 7L, asserts the service returns 7L.
+   5 BUILD/TEST — GREEN: 32 tests, 0 failures, 0 errors (`./mvnw test -Dtest='*ServiceTest,*ControllerTest'`;
+     honestly noted the 2 Testcontainers tests were skipped per the no-Docker constraint).
+   6 COMMIT — 6088d14 "Report the manual-review queue depth", 3 files, +14 lines, PURELY ADDITIVE
+     (git show --stat: 14 insertions, 0 deletions).
+   7 PR.md — a real PR artifact: title, summary, the ApprovalService-owns-the-queue rationale,
+     a Changes section (incl. "no @EntityGraph; a count query touches no associations"), a test plan.
+  ARCHITECTURE JUDGMENT (unscripted): chose ApprovalService for the method "because it already
+  owns the queue — it routes below-threshold requests into MANUAL_REVIEW and drains it via
+  resolveManualReview." A real design call, not a mechanical placement.
+  PLANT DISCIPLINE + INSIGHT (unscripted, the best beat): it found BUG-API-01 on its own
+  ("ApprovalService.java:99 uses score > ... while the Javadoc says inclusive ... a score of
+  exactly 0.85 routes to manual review"), DELIBERATELY did not touch it, AND connected it to
+  the feature: "the queue depth this feature reports will be inflated by any exactly-at-threshold
+  requests." Offered to fix it on a separate branch. Verified: line 99 still `>` — plant intact.
+
+VERIFICATION (every headline claim checked against the clone, not just trusted)
+  git branch = feat/queue-depth; git log = 6088d14 on top of the issue commit; git show --stat
+  = 3 files / +14 / -0; grep confirms countByStatus + manualReviewQueueDepth present; line 99
+  still `score > AUTO_APPROVE_THRESHOLD` (plant untouched); PR.md present and substantive.
+
+WHERE IT STOPPED (honest boundary)
+  Deliberately did NOT `git push` or `gh pr create` / trigger the Action — the teaching repo
+  stays clean and the PR body is the artifact. That final push->PR step is exactly M-10.4's
+  shape: `@claude` / the Claude Action opens the PR on your runners, or Copilot's cloud agent
+  on GitHub's. So the full arc is: this pipeline (proven) + the M-10.4 remote handoff (proven
+  there) = issue to merged PR.
+  Also: the pre-commit test GATE (M-10.2) and the payer-policy MCP (M-10.3) were NOT re-wired
+  into this run (each proven live in its own module); the module composes them as the pipeline's
+  gate and policy source, and the run demonstrates the end-to-end SPINE that they slot into.
+  (Ran under --dangerously-skip-permissions precisely because there was no hook to observe here —
+  the M-10.2 lesson: don't use skip-permissions when you want a hook to fire.)
+
+THE LESSON
+  An agent can carry a unit of work from a written intent to a reviewable PR without a human
+  at the keyboard for the middle — plan, branch, build, test-to-green, commit, PR. Your leverage
+  is (1) a clear issue/spec at the front, (2) the gates and policy wired in (hook, MCP, allowlist)
+  so the agent can't cut a corner you care about, and (3) a diff + PR to review at the end. T-10 in
+  one sentence: encode the ritual, enforce the rule, connect the world, choose where it runs — then
+  let the pipeline turn an issue into a PR you sign.
+
+HYGIENE
+  Disposable clone scratchpad/m105-api deleted after. Teaching repo priorauth-api untouched
+  (main, clean); every BUG-API plant intact (the agent found BUG-API-01 and left it).

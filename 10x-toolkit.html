@@ -1099,6 +1099,24 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim31 .a31cap b{color:var(--text);font-weight:500}
 .anim31 .a31replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim31 .a31replay:hover{border-color:var(--gold)}
+.anim32{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim32 .a32head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim32 .a32lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px}
+.anim32 .a32row{display:grid;grid-template-columns:78px 1fr auto;align-items:baseline;gap:10px;margin-bottom:7px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim32 .a32row.on{opacity:1;transform:none}
+.anim32 .a32row.plant{border-top:1px dashed var(--line);padding-top:7px;margin-top:2px}
+.anim32 .a32step{font-size:9.5px;letter-spacing:.08em;color:var(--gold);font-weight:600}
+.anim32 .a32row.plant .a32step{color:var(--s10red,#d0705a)}
+.anim32 .a32out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim32 .a32out b{color:var(--text);font-weight:500}
+.anim32 .a32out code{font-size:9px}
+.anim32 .a32tool{font-size:8px;letter-spacing:.05em;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.anim32 .a32green{color:#3E9A6B}
+[data-theme="light"] .anim32 .a32green{color:#2d7350}
+.anim32 .a32cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.anim32 .a32cap b{color:var(--text);font-weight:500}
+.anim32 .a32replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim32 .a32replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -4130,6 +4148,63 @@ const MODS = [
       {q:'When is a <em>local</em> headless/background run the right home for the work?',
        options:['Never &mdash; always use the cloud','For scripts, one-offs, and anything whose data must not leave your machine &mdash; you keep full control and the JSON envelope makes it composable','Only for tasks over an hour','Only when offline'], answer:1}
     ]
+  },
+  {
+    id:'M-10.5', path:'eng', track:'T-10', title:'The full workflow', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The night shift you trust to run the intake without you. You leave a clear worklist on the desk; overnight the queue is triaged, the forms filled per protocol, the flagged cases set aside with a note, and by morning there is a stack of completed determinations for you to sign &mdash; not a person waiting for you to dictate each one. You did not do the middle; you wrote the worklist and you sign the stack. The full agent workflow is that shift: a clear issue in, a reviewable pull request out, and your judgement at both ends rather than in the keystrokes.',
+      body:
+        '<p><strong>Everything in this track was a piece of one pipeline.</strong> A slash command encodes the ritual (M-10.1); a hook enforces the rule (M-10.2); an MCP server connects the world (M-10.3); cloud and background runs choose where it happens (M-10.4). M-10.5 runs them as a single arc: <b>issue &rarr; plan &rarr; branch &rarr; build &rarr; test &rarr; commit &rarr; PR</b>, agent-driven, with a human at the two ends &mdash; writing the issue and reviewing the PR &mdash; and not in the middle: you are the reviewer, not the typist.</p>' +
+        '<p><strong>We ran it for real, in one headless invocation.</strong> A committed <code>ISSUE.md</code> (&ldquo;report the manual-review queue depth&rdquo;) went in; 141 seconds later a reviewable pull request came out. The agent <b>planned</b> (three files), cut a <b>branch</b> <code>feat/queue-depth</code>, <b>built</b> the minimal change (a <code>countByStatus</code> derived query and a <code>manualReviewQueueDepth()</code> service method), <b>added a test</b>, ran the suite to <b>green (32 tests, 0 failures)</b>, <b>committed</b> (<code>6088d14</code>, three files, <b>+14 lines and zero deletions</b> &mdash; purely additive), and wrote a <b>PR</b> with a title, a rationale, and a test plan. Every one of those claims was then <b>verified</b> against the clone, not just trusted &mdash; the branch, the diff stat, the passing tests, the PR file.</p>' +
+        '<p><strong>The judgement is what tells you it worked, not the green check.</strong> Two moments no one scripted. It chose to put the method on <code>ApprovalService</code> <em>&ldquo;because it already owns the queue &mdash; it routes below-threshold requests into MANUAL_REVIEW and drains it via resolveManualReview&rdquo;</em> &mdash; an architecture call, not a mechanical placement. And it found <b>BUG-API-01 on its own</b> (<em>&ldquo;line 99 uses <code>score &gt;</code> while the Javadoc says inclusive&rdquo;</em>), <b>deliberately left it untouched</b> per the rule, and then connected it to the feature: <em>&ldquo;the queue depth this feature reports will be inflated by any exactly-at-threshold requests.&rdquo;</em> That is the difference between an agent that finishes a ticket and one you would let near your main branch.</p>' +
+        '<p><strong>Your leverage lives at the two ends, and in the gates.</strong> The run was only as good as three things you control: a <b>clear issue</b> at the front (ambiguous specs produce confident wrong PRs), the <b>gates and policy wired in</b> so the agent cannot skip what you care about (the pre-commit test gate from M-10.2 blocks a red commit; the payer-policy MCP from M-10.3 answers coverage from a source of truth; an allowlist bounds what it may touch), and a <b>diff and PR to review</b> at the end. The agent does the middle; you own the intent, the guardrails, and the sign-off.</p>' +
+        '<p><strong>Where it stopped, and how it closes.</strong> We deliberately did not push or open a real PR &mdash; the PR body is the artifact and the teaching repo stays clean. That last step is exactly M-10.4&rsquo;s handoff: <code>@claude</code> and the GitHub Action open the PR on your runners, or Copilot&rsquo;s cloud agent on GitHub&rsquo;s &mdash; so the arc completes as issue &rarr; (this pipeline) &rarr; remote PR &rarr; your review. That is T-10 whole: <b>encode the ritual, enforce the rule, connect the world, choose where it runs</b> &mdash; then let the pipeline turn an issue into a PR you sign. T-11 turns the lens on yourself: measuring whether all of this actually made you faster.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-32'},
+    labA:{
+      title:'Drive an issue to a PR — Claude Code',
+      steps:[
+        'Write a small, ADDITIVE issue as <code>ISSUE.md</code> and commit it (a clear spec is the front-end leverage). Reference: ours was &ldquo;report the manual-review queue depth&rdquo; &mdash; one method, one test, minimal.',
+        'Run the pipeline in one headless invocation: tell the agent to plan, branch, implement, add a test, run tests to green, commit, and write <code>PR.md</code> (do not push). Reference: 141s &rarr; branch <code>feat/queue-depth</code>, green 32 tests, commit <code>+14/&minus;0</code>, a real PR body.',
+        'Now VERIFY, don&rsquo;t trust: check the branch, <code>git show --stat</code>, the passing tests, and that no file you protected was touched. Reference: the run found BUG-API-01 and left it &mdash; confirm your plants/guardrails survived.',
+        'Wire in one gate and one policy source and re-run: add the M-10.2 pre-commit test gate (so a red build can&rsquo;t commit) and, if relevant, the M-10.3 MCP for any lookup. Watch the pipeline route through them. (Do NOT use <code>--dangerously-skip-permissions</code> here &mdash; it skips the very hook you want to see fire.)',
+        'Close the loop the M-10.4 way: push the branch and <code>@claude</code> it (or use the GitHub Action / Copilot cloud) to open the PR, then review the diff. Success: an issue you wrote became a PR you reviewed, with the gates you chose in the path and your sign-off at the end.'
+      ]
+    },
+    labB:{
+      title:'Issue to PR — Copilot',
+      steps:[
+        'Do the same arc with Copilot: assign the issue to <code>@copilot</code> (or delegate from the IDE, M-10.4) so the cloud agent plans, branches, builds, tests and opens a draft PR on GitHub&rsquo;s infra.',
+        'Enforce a gate in CI (a required check / a Copilot hook, M-10.2) so the PR can&rsquo;t merge red, and review the diff rather than watching it typed.',
+        'Success: an issue driven to a reviewable PR by Copilot&rsquo;s cloud agent, with a merge gate in the path, and one line comparing it to the Claude-side arc.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the workflow rule',
+      steps:[
+        'Run the arc in Cursor (its agent + your gates), producing a branch, green tests, and a PR-ready change.',
+        'Write the rule this module &mdash; and the track &mdash; exists for: <em>an agent can carry a unit of work from a written issue to a reviewable PR without a human in the middle; your leverage is a clear spec at the front, the gates and policy wired in so it can&rsquo;t cut a corner you care about, and a diff to review at the end &mdash; encode the ritual, enforce the rule, connect the world, choose where it runs.</em>',
+        'Success: the arc run in a third tool, the rule written, and one real ticket from your backlog you would hand to this pipeline tomorrow.'
+      ]
+    },
+    checklist:[
+      'I wrote a clear, minimal issue &mdash; the front-end leverage.',
+      'One run took it plan &rarr; branch &rarr; build &rarr; test-green &rarr; commit &rarr; PR.',
+      'I verified the branch, diff and tests against the repo instead of trusting the summary.',
+      'A gate (pre-commit test hook) and/or policy (MCP) was in the path, not bypassed.',
+      'I reviewed the PR diff &mdash; the human is the reviewer, not the typist.'
+    ],
+    quiz:[
+      {q:'What is the shape of the full agent-driven workflow this module runs?',
+       options:['The agent writes code while you watch','<b>Issue &rarr; plan &rarr; branch &rarr; build &rarr; test &rarr; commit &rarr; PR</b>, agent-driven, with the human at the two ends &mdash; writing the issue and reviewing the PR &mdash; not in the middle','Only tests, no code','A single commit with no branch'], answer:1},
+      {q:'Beyond a green build, what signalled that the end-to-end run actually worked?',
+       options:['It was fast','The agent&rsquo;s <b>judgement</b>: it placed the method where the queue is owned, and it found BUG-API-01 unprompted, left it untouched per the rule, and flagged that it would inflate the very count the feature reports','It used more tokens','It skipped the tests'], answer:1},
+      {q:'Where is your leverage in an agent-driven pipeline?',
+       options:['In typing the code faster','At the two ends and in the gates: a <b>clear issue</b> in front, the <b>gates and policy wired in</b> (test-gate hook, MCP policy, allowlist) so it can&rsquo;t cut a corner, and a <b>PR to review</b> at the end','Nowhere &mdash; it is fully autonomous','Only in the model choice'], answer:1},
+      {q:'The live run stopped before pushing a real PR. How does the arc actually complete?',
+       options:['It cannot be completed','Via M-10.4&rsquo;s handoff &mdash; <code>@claude</code> + the GitHub Action open the PR on your runners, or Copilot&rsquo;s cloud agent on GitHub&rsquo;s &mdash; so it becomes issue &rarr; pipeline &rarr; remote PR &rarr; your review','You merge without review','The agent deploys it directly'], answer:1}
+    ]
   }
 ];
 
@@ -6488,6 +6563,51 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-32 · Issue to PR (spec: VISUALS.md) ----------
+   Abstract staged pipeline. Seven steps of the REAL end-to-end run
+   (recordings/m105-full-workflow.txt), each tagged with the T-10 tool that powers it,
+   plus the unscripted "found the plant, left it" beat. All numbers verified against
+   the clone (branch/commit/diff/green tests). T-10 close-out. */
+VISUALS['ANIM-32'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STEPS = [
+    ['ISSUE',  'a written intent: &ldquo;report the manual-review queue depth&rdquo;', 'the spec'],
+    ['PLAN',   '3 files: repo query, service method, unit test', 'Plan Mode · T-03'],
+    ['BRANCH', '<code>feat/queue-depth</code>', 'git'],
+    ['BUILD',  '<code>countByStatus</code> + <code>manualReviewQueueDepth()</code> &mdash; purely additive', 'the agent'],
+    ['TEST',   '<b class="a32green">GREEN &mdash; 32 tests, 0 failures</b>', 'gate: hook · M-10.2'],
+    ['COMMIT', '<code>6088d14</code> &mdash; 3 files, <b>+14 / &minus;0</b>', 'git'],
+    ['PR',     '<code>PR.md</code> ready: title, rationale, test plan', 'opens it: Action/cloud · M-10.4'],
+  ];
+  mount.innerHTML =
+    '<div class="anim32" aria-label="Issue to PR: one agent-driven pipeline">' +
+      '<div class="a32head"><span>ANIM-32 · ISSUE &rarr; PR &mdash; ONE HEADLESS RUN, 141s</span>' +
+        '<button class="a32replay" data-a32replay>REPLAY &#9656;</button></div>' +
+      '<div class="a32lane">' +
+        STEPS.map(s =>
+          '<div class="a32row"><span class="a32step">' + s[0] + '</span>' +
+            '<span class="a32out">' + s[1] + '</span>' +
+            '<span class="a32tool">' + s[2] + '</span></div>').join('') +
+        '<div class="a32row plant"><span class="a32step">FOUND</span>' +
+          '<span class="a32out">spotted <b>BUG-API-01</b> unprompted (<code>&gt;</code> vs the inclusive rule), <b>left it untouched</b>, and flagged that it inflates the very queue depth this feature reports</span>' +
+          '<span class="a32tool">judgment</span></div>' +
+      '</div>' +
+      '<div class="a32cap">What to notice: the agent carried a unit of work from intent to a <b>reviewable PR</b> with no human at the keyboard for the middle &mdash; you review the diff, you don&rsquo;t type it. <b>T-10 in one line:</b> encode the ritual (M-10.1) · enforce the rule (M-10.2) · connect the world (M-10.3) · choose where it runs (M-10.4) &mdash; then let the pipeline turn an issue into a PR you sign.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a32row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*430)));
+    timers.push(setTimeout(play, 300 + rows.length*430 + 5000));
+  }
+  mount.querySelector('[data-a32replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-31 · Where the Agent Runs (spec: VISUALS.md) ----------
