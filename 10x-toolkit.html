@@ -980,6 +980,24 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim18 .a18cap{font-size:10.5px;color:var(--faint);margin-top:8px}
 .anim18 .a18replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim18 .a18replay:hover{border-color:var(--gold)}
+.anim27{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim27 .a27head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim27 .a27lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim27 .a27lname{font-size:10px;letter-spacing:.14em;color:var(--cyan);margin-bottom:8px}
+.anim27 .a27row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim27 .a27row.on{opacity:1;transform:none}
+.anim27 .a27key{font-size:9.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap;font-family:var(--mono)}
+.anim27 .a27key.c{border-color:rgba(79,216,235,.5);color:var(--cyan)}
+.anim27 .a27key.g{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.anim27 .a27key.p{border-color:var(--purple);color:var(--purple)}
+[data-theme="light"] .anim27 .a27key.p{color:#5a4a91;border-color:#5a4a91}
+.anim27 .a27out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim27 .a27out b{color:var(--text);font-weight:500}
+.anim27 .a27out code{font-size:9px}
+.anim27 .a27cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim27 .a27cap b{color:var(--text);font-weight:500}
+.anim27 .a27replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim27 .a27replay:hover{border-color:var(--cyan)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -3671,6 +3689,62 @@ const MODS = [
       {q:'What did the fan-out surface that a single generalist agent would be unlikely to?',
        options:['Nothing new','Three layer-scoped findings plus a <em>convergence</em> &mdash; two reviewers independently flagged the same N+1 from opposite directions, a confidence signal you only get from independent specialists','Faster typing','A cheaper bill'], answer:1}
     ]
+  },
+  {
+    id:'M-9.6', path:'eng', track:'T-09', title:'Custom agents in Copilot', minutes:40,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'A specialist&rsquo;s credentials can be filed in three places. Pinned to the board in one clinic &mdash; everyone who works <em>that</em> site can call on them. Carried in your own portfolio between clinics &mdash; they follow <em>you</em> wherever you work. Or entered in the health system&rsquo;s central registry &mdash; every site in the network can book them. And when the same name sits in the local file <em>and</em> the registry, the local file wins, because the clinic knows its own floor. A Copilot custom agent is exactly this: one definition file, filed at the scope that matches who should be able to reach for it, with the nearest copy governing.',
+      body:
+        '<p><strong>It is the same idea as your Claude subagent (M-9.4), filed for a team.</strong> A Copilot custom agent is <em>&ldquo;a set of instructions and tools that are applied when you switch to that agent,&rdquo;</em> written as a <code>.agent.md</code> Markdown file &mdash; YAML frontmatter over a body whose <em>&ldquo;guidelines&hellip; are prepended to the user chat prompt.&rdquo;</em> The frontmatter is a close cousin of what you already know: <code>name</code>, <code>description</code> (shown as the chat placeholder), <code>tools</code> (<em>&ldquo;if unset, defaults to all tools&rdquo;</em> &mdash; so scope it, exactly as you scoped the read-only reviewer), <code>model</code>, plus <code>user-invocable</code> and <code>disable-model-invocation</code> to control whether it shows in the picker and whether other agents may call it as a subagent. When it runs as a subagent it is isolated, in Copilot&rsquo;s own words: <em>&ldquo;the subagent has its own context window, which can be populated by information that is not relevant to the main agent.&rdquo;</em> M-9.4&rsquo;s isolation lesson, in a second tool.</p>' +
+        '<p><strong>What Copilot adds is scope &mdash; and this is why it is the GitHub-native team tool.</strong> The same file can live at four levels: the <b>repository</b> (<code>.github/agents/&lt;name&gt;.md</code>) for this codebase&rsquo;s team; your <b>user</b> profile so it follows you across projects; the <b>organization</b> (an <code>/agents/&lt;name&gt;.md</code> in the org&rsquo;s <code>.github</code> or <code>.github-private</code> repo) for everyone; and the <b>enterprise</b> (the <code>.github-private</code> of an enterprise-designated org) across every repo. Once created they <em>&ldquo;become available to Copilot cloud agent on GitHub.com, Copilot cloud agent in IDEs, and GitHub Copilot CLI.&rdquo;</em> Drop one file in the org&rsquo;s <code>.github</code> repo and the whole team has a reviewer &mdash; the org-sharing story a lone <code>.claude/agents/</code> file does not have.</p>' +
+        '<p><strong>The precedence rule is the governance, and it is worth memorising.</strong> When the same name exists at more than one level, <em>&ldquo;the lowest level configuration takes precedence&hellip; a repository-level agent would take precedence over an organization-level agent, and the organization-level agent would override an enterprise-level agent.&rdquo;</em> Read that as policy: the enterprise sets a floor, the org tunes it, and a single repository can still override both for its own needs. It is the same nearest-copy-wins model as CLAUDE.md&rsquo;s hierarchy (M-7.1), now spanning your whole company &mdash; which is precisely the control a platform team buys when it standardises on Copilot.</p>' +
+        '<p><strong>Invocation differs by surface &mdash; and the blueprint&rsquo;s own note was imprecise, which is the lesson.</strong> This module was going to tell you user agents live in <code>~/.github/agents/</code> and that you call them with <code>@name</code>. Verified against current docs, both are <em>surface-specific</em>: <code>@debugger</code>-style mentions and <code>%USERPROFILE%\\.github\\agents</code> are <b>Visual Studio</b>; <b>VS Code</b> invokes from the <em>agents dropdown</em> (plus <code>/agents</code> to configure) and stores user agents in <code>~/.copilot/agents/</code>; the <b>CLI</b> uses <code>--agent &lt;name&gt;</code> or plain language and the same <code>~/.copilot/agents/</code>. So the honest instruction is not a single path or chord &mdash; it is <em>check the surface you are in</em>. A confident wrong path is how a team&rsquo;s shared agent silently fails to load for half of them.</p>' +
+        '<p><strong>One naming note so you can migrate cleanly.</strong> Custom agents were <em>&ldquo;previously known as custom chat modes&rdquo;</em>; if you have old <code>.chatmode.md</code> files the doc is explicit &mdash; <em>&ldquo;rename them to <code>.agent.md</code>&hellip; to continue using them.&rdquo;</em> Same behaviour, new extension. That closes the T-09 loop the four ways you now know it: a skill teaches, a hook enforces, a subagent isolates (M-9.3), you build one (M-9.4), you fan them out (M-9.5), and you file them for a team at the right scope (here). M-9.7 is the last step &mdash; designing a whole team of these without it turning into a mess.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-27'},
+    labB:{
+      title:'Build and scope a custom agent — Copilot',
+      steps:[
+        'Create <code>.github/agents/pa-reviewer.agent.md</code>: frontmatter with <code>name</code>, a <code>description</code> (it becomes the chat placeholder), a scoped <code>tools</code> list (remember: unset means <em>all</em> tools &mdash; scope it read-only, as in M-9.4), and <code>model</code>. Put your PA domain rules in the body; they are prepended to the prompt when the agent is active.',
+        'Invoke it the way <em>your</em> surface documents &mdash; VS Code: pick it from the agents dropdown; Visual Studio: <code>@pa-reviewer</code> or the picker; CLI: <code>copilot --agent pa-reviewer --prompt "&hellip;"</code>. Confirm the review runs and the body&rsquo;s rules shaped it. Do NOT assume the other surfaces&rsquo; syntax works in yours.',
+        'Move it up a scope: put the same file in your org&rsquo;s <code>.github</code> repo under <code>/agents/</code> and confirm a teammate on another repo can now reach it. Then test the precedence rule &mdash; a repo-level agent of the same name overrides the org one.',
+        'Success: a scoped <code>.agent.md</code> that runs on your surface, shared once at the org level, and a demonstrated understanding that the nearest (lowest) scope wins &mdash; plus one line noting the user-path/invocation difference between VS Code, Visual Studio and the CLI.'
+      ]
+    },
+    labA:{
+      title:'The same specialist you already built — Claude Code',
+      steps:[
+        'You built this in M-9.4: <code>.claude/agents/&lt;name&gt;.md</code>, read-only <code>tools</code>, delegated and proven with a marker. Put the two definitions side by side and list what is the <em>same</em> (a named file, a description that drives delegation, scoped tools, isolated context) and what Copilot adds (the org/enterprise scope levels and lowest-wins precedence).',
+        'Note the gap in the other direction: Claude&rsquo;s subagent is a strong <em>local</em> specialist but has no built-in org-registry; sharing is by checking the file into the repo. That is the trade this module exists to make visible.',
+        'Success: a written one-paragraph comparison of Claude subagents vs Copilot custom agents &mdash; same concept, different sharing model.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the scope rule',
+      steps:[
+        'Build the same reviewer as a Cursor subagent (own context window, read-only scoping) and invoke it. Note where its definition lives and how &mdash; or whether &mdash; it shares across a team, compared with Copilot&rsquo;s four scope levels.',
+        'Write the rule this module exists for: <em>a custom agent is one definition filed at the scope that matches who should reach it &mdash; repo, user, org, enterprise &mdash; and the nearest (lowest) copy wins; but the user path and the invocation syntax differ by surface, so verify yours rather than copying a chord.</em>',
+        'Success: the three tools&rsquo; custom-agent homes compared, the scope-and-precedence rule written, and one honest note on which tool&rsquo;s sharing model fits your team.'
+      ]
+    },
+    checklist:[
+      'My <code>.agent.md</code> has a scoped <code>tools</code> list &mdash; I did not leave it defaulting to all tools.',
+      'I invoked it using my actual surface&rsquo;s syntax (dropdown / <code>@name</code> / <code>--agent</code>), not another surface&rsquo;s.',
+      'I shared one at the org level and saw a teammate reach it.',
+      'I can state the precedence rule: the lowest (nearest) scope wins.',
+      'I know user agents live in <code>~/.copilot/agents/</code> (VS Code &amp; CLI) but <code>%USERPROFILE%\\.github\\agents</code> in Visual Studio.'
+    ],
+    quiz:[
+      {q:'The same custom agent name exists at the repository, organization, and enterprise levels. Which one governs?',
+       options:['The enterprise level, as the highest authority','The <b>repository</b> level &mdash; the lowest (nearest) configuration takes precedence, overriding org, which overrides enterprise','Whichever was created most recently','They merge into one'], answer:1},
+      {q:'Why does the module refuse to give a single user-path and a single invocation chord for custom agents?',
+       options:['The docs are incomplete','Because they are <em>surface-specific</em> &mdash; <code>@name</code> and <code>%USERPROFILE%\\.github\\agents</code> are Visual Studio, while VS Code and the CLI use the agents dropdown / <code>--agent</code> and <code>~/.copilot/agents/</code>; a confident wrong path fails silently','To keep the lab short','Because Copilot changes them weekly'], answer:1},
+      {q:'What does a Copilot custom agent add over the Claude subagent you built in M-9.4?',
+       options:['Nothing &mdash; they are identical','A team <b>scope model</b> &mdash; repo / user / org / enterprise levels with lowest-wins precedence, and org sharing via the org&rsquo;s <code>.github</code> repo, so one file serves a whole team','It runs faster','It can edit code the subagent cannot'], answer:1},
+      {q:'You have old <code>.chatmode.md</code> files. What is the current, doc-verified migration?',
+       options:['Rewrite them from scratch','Rename them to <code>.agent.md</code> &mdash; custom agents were previously known as custom chat modes; same behaviour, new extension','They still work unchanged forever','Delete them; the feature is gone'], answer:1}
+    ]
   }
 ];
 
@@ -5967,6 +6041,53 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-27 · The Custom Agent, Filed Three Ways (spec: VISUALS.md) ----------
+   Abstract staged diagram (no fake IDE chrome, per VISUALS rules). Copilot custom
+   agents doc-verified 2026-07-25 (code.visualstudio.com custom-agents; docs.github.com
+   custom-agents-configuration + CLI how-to; learn.microsoft.com VS specialized agents).
+   Surface-specific facts kept honest: @name + %USERPROFILE%\.github\agents are Visual
+   Studio; VS Code & CLI use ~/.copilot/agents/. Lowest-scope-wins precedence verbatim. */
+VISUALS['ANIM-27'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim27" aria-label="Copilot custom agents: one file, four scopes, per-surface invocation">' +
+      '<div class="a27head"><span>ANIM-27 · CUSTOM AGENTS &mdash; ONE FILE, MANY SCOPES</span>' +
+        '<button class="a27replay" data-a27replay>REPLAY &#9656;</button></div>' +
+      '<div class="a27lane">' +
+        '<div class="a27lname">1 · ONE FILE &mdash; <code>.agent.md</code></div>' +
+        '<div class="a27row"><span class="a27key c">.agent.md</span><span class="a27out">YAML frontmatter over a Markdown body that is <b>prepended to your prompt</b> when the agent is active</span></div>' +
+        '<div class="a27row"><span class="a27key">frontmatter</span><span class="a27out"><code>name</code> · <code>description</code> (the chat placeholder) · <code>tools</code> (<b>unset = ALL</b> &mdash; scope it) · <code>model</code></span></div>' +
+        '<div class="a27row"><span class="a27key">control</span><span class="a27out"><code>user-invocable</code> (show in the picker) · <code>disable-model-invocation</code> (may other agents call it as a subagent)</span></div>' +
+      '</div>' +
+      '<div class="a27lane">' +
+        '<div class="a27lname">2 · WHERE IT LIVES &mdash; THE NEAREST COPY WINS</div>' +
+        '<div class="a27row"><span class="a27key c">repo</span><span class="a27out"><code>.github/agents/&lt;name&gt;.md</code> &mdash; this codebase&rsquo;s team</span></div>' +
+        '<div class="a27row"><span class="a27key c">user</span><span class="a27out"><code>~/.copilot/agents/</code> (VS Code &amp; CLI) &middot; <code>%USERPROFILE%\\.github\\agents</code> (Visual Studio)</span></div>' +
+        '<div class="a27row"><span class="a27key c">org / ent</span><span class="a27out"><code>/agents/&lt;name&gt;.md</code> in the org&rsquo;s <code>.github</code> (or <code>.github-private</code>) repo &mdash; cloud agent, IDEs &amp; CLI</span></div>' +
+        '<div class="a27row"><span class="a27key g">precedence</span><span class="a27out">same name at two levels &rarr; the <b>lowest (nearest) wins</b>: repo &gt; org &gt; enterprise</span></div>' +
+      '</div>' +
+      '<div class="a27lane">' +
+        '<div class="a27lname">3 · HOW YOU CALL IT &mdash; CHECK YOUR SURFACE</div>' +
+        '<div class="a27row"><span class="a27key c">VS Code</span><span class="a27out">pick it from the <b>agents dropdown</b> (<code>/agents</code> to configure)</span></div>' +
+        '<div class="a27row"><span class="a27key c">Visual Studio</span><span class="a27out"><code>@name</code> (e.g. <code>@debugger</code>) or the picker &mdash; VS 2026 v18.4+</span></div>' +
+        '<div class="a27row"><span class="a27key c">CLI</span><span class="a27out"><code>--agent &lt;name&gt;</code> or just describe the task; runs as a subagent with <b>&ldquo;its own context window&rdquo;</b> (M-9.4)</span></div>' +
+      '</div>' +
+      '<div class="a27cap" data-a27cap>What to notice: <b>one file, filed at the scope that matches who should reach it</b> &mdash; the same idea has three homes (Claude <code>.claude/agents/</code>, Copilot <code>.github/agents/*.agent.md</code>, Cursor subagents). Was &ldquo;custom chat modes&rdquo; (<code>.chatmode.md</code>) &mdash; rename to <code>.agent.md</code>.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a27row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*430)));
+    timers.push(setTimeout(play, 300 + rows.length*430 + 5000));
+  }
+  mount.querySelector('[data-a27replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-18 · Scope Ladder & Key Map (spec: VISUALS.md) ----------
