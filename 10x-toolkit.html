@@ -1008,6 +1008,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim20 .s20why{color:var(--dim)} .sim20 .s20why b{color:var(--text);font-weight:500}
 .sim20 .s20cap{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
 .sim20 .s20cap b{color:var(--text);font-weight:500}
+.sim21{--s21green:#3E9A6B;--s21red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim21{--s21green:#2d7350;--s21red:#B0503C}
+.sim21 .s21head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.sim21 .s21card{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:7px 10px;margin-bottom:6px}
+.sim21 .s21card.hit{border-color:var(--s21green)}
+.sim21 .s21card.miss{border-color:var(--s21red)}
+.sim21 .s21metric{flex:1;font-size:10.5px;color:var(--text);line-height:1.4;min-width:0}
+.sim21 .s21metric .s21fr{display:block;font-size:8px;letter-spacing:.05em;color:var(--faint)}
+.sim21 .s21verdict{font-size:9px;letter-spacing:.06em;white-space:nowrap}
+.sim21 .s21verdict.ok{color:var(--s21green)} .sim21 .s21verdict.no{color:var(--s21red)}
+.sim21 .s21picks{display:flex;gap:4px;flex-shrink:0}
+.sim21 .s21pick{font-family:var(--mono);font-size:9px;letter-spacing:.05em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim21 .s21pick:disabled{cursor:default;opacity:.75}
+.sim21 .s21pick[data-v="keep"][aria-pressed="true"]{background:var(--s21green);border-color:var(--s21green);color:#fff;font-weight:700}
+.sim21 .s21pick[data-v="refuse"][aria-pressed="true"]{background:var(--s21red);border-color:var(--s21red);color:#fff;font-weight:700}
+.sim21 .s21ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim21 .s21btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim21 .s21btn:hover:not(:disabled){border-color:var(--gold)}
+.sim21 .s21btn:disabled{opacity:.45;cursor:default}
+.sim21 .s21score{font-size:10.5px;color:var(--dim)}
+.sim21 .s21why{margin-top:10px;font-size:10px;color:var(--dim);line-height:1.55;list-style:none;padding:0}
+.sim21 .s21why li{margin-bottom:5px}
+.sim21 .s21why b{color:var(--text);font-weight:500}
+.sim21 .s21foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.sim21 .s21foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4282,6 +4307,62 @@ const MODS = [
       {q:'Why treat a personal, few-week baseline as directional rather than precise?',
        options:['Because measurement is pointless','It is a tiny, non-random sample with high variance and confounds (one hard bug skews it), and the <b>Hawthorne effect</b> &mdash; changing behaviour because you&rsquo;re observing yourself &mdash; briefly inflates it','Because AI tools are inaccurate','Because cycle time can&rsquo;t be measured solo'], answer:1}
     ]
+  },
+  {
+    id:'M-11.2', path:'eng', track:'T-11', title:'Frameworks that survive contact', minutes:40,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The vital-signs panel, not the single thermometer. No competent clinician judges a patient on temperature alone &mdash; a normal reading with a falling blood pressure is a disaster in progress. They read a balanced panel, because the numbers move against each other. Developer-productivity frameworks are that panel: a small, deliberate set of readings across dimensions that keep each other honest. A lone number &mdash; lines shipped, an AI acceptance rate &mdash; is a thermometer someone is holding under warm water and calling the patient healthy.',
+      body:
+        '<p><strong>The frameworks exist because one number always lies.</strong> The SPACE research says it without hedging: developer productivity <em>&ldquo;is about more than an individual&rsquo;s activity levels or the efficiency of the engineering systems relied on to ship software, and it cannot be measured by a single metric or dimension.&rdquo;</em> So the field converged on balanced panels. <b>SPACE</b> names five dimensions to keep in tension &mdash; satisfaction and well-being, performance, activity, communication and collaboration, efficiency and flow. <b>DORA</b> measures software <em>delivery</em>. <b>DX Core 4</b> is the newest synthesis: it <em>&ldquo;encapsulates DORA, SPACE, and DevEx&rdquo;</em> across four dimensions &mdash; <em>&ldquo;speed, effectiveness, quality, and business impact&rdquo;</em> &mdash; precisely because <em>&ldquo;changes to one dimension, such as speed, may negatively affect others (e.g., quality or effectiveness).&rdquo;</em> None of them crowns a single headline metric; that is the point.</p>' +
+        '<p><strong>DORA itself has moved &mdash; use the current shape, not the one in the old blog posts.</strong> The four &ldquo;keys&rdquo; are now <b>five</b> metrics, split into speed and stability. Speed: <em>deployment frequency</em>, <em>change lead time</em> (&ldquo;committed to version control to deployed in production&rdquo;), and <em>failed deployment recovery time</em> &mdash; which is DORA&rsquo;s <b>current name for what used to be MTTR</b>. Stability: <em>change fail rate</em> (&ldquo;the ratio of deployments that require immediate intervention&rdquo;) and a new fifth, <em>deployment rework rate</em> (unplanned deployments caused by a production incident). DORA even &ldquo;de-acronymed,&rdquo; renaming its annual report from &ldquo;Accelerate State of DevOps&rdquo; to the <b>&ldquo;State of AI-assisted Software Development.&rdquo;</b> If a source still says &ldquo;the four keys&rdquo; and &ldquo;MTTR,&rdquo; it is describing 2023.</p>' +
+        '<p><strong>What AI changes &mdash; and the finding flipped, so this must be current.</strong> The 2024 report found AI hurt <em>both</em> throughput and stability. The <b>2025 report reverses half of that</b>: <em>&ldquo;we observe a positive relationship between AI adoption on both software delivery throughput and product performance&rdquo;</em> &mdash; but <em>&ldquo;AI adoption does continue to have a negative relationship with software delivery stability.&rdquo;</em> The mechanism is the whole course in one sentence: <em>&ldquo;AI accelerates software development, but that acceleration can expose weaknesses downstream. Without robust control systems, like strong automated testing, mature version control practices, and fast feedback loops, an increase in change volume leads to instability.&rdquo;</em> Those control systems are exactly what T-06 and T-10 built. Hence DORA&rsquo;s headline, and the truest thing in this track: <b><em>&ldquo;AI doesn&rsquo;t fix a team; it amplifies what&rsquo;s already there. Strong teams use AI to become even better&hellip; Struggling teams will find that AI only highlights and intensifies their existing problems.&rdquo;</em></b></p>' +
+        '<p><strong>What AI doesn&rsquo;t change is the reason vanity metrics are dangerous now.</strong> AI moves the delivery numbers; it does not move SPACE&rsquo;s human dimensions on its own, and it does not make a change <em>good</em>. And here is the wedge that kills the vanity metrics with primary data: in the 2025 report <em>&ldquo;90% of&hellip; respondents report using AI at work&rdquo;</em> and <em>&ldquo;more than 80% believe it has increased their productivity&rdquo;</em> &mdash; while delivery <em>stability</em> got worse (and <em>&ldquo;30% report little or no trust in the code generated by AI&rdquo;</em>). So an AI <b>acceptance rate</b>, <b>lines of code</b>, or <b>&ldquo;percent of code written by AI&rdquo;</b> can all be high in a team whose delivery is degrading. Those measure <em>adoption and activity</em> &mdash; engagement with the tool &mdash; not delivered value. Refuse them as productivity metrics; feeling faster and being faster are, in the data, two different things.</p>' +
+        '<p><strong>So the discipline is small and strict.</strong> Read a balanced panel, never one number; measure speed and stability <em>together</em>, because AI pushes them apart; keep the human dimension in view; and when someone waves an acceptance rate as proof of a productivity win, ask for the change-fail-rate next to it. This is what makes M-11.3&rsquo;s personal delta trustworthy rather than flattering: you compare a <em>panel</em> before and after, not a thermometer. Next, M-11.3 closes the track &mdash; re-run your baseline task class with the full toolkit, read the whole panel, and build the improvement playbook.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-21'},
+    labA:{
+      title:'Sort your metrics, then apply the panel',
+      steps:[
+        'Run SIM-21: sort ten metrics into KEEP (a balanced-panel signal) or REFUSE (adoption/activity). Get to full marks and read every rationale &mdash; note which framework each keep belongs to and why each refuse fails.',
+        'Map your own dashboards to the panel: for one team or repo, find where you can read the five DORA metrics (or your tool&rsquo;s nearest equivalents), at least one SPACE human-dimension signal (a satisfaction pulse), and your M-11.1 quality pair.',
+        'Find the vanity metric hiding in your current reporting &mdash; an acceptance rate, a lines-or-diffs count, an &ldquo;AI usage %.&rdquo; Write one sentence on what it actually measures (adoption/activity) and what you would put next to it (a stability or quality metric) so it can&rsquo;t mislead.',
+        'Success: SIM-21 at full marks, your panel mapped to real dashboards, and one vanity metric in your world named and paired with a delivery metric that keeps it honest.'
+      ]
+    },
+    labB:{
+      title:'The frameworks in your tooling',
+      steps:[
+        'Locate where your stack surfaces DORA metrics (GitHub&rsquo;s own insights, or LinearB / DX / Swarmia). Confirm it uses the current five and check whether it still calls recovery time &ldquo;MTTR&rdquo; (a tell that its definitions are dated).',
+        'If you have a developer-experience survey (a SPACE- or DXI-style pulse), note it &mdash; that is the human dimension AI cannot report for you.',
+        'Success: a one-line inventory of which framework dimensions your tools can actually measure today, and which you are currently blind to.'
+      ]
+    },
+    labC:{
+      title:'The refuse-list, and what AI amplifies',
+      steps:[
+        'Write your team&rsquo;s <em>refuse-list</em>: the metrics you will not accept as evidence of a productivity gain (acceptance rate, LOC/diffs-as-goal, % AI-written, raw activity) &mdash; each with the delivery metric it must be paired with instead.',
+        'Write the rule this module exists for: <em>read a balanced panel, never one number; measure speed and stability together because AI pushes them apart; AI doesn&rsquo;t fix a team, it amplifies what&rsquo;s already there &mdash; so the control systems (tests, version control, feedback loops) are what decide whether AI helps or hurts your delivery.</em>',
+        'Success: a written refuse-list, the rule captured, and one concrete control system you will strengthen so AI&rsquo;s speed doesn&rsquo;t cost you stability.'
+      ]
+    },
+    checklist:[
+      'I can name the three frameworks and what each covers (DORA delivery, SPACE the human balance, DX Core 4 the synthesis).',
+      'I know DORA is now five metrics and that &ldquo;failed deployment recovery time&rdquo; replaced MTTR.',
+      'I can state the current DORA-on-AI finding: helps throughput, still hurts stability.',
+      'I can explain the wedge: high adoption + &ldquo;feels faster&rdquo; can coexist with worse delivery.',
+      'I have a refuse-list, each vanity metric paired with a delivery metric that keeps it honest.'
+    ],
+    quiz:[
+      {q:'Why do all three frameworks (DORA, SPACE, DX Core 4) refuse a single headline metric?',
+       options:['To sell consulting','Because productivity <em>&ldquo;cannot be measured by a single metric or dimension&rdquo;</em> (SPACE) &mdash; the dimensions move against each other (speed can cost quality), so you read a <b>balanced panel</b> that keeps each reading honest','Single metrics are hard to compute','They disagree on which one to use'], answer:1},
+      {q:'What is the CURRENT (2025 DORA) finding on what AI does to software delivery?',
+       options:['AI improves everything','AI now <b>helps throughput but still hurts stability</b> &mdash; it accelerates change, and without strong tests/version-control/feedback loops the extra volume causes instability','AI hurts both throughput and stability (that was 2024)','AI has no measurable effect'], answer:1},
+      {q:'Why are an AI acceptance rate, lines of code, and &ldquo;% written by AI&rdquo; refused as productivity metrics?',
+       options:['They are hard to collect','They measure <b>adoption and activity</b>, not delivered value &mdash; DORA 2025 shows ~90% adoption and 80%+ &ldquo;feel more productive&rdquo; coexisting with <em>worse</em> delivery stability; feeling faster &ne; being faster','They are always zero','Only DORA metrics are allowed'], answer:1},
+      {q:'What does DORA mean by &ldquo;AI amplifies what&rsquo;s already there&rdquo;?',
+       options:['AI makes code louder','AI doesn&rsquo;t fix a team &mdash; strong practices (tests, version control, feedback loops) turn AI&rsquo;s speed into a gain, while weak practices let the extra change volume intensify existing problems','It only helps large teams','Amplification is a hardware term'], answer:1}
+    ]
   }
 ];
 
@@ -6408,6 +6489,75 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-21 · Measure or Refuse (spec: VISUALS.md) ----------
+   Sort ten metrics into KEEP (a balanced-panel signal) or REFUSE (adoption/activity
+   mistaken for value). Reveal scores + rationale (the framework each keep belongs to;
+   why each refuse fails). Doc-verified 2026-07-25 (DORA five metrics; SPACE single-
+   metric thesis; DORA 2025 AI finding). Foot carries the amplifier finding. */
+VISUALS['SIM-21'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CARDS = [
+    {t:'Change fail rate', fr:'DORA · stability', a:'keep', why:'<b>KEEP</b> &mdash; a DORA delivery metric: the ratio of deployments needing immediate intervention. This is the number AI-era speed most threatens.'},
+    {t:'Change lead time', fr:'DORA · speed', a:'keep', why:'<b>KEEP</b> &mdash; DORA: committed &rarr; running in production. A real delivery signal (not typing time).'},
+    {t:'Deployment frequency', fr:'DORA · throughput', a:'keep', why:'<b>KEEP</b> &mdash; DORA throughput. Real, but only trustworthy <em>alongside</em> stability &mdash; frequency without fail-rate is half a picture.'},
+    {t:'Failed deployment recovery time', fr:'DORA · restore (was MTTR)', a:'keep', why:'<b>KEEP</b> &mdash; DORA&rsquo;s current name for time-to-recover (it renamed MTTR). A stability signal.'},
+    {t:'Developer satisfaction &amp; well-being', fr:'SPACE · S', a:'keep', why:'<b>KEEP</b> &mdash; SPACE&rsquo;s human dimension. AI moves delivery numbers but does not fix a team&rsquo;s health; measure it or miss burnout behind a throughput win.'},
+    {t:'Rework / escaped defects', fr:'quality · M-11.1', a:'keep', why:'<b>KEEP</b> &mdash; the quality pair from your baseline; the churn AI is observed to raise. Pair every speed gain with these.'},
+    {t:'Lines of code shipped', fr:'output count', a:'refuse', why:'<b>REFUSE</b> &mdash; output, not value; trivially inflated by an agent. SPACE: productivity &ldquo;cannot be measured by a single metric or dimension.&rdquo;'},
+    {t:'AI code-acceptance rate', fr:'adoption/engagement', a:'refuse', why:'<b>REFUSE</b> &mdash; measures <em>adoption</em>, not delivery. DORA 2025: ~90% use AI and 80%+ feel more productive, yet stability drops &mdash; feeling &ne; delivering.'},
+    {t:'% of code written by AI', fr:'adoption/engagement', a:'refuse', why:'<b>REFUSE</b> &mdash; an engagement stat dressed as productivity; says nothing about whether the change was good.'},
+    {t:'Commits / PRs per day', fr:'raw activity', a:'refuse', why:'<b>REFUSE</b> &mdash; activity in isolation; SPACE warns even PRs/commits/reviews &ldquo;should never be used&rdquo; alone. Gameable, and rewards motion over outcome.'},
+  ];
+  mount.innerHTML =
+    '<div class="sim21" aria-label="Measure or refuse: sort ten metrics">' +
+      '<div class="s21head"><span>SIM-21 · MEASURE OR REFUSE &middot; 10 METRICS</span><span data-s21mode>' + (reduce ? 'STATIC' : 'DRILL') + '</span></div>' +
+      '<div>' + CARDS.map((c,i) =>
+        '<div class="s21card" data-card="' + i + '">' +
+          '<span class="s21metric">' + c.t + '<span class="s21fr">' + c.fr + '</span><span class="s21verdict" data-v="' + i + '"></span></span>' +
+          '<span class="s21picks">' +
+            '<button class="s21pick" type="button" data-pick data-i="' + i + '" data-v="keep" aria-pressed="false">KEEP</button>' +
+            '<button class="s21pick" type="button" data-pick data-i="' + i + '" data-v="refuse" aria-pressed="false">REFUSE</button>' +
+          '</span>' +
+        '</div>').join('') + '</div>' +
+      '<div class="s21ctrl">' +
+        '<button class="s21btn" type="button" data-reveal disabled>REVEAL</button>' +
+        '<button class="s21btn" type="button" data-reset>RESET</button>' +
+        '<span class="s21score" data-score aria-live="polite"></span>' +
+      '</div>' +
+      '<ul class="s21why" data-why hidden></ul>' +
+      '<div class="s21foot">What to notice: the KEEPs are a <b>balanced panel</b> (speed <em>and</em> stability <em>and</em> the human dimension) &mdash; never one alone; the REFUSEs all measure <b>adoption or motion</b>, not delivered value. The current DORA finding is why the balance matters: <b>AI now helps throughput but still hurts stability</b> &mdash; &ldquo;AI doesn&rsquo;t fix a team; it amplifies what&rsquo;s already there.&rdquo;</div>' +
+    '</div>';
+  const picks = {}; let revealed = false;
+  const revealBtn = mount.querySelector('[data-reveal]');
+  const scoreEl = mount.querySelector('[data-score]');
+  const whyEl = mount.querySelector('[data-why]');
+  function refresh(){
+    CARDS.forEach((c,i) => {
+      const card = mount.querySelector('[data-card="' + i + '"]');
+      const v = mount.querySelector('[data-v="' + i + '"]');
+      card.querySelectorAll('[data-pick]').forEach(b => { b.setAttribute('aria-pressed', String(picks[i] === b.dataset.v)); b.disabled = revealed; });
+      card.classList.remove('hit','miss');
+      if(revealed){
+        const ok = picks[i] === c.a;
+        card.classList.add(ok ? 'hit' : 'miss');
+        v.className = 's21verdict ' + (ok ? 'ok' : 'no');
+        v.innerHTML = ok ? ' &#10003;' : ' &#10007; &rarr; ' + c.a.toUpperCase();
+      } else { v.innerHTML = ''; v.className = 's21verdict'; }
+    });
+    revealBtn.disabled = revealed || Object.keys(picks).length < CARDS.length;
+    if(revealed){
+      const right = CARDS.filter((c,i) => picks[i] === c.a).length;
+      scoreEl.textContent = right + '/' + CARDS.length + ' sorted right';
+      whyEl.hidden = false; whyEl.innerHTML = CARDS.map(c => '<li>' + c.why + '</li>').join('');
+    } else { scoreEl.textContent = ''; whyEl.hidden = true; whyEl.innerHTML = ''; }
+  }
+  mount.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => { if(revealed) return; picks[+b.dataset.i] = b.dataset.v; refresh(); }));
+  revealBtn.addEventListener('click', () => { revealed = true; refresh(); });
+  mount.querySelector('[data-reset]').addEventListener('click', () => { Object.keys(picks).forEach(k => delete picks[k]); revealed = false; mount.querySelector('[data-s21mode]').textContent = 'DRILL'; refresh(); });
+  if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a; }); revealed = true; }
+  refresh();
 };
 
 /* ---------- SIM-20 · The Baseline Ledger (spec: VISUALS.md) ----------
