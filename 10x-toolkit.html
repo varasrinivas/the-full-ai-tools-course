@@ -1079,6 +1079,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim30 .a30cap b{color:var(--text);font-weight:500}
 .anim30 .a30replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim30 .a30replay:hover{border-color:var(--gold)}
+.anim31{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim31 .a31head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim31 .a31lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim31 .a31lname{font-size:10px;letter-spacing:.14em;margin-bottom:8px}
+.anim31 .a31lane.local .a31lname{color:var(--gold)}
+.anim31 .a31lane.cloud .a31lname{color:var(--cyan)}
+.anim31 .a31row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim31 .a31row.on{opacity:1;transform:none}
+.anim31 .a31key{font-size:9px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap;font-family:var(--mono)}
+.anim31 .a31key.g{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.anim31 .a31key.c{border-color:rgba(79,216,235,.5);color:var(--cyan)}
+.anim31 .a31key.green{border-color:#3E9A6B;color:#3E9A6B}
+[data-theme="light"] .anim31 .a31key.green{color:#2d7350;border-color:#2d7350}
+.anim31 .a31out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim31 .a31out b{color:var(--text);font-weight:500}
+.anim31 .a31out code{font-size:9px}
+.anim31 .a31cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim31 .a31cap b{color:var(--text);font-weight:500}
+.anim31 .a31replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim31 .a31replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -4054,6 +4074,62 @@ const MODS = [
       {q:'What is the enterprise-level control over which MCP servers an agent may use?',
        options:['There is none','Managed settings can set <code>allowManagedMcpServersOnly</code> with an <code>allowedMcpServers</code> list, so only approved servers connect (and <code>deniedMcpServers</code> merges from all sources)','Only the individual user decides','You must uninstall servers to block them'], answer:1}
     ]
+  },
+  {
+    id:'M-10.4', path:'eng', track:'T-10', title:'Cloud & background agents', minutes:40,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'A prior-auth department doesn&rsquo;t make every reviewer sit and watch each case cook. The overnight batch runs on the data-center&rsquo;s machines and a report is on your desk by morning; the after-hours consult goes to a service that works while your office is dark and sends back a written recommendation to sign. The work is the same review &mdash; what changes is <em>where it runs</em> and <em>who owns the machine it runs on</em>. Cloud and background agents are that shift: the agent does the job somewhere you are not watching, and hands back something you review &mdash; a pull request, or a result you can read.',
+      body:
+        '<p><strong>The axis of this module is execution locus, not capability.</strong> Everything you built in T-09/T-10 &mdash; skills, subagents, hooks, MCP &mdash; can run interactively at your prompt, or headless, in the background, or out in the cloud. Same agent, different place, different owner of the compute. Two families: <b>on your machine</b> (Claude Code headless and background) and <b>somewhere else</b> (Copilot&rsquo;s cloud agent, and Claude&rsquo;s GitHub Action running in CI).</p>' +
+        '<p><strong>On your machine: headless, and a background run measured for real.</strong> You have used <code>claude -p</code> all through this course; its structured form &mdash; <code>--output-format json</code> &mdash; is the point here: <em>&ldquo;structured JSON with result, session ID, and metadata.&rdquo;</em> We launched one <em>detached</em>, kept working, and collected it when it finished: an analysis of priorauth-api that returned a machine-readable envelope &mdash; <code>total_cost_usd 0.23</code>, <code>num_turns 9</code>, <code>duration_ms 24211</code>, <code>is_error false</code> &mdash; wrapping a correct services-and-review-queue summary. That envelope is the whole reason headless matters: a script can branch on <code>is_error</code> and log the cost, so the agent becomes a composable step, not a person watching a chat. Claude Code also has a first-class <code>--bg</code> flag that <em>&ldquo;starts a background agent and returns immediately with a session ID,&rdquo;</em> and <code>-c</code>/<code>-r</code> resume a run later &mdash; the fire-and-forget shape, native.</p>' +
+        '<p><strong>Somewhere else: Copilot&rsquo;s cloud agent takes an issue and hands back a PR.</strong> From the IDE you <em>&ldquo;select the &lsquo;Delegate this task to the GitHub Copilot cloud agent&rsquo; button next to Send,&rdquo;</em> or you assign a GitHub issue to <code>@copilot</code>. Crucially it does <em>not</em> run on your laptop: <em>&ldquo;cloud agents run on remote infrastructure&rdquo;</em> &mdash; an <em>&ldquo;ephemeral development environment, powered by GitHub Actions.&rdquo;</em> It <em>&ldquo;works independently while you review changes before creating pull requests,&rdquo;</em> automating branch creation, commits and pushing. You come back to a draft PR and review the diff &mdash; the human is the reviewer, not the typist.</p>' +
+        '<p><strong>The Claude-side analogue, and the difference that matters.</strong> Claude Code ships an official GitHub Action, <code>anthropics/claude-code-action@v1</code>: <em>&ldquo;with a simple <code>@claude</code> mention in any PR or issue, Claude can analyze your code, create pull requests, implement features, and fix bugs.&rdquo;</em> Same <code>@mention</code>-to-PR shape as Copilot&rsquo;s cloud agent &mdash; but it runs on <b>your</b> GitHub Actions runners, not GitHub&rsquo;s hosted fleet. That is the real decision, and it is a governance one: Copilot&rsquo;s cloud offloads the compute (and the audit surface) to GitHub; the Claude Action keeps both on infrastructure you own and pay for. In a regulated shop, &ldquo;whose machine did the agent run on, and where is the log&rdquo; is not a detail.</p>' +
+        '<p><strong>So: when do you reach for which?</strong> Local <code>-p</code>/<code>--bg</code> for scripts, one-offs and anything whose data must not leave your machine &mdash; the JSON envelope makes it composable. Cloud or CI when the work should be team-visible, issue/PR-driven, parallel, and off your laptop &mdash; then choose Copilot&rsquo;s hosted cloud or the Claude Action on your own runners by who should own the compute and the trail. Honest boundary for this course: we ran the background headless case for real; the <code>--bg</code> flag, the GitHub Action, and Copilot&rsquo;s cloud agent are doc-verified but need remote infra, so verify them in your environment. M-10.5 stitches the whole track into one end-to-end workflow: issue &rarr; plan &rarr; branch &rarr; build &rarr; test &rarr; PR.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-31'},
+    labA:{
+      title:'Run an agent headless and in the background — Claude Code',
+      steps:[
+        'Run one headless with structured output: <code>claude -p "&lt;a read-only analysis&gt;" --output-format json</code>. Inspect the envelope &mdash; <code>result</code>, <code>total_cost_usd</code>, <code>num_turns</code>, <code>is_error</code>. Reference: our run returned <code>$0.23 / 9 turns / 24s / is_error false</code>. This is what makes an agent a scriptable step.',
+        'Now background it: launch it detached (your shell&rsquo;s backgrounding, or the first-class <code>claude --bg "&hellip;"</code> which returns a session id immediately) and keep working. Collect the result when it finishes &mdash; the fire-and-forget pattern. Resume a run with <code>-c</code> (most recent) or <code>-r &lt;id&gt;</code>.',
+        'Wrap it in a tiny script that branches on <code>is_error</code> and logs the cost &mdash; the point of the envelope is that a program, not a person, consumes it.',
+        'Success: a headless run whose JSON you parsed, a background run you did not block on, and a one-line rule for when local headless is the right home (scripts, private data, full control).'
+      ]
+    },
+    labB:{
+      title:'Delegate to the cloud agent — Copilot',
+      steps:[
+        'From VS Code Copilot Chat, describe a small task and click <em>&ldquo;Delegate this task to the GitHub Copilot cloud agent&rdquo;</em> (or assign a GitHub issue to <code>@copilot</code>). Note that it runs on GitHub&rsquo;s remote infra, not your machine.',
+        'Let it work, then review what comes back &mdash; it automates branch/commit/push and opens a draft PR for you to review the diff and iterate. You are the reviewer, not the typist.',
+        'Success: one task delegated to the cloud agent and reviewed as a PR, plus one line on what it means that the compute ran on GitHub&rsquo;s infrastructure rather than yours.'
+      ]
+    },
+    labC:{
+      title:'The Claude GitHub Action, then the locus rule',
+      steps:[
+        'Set up the Claude Code GitHub Action (<code>anthropics/claude-code-action@v1</code>, via <code>/install-github-app</code>) on a repo you own, then <code>@claude</code> a small issue and watch it open a PR &mdash; the same shape as Copilot&rsquo;s cloud agent but on <em>your</em> runners. (If you can&rsquo;t connect a repo now, read the workflow and note where the compute lives.)',
+        'Write the rule this module exists for: <em>the same agent work can run at your prompt, headless/background on your machine, or in the cloud/CI &mdash; choose by who should own the compute and the audit trail; the JSON envelope makes local runs composable, and cloud/CI runs return a PR you review rather than code you watched being typed.</em>',
+        'Success: the Action understood (run or read), the locus rule written, and one task from your week you would push to the background or the cloud instead of watching.'
+      ]
+    },
+    checklist:[
+      'I ran <code>claude -p --output-format json</code> and read the envelope (<code>result</code>, <code>total_cost_usd</code>, <code>is_error</code>).',
+      'I launched a background run and did not block on it; I know <code>--bg</code> and <code>-c</code>/<code>-r</code>.',
+      'I can state where Copilot&rsquo;s cloud agent runs (GitHub&rsquo;s remote infra) and what it returns (a draft PR).',
+      'I can name the Claude GitHub Action and how it differs (my runners, <code>@claude</code> &rarr; PR).',
+      'I can choose local vs cloud/CI by who should own the compute and the audit trail.'
+    ],
+    quiz:[
+      {q:'What makes a headless <code>claude -p --output-format json</code> run useful as an automation step?',
+       options:['It is prettier','It returns a machine-readable <b>envelope</b> (<code>result</code>, <code>total_cost_usd</code>, <code>num_turns</code>, <code>is_error</code>) a script can parse &mdash; branch on <code>is_error</code>, log the cost &mdash; so the agent becomes a composable step, not a person watching a chat','It runs faster','It uses no tokens'], answer:1},
+      {q:'Where does GitHub Copilot&rsquo;s cloud agent run, and what does it hand back?',
+       options:['On your laptop; nothing','On <b>GitHub&rsquo;s remote infrastructure</b> (an ephemeral Actions-powered environment), and it hands back a <b>draft pull request</b> you review &mdash; you are the reviewer, not the typist','On your CI runners; a merged commit','In the browser; a chat reply'], answer:1},
+      {q:'Copilot&rsquo;s cloud agent and Claude&rsquo;s GitHub Action both turn an <code>@mention</code> into a PR. What is the key difference?',
+       options:['One is free','<b>Whose compute</b>: Copilot&rsquo;s cloud agent runs on GitHub-hosted infra; the Claude Action (<code>anthropics/claude-code-action@v1</code>) runs on <b>your own</b> GitHub Actions runners &mdash; a cost and governance choice','Only Claude can open PRs','They are identical'], answer:1},
+      {q:'When is a <em>local</em> headless/background run the right home for the work?',
+       options:['Never &mdash; always use the cloud','For scripts, one-offs, and anything whose data must not leave your machine &mdash; you keep full control and the JSON envelope makes it composable','Only for tasks over an hour','Only when offline'], answer:1}
+    ]
   }
 ];
 
@@ -6412,6 +6488,44 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-31 · Where the Agent Runs (spec: VISUALS.md) ----------
+   Abstract staged diagram. Lane 1 (gold) = on YOUR machine: headless -p / --bg,
+   carrying the REAL background-run envelope (recordings/m104-cloud-background.txt:
+   $0.23, 9 turns, 24s, is_error false). Lane 2 (cyan) = somewhere else: Copilot
+   cloud agent + the Claude GitHub Action -> a PR. Doc-verified 2026-07-25. */
+VISUALS['ANIM-31'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim31" aria-label="Where the agent runs: local headless/background vs cloud and CI">' +
+      '<div class="a31head"><span>ANIM-31 · WHERE THE AGENT RUNS</span>' +
+        '<button class="a31replay" data-a31replay>REPLAY &#9656;</button></div>' +
+      '<div class="a31lane local">' +
+        '<div class="a31lname">ON YOUR MACHINE &mdash; HEADLESS &amp; BACKGROUND</div>' +
+        '<div class="a31row"><span class="a31key g">headless</span><span class="a31out"><code>claude -p "&hellip;" --output-format json</code> &rarr; a machine-readable <b>envelope</b> your scripts can parse</span></div>' +
+        '<div class="a31row"><span class="a31key green">real run</span><span class="a31out">a background analysis returned <code>total_cost_usd 0.23</code> · <code>num_turns 9</code> · <code>24s</code> · <code>is_error false</code> &mdash; collected after, never blocked on</span></div>' +
+        '<div class="a31row"><span class="a31key g">--bg</span><span class="a31out">first-class background: returns a <b>session id</b> immediately, you keep working (&amp; <code>-c</code>/<code>-r</code> to resume)</span></div>' +
+      '</div>' +
+      '<div class="a31lane cloud">' +
+        '<div class="a31lname">SOMEWHERE ELSE &mdash; CLOUD &amp; CI</div>' +
+        '<div class="a31row"><span class="a31key c">Copilot cloud</span><span class="a31out">&ldquo;Delegate this task to the cloud agent&rdquo; / assign <code>@copilot</code> &rarr; runs on <b>GitHub&rsquo;s remote infra</b> (ephemeral, Actions-powered) &rarr; a <b>draft PR</b> you review</span></div>' +
+        '<div class="a31row"><span class="a31key c">Claude Action</span><span class="a31out"><code>anthropics/claude-code-action@v1</code>: <code>@claude</code> on a PR/issue &rarr; creates a PR &mdash; on <b>your</b> runners</span></div>' +
+      '</div>' +
+      '<div class="a31cap">What to notice: the same agent work runs in different places &mdash; choose by <b>who owns the compute and the audit trail</b>. Local <code>-p</code> = your machine, your data; Copilot cloud = GitHub-hosted; the Claude Action = your CI runners (you pay the minutes).</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a31row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*480)));
+    timers.push(setTimeout(play, 300 + rows.length*480 + 5000));
+  }
+  mount.querySelector('[data-a31replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-30 · The MCP Connection (spec: VISUALS.md) ----------

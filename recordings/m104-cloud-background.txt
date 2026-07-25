@@ -1,0 +1,84 @@
+M-10.4 — Cloud & background agents
+Live artifact: a real Claude Code agent run in the BACKGROUND (detached headless
+`-p --output-format json`) while other work continued, then its JSON envelope
+collected. Copilot cloud agent + the Claude GitHub Action are doc-verified (can't
+run remote infra from here). Recorded 2026-07-25, claude 2.1.220.
+Disposable clone scratchpad/m104-api (read-only task; deleted after; teaching repo untouched).
+
+WHAT THE MODULE TEACHES
+  Same agent work, different EXECUTION LOCUS — and who owns the compute:
+    - Copilot CLOUD agent: runs on GitHub's remote infra, kicked from an issue/PR/IDE,
+      returns a draft PR you review. GitHub hosts the machine.
+    - Claude Code HEADLESS / BACKGROUND: runs on YOUR machine (`-p`, `--bg`) or YOUR CI
+      runners (the official GitHub Action). You own the compute and the control.
+  The through-line: an agent works somewhere you are not watching and hands back a
+  reviewable artifact (a PR, or a machine-readable result).
+
+LIVE — a background Claude agent (detached headless run)
+  Launched with shell backgrounding (run-in-background) so it ran DETACHED while I kept
+  working (I launched a doc-verification agent and edited files in the meantime):
+    claude -p "Analyze priorauth-api and output ONLY compact JSON with keys: services
+    [{name, oneLineRole}], reviewQueuePath. Read-only." --output-format json  > result.json &
+  It returned a structured envelope (verified live — this IS the -p --output-format json schema):
+    total_cost_usd : 0.231955
+    num_turns      : 9
+    duration_ms    : 24211      (~24s of agent work)
+    is_error       : false
+    result         : <the JSON work product>
+  Work product (accurate against source): 6 service classes with correct one-line roles
+  (ApprovalService/ClaimHistoryService/EligibilityService/NotificationService/
+  NotificationGateway/LoggingNotificationGateway) and a correct review-queue path — it
+  even reported the boundary as "not strictly greater than AUTO_APPROVE_THRESHOLD (0.85)",
+  a faithful reading of the current `>` code.
+  WHAT IT PROVES: the fire-and-forget pattern — launch, don't block, collect a
+  machine-readable result + cost envelope when done. The parseable envelope (result +
+  is_error + total_cost_usd) is exactly what makes headless/background scriptable and
+  CI-able: a script can branch on is_error and log the cost. This is the same shape a
+  cloud agent has at scale — work happens where you're not watching, returns a reviewable artifact.
+
+DOC VERIFICATION (2026-07-25, exact quotes)
+  COPILOT CLOUD AGENT (docs.github.com/copilot, code.visualstudio.com)
+   - Delegate: "You can assign tasks through GitHub issues, pull requests (by mentioning
+     @copilot), or automate execution on schedules/events." From VS Code: "Select the
+     'Delegate this task to the GitHub Copilot cloud agent' button next to Send."
+   - WHERE: "Cloud agents run on remote infrastructure and integrate with GitHub
+     repositories ... through pull requests"; troubleshooting names an "ephemeral
+     development environment, powered by GitHub Actions." NOT the user's machine.
+   - PRODUCES: "The agent works independently while you review changes before creating
+     pull requests"; automates "branch creation, commit message writing, and pushing";
+     "review the diff, iterate, and create a pull request when you're ready." A draft PR.
+   - GOVERNANCE: "policies control which GitHub Copilot features, agents, and models your
+     users can access"; enable cloud agent "for selected organizations"; audit logs.
+  CLAUDE CODE HEADLESS / BACKGROUND / CI (code.claude.com/docs)
+   - `claude -p` `--output-format text|json|stream-json`: "json: structured JSON with
+     result, session ID, and metadata." Envelope fields: type/subtype/result/session_id/
+     total_cost_usd/duration_ms/num_turns (+ is_error) — CONFIRMED LIVE above.
+   - Background: `--bg` is a first-class flag ("starts as a background agent and returns
+     immediately with a session ID"). Background subagents/workflows: "-p waits for them
+     to complete ... capped at ten minutes by default (v2.1.182)." A background Bash task
+     "is terminated about five seconds after Claude has returned its final result."
+   - CI: official GitHub Action `anthropics/claude-code-action@v1`: "With a simple @claude
+     mention in any PR or issue, Claude can analyze your code, create pull requests,
+     implement features, and fix bugs." Setup via `/install-github-app`.
+   - `--continue`/`-c` and `--resume`/`-r` combine with `-p` for non-interactive resume.
+  THE CONTRAST worth teaching: Copilot cloud agent is GITHUB-HOSTED (GitHub's Actions
+   infra); the Claude Code GitHub Action runs on YOUR runners (you pay the minutes). Same
+   @mention-to-PR shape, different ownership of the compute — a real cost/governance choice.
+
+HONEST SCOPE
+  Demonstrated live: a detached headless `-p --output-format json` run (the portable form
+  of "background agent"). NOT exercised this session: the `--bg` flag specifically, the
+  `anthropics/claude-code-action` GitHub Action, and Copilot's cloud agent (all require
+  remote infra / a GitHub-connected repo) — these are named and doc-quoted, not claimed as
+  run. The module says so.
+
+WHEN TO USE WHICH (the decision the module leaves students with)
+  - Local headless `-p` / `--bg`: scripts, one-off automation, full control, your data
+    never leaves your machine; the JSON envelope makes it composable.
+  - CI (Claude Action / Copilot cloud): team-visible, issue/PR-driven, parallel, doesn't
+    tie up your laptop; cloud (Copilot) offloads the compute to GitHub, the Claude Action
+    keeps it on your runners. Choose by who should own the machine and the audit trail.
+
+HYGIENE
+  Disposable clone scratchpad/m104-api deleted after (read-only task, no repo change).
+  Teaching repo priorauth-api untouched (main, clean).
