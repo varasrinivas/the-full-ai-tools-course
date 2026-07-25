@@ -1,0 +1,109 @@
+M-10.1 — Slash commands (encode your team's rituals; build /fix-and-test)
+Live artifact: a real /fix-and-test custom command run headless — one command ran
+the whole run->diagnose->fix->verify ritual on the PA API. And it settled the
+undocumented question: `claude -p "/custom-command args"` DOES invoke a custom
+slash command headless.
+Recorded 2026-07-25, claude 2.1.220. Disposable clone on branch drill/m101-cmd
+(deleted after; teaching repo untouched, BUG-API-xx plants intact).
+
+WHAT THE MODULE TEACHES
+  A slash command is a reusable prompt-template that encodes a procedure your team
+  repeats, invoked with `/name <args>`. The authentic example is THIS course's own
+  .claude/commands/ (plan-module, build-module, build-lab, validate-module,
+  refresh-module) — five numbered $ARGUMENTS rituals that built the whole course.
+  The lab builds /fix-and-test for the PA repos and runs it for real.
+
+DOC VERIFICATION (code.claude.com/docs/en/agent-sdk/slash-commands.md, 2026-07-25)
+  - Location: `.claude/commands/<name>.md` (project) / `~/.claude/commands/` (personal).
+    "The filename (without .md extension) becomes the command name."
+  - LEGACY-BUT-SUPPORTED (ties to M-9.1): ".claude/commands/ directory is the legacy
+    format. The recommended format is .claude/skills/<name>/SKILL.md, which supports
+    the same slash-command invocation (/name) plus autonomous invocation by Claude ...
+    The CLI continues to support both formats." So commands still work; a skill adds
+    autonomous invocation + a directory for supporting files. (Custom commands merged
+    INTO skills — the same fact M-9.1 established, now from the commands side.)
+  - Arguments: `$ARGUMENTS` (all args) and positional (`$1`, `$2`); frontmatter
+    `argument-hint: [test-pattern]`. (We use $ARGUMENTS — unambiguous.)
+  - Frontmatter: description, allowed-tools, model, argument-hint. `!`cmd`` runs bash
+    and injects its output (needs `allowed-tools: Bash(...)`), `@file` injects file
+    contents. `disable-model-invocation` is NOT in the current commands docs — not used.
+  - Namespacing: subdirectories do NOT namespace the name — "The subdirectory appears
+    in the command description but doesn't affect the command name itself"
+    (`.claude/commands/frontend/component.md` -> `/component`, not `/frontend:component`).
+  - Shadowing: a custom command can shadow bundled skills (code-review, verify);
+    built-ins include /clear, /compact, /context, /usage.
+  - HEADLESS: docs confirm SDK query() ("Only commands that work without an interactive
+    terminal are dispatchable through the SDK") but do NOT document `claude -p "/cmd"`.
+    => TESTED LIVE below (it works).
+
+THE COMMAND  (.claude/commands/fix-and-test.md)
+  frontmatter: description; argument-hint [service name]; allowed-tools Bash(./mvnw:*),
+  Read, Edit, Grep, Glob; model inherit.
+  body (the encoded ritual, uses $ARGUMENTS):
+    1. run `./mvnw -q -Dtest='$ARGUMENTS' test`, report counts;
+    2. if green, stop (no-op on healthy code);
+    3. if red, read the failure, find the ROOT CAUSE in src/main (fix the code, not the
+       test — the test pins the requirement), minimal change, don't touch unrelated code
+       or planted-bug files;
+    4. re-run, confirm green, report file:line before->after + counts.
+
+SETUP  hand-planted a NON-PLANT drill break on the scratch branch:
+  ClaimHistoryService.java:29  `.limit(limit)` -> `.limit(limit + 1)` (off-by-one).
+  Confirmed RED first: `./mvnw -Dtest=ClaimHistoryServiceTest test` -> Tests run: 4,
+  Failures: 1 (recentClaimsHonorsTheLimit: "Expected size: 2 but was: 3").
+
+LIVE RUN  `claude -p "/fix-and-test ClaimHistoryServiceTest" --dangerously-skip-permissions`
+  (permissive so mvnw + edits run headless — disposable clone). 68s.
+  --- what happened (trimmed) ---
+  Green — exit 0, no failures reported.
+  Before: Tests run: 4, Failures: 1   After: Tests run: 4, Failures: 0
+  Failure: recentClaimsHonorsTheLimit:50 — "Expected size: 2 but was: 3".
+  Root cause: off-by-one in the stream limit. recentClaims(ref, 2) returned 3 claims.
+  src/main/java/com/priorauth/service/ClaimHistoryService.java:29
+    -   .limit(limit + 1)
+    +   .limit(limit)
+  Nothing else touched. No files were tagged as planted bugs [...]
+  [unscripted, out of scope, NOT fixed] historyFor (lines 38-41) contradicts its own
+  javadoc — a classic N+1; ClaimRepo.findByPatientRefInOrderByServiceDateDesc exists
+  and is unused; the test stubs both query shapes so it can't catch it; traces to
+  commit 674272e. "Happy to fix it as a separate change if you want it."
+  --- git diff: 1 file, 1 insertion, 1 deletion; line 29 back to `.limit(limit)` ---
+
+WHAT THE RUN PROVES
+  1. HEADLESS SLASH COMMANDS WORK: `claude -p "/fix-and-test ClaimHistoryServiceTest"`
+     expanded the custom command and ran its exact 4-step ritual — undocumented, now
+     tested. $ARGUMENTS ("ClaimHistoryServiceTest") flowed into the mvnw -Dtest= call.
+  2. ONE COMMAND = THE WHOLE RITUAL: run -> read failure -> root-cause -> minimal fix
+     -> re-run green -> report, in 68s, from a single line the whole team can type.
+  3. THE ENCODED DISCIPLINE HELD: it fixed the code not the test, changed exactly one
+     line, respected the plant-tag rule, and — unscripted — FLAGGED the N+1 as out of
+     scope rather than scope-creeping. The value of a command is the judgement you bake
+     into its steps; a good ritual says as much about what NOT to do.
+  Nuance worth teaching: a command is just a prompt template — it has no new powers, it
+  standardises the PROMPT so the good procedure runs the same way every time, for
+  everyone, instead of living in one senior engineer's head.
+
+HYGIENE
+  Disposable clone at scratchpad/m101-api, branch drill/m101-cmd, deleted after.
+  Teaching repo priorauth-api untouched (main, clean); no BUG-API plant disturbed.
+
+CROSS-TOOL (doc-verified 2026-07-25, for labB/labC)
+  Copilot = strong equivalent, "prompt files": ".github/prompts/<name>.prompt.md",
+    invoked by typing "/<name>" in Chat ("the filename becomes the command"). Real
+    arguments: free-form (/create-react-form formName=MyForm) + ${input:var} + ${selection}.
+    Frontmatter: description, name, agent (ask|agent|plan; older builds used `mode:` —
+    verify), model, tools. Public preview (VS Code, Visual Studio, JetBrains).
+    Sources: code.visualstudio.com/docs/copilot/customization/prompt-files;
+    docs.github.com/.../prompt-files/your-first-prompt-file.
+  Cursor = has an equivalent, "commands": ".cursor/commands/[command].md", run by typing
+    "/" in the Agent input and selecting from the dropdown (Cursor 1.6 changelog). BUT
+    no documented argument mechanism (no $ARGUMENTS/${input} equivalent), and Cursor 2.4+
+    is migrating commands INTO Skills (.cursor/skills/<name>/SKILL.md, /migrate-to-skills)
+    — so commands-vs-skills is verify-in-your-version. Source: cursor.com/changelog/1-6;
+    cursor.com/docs/context/commands (now serves Skills content).
+  VERIFY-IN-YOUR-VERSION flags (not asserted in module): Copilot `mode:` vs `agent:`,
+    the full ${...} built-in variable list beyond ${selection}, the chat.promptFiles
+    enable setting; Cursor commands-vs-skills status.
+  Note the convergence with M-9.x: all three tools treat the named-reusable-prompt as a
+  legacy/on-ramp form that upgrades into a SKILL (Claude .claude/skills/, Cursor 2.4+
+  .cursor/skills/, Copilot skills) — the same "command is the on-ramp to a skill" story.

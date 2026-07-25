@@ -1023,6 +1023,25 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim27 .a27cap b{color:var(--text);font-weight:500}
 .anim27 .a27replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim27 .a27replay:hover{border-color:var(--cyan)}
+.anim28{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim28 .a28head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim28 .a28lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim28 .a28lname{font-size:10px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.anim28 .a28row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim28 .a28row.on{opacity:1;transform:none}
+.anim28 .a28key{font-size:9.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap;font-family:var(--mono)}
+.anim28 .a28key.g{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.anim28 .a28key.red{border-color:var(--s10red,#d0705a);color:var(--s10red,#d0705a)}
+.anim28 .a28key.green{border-color:#3E9A6B;color:#3E9A6B}
+[data-theme="light"] .anim28 .a28key.green{color:#2d7350;border-color:#2d7350}
+.anim28 .a28out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim28 .a28out b{color:var(--text);font-weight:500}
+.anim28 .a28out code{font-size:9px}
+.anim28 .a28arg{color:var(--gold);font-weight:600}
+.anim28 .a28cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim28 .a28cap b{color:var(--text);font-weight:500}
+.anim28 .a28replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim28 .a28replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -3827,6 +3846,63 @@ const MODS = [
       {q:'What is the honest limitation of a <code>SubagentStop</code> gate you must design around?',
        options:['It cannot read output','It has no documented <code>stop_hook_active</code> loop guard (unlike the <code>Stop</code> hook), so an always-blocking gate will loop &mdash; you must add your own block counter','It only works in the cloud','It blocks the whole session'], answer:1}
     ]
+  },
+  {
+    id:'M-10.1', path:'eng', track:'T-10', title:'Slash commands', minutes:40,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The order set in a hospital&rsquo;s EHR. A clinician types one name &mdash; &ldquo;sepsis bundle&rdquo; &mdash; and it expands into the whole vetted sequence the hospital agreed on: the labs, the fluids, the antibiotic and its dose, in order. Nobody re-derives the protocol at 3am from memory; the order set <em>is</em> the memory, written once and run the same way by everyone. A slash command is your team&rsquo;s order set for a repeated engineering ritual: one name, the whole procedure, identical every time &mdash; and, like a good order set, its real value is the judgement baked into which steps it includes and which it refuses to.',
+      body:
+        '<p><strong>A slash command is a reusable prompt, saved and named.</strong> Drop a Markdown file at <code>.claude/commands/&lt;name&gt;.md</code> and <em>&ldquo;the filename (without .md) becomes the command name&rdquo;</em>; type <code>/name</code> and its body becomes your prompt, with <code>$ARGUMENTS</code> (and positional <code>$1</code>, <code>$2</code>) filled from what you typed after it. You have been using this course&rsquo;s own the whole time: <code>/plan-module</code>, <code>/build-module</code>, <code>/build-lab</code>, <code>/validate-module</code>, <code>/refresh-module</code> &mdash; five numbered <code>$ARGUMENTS</code> rituals that built every module you are reading.</p>' +
+        '<p><strong>And it is the same thing as a skill, from the other side.</strong> M-9.1 told you custom commands merged into skills; the docs say it plainly from here too: <em>&ldquo;the <code>.claude/commands/</code> directory is the legacy format. The recommended format is <code>.claude/skills/&lt;name&gt;/SKILL.md</code>, which supports the same slash-command invocation (<code>/name</code>) plus autonomous invocation&hellip; The CLI continues to support both formats.&rdquo;</em> So a command file is the simplest on-ramp &mdash; one file, invoked deliberately; promote it to a skill when you want Claude to reach for it on its own or to carry supporting files. Encode the ritual today; upgrade the housing later.</p>' +
+        '<p><strong>We built <code>/fix-and-test</code> and ran it for real.</strong> Its body is a four-step ritual &mdash; run the tests for <code>$ARGUMENTS</code>, and if red: find the root cause in the source, apply the minimal fix (<em>the test pins the requirement, so fix the code, not the test</em>), re-run to green, report <code>file:line</code> before&rarr;after &mdash; with <code>allowed-tools: Bash(./mvnw:*), Edit&hellip;</code> scoping what it may touch. Against a planted off-by-one, one line did the whole job: <code>/fix-and-test ClaimHistoryServiceTest</code> &rarr; tests <b>RED (4 run, 1 fail)</b> &rarr; root cause at <code>ClaimHistoryService.java:29</code> (<code>.limit(limit + 1)</code>) &rarr; minimal fix &rarr; <b>GREEN (4/0)</b>, in 68 seconds. It also answered a question the docs leave open: <code>claude -p "/fix-and-test ClaimHistoryServiceTest"</code> invoked the custom command headless &mdash; verified, not assumed.</p>' +
+        '<p><strong>The value is the judgement in the steps, not the typing saved.</strong> A command has no new powers &mdash; it is a prompt template. What it buys is that your team&rsquo;s <em>good</em> procedure runs the same way for everyone, instead of living in one senior engineer&rsquo;s head. Watch what our ritual&rsquo;s wording bought: the agent changed exactly one line, refused to edit the test, left plant-tagged files alone, and &mdash; unprompted &mdash; <b>flagged the N+1 in <code>historyFor</code> as &ldquo;out of scope, not fixed&rdquo;</b> rather than scope-creeping into it. A well-written command says as much about what <em>not</em> to do as what to do; that restraint is the part you cannot get from remembering to type the steps yourself.</p>' +
+        '<p><strong>The mechanics worth knowing.</strong> Frontmatter carries <code>description</code>, <code>argument-hint</code> (what to type after the name), <code>allowed-tools</code> (scope the shell &mdash; <code>Bash(./mvnw:*)</code>, not blanket Bash), and <code>model</code>. Inside the body, <code>!`cmd`</code> runs a shell command and injects its output (it needs the matching <code>allowed-tools</code>), and <code>@path</code> injects a file&rsquo;s contents. One gotcha the docs are explicit about: subdirectories do <em>not</em> namespace the name &mdash; <code>commands/frontend/component.md</code> is still <code>/component</code>, the folder only shows in the description. Next, M-10.2 adds the other half: a command is the ritual you <em>invoke</em>; a hook is the rule that fires <em>whether you remember to or not</em>.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-28'},
+    labA:{
+      title:'Build and run /fix-and-test — Claude Code',
+      steps:[
+        'Create <code>.claude/commands/fix-and-test.md</code>. Frontmatter: a <code>description</code>, an <code>argument-hint</code> (e.g. <code>[service name]</code>), and <code>allowed-tools: Bash(./mvnw:*), Read, Edit, Grep, Glob</code> &mdash; scope the shell, do not grant blanket Bash. Body: the four-step ritual using <code>$ARGUMENTS</code> (run tests &rarr; root-cause &rarr; minimal fix, code-not-test &rarr; re-run green), and spell out the restraint: don&rsquo;t touch unrelated code.',
+        'Invoke it: <code>/fix-and-test &lt;a service test&gt;</code>. On green code it should be a no-op; introduce a one-line break and watch it run the whole ritual. Reference: our run went RED 4/1 &rarr; fixed <code>ClaimHistoryService.java:29</code> &rarr; GREEN 4/0 in 68s, and changed exactly one line.',
+        'Try it headless: <code>claude -p "/fix-and-test &lt;test&gt;"</code>. Reference: it works &mdash; the custom command is invoked and <code>$ARGUMENTS</code> is substituted (undocumented, so we verified it live).',
+        'Now test the judgement you baked in: point it at an area with a second, out-of-scope problem and confirm it <em>flags</em> that rather than fixing it. Ours flagged an N+1 as out of scope unprompted. If it scope-creeps, tighten the wording &mdash; the command is only as disciplined as its steps.',
+        'Success: a scoped <code>/fix-and-test</code> that runs the full ritual from one line, works headless, changes only what it should, and flags what it should not &mdash; plus a note on when you would promote it to a <code>.claude/skills/</code> directory (autonomous invocation, supporting files).'
+      ]
+    },
+    labB:{
+      title:'The same ritual — Copilot prompt files',
+      steps:[
+        'Copilot&rsquo;s equivalent is a <b>prompt file</b>: save <code>.github/prompts/fix-and-test.prompt.md</code> and invoke it by typing <code>/fix-and-test</code> in the Chat view (the filename becomes the command). Frontmatter carries <code>description</code>, <code>model</code>, <code>tools</code>, and the agent to run under &mdash; current docs use <code>agent: ask|agent|plan</code>; older builds used <code>mode:</code>, so verify your version. Prompt files are in public preview.',
+        'Pass the area as an argument &mdash; Copilot supports free-form input (<code>/fix-and-test ClaimHistoryServiceTest</code>) and typed <code>${input:&hellip;}</code> variables, the analogue of Claude&rsquo;s <code>$ARGUMENTS</code>. Run it on the same break and grade it on the two things that matter: did it run the whole procedure, and did it keep the restraint (fix the failure, flag the rest)?',
+        'Success: the same ritual as a Copilot prompt file invoked by name, and one line on where prompt files live (<code>.github/prompts/</code>) versus <code>.claude/commands/</code>.'
+      ]
+    },
+    labC:{
+      title:'Cursor commands, then the ritual rule',
+      steps:[
+        'Cursor&rsquo;s equivalent is a <b>command</b>: <em>&ldquo;Commands are stored in <code>.cursor/commands/[command].md</code>&hellip; run them by typing <code>/</code> in the Agent input and selecting the command.&rdquo;</em> Encode the ritual there. Two honest differences to note: Cursor commands have <em>no</em> documented argument mechanism (unlike <code>$ARGUMENTS</code> / <code>${input}</code>), and Cursor 2.4+ is folding commands into Skills (<code>.cursor/skills/</code>) &mdash; verify which your version uses.',
+        'Write the rule this module exists for: <em>anything your team does more than twice by hand belongs in a named command &mdash; the value is not the keystrokes saved but that the good procedure, including what it refuses to do, runs the same way for everyone; and across all three tools the command is the on-ramp to a skill, so encode the ritual now and upgrade the housing when you want autonomous invocation.</em>',
+        'Success: the ritual encoded in a third tool, the rule written, and two more procedures from your week named as command candidates.'
+      ]
+    },
+    checklist:[
+      'My <code>/fix-and-test</code> lives in <code>.claude/commands/</code> and its filename is the command name.',
+      'It uses <code>$ARGUMENTS</code> and scopes the shell with <code>allowed-tools: Bash(./mvnw:*)</code>, not blanket Bash.',
+      'It ran the whole ritual from one line and changed only what it should.',
+      'It flagged an out-of-scope problem instead of fixing it &mdash; the restraint I wrote held.',
+      'I can state when to promote a command file to a <code>.claude/skills/</code> directory.'
+    ],
+    quiz:[
+      {q:'What actually creates the command name for <code>.claude/commands/fix-and-test.md</code>?',
+       options:['A <code>name</code> field in frontmatter','The filename without <code>.md</code> &mdash; it becomes <code>/fix-and-test</code>','The first heading in the body','You register it in settings.json'], answer:1},
+      {q:'What is the current relationship between <code>.claude/commands/</code> and skills?',
+       options:['They are unrelated','<code>.claude/commands/</code> is the legacy format; <code>.claude/skills/&lt;name&gt;/SKILL.md</code> is recommended and gives the same <code>/name</code> plus autonomous invocation &mdash; both still work','Commands were removed','Skills cannot be invoked with a slash'], answer:1},
+      {q:'The module insists the value of a slash command is not the keystrokes saved. What is it?',
+       options:['It runs faster','The <b>judgement baked into the steps</b> &mdash; the good procedure (including what it refuses to do, like flagging out-of-scope issues instead of fixing them) runs the same way for everyone, not just the one who remembers it','It uses a cheaper model','It needs no arguments'], answer:1},
+      {q:'How should <code>allowed-tools</code> be set for a command that runs the test suite?',
+       options:['Grant blanket <code>Bash</code> so it can do anything','Scope it &mdash; e.g. <code>Bash(./mvnw:*)</code> &mdash; so the command may run the tests but not arbitrary shell commands','Omit it; commands need no permissions','Set it to <code>Edit</code> only'], answer:1}
+    ]
   }
 ];
 
@@ -6185,6 +6261,47 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-28 · The Command Expands (spec: VISUALS.md) ----------
+   Abstract staged diagram. Lane 1 = the command file (.claude/commands/fix-and-test.md,
+   $ARGUMENTS highlighted). Lane 2 = one invocation running the REAL recorded ritual
+   (recordings/m101-slash-commands.txt): RED 4/1 -> root cause line 29 -> minimal fix ->
+   GREEN 4/0 -> N+1 flagged out of scope. 68s. No fake terminal chrome. */
+VISUALS['ANIM-28'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim28" aria-label="A slash command expands into its encoded ritual">' +
+      '<div class="a28head"><span>ANIM-28 · ONE COMMAND, THE WHOLE RITUAL</span>' +
+        '<button class="a28replay" data-a28replay>REPLAY &#9656;</button></div>' +
+      '<div class="a28lane">' +
+        '<div class="a28lname">THE FILE &mdash; <code>.claude/commands/fix-and-test.md</code></div>' +
+        '<div class="a28row"><span class="a28key g">frontmatter</span><span class="a28out"><code>description</code> · <code>argument-hint</code> · <code>allowed-tools: Bash(./mvnw:*), Edit&hellip;</code></span></div>' +
+        '<div class="a28row"><span class="a28key">step 1</span><span class="a28out">run <code>./mvnw -Dtest=\'<span class="a28arg">$ARGUMENTS</span>\' test</code>, report counts</span></div>' +
+        '<div class="a28row"><span class="a28key">step 2&ndash;3</span><span class="a28out">if red: root-cause in <code>src/main</code>, minimal fix &mdash; <b>fix the code, not the test</b>; don&rsquo;t touch unrelated code or plant tags</span></div>' +
+        '<div class="a28row"><span class="a28key">step 4</span><span class="a28out">re-run, confirm green, report <code>file:line</code> before&rarr;after</span></div>' +
+      '</div>' +
+      '<div class="a28lane">' +
+        '<div class="a28lname">ONE INVOCATION &mdash; <code>/fix-and-test <span class="a28arg">ClaimHistoryServiceTest</span></code> · 68s, REAL RUN</div>' +
+        '<div class="a28row"><span class="a28key red">RED</span><span class="a28out">Tests run: 4, <b>Failures: 1</b> &mdash; <code>recentClaimsHonorsTheLimit</code> &ldquo;Expected size: 2 but was: 3&rdquo;</span></div>' +
+        '<div class="a28row"><span class="a28key">root cause</span><span class="a28out">off-by-one at <code>ClaimHistoryService.java:29</code> &mdash; <code>.limit(limit + 1)</code> &rarr; <code>.limit(limit)</code></span></div>' +
+        '<div class="a28row"><span class="a28key green">GREEN</span><span class="a28out">Tests run: 4, <b>Failures: 0</b> &mdash; one line changed, nothing else touched</span></div>' +
+        '<div class="a28row"><span class="a28key g">bonus</span><span class="a28out">flagged the N+1 in <code>historyFor</code> as <b>out of scope, not fixed</b> &mdash; the ritual&rsquo;s &ldquo;fix the failure, flag the rest&rdquo; discipline</span></div>' +
+      '</div>' +
+      '<div class="a28cap">What to notice: a command has <b>no new powers</b> &mdash; it standardises the <em>prompt</em> so your team&rsquo;s good procedure runs the same way every time, instead of living in one engineer&rsquo;s head. (<code>.claude/commands/</code> is the legacy form; a skill is the current one &mdash; M-9.1.)</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a28row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*460)));
+    timers.push(setTimeout(play, 300 + rows.length*460 + 5000));
+  }
+  mount.querySelector('[data-a28replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-27 · The Custom Agent, Filed Three Ways (spec: VISUALS.md) ----------
