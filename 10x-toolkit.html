@@ -963,6 +963,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim05 .s5kid.done .s5ret{opacity:1}
 .sim05 .s5cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim05 .s5cap b{color:var(--text);font-weight:500}
+.sim19{--s19red:#d0705a;--s19green:#3E9A6B;--s19amber:#c99a3a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim19{--s19red:#B0503C;--s19green:#2d7350;--s19amber:#976f16}
+.sim19 .s19head{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px;gap:10px}
+.sim19 .s19modes{display:flex;gap:6px}
+.sim19 .s19mb{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim19 .s19mb.on{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700}
+.sim19 .s19org{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:10px}
+.sim19 .s19orgt{font-size:9px;letter-spacing:.1em;color:var(--faint);margin-bottom:7px}
+.sim19 .s19arow{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.sim19 .s19aname{font-size:10.5px;color:var(--text);min-width:120px}
+.sim19 .s19aname.lead{color:var(--gold);font-weight:600}
+.sim19 .s19chip{font-size:8.5px;letter-spacing:.04em;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.sim19 .s19flow{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:10px 12px}
+.sim19 .s19frow{display:grid;grid-template-columns:96px 1fr;align-items:baseline;gap:10px;margin-bottom:7px;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.sim19 .s19frow.on{opacity:1;transform:none}
+.sim19 .s19flbl{font-size:9px;letter-spacing:.05em;color:var(--faint);text-align:right}
+.sim19 .s19val{font-size:10px;color:var(--text);line-height:1.5}
+.sim19 .s19val code{font-size:9px}
+.sim19 .s19pill{display:inline-block;font-size:9px;letter-spacing:.05em;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+.sim19 .s19pill.block{border-color:var(--s19amber);color:var(--s19amber)}
+.sim19 .s19pill.bad{border-color:var(--s19red);color:var(--s19red)}
+.sim19 .s19pill.good{border-color:var(--s19green);color:var(--s19green)}
+.sim19 .s19pill.off{color:var(--faint)}
+.sim19 .s19cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.sim19 .s19cap b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -3745,6 +3770,63 @@ const MODS = [
       {q:'You have old <code>.chatmode.md</code> files. What is the current, doc-verified migration?',
        options:['Rewrite them from scratch','Rename them to <code>.agent.md</code> &mdash; custom agents were previously known as custom chat modes; same behaviour, new extension','They still work unchanged forever','Delete them; the feature is gone'], answer:1}
     ]
+  },
+  {
+    id:'M-9.7', path:'eng', track:'T-09', title:'Agent team design', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'A prior-auth review board. A lead routes each case to the specialist who owns it &mdash; a coding reviewer, a clinical reviewer &mdash; and each is credentialed for exactly their lane and nothing else. But the board is only as trustworthy as the sign-off desk at the door, which will not let a determination leave the building unless it carries a verdict, a citation, and a signature. Take that desk away and one hurried reviewer&rsquo;s &ldquo;looks fine to me&rdquo; ships as a decision. A team of agents is the same three things: who may act (the org chart), what each may touch (their credentials), and a gate that will not let substandard work count.',
+      body:
+        '<p><strong>This is the track, assembled.</strong> A skill teaches the how (M-9.1), a hook enforces the rule (M-9.3), a subagent isolates the work (M-9.4); you built one, fanned three out (M-9.5), and filed them for a team (M-9.6). Designing a <em>team</em> is three decisions on top: the <b>org chart</b> (who may spawn whom), <b>least privilege</b> (what each agent may touch), and a <b>quality gate</b> (what standard their output must meet before it counts). Get those right and a fleet of agents is trustworthy; get them wrong and it is a fast way to produce confident garbage.</p>' +
+        '<p><strong>The org chart is an allowlist, not a vibe.</strong> A lead agent can be told exactly which specialists it may delegate to: <em>&ldquo;<code>tools: Agent(worker, researcher)</code> &hellip; This is an allowlist: only the worker and researcher subagents can be spawned,&rdquo;</em> and <em>&ldquo;if you omit <code>Agent</code> from the <code>tools</code> list entirely, the agent can&rsquo;t spawn any subagents.&rdquo;</em> Nesting is off by default &mdash; a subagent can&rsquo;t build its own subagents until you raise <code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code>. Keep each specialist single-responsibility, because the docs are blunt about the cost: agent teams <em>&ldquo;add coordination overhead and use significantly more tokens&hellip; They work best when teammates can operate independently.&rdquo;</em> A team is for parallel, independent work (M-9.5) &mdash; not for a quick sequential change.</p>' +
+        '<p><strong>Least privilege is the credential.</strong> Scope every agent&rsquo;s <code>tools</code> to what it needs &mdash; <em>&ldquo;allow only necessary tools for security and focus.&rdquo;</em> Your read-only reviewers (M-9.4) cannot edit, so they cannot wander off-lane no matter what a prompt asks; the coding agent gets a shell, the reviewer does not. This is the same door-not-sign principle you proved in M-9.4, now applied per role across the whole org chart.</p>' +
+        '<p><strong>The quality gate is the new muscle &mdash; and it works.</strong> A <code>SubagentStop</code> hook fires <em>&ldquo;when a subagent finishes&rdquo;</em> and, crucially, its payload hands you <em>&ldquo;<code>last_assistant_message</code> &mdash; the final text message from the subagent before it stops,&rdquo;</em> so a gate can read a teammate&rsquo;s output and block substandard work: exit 2 (or a <code>{"decision":"block"}</code>) <em>&ldquo;prevents the subagent from stopping &mdash; the subagent continues working instead.&rdquo;</em> We proved it. A deliberately sloppy <code>lazy-reviewer</code> with <b>no output contract</b> returned &ldquo;the code looks fine.&rdquo; The gate required a verdict, a <code>cited: file:line</code>, and a marker &mdash; it blocked once, and the reviewer came back with <b>VIOLATION, <code>cited: ApprovalService.java:99</code>, and <code>REVIEW COMPLETE (lazy-reviewer)</code></b>: a marker it was <em>never told to produce</em>. The only place that exact phrasing existed was the gate&rsquo;s feedback, so the gate demonstrably rewrote the outcome &mdash; M-9.3&rsquo;s deterministic enforcement, now guarding a team&rsquo;s output.</p>' +
+        '<p><strong>Two honest notes so your gate is real, not decorative.</strong> First, verify a gate by its <em>effect</em>: the block reason is injected into the subagent&rsquo;s context server-side, not echoed in the visible transcript &mdash; we confirmed the block from the hook&rsquo;s own counter file and from the reviewer adopting the instructed format, the same trace-not-prose discipline as M-9.5. Second, mind the gap: <code>SubagentStop</code> has <b>no</b> documented <code>stop_hook_active</code> loop guard (the <code>Stop</code> hook does), so a gate that always blocks will loop &mdash; bring your own counter and give up after N tries. That closes T-09: skills teach, hooks enforce, subagents isolate, and a well-designed <em>team</em> is all three wired together with a gate on the door. T-10 turns these into full workflows.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-19'},
+    labA:{
+      title:'Design a team with a quality gate — Claude Code',
+      steps:[
+        'Build two read-only reviewers in <code>.claude/agents/</code>: one <em>with</em> an output contract (verdict + <code>cited: file:line</code> + a marker) and one <em>without</em>. Give a lead a scoped org chart with <code>tools: Agent(&lt;your reviewers&gt;)</code> so it can only spawn those.',
+        'Write the gate: a <code>SubagentStop</code> hook (in <code>.claude/settings.json</code>) running a script that reads <code>last_assistant_message</code> and, if the verdict / citation / marker is missing, emits <code>{"decision":"block","reason":"&hellip;"}</code>. Add your OWN block counter &mdash; <code>SubagentStop</code> has no <code>stop_hook_active</code>, so an always-block gate loops.',
+        'Unit-test the gate first (the M-9.3 method): pipe fake payloads &mdash; a conforming one (allow), a non-conforming one (block), the same one again (loop-guard allow), and a non-reviewer agent_type (ignore).',
+        'Run it live: delegate to the contract-less reviewer and watch the gate correct it. Reference: the gate blocked once (its counter file went to 1) and the reviewer returned the verdict, citation and marker it was never told to emit. Verify by <em>effect</em> &mdash; the counter file and the adopted format &mdash; not by looking for the reason in the prose.',
+        'Success: a scoped org chart (allowlist), read-only specialists, a SubagentStop gate unit-tested and proven live to upgrade a sloppy teammate&rsquo;s output, and your own loop guard in place.'
+      ]
+    },
+    labB:{
+      title:'Team + gate — Copilot',
+      steps:[
+        'Assemble the same team as Copilot custom agents (<code>.agent.md</code>, M-9.6), each scoped read-only, with the lead able to call them as subagents. Use the org/user/repo scope that fits who should reach the team.',
+        'Add the gate with a Copilot hook &mdash; its hooks reference includes <code>postToolUse</code>/<code>subagentStop</code>-style events and a <code>permissionDecision</code> deny (fail-closed, M-9.3), the Copilot analogue of the SubagentStop gate. Enforce the same output contract.',
+        'Success: a scoped Copilot agent team whose output is gated, and one line on where Copilot&rsquo;s gate runs (CLI / cloud agent) versus Claude&rsquo;s SubagentStop.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the team-design rule',
+      steps:[
+        'Build the team as Cursor subagents (read-only scoping, own context) and add a Cursor hook (<code>afterFileEdit</code>/<code>stop</code>-style, exit 2 = deny, M-9.3) as the quality gate on their output.',
+        'Write the rule this module &mdash; and the track &mdash; exists for: <em>a team of agents is an org chart (who may spawn whom, as an allowlist), least privilege (each agent scoped to the tools its job needs), and a quality gate (a stop-hook that blocks substandard output before it counts); skills teach, hooks enforce, subagents isolate, and a team wires all three together.</em>',
+        'Success: the three tools&rsquo; team + gate mechanisms compared, the rule written, and one real task from your work you would hand to a gated agent team rather than a single session.'
+      ]
+    },
+    checklist:[
+      'My lead has an <code>Agent(&hellip;)</code> allowlist &mdash; it can only spawn the specialists I named.',
+      'Every specialist is scoped to the tools its job needs, nothing more.',
+      'My SubagentStop gate reads <code>last_assistant_message</code> and blocks output that misses the contract.',
+      'I added my own loop guard &mdash; <code>SubagentStop</code> has no <code>stop_hook_active</code>.',
+      'I verified the gate fired by its <em>effect</em> (the block corrected the output), not by the prose.'
+    ],
+    quiz:[
+      {q:'How do you restrict which subagents a lead agent may spawn?',
+       options:['You cannot &mdash; any agent can spawn any other','An allowlist in the <code>tools</code> field: <code>Agent(worker, researcher)</code> permits only those; omit <code>Agent</code> entirely and it can spawn none','By naming them in the description','By running them in order'], answer:1},
+      {q:'What makes a <code>SubagentStop</code> hook usable as a quality gate?',
+       options:['It can edit the subagent&rsquo;s code','Its payload includes <code>last_assistant_message</code> (the subagent&rsquo;s final output), and it can <code>block</code> so the subagent keeps working &mdash; so it can read substandard output and send it back','It runs before the subagent starts','It counts tokens'], answer:1},
+      {q:'A contract-less <code>lazy-reviewer</code> ended up emitting <code>REVIEW COMPLETE (lazy-reviewer)</code>, a marker its definition never mentioned. What does that prove?',
+       options:['The reviewer was well-trained','The gate fired &mdash; it blocked the incomplete output and fed back the required format, which is the only place that exact phrasing existed, so the gate changed the outcome','A coincidence','The marker was in the prompt'], answer:1},
+      {q:'What is the honest limitation of a <code>SubagentStop</code> gate you must design around?',
+       options:['It cannot read output','It has no documented <code>stop_hook_active</code> loop guard (unlike the <code>Stop</code> hook), so an always-blocking gate will loop &mdash; you must add your own block counter','It only works in the cloud','It blocks the whole session'], answer:1}
+    ]
   }
 ];
 
@@ -5871,6 +5953,68 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-19 · The Team & the Quality Gate (spec: VISUALS.md) ----------
+   Toggle the SubagentStop gate ON/OFF. OFF: a contract-less reviewer's incomplete
+   output is accepted as-is (red). ON: the gate blocks it, the reviewer redoes it,
+   the conforming review is accepted (green). Encodes the three M-9.7 topics
+   (org-chart allowlist, scoped tools, quality gate). Foot carries the real run
+   (recordings/m97-agent-team-gate.txt): gate blocked once (counter=1), the reviewer
+   then emitted a marker it was never told to produce. */
+VISUALS['SIM-19'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="sim19" aria-label="Agent team quality gate: gate on vs off">' +
+      '<div class="s19head"><span>SIM-19 · THE TEAM &amp; THE SubagentStop GATE</span>' +
+        '<span class="s19modes">' +
+          '<button class="s19mb on" type="button" data-mode="on">GATE ON</button>' +
+          '<button class="s19mb" type="button" data-mode="off">GATE OFF</button>' +
+        '</span></div>' +
+      '<div class="s19org">' +
+        '<div class="s19orgt">THE ORG CHART &mdash; WHO SPAWNS WHOM · LEAST PRIVILEGE</div>' +
+        '<div class="s19arow"><span class="s19aname lead">lead</span><span class="s19chip">tools: <code>Agent(pa-reviewer, lazy-reviewer)</code> &mdash; allowlist</span></div>' +
+        '<div class="s19arow"><span class="s19aname">pa-reviewer</span><span class="s19chip">tools: Read · Grep · Glob &mdash; read-only</span></div>' +
+        '<div class="s19arow"><span class="s19aname">lazy-reviewer</span><span class="s19chip">tools: Read · Grep · Glob &mdash; read-only, <em>no contract</em></span></div>' +
+      '</div>' +
+      '<div class="s19flow">' +
+        '<div class="s19frow" data-f="0"><span class="s19flbl">returns</span><span class="s19val">lazy-reviewer: &ldquo;the code looks fine to me&rdquo; <span class="s19pill bad">incomplete</span></span></div>' +
+        '<div class="s19frow" data-f="1"><span class="s19flbl">SubagentStop</span><span class="s19val" data-gate></span></div>' +
+        '<div class="s19frow" data-f="2"><span class="s19flbl">after gate</span><span class="s19val" data-after></span></div>' +
+        '<div class="s19frow" data-f="3"><span class="s19flbl">outcome</span><span class="s19val" data-outcome></span></div>' +
+      '</div>' +
+      '<div class="s19cap" data-cap></div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.s19frow')];
+  const gate = mount.querySelector('[data-gate]');
+  const after = mount.querySelector('[data-after]');
+  const outcome = mount.querySelector('[data-outcome]');
+  const cap = mount.querySelector('[data-cap]');
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function setMode(mode){
+    mount.querySelectorAll('.s19mb').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    stop();
+    const on = mode === 'on';
+    gate.innerHTML = on
+      ? '<span class="s19pill block">BLOCK</span> reads <code>last_assistant_message</code> &mdash; missing verdict · <code>cited:</code> · marker'
+      : '<span class="s19pill off">(off &mdash; output not checked)</span>';
+    after.innerHTML = on
+      ? 'reviewer redoes it: <b>VIOLATION</b> · <code>cited: ApprovalService.java:99</code> · <code>REVIEW COMPLETE (lazy-reviewer)</code>'
+      : '<span style="color:var(--faint)">&mdash;</span>';
+    outcome.innerHTML = on
+      ? '<span class="s19pill good">ACCEPTED &mdash; meets the contract &check;</span>'
+      : '<span class="s19pill bad">ACCEPTED as-is &mdash; an incomplete review counts &cross;</span>';
+    cap.innerHTML = on
+      ? 'What to notice: the gate is a <b>SubagentStop hook</b> &mdash; M-9.3&rsquo;s enforcement on M-9.5&rsquo;s team. Real run: it <b>blocked once</b> (its counter file = 1) and the contract-less reviewer then emitted <code>REVIEW COMPLETE (lazy-reviewer)</code> &mdash; a marker it was <b>never told to produce</b>, so the gate demonstrably changed the output.'
+      : 'What to notice: with no gate, a teammate&rsquo;s substandard output <b>counts</b> &mdash; the team is only as good as its sloppiest member. The gate is what makes the standard enforced, not hoped for.';
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    const seq = on ? [0,1,2,3] : [0,1,3];
+    seq.forEach((idx,i) => timers.push(setTimeout(() => rows[idx].classList.add('on'), 250 + i*500)));
+  }
+  mount.querySelectorAll('.s19mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  setMode('on');
 };
 
 /* ---------- SIM-18 · Three Primitives, One Job Each (spec: VISUALS.md) ----------

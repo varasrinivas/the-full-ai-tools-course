@@ -1,0 +1,105 @@
+M-9.7 — Agent team design (org-chart, tool scoping, SubagentStop quality gate)
+Live artifact: a SubagentStop quality gate that turned a contract-less reviewer's
+sloppy output into a conforming one — proven from the gate's own counter file and
+from the agent emitting a marker it was never told to produce.
+Recorded 2026-07-25, claude 2.1.220. Disposable clone on branch drill/m97-team
+(deleted after; teaching repo untouched, BUG-API-xx plants intact).
+
+WHAT THE MODULE TEACHES (the T-09 synthesis)
+  Three design ideas, one running example:
+  1. ORG-CHART / single responsibility — a lead delegates to scoped specialists;
+     who may spawn whom is itself an allowlist.
+  2. SCOPING TOOLS PER AGENT — least privilege: each agent gets only the tools it
+     needs (the read-only reviewers of M-9.4/9.5).
+  3. SubagentStop QUALITY GATE — a hook that fires when a subagent finishes,
+     inspects its output, and BLOCKS substandard work so the team's OUTPUT STANDARD
+     is enforced by code, not hope. This is M-9.3's "hooks enforce" applied to
+     M-9.4/9.5's subagents — the track's ideas composed.
+
+DOC VERIFICATION (code.claude.com/docs, 2026-07-25, exact quotes)
+  SubagentStop hook
+   - fires "When a subagent finishes" (vs Stop = "When Claude finishes responding").
+   - PAYLOAD INCLUDES THE OUTPUT: "last_assistant_message — The final text message
+     from the subagent before it stops. Useful when you need the final output rather
+     than reading the transcript file." Also agent_type (the name), agent_id,
+     stop_reason, + common fields (session_id, transcript_path, cwd, hook_event_name).
+     => the gate can inspect the subagent's result directly. VERIFIED.
+   - BLOCK: exit code 2 "Prevents the subagent from stopping—the subagent continues
+     working instead." OR JSON {"decision":"block","reason":"..."} with optional
+     hookSpecificOutput.additionalContext ("adds feedback for Claude. The conversation
+     continues so Claude can act on the feedback"). VERIFIED.
+   - LOOP GUARD: stop_hook_active is documented for Stop ONLY; the SubagentStop payload
+     does NOT list it. => implement your own block counter. (Taught as an honest gap.)
+  SubagentStart: fires "When a subagent is spawned", receives agent_type (= the name
+     field), "No blocking or decision control available."
+  ORG-CHART / who-may-spawn-whom (sub-agents.md, verbatim):
+   - "tools: Agent(worker, researcher) ... This is an allowlist: only the worker and
+     researcher subagents can be spawned." "If you omit Agent from the tools list
+     entirely, the agent can't spawn any subagents."
+   - Nesting is OFF by default; enable with CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH
+     (e.g. 2 = two layers, the second can't delegate further). No hardcoded max.
+  WHEN TO SPLIT (sub-agents.md): main conversation for iterative/shared-context/quick/
+     latency-sensitive work; subagents when "the task produces verbose output you don't
+     need in your main context / you want to enforce specific tool restrictions / the
+     work is self-contained and can return a summary." Agent teams "add coordination
+     overhead and use significantly more tokens ... work best when teammates can operate
+     independently."
+  LEAST PRIVILEGE (sub-agents.md): tools allowlist / disallowedTools denylist; "Use the
+     tools field to allow only necessary tools for security and focus."
+
+THE TEAM  (.claude/agents/)
+  pa-reviewer.md  — read-only (tools: Read, Grep, Glob), WITH a TEAM CONTRACT in its
+    body: every review must state a verdict (PASS|VIOLATION), a `cited: <file>:<line>`
+    line, and end with `REVIEW COMPLETE (pa-reviewer)`.
+  lazy-reviewer.md — read-only, but NO contract (just "report whether the code is
+    correct"). This is the deliberately-sloppy teammate the gate must correct.
+
+THE GATE  (.claude/hooks/review-gate.js, wired as SubagentStop in .claude/settings.json)
+  On SubagentStop, if agent_type matches /reviewer/, read last_assistant_message and
+  require all three: a verdict, a `cited:<file>:<line>`, and a `REVIEW COMPLETE (` marker.
+  If any missing -> emit {"decision":"block","reason":...,"hookSpecificOutput":{...
+  additionalContext...}} so the subagent resumes and fixes it. Own loop guard: a temp
+  counter file per (session,agent); block at most MAX_BLOCKS=1, then allow (SubagentStop
+  has no stop_hook_active).
+  UNIT-TESTED first (deterministic, the M-9.3 method), 4 piped payloads:
+    T1 conforming (verdict+cited+marker)        -> ALLOW (empty)
+    T2 "looks fine, uses > though" (all missing) -> BLOCK (JSON with the 3 missing items)
+    T2b same session/agent again                 -> ALLOW (loop guard)
+    T3 agent_type "Explore" (not a reviewer)     -> ALLOW (ignored)
+
+LIVE RUN  (`claude -p "Use the lazy-reviewer subagent to review the auto-approve
+  threshold in ApprovalService.java, then report its verdict." --output-format
+  stream-json --verbose`)  wall-clock 91s; cost $0.4429; 5 turns.
+  RESULT: the gate BLOCKED once and the contract-less reviewer then complied. Proof:
+   1. THE GATE'S COUNTER FILE was written with value 1 — and that file is written ONLY
+      on the block branch of the hook. So the gate blocked exactly once. Direct proof
+      the block path executed.
+   2. THE MARKER THE REVIEWER WAS NEVER TOLD TO EMIT appears in the stream: the
+      lazy-reviewer's final output is `VIOLATION` + `cited: ...\ApprovalService.java:99`
+      + `REVIEW COMPLETE (lazy-reviewer)`. Its own definition contains NO contract and
+      NO marker — the ONLY source of the exact phrase "REVIEW COMPLETE (lazy-reviewer)"
+      (agent name interpolated by the hook) is the gate's feedback string. The reviewer
+      could only have learned that format from the gate. => the gate changed the output.
+  HONEST NUANCE worth teaching: the gate's reason text does NOT appear verbatim as a
+  visible stream event in -p (SubagentStop feedback is injected into the subagent's
+  context server-side, not echoed). As in M-9.5, the proof of a hook/subagent's action
+  lives in its EFFECT and the trace (here: the counter file + the agent adopting the
+  instructed format), not necessarily in the visible prose. Verify gates by effect.
+
+THE LESSON (T-09 close)
+  A team of agents is three design choices, and you now have all three:
+   - ORG-CHART: give the lead an Agent(...) allowlist so it can only spawn the
+     specialists you intend; keep each specialist single-responsibility; nesting is
+     off unless you turn it on.
+   - LEAST PRIVILEGE: scope every agent's tools to what it needs — a reviewer that
+     can't edit can't wander (M-9.4).
+   - QUALITY GATE: a SubagentStop hook enforces the team's output standard
+     deterministically — a teammate that returns substandard work is sent back before
+     its result counts, exactly as M-9.3's hook enforced the threshold rule. Skills
+     teach the how, subagents isolate the work, hooks enforce the bar; a team is all
+     three wired together. (Mind the SubagentStop loop-guard gap: bring your own counter.)
+
+HYGIENE
+  Disposable clone at scratchpad/m97-api, branch drill/m97-team, deleted after.
+  Gate counter temp files removed. Teaching repo priorauth-api untouched (main, clean);
+  no plant disturbed.
