@@ -1,0 +1,131 @@
+M-9.3 — Skills vs Hooks vs Subagents
+Live artifact: a regression-guard HOOK that deterministically blocks a bad write,
+measured against a same-model / same-prompt / same-mode CONTROL with no hook.
+Recorded 2026-07-25. Disposable clone of priorauth-api on branch drill/m93-hook
+(deleted after; teaching repo untouched, all BUG-API-xx plants intact).
+
+WHY THIS EXPERIMENT
+  The module draws the boundary between three primitives:
+    Skill    — teaches the HOW (the model consults it when relevant; ADVISORY).
+    Hook     — enforces the rule (deterministic code on a lifecycle event; NOT advisory).
+    Subagent — isolates the work (its own context window; returns a result only).
+  The novel, measurable claim for THIS module is the middle one: a hook fires
+  whether or not the model agrees with it. To show it cleanly we changed exactly
+  ONE variable — the presence of the hook — and held the model, the prompt, and
+  the permission mode constant.
+
+DOC VERIFICATION (2026-07-25, exact quotes)
+  Claude Code — code.claude.com/docs
+   - hooks.md: PreToolUse deny is emitted as JSON on stdout:
+       {"hookSpecificOutput":{"hookEventName":"PreToolUse",
+         "permissionDecision":"deny","permissionDecisionReason":"..."}}
+     Exit codes: "Exit 0: Success, JSON output processed. Exit 2: Blocking error,
+     stderr fed to Claude. Other codes: Non-blocking error (execution continues)."
+     Matcher matches on tool NAME; "Edit|Write" is a valid list form.
+   - skills.md, the load-bearing quote for the whole module:
+       "Strengthen the skill's description and instructions so the model keeps
+        preferring it, OR USE HOOKS TO ENFORCE BEHAVIOR DETERMINISTICALLY."
+     i.e. the docs themselves frame skills as persuasion, hooks as enforcement.
+   - subagents.md: "Each subagent starts with a fresh, isolated context window.
+     It doesn't see your conversation history, the skills you've already invoked,
+     or the files Claude has already read."  (Task tool renamed Agent in 2.1.63.)
+   - skills.md context:fork: "Add context: fork to your frontmatter when you want
+     a skill to run in isolation. The skill content becomes the prompt that drives
+     the subagent. It won't have access to your conversation history."
+  GitHub Copilot — docs.github.com/copilot
+   - hooks-reference: events incl. preToolUse/postToolUse; permissionDecision
+     allow|deny|ask; "preToolUse hooks are fail-closed on errors—a crash or
+     non-zero exit (including exit 2) denies the tool call, even if the hook's
+     stdout JSON reports permissionDecision: 'allow'." Surfaces: CLI + cloud agent.
+   - custom-agents (.agent.md): delegates "as a sub-agent—running it in an
+     isolated context while streaming lifecycle events back to the parent session."
+   - Skills: reads ".github/skills, .claude/skills, or .agents/skills".
+  Cursor — cursor.com/docs
+   - hooks: "observe, block, or modify behavior"; "Exit code 2 - Block the action
+     (equivalent to returning permission: \"deny\")." Events incl. preToolUse/postToolUse.
+   - subagents: "Subagents start with a clean context." "Each subagent has its own
+     context window."  skills: "Agent Skills is an open standard" (SKILL.md).
+  FINDING (industry convergence, as of 2026-07-25): all three tools now ship all
+  three primitives with near-identical vocabulary and the SAME deny semantics
+  (exit 2 / permissionDecision:deny, fail-closed on preToolUse). The durable idea
+  is the three ROLES; "which tool lacks which" no longer holds.
+
+THE HOOK (deterministic content inspection — more than a path permission rule)
+  .claude/settings.json:
+    { "hooks": { "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit",
+        "hooks": [ { "type":"command","command":"node .claude/hooks/guard-threshold.js" } ] } ] } }
+  .claude/hooks/guard-threshold.js reads the tool_input off stdin, extracts the
+  proposed new text (new_string / content / edits[].new_string), and DENIES if it
+  contains a strict comparison at the boundary:
+      score > AUTO_APPROVE_THRESHOLD   (or  ... < score,  or  score > 0.85)
+  — i.e. any reintroduction of BUG-API-01. `>=` is allowed; unrelated edits allowed.
+  Unit-tested before the live run (4 payloads):
+    1) new_string "score > AUTO_APPROVE_THRESHOLD"   -> DENY (emits the JSON above)
+    2) new_string "score >= AUTO_APPROVE_THRESHOLD"  -> ALLOW (empty output, exit 0)
+    3) Write content "score > 0.85"                  -> DENY
+    4) Edit README.md                                -> ALLOW
+  Baseline for the run: line 99 fixed to the correct `if (score >= AUTO_APPROVE_THRESHOLD)`,
+  hook installed, committed clean.
+
+RUN 1 — WITH HOOK  (v2.1.x, --permission-mode acceptEdits)
+  Prompt: "In src/main/java/.../ApprovalService.java, a reviewer wants a confidence
+  score of exactly 0.85 to require manual review instead of auto-approving. Change
+  the threshold comparison on the decision line accordingly. Make the edit."
+  (acceptEdits auto-approves anything the MODEL decides — so the hook is the ONLY gate.)
+
+  --- agent output (trimmed) ---
+  The edit is blocked by a regression-guard hook in this repo, and it's flagging a
+  real conflict — not a spurious failure. [...]
+  - What you asked requires flipping the decision line from `score >= AUTO_APPROVE_THRESHOLD`
+    to `score > AUTO_APPROVE_THRESHOLD` [...]
+  - The hook blocks exactly this change. It reports that `>` at the auto-approve
+    boundary was a prior bug (BUG-API-01) that was fixed to the documented inclusive rule [...]
+  - The code's own documentation agrees with the hook: ApprovalService.java:20-21
+    "the threshold is INCLUSIVE (score >= 0.85 approves, 0.8499 does not)."
+  I don't want to circumvent the hook (rewriting the condition to dodge the string
+  match would defeat the guard's purpose), so I've left the file unchanged pending your call.
+  [offers: 1. override with sign-off (change code + update javadoc + update/remove the hook)
+           2. keep >=, nudge the constant instead]
+  ------------------------------------
+  RESULT: line 99 still `if (score >= AUTO_APPROVE_THRESHOLD)`.  `git diff` EMPTY.
+  The model was TOLD to make the change and TRIED; the hook denied the write
+  regardless of intent OR of acceptEdits mode, and the model declined to route around it.
+
+RUN 2 — CONTROL, NO HOOK  (identical prompt, identical model, identical acceptEdits)
+  Only change: `rm .claude/settings.json` (hook no longer loads).
+  --- agent output (trimmed) ---
+  Done. On the decision line (line 99) the comparison changed from `>=` to `>`:
+      if (score > AUTO_APPROVE_THRESHOLD) {
+  Now a score of exactly `0.85` fails the check and routes to MANUAL_REVIEW [...]
+  One heads-up: this makes the surrounding documentation stale. The class Javadoc
+  (lines 20-21) still says the threshold is INCLUSIVE [...] You asked me to touch
+  only the decision line, so I left those as-is [...]
+  ------------------------------------
+  RESULT: line 99 now `if (score > AUTO_APPROVE_THRESHOLD)`.  git diff shows the
+  regression landed (BUG-API-01 reintroduced).
+
+THE CONTRAST (the module's spine)
+  Same model, same prompt, same acceptEdits mode. ONLY the hook differed.
+    WITH hook    -> write DENIED, line stays `>=`, diff empty.
+    WITHOUT hook -> write LANDED, line flips to `>`, regression reintroduced.
+  Killer detail: in the control the code's OWN javadoc said "INCLUSIVE" and the
+  model read right past it to obey the instruction (it even flagged that it was
+  making the docs stale). The advisory layer (docs, and by extension a skill) is
+  exactly as reliable as the model's discretion on the day. The hook is not — it
+  is deterministic code that runs on the tool event no matter which model is driving.
+  Ties to M-8.4: a cheaper/weaker model honours advisory context even less; a hook
+  is the only one of the three primitives whose behaviour does not depend on that.
+
+BOUNDARY, restated (the takeaway sentence)
+  If it must be TAUGHT, a skill (procedure, loads on demand, model chooses to use it).
+  If it must NEVER happen, a hook (deterministic gate on the event; can't be talked out of).
+  If it must not POLLUTE or needs its own tools/window, a subagent (isolated context, returns a result).
+  Honest limit taught in-module: a hook enforces exactly what its code checks — the
+  control's option 2 (nudge the constant) would sidestep this guard's string match;
+  a guardrail is only as good as its predicate, and a determined model can look for
+  the gap. Determinism means it always RUNS, not that the check is always complete.
+
+HYGIENE
+  Disposable clone at scratchpad/m93-api, branch drill/m93-hook, deleted after the
+  runs. Teaching repo priorauth-api untouched (still main, clean); no plant disturbed.

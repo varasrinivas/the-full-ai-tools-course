@@ -900,6 +900,43 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim10 .s10why li{margin-bottom:5px}
 .sim10 .s10why b{color:var(--text);font-weight:500}
 .sim10 .s10foot{font-size:10.5px;color:var(--faint);margin-top:10px}
+.sim18{--s18red:#d0705a;--s18green:#3E9A6B;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim18{--s18red:#B0503C;--s18green:#2d7350}
+.sim18 .s18head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim18 .s18legend{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.sim18 .s18leg{flex:1;min-width:150px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--panel);font-size:10px;color:var(--dim);line-height:1.4}
+.sim18 .s18leg b{display:block;font-size:10.5px;letter-spacing:.08em;margin-bottom:2px}
+.sim18 .s18leg.s b{color:var(--gold)} .sim18 .s18leg.h b{color:var(--cyan)} .sim18 .s18leg.u b{color:var(--purple)}
+.sim18 .s18card{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:7px 10px;margin-bottom:6px}
+.sim18 .s18card.hit{border-color:var(--s18green)}
+.sim18 .s18card.miss{border-color:var(--s18red)}
+.sim18 .s18task{flex:1;font-size:10.5px;color:var(--text);line-height:1.45;min-width:0}
+.sim18 .s18verdict{font-size:9px;letter-spacing:.08em;white-space:nowrap}
+.sim18 .s18verdict.ok{color:var(--s18green)}
+.sim18 .s18verdict.no{color:var(--s18red)}
+.sim18 .s18picks{display:flex;gap:4px;flex-shrink:0}
+.sim18 .s18pick{font-family:var(--mono);font-size:9px;letter-spacing:.05em;padding:3px 7px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.sim18 .s18pick:disabled{cursor:default;opacity:.75}
+.sim18 .s18pick[data-t="s"][aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+.sim18 .s18pick[data-t="h"][aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700}
+.sim18 .s18pick[data-t="u"][aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
+.sim18 .s18ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.sim18 .s18btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.sim18 .s18btn:hover:not(:disabled){border-color:var(--gold)}
+.sim18 .s18btn:disabled{opacity:.45;cursor:default}
+.sim18 .s18score{font-size:10.5px;color:var(--dim)}
+.sim18 .s18why{margin-top:10px;font-size:10.5px;color:var(--dim);line-height:1.55;list-style:none;padding:0}
+.sim18 .s18why li{margin-bottom:5px}
+.sim18 .s18why b{color:var(--text);font-weight:500}
+.sim18 .s18proof{margin-top:12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 12px}
+.sim18 .s18ptitle{font-size:9.5px;letter-spacing:.1em;color:var(--faint);margin-bottom:8px}
+.sim18 .s18prow{display:flex;align-items:center;gap:10px;font-size:10.5px;margin-bottom:5px}
+.sim18 .s18ptag{font-size:9px;letter-spacing:.06em;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;min-width:104px;text-align:center}
+.sim18 .s18prow.block .s18ptag{border-color:var(--s18green);color:var(--s18green)}
+.sim18 .s18prow.land .s18ptag{border-color:var(--s18red);color:var(--s18red)}
+.sim18 .s18pcode{font-size:10px;color:var(--text)}
+.sim18 .s18pnote{font-size:10px;color:var(--dim)}
+.sim18 .s18foot{font-size:10.5px;color:var(--faint);margin-top:10px}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -3437,6 +3474,63 @@ const MODS = [
       {q:'How should you treat Claude-only frontmatter such as <code>context: fork</code> in a shared skill?',
        options:['Avoid skills entirely if you use multiple tools','As enhancements &mdash; keep the portable substance in the body, since other tools read the body and ignore what they do not understand','As required fields','They break other tools, so the file cannot be shared'], answer:1}
     ]
+  },
+  {
+    id:'M-9.3', path:'eng', track:'T-09', title:'Skills vs Hooks vs Subagents', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'A prior-auth shop runs on three different instruments, and reaching for the wrong one is a category error. There is the <em>training binder</em> on the reviewer&rsquo;s desk &mdash; it teaches the audit procedure, you open it when a case matches, and it costs nothing sitting closed. There is the intake system&rsquo;s <em>hard validation</em> that rejects a form with no CPT code before a human ever sees it &mdash; no judgment, fires every single time. And there is the <em>specialist consult</em> you send a complex case out to &mdash; a separate reviewer with their own desk and files who hands back a verdict, not their whole working pile. You would never enforce a required field by writing &ldquo;please remember the CPT code&rdquo; in the binder, and you would never teach clinical judgment with a form validator. Matching the instrument to the job is the entire skill.',
+      body:
+        '<p><strong>Three primitives, one job each &mdash; and the words name the jobs.</strong> A <b>skill</b> teaches the <em>how</em>: a procedure that loads when your request matches and costs nothing until then (M-9.1). A <b>hook</b> enforces the <em>rule</em>: deterministic code that runs on a lifecycle event &mdash; before a tool call, after an edit, on session start. A <b>subagent</b> isolates the <em>work</em>: it runs in its own context window and hands back a result. The distinction is not folklore; the Claude Code docs draw it themselves. When a skill stops steering behaviour, the fix they name is telling: <em>&ldquo;strengthen the skill&rsquo;s description and instructions so the model keeps preferring it, <b>or use hooks to enforce behaviour deterministically</b>.&rdquo;</em> A skill <em>persuades</em>. A hook <em>enforces</em>. That one word is the whole module.</p>' +
+        '<p><strong>Measured, not asserted: same model, same prompt, one variable.</strong> We fixed <code>ApprovalService</code> to the correct inclusive rule (<code>score &gt;= 0.85</code>) and installed a PreToolUse hook &mdash; a small script that reads the <em>content</em> of any proposed edit and denies anything reintroducing the strict <code>&gt;</code> that was BUG-API-01. Then, under <code>--permission-mode acceptEdits</code> (which auto-approves whatever the <em>model</em> decides, so the hook is the only gate), the agent was told: <em>&ldquo;a reviewer wants exactly 0.85 to require manual review &mdash; change the comparison.&rdquo;</em> It tried. The write was <b>denied</b>; the file was unchanged; <code>git diff</code> was empty. Then the identical prompt with the hook removed &mdash; the one variable &mdash; and the edit <b>landed</b>: <code>&gt;=</code> flipped to <code>&gt;</code>, the regression back in the tree.</p>' +
+        '<p><strong>Why the control is the proof, and why it should unsettle you.</strong> In the run <em>without</em> the hook, the code&rsquo;s own javadoc still said <em>&ldquo;the threshold is INCLUSIVE&rdquo;</em> two lines up &mdash; and the model read straight past it to obey the instruction, even noting on its way out that it had just made the docs stale. That is the entire case against relying on advice for things that must not happen: <b>a skill, an instruction, a comment in the code are all exactly as reliable as the model&rsquo;s discretion on the day</b>. M-8.4 already showed a cheaper model being fluent, confident, and wrong about this very rule. A hook does not care which model is driving or how sure it feels; it is code on the event, and it ran the same way in <code>acceptEdits</code> mode as it would in any other.</p>' +
+        '<p><strong>The third instrument, and an honest limit on the second.</strong> The subagent is the isolation primitive &mdash; <em>&ldquo;each subagent starts with a fresh, isolated context window; it doesn&rsquo;t see your conversation history, the skills you&rsquo;ve already invoked, or the files Claude has already read&rdquo;</em> &mdash; which is why you send the 40-file PHI sweep or the broad architecture survey <em>out</em> and get a verdict back instead of paying for all of it in your main window (the token argument from T-08; a skill can request it declaratively with <code>context: fork</code>). But keep the hook honest: it enforces exactly the predicate you wrote. In the blocked run the agent noticed it could have sidestepped the guard by nudging the constant instead of the operator &mdash; and <em>declined</em> to. Determinism means the check always <b>runs</b>, not that it is always <b>complete</b>; a guardrail is only as good as what it inspects. That is a reason to write the predicate carefully, not a reason to go back to advice.</p>' +
+        '<p><strong>Pick by the job, not by the tool.</strong> As of this writing all three tools have converged on the same three primitives with nearly the same words &mdash; Copilot and Cursor both ship <code>SKILL.md</code> skills, <code>preToolUse</code>/<code>postToolUse</code> hooks that deny on exit&nbsp;2, and isolated-context subagents (Copilot&rsquo;s <code>.agent.md</code> runs &ldquo;in an isolated context&rdquo;; Cursor&rsquo;s subagents &ldquo;start with a clean context&rdquo;). The old &ldquo;which tool can do this&rdquo; question has quietly closed; the live question is the roles. So the rule that carries out of here: <b>if it must be taught, a skill; if it must never happen, a hook; if it must not pollute or needs its own tools, a subagent.</b> M-9.4 builds the first real one &mdash; a read-only review subagent for the PA rules.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-18'},
+    labA:{
+      title:'Build the hook that a skill cannot replace — Claude Code',
+      steps:[
+        'On a throwaway clone, fix the threshold to the inclusive rule (<code>score &gt;= AUTO_APPROVE_THRESHOLD</code>) so you have a correct baseline to protect. This is the state a hook exists to defend.',
+        'Write a PreToolUse hook. In <code>.claude/settings.json</code>, add a <code>PreToolUse</code> entry with <code>matcher: "Edit|Write|MultiEdit"</code> running a script (<code>node .claude/hooks/guard-threshold.js</code>). The script reads the tool input from stdin, extracts the proposed new text, and on a match emits <code>{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"&hellip;"}}</code>. Unit-test it by piping a fake payload in before you trust it &mdash; deny on strict <code>&gt;</code>, allow on <code>&gt;=</code>.',
+        'Run the enforcement test under <code>--permission-mode acceptEdits</code> so nothing but the hook can stop the write: ask the agent to change the comparison so exactly 0.85 no longer auto-approves. Reference: the write was denied, the file unchanged, <code>git diff</code> empty &mdash; the agent tried and could not.',
+        'Run the control &mdash; delete the hook, ask the identical question. Reference: the edit landed, <code>&gt;=</code> became <code>&gt;</code>, the regression back in the tree, the model obeying the instruction past its own javadoc. One variable changed; that is your proof it was the hook, not the model&rsquo;s good manners.',
+        'Now do the sort for real: take one thing from your week that must be <em>taught</em> (a procedure &rarr; skill), one that must <em>never happen</em> (a gate &rarr; hook), and one that would <em>pollute</em> your context (a big read-only sweep &rarr; subagent, or a skill with <code>context: fork</code>). Success: a hook proven to block, its control proven to land, and three real needs routed to the right primitive.'
+      ]
+    },
+    labB:{
+      title:'The same three primitives — Copilot',
+      steps:[
+        'Confirm the boundary holds in Copilot. Its hooks reference lists <code>preToolUse</code>/<code>postToolUse</code> with a <code>permissionDecision</code> of <code>allow</code>/<code>deny</code>/<code>ask</code>, and is explicit that <code>preToolUse</code> hooks are <em>fail-closed</em> &mdash; a non-zero exit (including exit&nbsp;2) denies the tool call even if stdout says allow. Note where hooks run (Copilot CLI and the cloud agent).',
+        'For isolation, look at a custom agent (<code>.agent.md</code>): the runtime delegates to it &ldquo;as a sub-agent &mdash; running it in an isolated context.&rdquo; For the teach role, recall M-9.2: Copilot reads <code>.claude/skills/</code>. Map each of your three needs from labA onto the Copilot mechanism.',
+        'Success: for one enforcement need, a Copilot hook that denies; and one line each on where the skill and the subagent equivalents live &mdash; proving the three roles are not Claude-only.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the boundary rule',
+      steps:[
+        'Cursor ships all three too: hooks that &ldquo;observe, block, or modify&rdquo; (exit code 2 blocks, &ldquo;equivalent to returning <code>permission: &quot;deny&quot;</code>&rdquo;), subagents that &ldquo;start with a clean context&rdquo; with &ldquo;their own context window&rdquo;, and <code>SKILL.md</code> skills on the open standard alongside the older always-on <code>.cursor/rules</code>. Note the cost difference from M-9.1: a rule loads every turn; a skill loads on match.',
+        'Write the rule this module exists for, in your own words: <em>if it must be taught, a skill; if it must never happen, a hook; if it must not pollute or needs its own tools, a subagent</em> &mdash; and add the caveat you learned from the blocked run, that a hook enforces exactly its predicate, so write the predicate with care.',
+        'Success: the three Cursor mechanisms located, the boundary rule written, and one honest note on where you were tempted to use advice for a job that needed a gate.'
+      ]
+    },
+    checklist:[
+      'I can state the one-word difference: a skill persuades, a hook enforces.',
+      'My hook denied a write under <code>acceptEdits</code>, where only the hook could stop it.',
+      'My control (no hook, same prompt) let the same edit land &mdash; proving it was the hook.',
+      'I can name when to reach for a subagent instead: isolation, own tools, keep the main context clean.',
+      'I can state the hook&rsquo;s honest limit: it always runs, but only checks what its predicate checks.'
+    ],
+    quiz:[
+      {q:'The docs&rsquo; own remedy for a skill that stops steering behaviour is to &ldquo;&hellip;or use hooks to enforce behaviour deterministically.&rdquo; What distinction does that draw?',
+       options:['Hooks are faster than skills','A skill <em>persuades</em> &mdash; the model chooses to use it; a hook <em>enforces</em> &mdash; it is deterministic code on a lifecycle event that runs regardless of the model','Skills are for teams, hooks for individuals','Hooks replace skills entirely'], answer:1},
+      {q:'Under <code>acceptEdits</code> the agent was told to reintroduce the strict <code>&gt;</code> and tried; the write was denied and <code>git diff</code> stayed empty. In the control, one variable removed, the same prompt landed the edit. What was the variable?',
+       options:['A different, more careful model','The PreToolUse hook &mdash; present, it blocked the write deterministically; removed, only the model&rsquo;s discretion remained, and it obeyed the instruction past its own javadoc','The permission mode','The wording of the prompt'], answer:1},
+      {q:'When is a subagent the right primitive rather than a skill or a hook?',
+       options:['Whenever you want the task done faster','When the work should be <em>isolated</em> &mdash; its own context window, its own tools &mdash; so a large read-only sweep returns a verdict without polluting your main context','Only when a hook is unavailable','When you need the model to remember a rule'], answer:1},
+      {q:'What is the honest limit of the regression-guard hook, shown when the agent noticed it could have nudged the constant instead of the operator?',
+       options:['Hooks are slow','A hook is deterministic in that it always <em>runs</em>, but it only checks the predicate you wrote &mdash; a guardrail is only as good as what it inspects, so write the predicate carefully','Hooks cannot read file content','Hooks only work in Claude Code'], answer:1}
+    ]
   }
 ];
 
@@ -5477,6 +5571,98 @@ VISUALS['ANIM-08'] = function(mount, opts){
    12 PA tasks vs the four rungs of ANIM-18's ladder. Agent-rung rationales
    carry the recorded $0.89/9-turn envelope; card 6's answer (13 rows) is
    repo canon. One contested card accepts either defended pick. */
+/* ---------- SIM-18 · Three Primitives, One Job Each (spec: VISUALS.md) ----------
+   Route nine PA needs to skill / hook / subagent, then a proof strip carrying
+   the real measured with-hook vs control result (recordings/m93-skill-hook-subagent.txt):
+   same model/prompt/acceptEdits, one variable — the hook blocked the write
+   (diff empty), removed it let the regression land (>= became >). Doc-verified
+   2026-07-25. Colours are the tool palette repurposed for roles (gold/cyan/purple
+   = skill/hook/subagent) — NOT tool identity here; foot states it. */
+VISUALS['SIM-18'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const KINDS = [{k:'s',lbl:'SKILL'},{k:'h',lbl:'HOOK'},{k:'u',lbl:'SUBAGENT'}];
+  const NAME = {s:'SKILL', h:'HOOK', u:'SUBAGENT'};
+  const CARDS = [
+    {t:'Give every threshold audit the same four-line report, reached for when asked', a:['s'], why:'<b>Teach a procedure</b> &rarr; skill: it loads on match and shapes the answer (M-9.1). Persuasion, not a wall.'},
+    {t:'Guarantee no edit can reintroduce the strict <code>&gt;</code> at the 0.85 boundary', a:['h'], why:'<b>Must never happen</b> &rarr; hook: the measured run &mdash; denied the write under acceptEdits, <code>git diff</code> empty.'},
+    {t:'Sweep 40 files for PHI leaks without filling the main window with all of them', a:['u'], why:'<b>Must not pollute</b> &rarr; subagent: isolated context window, hands back a verdict (the T-08 token argument).'},
+    {t:'Reject any commit whose diff contains a payer API key', a:['h'], why:'<b>A gate on an event</b> &rarr; hook: deterministic code, fires every time regardless of what the model intends.'},
+    {t:'A reusable denial-letter drafting checklist the agent uses when drafting', a:['s'], why:'<b>Teach the how</b> &rarr; skill: a procedure that costs nothing until a drafting request matches it.'},
+    {t:'Route exactly-0.85 the same way no matter which model is driving', a:['h'], why:'<b>Model-independent enforcement</b> &rarr; hook: M-8.4 showed a cheaper model fluent and wrong here; advice depends on the model, a hook does not.'},
+    {t:'Run a broad read-only architecture survey, return only the summary', a:['u'], why:'<b>Isolate the work</b> &rarr; subagent: its own context and tools; a skill can request it with <code>context: fork</code>.'},
+    {t:'Package &ldquo;how we write Testcontainers tests&rdquo; once, load it only when testing', a:['s'], why:'<b>On-demand procedure</b> &rarr; skill (M-6.2): the body loads on match, so it is not rent every session like a rule.'},
+    {t:'Fan out three reviewers over controller / service / repo, each its own window', a:['u'], why:'<b>Parallel isolation</b> &rarr; subagents (the M-9.5 fan-out): separate context each, results returned to the parent.'}
+  ];
+  mount.innerHTML =
+    '<div class="sim18" aria-label="Three primitives drill: route each need to skill, hook, or subagent">' +
+      '<div class="s18head"><span>SIM-18 · ONE JOB EACH · ROUTE 9 NEEDS</span><span data-s18mode>' + (reduce ? 'STATIC' : 'DRILL') + '</span></div>' +
+      '<div class="s18legend">' +
+        '<div class="s18leg s"><b>SKILL</b>teaches the <em>how</em> &mdash; loads on match, model chooses to use it</div>' +
+        '<div class="s18leg h"><b>HOOK</b>enforces the <em>rule</em> &mdash; deterministic code on an event, can&rsquo;t be talked out of it</div>' +
+        '<div class="s18leg u"><b>SUBAGENT</b>isolates the <em>work</em> &mdash; own context window, returns a result</div>' +
+      '</div>' +
+      '<div>' + CARDS.map((c,i) =>
+        '<div class="s18card" data-card="' + i + '">' +
+          '<span class="s18task">' + c.t + '<span class="s18verdict" data-v="' + i + '"></span></span>' +
+          '<span class="s18picks">' + KINDS.map(l =>
+            '<button class="s18pick" type="button" data-pick data-i="' + i + '" data-t="' + l.k + '" aria-pressed="false">' + l.lbl + '</button>').join('') +
+          '</span>' +
+        '</div>').join('') + '</div>' +
+      '<div class="s18ctrl">' +
+        '<button class="s18btn" type="button" data-reveal disabled>REVEAL</button>' +
+        '<button class="s18btn" type="button" data-reset>RESET</button>' +
+        '<span class="s18score" data-score aria-live="polite"></span>' +
+      '</div>' +
+      '<ul class="s18why" data-why hidden></ul>' +
+      '<div class="s18proof">' +
+        '<div class="s18ptitle">THE PROOF &mdash; SAME MODEL, SAME PROMPT, SAME acceptEdits; ONE VARIABLE: THE HOOK</div>' +
+        '<div class="s18prow block"><span class="s18ptag">WITH HOOK</span><span class="s18pcode">write DENIED &mdash; line stays <code>score &gt;= …</code></span><span class="s18pnote">git diff empty; the agent tried and could not</span></div>' +
+        '<div class="s18prow land"><span class="s18ptag">NO HOOK</span><span class="s18pcode">write LANDED &mdash; <code>&gt;=</code> flips to <code>&gt;</code></span><span class="s18pnote">regression back in the tree, past the javadoc that says INCLUSIVE</span></div>' +
+      '</div>' +
+      '<div class="s18foot">What to notice: a skill and a hook are not two flavours of the same thing &mdash; advice is as reliable as the model&rsquo;s discretion, a hook is not. (Colours here are roles, not tools.)</div>' +
+    '</div>';
+  const picks = {};
+  let revealed = false;
+  const revealBtn = mount.querySelector('[data-reveal]');
+  const scoreEl = mount.querySelector('[data-score]');
+  const whyEl = mount.querySelector('[data-why]');
+  function refresh(){
+    CARDS.forEach((c,i) => {
+      const card = mount.querySelector('[data-card="' + i + '"]');
+      const v = mount.querySelector('[data-v="' + i + '"]');
+      card.querySelectorAll('[data-pick]').forEach(b => {
+        b.setAttribute('aria-pressed', String(picks[i] === b.dataset.t));
+        b.disabled = revealed;
+      });
+      card.classList.remove('hit','miss');
+      if(revealed){
+        const ok = c.a.indexOf(picks[i]) > -1;
+        card.classList.add(ok ? 'hit' : 'miss');
+        v.className = 's18verdict ' + (ok ? 'ok' : 'no');
+        v.innerHTML = ok ? ' ✓' : ' ✗ → ' + c.a.map(k => NAME[k]).join(' / ');
+      } else { v.innerHTML = ''; v.className = 's18verdict'; }
+    });
+    revealBtn.disabled = revealed || Object.keys(picks).length < CARDS.length;
+    if(revealed){
+      const right = CARDS.filter((c,i) => c.a.indexOf(picks[i]) > -1).length;
+      scoreEl.textContent = right + '/' + CARDS.length + ' matched to the right primitive';
+      whyEl.hidden = false;
+      whyEl.innerHTML = CARDS.map(c => '<li>' + c.why + '</li>').join('');
+    } else { scoreEl.textContent = ''; whyEl.hidden = true; whyEl.innerHTML = ''; }
+  }
+  mount.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+    if(revealed) return;
+    picks[+b.dataset.i] = b.dataset.t; refresh();
+  }));
+  revealBtn.addEventListener('click', () => { revealed = true; refresh(); });
+  mount.querySelector('[data-reset]').addEventListener('click', () => {
+    Object.keys(picks).forEach(k => delete picks[k]); revealed = false;
+    mount.querySelector('[data-s18mode]').textContent = 'DRILL'; refresh();
+  });
+  if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
+  refresh();
+};
+
 VISUALS['SIM-10'] = function(mount, opts){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const LAYERS = [{k:'g',lbl:'GHOST'},{k:'i',lbl:'INLINE'},{k:'c',lbl:'CHAT'},{k:'a',lbl:'AGENT'}];
