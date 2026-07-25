@@ -1042,6 +1042,25 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim28 .a28cap b{color:var(--text);font-weight:500}
 .anim28 .a28replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim28 .a28replay:hover{border-color:var(--gold)}
+.anim29{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim29 .a29head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim29 .a29lane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:10px}
+.anim29 .a29lname{font-size:10px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.anim29 .a29row{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim29 .a29row.on{opacity:1;transform:none}
+.anim29 .a29key{font-size:9px;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--text);background:var(--panel2);white-space:nowrap;font-family:var(--mono)}
+.anim29 .a29key.block{border-color:rgba(245,184,75,.5);color:var(--gold)}
+.anim29 .a29key.no{border-color:var(--line);color:var(--dim)}
+.anim29 .a29key.red{border-color:var(--s10red,#d0705a);color:var(--s10red,#d0705a)}
+.anim29 .a29key.green{border-color:#3E9A6B;color:#3E9A6B}
+[data-theme="light"] .anim29 .a29key.green{color:#2d7350;border-color:#2d7350}
+.anim29 .a29out{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim29 .a29out b{color:var(--text);font-weight:500}
+.anim29 .a29out code{font-size:9px}
+.anim29 .a29cap{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.anim29 .a29cap b{color:var(--text);font-weight:500}
+.anim29 .a29replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim29 .a29replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -3903,6 +3922,63 @@ const MODS = [
       {q:'How should <code>allowed-tools</code> be set for a command that runs the test suite?',
        options:['Grant blanket <code>Bash</code> so it can do anything','Scope it &mdash; e.g. <code>Bash(./mvnw:*)</code> &mdash; so the command may run the tests but not arbitrary shell commands','Omit it; commands need no permissions','Set it to <code>Edit</code> only'], answer:1}
     ]
+  },
+  {
+    id:'M-10.2', path:'eng', track:'T-10', title:'Hooks', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'The hospital&rsquo;s automatic systems, the ones that run whether or not anyone remembers them. The pharmacy interlock that will not dispense a drug the chart flags as an allergy &mdash; it fires before the order goes out, and no amount of &ldquo;just this once&rdquo; talks it down. The label printer that stamps every specimen tube the instant it&rsquo;s filled. The redaction stamp that blacks out a record before it leaves for the outside auditor. A slash command (M-10.1) is a protocol a clinician <em>chooses</em> to run; a hook is the interlock that runs on the event itself, deterministically, whether or not anyone invoked it. That difference &mdash; invoked versus automatic &mdash; is the whole point.',
+      body:
+        '<p><strong>A hook is deterministic code wired to a lifecycle event.</strong> You have already seen two fire: the PreToolUse deny that would not let a bad threshold land (M-9.3), and the SubagentStop gate that sent a sloppy review back (M-9.7). This module maps the events and builds the three patterns the blueprint asks for &mdash; a formatter, a commit gate, and secret handling &mdash; each pinned to the event that can actually do the job. The ordering that matters: <code>UserPromptSubmit</code> (before your prompt is read), <code>PreToolUse</code> (before a tool runs, <em>can deny</em>), <code>PostToolUse</code> (after a tool <em>succeeds</em>, <b>cannot undo</b>), and <code>Stop</code>/<code>SubagentStop</code> (at the end, can block for more work).</p>' +
+        '<p><strong>The pre-commit test gate, proven with a real before/after.</strong> A <code>PreToolUse</code> hook on <code>git commit</code> runs the suite itself and denies a red commit &mdash; and it runs the tests <em>in its own process</em>, so it works even when the agent isn&rsquo;t permitted to run them. Live, on a repo with an off-by-one: the agent tried to commit, the gate ran the tests (<code>Tests run: 4, Failures: 1</code>) and <b>denied</b> &mdash; the commit did not land. Fix the bug, ask again, the gate runs green and the commit <b>lands</b>. Same gate, decision driven by the real result. And note what the agent said when blocked: <em>&ldquo;<code>--no-verify</code> wouldn&rsquo;t dodge it &mdash; only rephrasing to evade your own guardrail, which I won&rsquo;t do.&rdquo;</em> Unlike git&rsquo;s own pre-commit hook, a Claude hook is not bypassable from inside the conversation.</p>' +
+        '<p><strong>The formatter belongs on PostToolUse, and the reason is a rule worth memorising.</strong> <code>PostToolUse</code> fires <em>after</em> a tool succeeds and <em>&ldquo;can&rsquo;t undo actions since the tool has already executed.&rdquo;</em> So it is exactly wrong for a gate and exactly right for a fix-up: after an <code>Edit</code> to a <code>.java</code> file, the hook normalises it (trailing whitespace, final newline) &mdash; the documented pattern is one line, <code>jq -r &#39;.tool_input.file_path&#39; | xargs prettier --write</code>. Choose the event by what it can do: <b>if it must prevent, PreToolUse; if it must clean up after, PostToolUse.</b></p>' +
+        '<p><strong>&ldquo;Secret redaction&rdquo; is not what it sounds like &mdash; and the correction is the lesson.</strong> A hook <em>cannot rewrite your prompt</em>: <code>UserPromptSubmit</code> can block a prompt or add context, but its output is <em>added</em>, never a replacement. So redaction lives in two honest places: block the read of a secret file at <code>PreToolUse</code> (M-1.6&rsquo;s boundary, as a hook), or scrub secrets from a tool&rsquo;s <em>result</em> at <code>PostToolUse</code> via <code>hookSpecificOutput.updatedToolOutput</code>, which <em>&ldquo;replaces the tool&rsquo;s result before Claude sees it.&rdquo;</em> Our redactor turns <code>sk-&hellip;</code>, <code>AKIA&hellip;</code> and <code>password=&hellip;</code> into <code>[REDACTED]</code> in tool output. If you remember one thing: you protect secrets on the way <em>in</em> (file reads) and on the way <em>out of a tool</em> (output), not by editing what you typed.</p>' +
+        '<p><strong>A hook is code, and code has a platform &mdash; the bug that hides in plain sight.</strong> Two silent failures showed up live and are the most useful thing here. First, <b>matchers target a tool <em>name</em></b>: on Windows the shell tool is <code>PowerShell</code>, not <code>Bash</code>, so a hook with <code>matcher: "Bash"</code> <em>never fires</em> &mdash; the commit sailed straight through until we matched <code>Bash|PowerShell</code>. Second, <b>the shell command inside the hook must be portable</b>: <code>./mvnw</code> (a bash wrapper) does not run under the hook&rsquo;s <code>cmd.exe</code>, so the gate threw and &ldquo;failed&rdquo; every commit &mdash; a gate blocking for the wrong reason is worse than none; the fix was <code>.\\mvnw.cmd</code> on Windows. Always unit-test a hook with a piped payload, and check it fires on the tool name your machine actually uses. M-10.3 moves from the events inside one session to MCP &mdash; connecting outside tools and data.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-29'},
+    labA:{
+      title:'Build the three hooks — Claude Code',
+      steps:[
+        'PostToolUse formatter: in <code>.claude/settings.json</code>, add a <code>PostToolUse</code> hook with <code>matcher: "Edit|Write|MultiEdit"</code> that reads <code>tool_input.file_path</code> and formats it (a real formatter, or a normaliser that strips trailing whitespace and fixes the final newline). Confirm it runs <em>after</em> an edit &mdash; it cannot block, so use it to clean up, not to gate.',
+        'Pre-commit test gate: a <code>PreToolUse</code> hook whose script checks <code>tool_input.command</code> for <code>git commit</code>, runs your unit tests, and denies (<code>permissionDecision: "deny"</code>) if red. Unit-test it first with a piped payload. Then break something and watch a real commit get blocked; fix it and watch the commit land. Reference: our gate denied on <code>4 run / 1 failure</code> and allowed on green.',
+        'Secret handling: a <code>PostToolUse</code> hook on <code>Read</code> that scans <code>tool_response</code> for secret patterns and returns <code>hookSpecificOutput.updatedToolOutput</code> with them replaced by <code>[REDACTED]</code>; and/or a <code>PreToolUse</code> deny on reading <code>.env</code>. Remember the correction: you cannot redact the prompt itself, only tool output and file access.',
+        'Now the portability check that catches the silent failures: confirm your matcher names the tool your platform actually uses (on Windows that is <code>PowerShell</code>, not <code>Bash</code> &mdash; match <code>Bash|PowerShell</code>), and that any shell command in the hook runs on your OS (<code>.\\mvnw.cmd</code> vs <code>./mvnw</code>). A hook that never fires looks exactly like a repo with no hook.',
+        'Success: three hooks, each on the event that can do its job; the gate proven with a real red&rarr;green before/after; and a matcher/command you verified fires on your machine, not just in the example.'
+      ]
+    },
+    labB:{
+      title:'Hooks in Copilot',
+      steps:[
+        'Copilot has hooks too (its reference lists <code>preToolUse</code>/<code>postToolUse</code> with a <code>permissionDecision</code> and fail-closed behaviour, M-9.3). Wire the pre-commit test gate as a Copilot <code>preToolUse</code> hook and confirm it denies a red commit. Note which surfaces run hooks (CLI, cloud agent).',
+        'Try the formatter as a <code>postToolUse</code> hook and confirm the same rule holds &mdash; after-the-fact clean-up, not a gate.',
+        'Success: the commit gate and formatter running as Copilot hooks, and one line on where Copilot runs them versus Claude Code.'
+      ]
+    },
+    labC:{
+      title:'Cursor hooks, then the rule',
+      steps:[
+        'Cursor hooks (<code>beforeShellExecution</code>/<code>afterFileEdit</code>/<code>stop</code>, exit 2 = block, M-9.3) can carry the same patterns. Wire the gate and the formatter and test each.',
+        'Write the rule this module exists for: <em>choose the hook event by what it can do &mdash; PreToolUse to prevent, PostToolUse to clean up or redact output, Stop/SubagentStop to hold work back; a hook cannot rewrite your prompt, so protect secrets on file-read and on tool-output; and always unit-test the hook and confirm it fires on the tool name your platform actually uses.</em>',
+        'Success: the patterns run in a third tool, the rule written, and one hook from your own workflow you would add this week (a formatter, a gate, or a redactor).'
+      ]
+    },
+    checklist:[
+      'Each hook is on the event that can do its job: PreToolUse to prevent, PostToolUse to clean up/redact.',
+      'My pre-commit gate ran the tests itself and blocked a real red commit, then allowed a green one.',
+      'My formatter runs after the edit (I did not expect it to block).',
+      'My redactor works on tool <em>output</em>/file-reads &mdash; I did not try to rewrite the prompt.',
+      'I confirmed the matcher fires on my platform&rsquo;s tool name and the hook&rsquo;s shell command runs on my OS.'
+    ],
+    quiz:[
+      {q:'Why does the formatter belong on <code>PostToolUse</code> and the commit gate on <code>PreToolUse</code>?',
+       options:['Personal preference','<code>PreToolUse</code> runs <em>before</em> a tool and can deny it (so it can gate); <code>PostToolUse</code> runs <em>after</em> success and cannot undo, so it can only clean up or annotate','PostToolUse is faster','They are interchangeable'], answer:1},
+      {q:'The blueprint said &ldquo;secret redaction&rdquo;. What did verifying the docs reveal a hook actually can (and cannot) do?',
+       options:['It can rewrite your prompt to remove secrets','It <em>cannot</em> rewrite your prompt (UserPromptSubmit only blocks or adds context) &mdash; redaction happens on tool <b>output</b> via <code>updatedToolOutput</code>, or by blocking the secret-file <b>read</b>','It deletes secret files','Nothing &mdash; hooks can&rsquo;t see secrets'], answer:1},
+      {q:'A hook with <code>matcher: "Bash"</code> never fired on a Windows machine and a bad commit went through. Why?',
+       options:['Hooks are disabled on Windows','Matchers target the tool <em>name</em>, and on Windows the shell tool is <code>PowerShell</code>, not <code>Bash</code> &mdash; the matcher must include the name your platform uses (<code>Bash|PowerShell</code>)','The commit was empty','PreToolUse can&rsquo;t deny commits'], answer:1},
+      {q:'The pre-commit gate blocked a commit even though the agent itself wasn&rsquo;t allowed to run the tests. How?',
+       options:['It guessed','The hook runs the tests in its own process, independent of the agent&rsquo;s permissions &mdash; that is why a gate (deterministic code on the event) is stronger than asking the agent to check','It skipped the tests','It read a cached result'], answer:1}
+    ]
   }
 ];
 
@@ -6261,6 +6337,47 @@ VISUALS['SIM-10'] = function(mount, opts){
   });
   if(reduce){ CARDS.forEach((c,i) => { picks[i] = c.a[0]; }); revealed = true; }
   refresh();
+};
+
+/* ---------- ANIM-29 · The Hook Lifecycle (spec: VISUALS.md) ----------
+   Abstract staged diagram. Lane 1 = the events of a turn in order, each with
+   can-block. Lane 2 = the three blueprint patterns pinned to their event, carrying
+   the REAL results (recordings/m102-hooks.txt): the test gate's real red DENY /
+   green ALLOW, the formatter's fix-up-after, the redactor's updatedToolOutput.
+   Caption = the two Windows portability bugs found live. Hooks doc-verified 2026-07-25. */
+VISUALS['ANIM-29'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="anim29" aria-label="The hook lifecycle: events of a turn and three patterns">' +
+      '<div class="a29head"><span>ANIM-29 · THE HOOK LIFECYCLE</span>' +
+        '<button class="a29replay" data-a29replay>REPLAY &#9656;</button></div>' +
+      '<div class="a29lane">' +
+        '<div class="a29lname">THE EVENTS OF A TURN &mdash; IN ORDER</div>' +
+        '<div class="a29row"><span class="a29key block">UserPromptSubmit</span><span class="a29out">before Claude reads your prompt &mdash; can <b>block</b> or <b>add</b> context (it cannot <em>rewrite</em> the prompt)</span></div>' +
+        '<div class="a29row"><span class="a29key block">PreToolUse</span><span class="a29out">before a tool runs &mdash; can <b>deny</b> it (the test gate lives here; M-9.3)</span></div>' +
+        '<div class="a29row"><span class="a29key no">PostToolUse</span><span class="a29out">after a tool <em>succeeds</em> &mdash; <b>cannot block</b> (it already ran); can annotate or <code>updatedToolOutput</code></span></div>' +
+        '<div class="a29row"><span class="a29key block">Stop / SubagentStop</span><span class="a29out">when Claude / a subagent finishes &mdash; can <b>block</b> to force more work (the quality gate; M-9.7)</span></div>' +
+      '</div>' +
+      '<div class="a29lane">' +
+        '<div class="a29lname">THREE PATTERNS, PINNED TO THEIR EVENT &mdash; REAL RESULTS</div>' +
+        '<div class="a29row"><span class="a29key">test gate</span><span class="a29out"><b>PreToolUse</b> on <code>git commit</code>: the hook runs the suite itself &rarr; <span class="a29key red" style="padding:1px 6px">red</span> = DENY (commit blocked) · <span class="a29key green" style="padding:1px 6px">green</span> = ALLOW (landed). Can&rsquo;t be dodged with <code>--no-verify</code>.</span></div>' +
+        '<div class="a29row"><span class="a29key">formatter</span><span class="a29out"><b>PostToolUse</b> on <code>Edit</code>: normalises the file <em>after</em> the write &mdash; a fix-up, not a gate, because PostToolUse can&rsquo;t block</span></div>' +
+        '<div class="a29row"><span class="a29key">redaction</span><span class="a29out"><b>PostToolUse</b> <code>updatedToolOutput</code>: <code>sk-&hellip;</code> &rarr; <code>[REDACTED]</code> before Claude sees it. A hook can&rsquo;t rewrite your prompt &mdash; so redact <em>output</em>, or block the secret-file <em>read</em></span></div>' +
+      '</div>' +
+      '<div class="a29cap">What to notice: a hook is <b>code, and code has a platform</b>. Found live: on Windows the shell tool is <code>PowerShell</code>, not <code>Bash</code> &mdash; <code>matcher: "Bash"</code> silently never fires (match <code>Bash|PowerShell</code>); and <code>./mvnw</code> won&rsquo;t run under the hook&rsquo;s <code>cmd.exe</code> &mdash; use <code>.\\mvnw.cmd</code>. A mis-targeted safety hook is a silent miss or a silent always-block.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a29row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*470)));
+    timers.push(setTimeout(play, 300 + rows.length*470 + 5000));
+  }
+  mount.querySelector('[data-a29replay]').addEventListener('click', play);
+  play();
 };
 
 /* ---------- ANIM-28 · The Command Expands (spec: VISUALS.md) ----------

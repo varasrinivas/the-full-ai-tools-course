@@ -1,0 +1,101 @@
+M-10.2 — Hooks (PostToolUse formatter, pre-commit test gate, secret redaction)
+Live artifact: three real hooks, all unit-tested; the pre-commit test gate PROVEN
+live with a real red->green before/after; plus TWO Windows portability bugs found
+on camera (and fixed) that are the module's sharpest teaching.
+Recorded 2026-07-25, claude 2.1.220 (Windows/PowerShell). Disposable clone on branch
+drill/m102-hooks (deleted after; teaching repo untouched, BUG-API plants intact).
+
+WHAT THE MODULE TEACHES
+  Hooks are deterministic code on lifecycle events (established: M-9.3 PreToolUse deny,
+  M-9.7 SubagentStop gate). This module goes wide across the events and builds the three
+  patterns the blueprint names, correcting one of them against the docs:
+    1. PostToolUse FORMATTER   — fires AFTER an edit; can't block, but can fix up / annotate.
+    2. Pre-commit TEST GATE    — PreToolUse on a git commit; runs the suite, denies if red.
+    3. Secret REDACTION        — NOT prompt-rewriting (a hook can't rewrite your prompt);
+                                 it's blocking secret-file reads (PreToolUse) or redacting
+                                 secrets from tool OUTPUT (PostToolUse updatedToolOutput).
+
+DOC VERIFICATION (code.claude.com/docs hooks.md / hooks-guide.md, 2026-07-25)
+  - PostToolUse: fires "After a tool call succeeds"; payload tool_name, tool_input
+    (incl file_path), tool_response. CANNOT block: "PostToolUse hooks can't undo actions
+    since the tool has already executed." CAN annotate (additionalContext) and — key —
+    hookSpecificOutput.updatedToolOutput "replaces the tool's result before Claude sees
+    it" (redaction/transformation). Formatter example verbatim: matcher "Edit|Write",
+    command `jq -r '.tool_input.file_path' | xargs npx prettier --write`.
+  - PreToolUse `if` field: `{ "type":"command", "if":"Bash(git commit *)", ... }` scopes
+    a Bash hook to a command; subcommands inside && and $() are each checked. (NOTE: a
+    live agent this session claimed `if` "isn't a real hook field" — the guide documents
+    it, but we did NOT rely on it: the gate script filters tool_input.command itself, which
+    is version-proof. Flagged as verify-in-your-version.)
+  - UserPromptSubmit: fires "before Claude processes" the prompt. CAN block (exit 2) or ADD
+    context (hookSpecificOutput.additionalContext). CANNOT rewrite the prompt — "stdout is
+    ADDED as context, not a replacement." => "secret redaction" of the prompt itself is NOT
+    a thing a hook can do; the honest patterns are file-read blocking + output redaction.
+  - Exit codes recap: exit 2 blocks for PreToolUse/UserPromptSubmit/Stop/SubagentStop; for
+    PostToolUse exit 2 shows stderr but does NOT undo (tool ran).
+  - Events (fires / can-block): SessionStart(no) · UserPromptSubmit(yes) · PreToolUse(yes,
+    deny) · PostToolUse(no, annotate) · PostToolUseFailure(no) · Stop(yes) · SubagentStop
+    (yes) · SubagentStart(no) · PreCompact(yes) · Notification(no) · SessionEnd(no) [+ more].
+
+THE THREE HOOKS  (.claude/hooks/, wired in .claude/settings.json)
+  format-after-edit.js  (PostToolUse, matcher Edit|Write|MultiEdit): reads tool_input
+    .file_path; if .java, strips trailing whitespace + normalises to a single final
+    newline; writes back; emits additionalContext. Right event because it CAN'T block —
+    it's a fix-up-after, not a gate.
+  precommit-test-gate.js (PreToolUse, matcher Bash|PowerShell): if tool_input.command is a
+    `git commit`, run the unit tests; if red, deny with permissionDecision "deny".
+  redact-secrets.js (PostToolUse, matcher Read|Bash|PowerShell): scans tool_response for
+    sk-* / AKIA* / key|token|secret|password = value / Bearer <tok>; if found, emits
+    hookSpecificOutput.updatedToolOutput with each secret -> [REDACTED].
+
+UNIT TESTS (deterministic, piped payloads — the M-9.3/9.7 method) — all pass:
+  gate: git-commit + red -> DENY json; non-commit -> allow.
+  formatter: "class X {   \n\n\n" -> "class X {\n" + additionalContext.
+  redactor: password/sk-/Bearer/AKIA all -> [REDACTED] via updatedToolOutput; clean -> ignore.
+
+TWO WINDOWS PORTABILITY BUGS FOUND LIVE (the module's best material)
+  Both surfaced because the first live commit sailed through the gate. Debugging on camera:
+  BUG 1 — MATCHER TARGETS THE WRONG TOOL NAME. On this Windows machine Claude runs shell
+    commands via the *PowerShell* tool, not Bash. A hook with matcher "Bash" (and an
+    allowlist of `Bash(git commit:*)`) NEVER FIRES — the tool is PowerShell. The agent
+    itself diagnosed it: "change the matcher Bash -> PowerShell." Fix: match BOTH,
+    "Bash|PowerShell". (This also corrected a wrong hypothesis of mine mid-debug — I first
+    suspected --dangerously-skip-permissions was bypassing hooks; the real cause was the
+    tool name. Lesson: verify the tool name your platform actually uses.)
+  BUG 2 — SHELL COMMAND IN THE HOOK ISN'T PLATFORM-PORTABLE. The gate ran `./mvnw` via
+    Node execSync, which uses cmd.exe on Windows, where the bash wrapper `./mvnw` does not
+    execute -> execSync throws -> the gate "fails the tests" and denies EVERY commit (a
+    gate that blocks for the wrong reason is worse than no gate). Probed the working
+    invocation: `./mvnw` FAILS, `mvnw.cmd` FAILS, but `.\mvnw.cmd` OK / `bash mvnw` OK.
+    Fix: detect platform — win32 -> `.\mvnw.cmd`, else `./mvnw`.
+  Takeaway taught: a hook is code, and code has a platform. Match the real tool name and
+  use platform-correct shell commands, or your safety hook is a silent no-op (miss) or a
+  silent always-block (false alarm).
+
+LIVE PROOF — the pre-commit gate, real before/after (after both fixes, gate committed)
+  Setup: allowlist git for both shells; source has an off-by-one so *ServiceTest is red.
+  DENY (real red): agent asked to commit a change -> PreToolUse gate fired on the
+    PowerShell `git commit`, ran mvnw itself (independent of the agent's own permissions —
+    the agent even noted "./mvnw was denied by MY permission rules" while the HOOK ran it
+    fine), got `Tests run: 4, Failures: 1 ... <<< FAILURE! ClaimHistoryServiceTest`, and
+    DENIED. Commit did NOT land (HEAD unchanged). gate.log: "decision: DENY (Tests run: 4,
+    Failures: 1...)". Agent: "I didn't use --no-verify ... it's flagging a genuine red build
+    rather than misfiring" — and noted a PreToolUse hook can't be dodged with --no-verify
+    (unlike git's own pre-commit hook).
+  ALLOW (real green): fixed the off-by-one, asked to commit -> gate ran mvnw (green) ->
+    ALLOW -> commit LANDED (new HEAD "add notes"). gate.log: "decision: ALLOW (tests green)".
+  Same gate; the decision is the real test result. The hook runs the check deterministically
+  regardless of what the agent is or isn't permitted to run — that is the whole point of a
+  gate vs a note.
+
+REDACTION — status (honest)
+  The redactor is UNIT-TESTED (emits updatedToolOutput redacting all four secret shapes)
+  and rests on the doc-verified mechanism: updatedToolOutput "replaces the tool's result
+  before Claude sees it." A live agent read-and-report run was NOT performed this session;
+  the module states the mechanism and the unit-test evidence, and does not overclaim a live
+  redaction. The important CORRECTION it teaches: a hook cannot redact your PROMPT (UserPromptSubmit
+  only blocks or adds context), so redaction lives on tool OUTPUT or on file-read access.
+
+HYGIENE
+  Disposable clone at scratchpad/m102-api, branch drill/m102-hooks, deleted after.
+  Teaching repo priorauth-api untouched (main, clean); no BUG-API plant disturbed.
