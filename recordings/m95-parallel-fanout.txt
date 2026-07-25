@@ -1,0 +1,127 @@
+M-9.5 — Parallel fan-out (three subagents review three layers concurrently)
+Live artifact: three read-only layer reviewers fanned out over priorauth-api,
+concurrency PROVEN from the stream, economics measured from the usage envelope.
+Recorded 2026-07-25, claude 2.1.220. Disposable clone on branch drill/m95-fanout
+(deleted after; teaching repo untouched, BUG-API-xx plants intact).
+
+WHAT THE MODULE TEACHES
+  M-9.4 built one subagent; M-9.5 runs three at once. Three read-only reviewers,
+  one per layer (controller / service / repository), launched together. The module
+  measures three things a fan-out actually buys: (1) WALL-CLOCK — concurrent work
+  finishes in the time of the slowest, not the sum; (2) a LEAN PARENT — each child
+  reads in its own window, the parent gets summaries; (3) it is NOT cheaper in
+  tokens — you pay for three reviews. Plus a real domain payoff (three distinct
+  findings + a convergence) and an advanced probe: when the parent synthesizes, the
+  proof of delegation moves from the prose into the trace.
+
+DOC VERIFICATION (2026-07-25, exact quotes)
+  - Concurrency: "Multiple subagents can run concurrently, so independent subtasks
+    finish in the time of the slowest one rather than the sum of all of them."
+    (agent-sdk/subagents.md). "For independent investigations, spawn multiple
+    subagents to work simultaneously" (sub-agents.md).
+  - Concurrency cap (v2.1.217+): "By default, when 20 subagents are running in a
+    session, spawning another with the Agent tool fails with 'Concurrent subagent
+    limit reached'... To change the limit, set CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS."
+  - Background default (v2.1.198): the `background` frontmatter field — "When unset,
+    Claude chooses, and as of v2.1.198 it runs subagents in the background by default."
+    Foreground "block the main conversation until complete"; background "run
+    concurrently while you continue working."
+  - Isolation: "Each subagent runs in its own fresh conversation. Intermediate tool
+    calls and results stay inside the subagent; only its final message returns to
+    the parent." Aggregation: "Each subagent explores its area independently, then
+    Claude synthesizes the findings."
+  - Cost: --output-format json includes total_cost_usd. NO documented per-subagent
+    cost attribution, and NO doc claim that parallel is cheaper in tokens — the
+    benefit is framed as keeping exploration out of the parent + wall-clock. (So the
+    "not cheaper, just faster + cleaner" thesis is tested, not borrowed.)
+  UNDOCUMENTED, therefore TESTED not asserted: whether the main agent batches the
+  Agent calls in one turn; whether -p fans out concurrently; per-subagent cost.
+
+THE THREE SUBAGENTS  (.claude/agents/{controller,service,repo}-review.md)
+  Each read-only (tools: Read, Grep, Glob), scoped to ONE layer, marker-ended so
+  firing is detectable (e.g. "service-review done."). controller-review checks every
+  service capability has an HTTP door; service-review checks the PA domain rules;
+  repo-review hunts N+1 / dead query methods.
+
+RUN A — fan-out, plain text  (`claude -p "Review ... using three subagents IN
+  PARALLEL — launch controller-review, service-review, repo-review concurrently ...
+  then report each layer's top finding."`)
+  Wall-clock 95s. Output opened: "All three reviewers ran concurrently." Three
+  distinct top findings, all real:
+   - CONTROLLER: ApprovalService.resolveManualReview (line 115) has NO HTTP endpoint;
+     the queue has two read doors (PriorAuthController :71, :81) but no write door out
+     — a human can read the queue but cannot approve/deny; every MANUAL_REVIEW request
+     is a dead end (the M-3.3 architecture gap, found from the controller side).
+   - SERVICE: strict `>` at ApprovalService.java:99 vs the signed inclusive `>=`
+     (BUG-API-01) — exactly-0.85 wrongly routed to MANUAL_REVIEW; suite green because
+     no test pins 0.85.
+   - REPOSITORY: N+1 in ClaimHistoryService.java:40 (per-patient loop); the batch
+     finder ClaimRepo.findByPatientRefInOrderByServiceDateDesc (ClaimRepo.java:14) is
+     called only from tests — dead in production (BUG-API-03); traced to commit 674272e.
+  UNSCRIPTED CONVERGENCE (kept as a teaching beat): "controller and repo reviewers
+  independently flagged the ClaimHistoryService N+1 from opposite directions, and the
+  service reviewer listed it as secondary. It's the one defect all three layers saw."
+  Independent specialists converging from different angles is a confidence signal you
+  don't get from one agent doing everything.
+  NOTE: the synthesized prose contained NONE of the three marker lines (grep count 0)
+  — the parent summarised the children, stripping their enforced format. So the plain
+  output cannot, by itself, PROVE the subagents ran (the M-9.4 probe problem returns).
+
+RUN B — same fan-out, --output-format stream-json --verbose (to prove it)
+  Wall-clock 93s. Parsing the stream settles everything the prose could not:
+  1) DELEGATION HAPPENED: the three marker lines each appear in the stream 3x (inside
+     the subagents' tool_result blocks) — controller-review/service-review/repo-review
+     all genuinely ran and produced their enforced format. The markers were in the
+     trace even though the parent stripped them from the summary. LESSON: when the
+     parent synthesises, verify delegation in the TRACE (stream-json), not the prose.
+  2) THEY RAN CONCURRENTLY: event ordering is decisive —
+        DISPATCH controller-review [hwf2Vv]
+        DISPATCH service-review    [N6mR1t]
+        DISPATCH repo-review       [VAKq9z]
+        ... (interleaved child Read/Grep tool_results stream through) ...
+        RETURN service-review  [N6mR1t]
+        RETURN repo-review     [VAKq9z]
+        RETURN controller-review [hwf2Vv]
+     All three were DISPATCHED before ANY returned (launched as background subagents,
+     the v2.1.198 default), their internal tool calls interleaved, and they RETURNED
+     OUT OF DISPATCH ORDER (service, repo, controller) — i.e. they finished in
+     completion order, not in sequence. (The main agent issued them one Agent call per
+     turn — 3 turns — but because they are background they overlapped; "one call per
+     turn" is NOT sequential execution.)
+
+MEASURED ECONOMICS (from Run B's final result event)
+  total_cost_usd  = $0.6989      (three full-codebase reviews + synthesis)
+  num_turns       = 4            (main thread: 3 dispatch + 1 synthesis)
+  duration_ms     = 87,981       (~88s wall-clock — what you waited)
+  duration_api_ms = 185,890      (~186s of model API time)
+  parent usage    = in 2,383 / out 1,415 / cache_read 52,084 / cache_write 2,694
+  models          = opus (the reviews) + haiku (auxiliary)   [M-8.1 attribution]
+
+  THE HEADLINE: api_ms 185,890 vs wall-clock 87,981 = 2.1x. About 186 seconds of
+  review work was delivered in 88 seconds of waiting — the concurrency dividend, in
+  numbers. "Finish in the time of the slowest, not the sum" (doc) is exactly what the
+  clock shows.
+  THE LEAN PARENT: the parent's OWN output was only 1,415 tokens with 52k cache-read,
+  despite three whole-codebase reviews happening — because the file-reading stayed in
+  the three children's windows and only summaries came back. Isolation, numerically.
+  THE HONEST LIMIT: it is NOT cheaper. $0.6989 buys three reviews; a single sequential
+  agent reading all three layers into one context would spend comparable tokens and
+  flood the parent. Parallel fan-out buys WALL-CLOCK and a CLEAN PARENT, not a smaller
+  bill. (Pre-empts "parallel = cheaper" the way M-8.4 pre-empted "cheap model = cheaper".)
+
+THE LESSON
+  1. Fan out independent work and it finishes in the slowest child's time, not the sum
+     — measured 2.1x here (186s of work in 88s).
+  2. The parent stays lean because each child reads in its own window and returns a
+     summary — the isolation of M-9.4, now times three.
+  3. Parallel is faster and cleaner, not cheaper — you still pay for every child.
+  4. When the parent synthesises, the marker leaves the prose and lives in the trace:
+     prove a fan-out ran with stream-json, not the summary.
+  5. Bonus you can't get solo: independent specialists converge — the N+1 seen from
+     three angles is a confidence signal, and each layer gets a scoped expert that
+     cannot wander out of its lane (read-only, one layer each).
+  Cap to know: 20 concurrent subagents by default (CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS).
+
+HYGIENE
+  Disposable clone at scratchpad/m95-api, branch drill/m95-fanout, deleted after.
+  Teaching repo priorauth-api untouched (main, clean); no plant disturbed.

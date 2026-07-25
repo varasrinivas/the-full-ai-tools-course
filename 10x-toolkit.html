@@ -3614,6 +3614,63 @@ const MODS = [
       {q:'How does read-only tool scoping differ from the hook in M-9.3?',
        options:['They are the same','A hook <em>denies</em> an attempted action at the gate; tool scoping means the action was never possible because the tool was never granted &mdash; design the door, not the sign','Scoping is slower','Hooks cannot be read-only'], answer:1}
     ]
+  },
+  {
+    id:'M-9.5', path:'eng', track:'T-09', title:'Parallel fan-out', minutes:45,
+    lastVerified:'2026-07-25',
+    concept:{
+      analogy:'A complex case lands, and instead of one nurse reading the whole file end to end, the supervisor hands the coding sheet, the clinical notes, and the claims history to three reviewers at once. They work at the same desks, at the same time, each pulling only their own references; twenty minutes later three determinations come back and the supervisor writes one decision. The case cleared in the time of the <em>slowest</em> reviewer, not the sum of all three &mdash; and the supervisor&rsquo;s desk never filled with three piles of paper, only three findings. That is the whole trade: more hands, same total work, far less waiting, and a clean desk.',
+      body:
+        '<p><strong>M-9.4 ran one subagent; a fan-out runs several at once.</strong> Point three read-only reviewers at three layers &mdash; controller, service, repository &mdash; and let them work simultaneously. The docs are explicit about the payoff: <em>&ldquo;multiple subagents can run concurrently, so independent subtasks finish in the time of the slowest one rather than the sum of all of them.&rdquo;</em> Since v2.1.198 Claude runs subagents in the background by default, which is exactly what makes them overlap; the ceiling is <b>20 concurrent</b> before the Agent tool starts refusing (tunable via <code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>). We built the three, each scoped to its layer, each read-only, each ending in a marker line, and ran the fan-out for real.</p>' +
+        '<p><strong>The concurrency is not a promise &mdash; here it is on the clock.</strong> The usage envelope for the run reported <code>duration_api_ms</code> of <b>185,890</b> against a wall-clock <code>duration_ms</code> of <b>87,981</b>. Read that twice: roughly <b>186 seconds of model work was delivered in 88 seconds of waiting</b> &mdash; a <b>2.1&times;</b> speed-up, because the three reviews happened at the same time rather than one after another. &ldquo;The time of the slowest, not the sum&rdquo; is not a slogan here; it is the ratio the clock printed.</p>' +
+        '<p><strong>And the parent stayed lean, in numbers.</strong> Three whole-layer reviews ran, yet the main thread&rsquo;s own output was just <b>1,415 tokens</b> (cache-read 52k) &mdash; because each subagent&rsquo;s file reading stayed in <em>its</em> window and <em>&ldquo;only its final message returns to the parent.&rdquo;</em> Your conversation received three findings, not three codebases. That is the isolation of M-9.4 multiplied: the more you fan out, the more reading you keep off your own desk. But be honest about the bill: the run cost <b>$0.70</b> for three full reviews. Parallel fan-out buys <b>wall-clock and a clean parent &mdash; not fewer tokens</b>. You still pay for every reviewer, exactly as M-8.4 warned you would.</p>' +
+        '<p><strong>What three scoped specialists find that one generalist misses.</strong> The layers came back with three distinct, real findings: the controller reviewer flagged that <code>resolveManualReview</code> has no HTTP endpoint (a human can read the review queue but has no door to approve or deny it); the service reviewer caught the strict <code>&gt;</code> at the 0.85 boundary; the repository reviewer found the N+1 in <code>ClaimHistoryService</code> and its dead batch finder. Then the unscripted part: the controller and repository reviewers <b>independently flagged the same N+1 from opposite directions</b>, and the service reviewer noted it too. Independent specialists converging on one defect is a confidence signal you simply cannot get from a single agent doing everything &mdash; and each reviewer, scoped to one read-only lane, could not wander off and start editing.</p>' +
+        '<p><strong>One trap, and it is the M-9.4 probe again, sharper.</strong> The parent <em>synthesised</em> the three reviews into clean prose &mdash; and in doing so it <b>stripped every marker line</b>. The final answer looked authoritative but, by itself, could not prove the subagents had run at all; it might have been one agent doing three reviews in its own head. The proof was in the <b>trace</b>: running with <code>--output-format stream-json</code> showed all three markers inside the subagents&rsquo; results, and showed all three <em>dispatched before any returned</em>, finishing out of order. The lesson to keep: <b>when the parent synthesises, verify a fan-out from the trace, not the summary.</b> M-9.6 moves to Copilot&rsquo;s custom agents; M-9.7 is how you design a whole team of these without it becoming a mess.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-05', fanout:true},
+    labA:{
+      title:'Fan out three reviewers and prove they ran in parallel — Claude Code',
+      steps:[
+        'Create three read-only reviewers in <code>.claude/agents/</code> &mdash; <code>controller-review</code>, <code>service-review</code>, <code>repo-review</code> &mdash; each scoped to one layer (<code>tools: Read, Grep, Glob</code>) and each ending in its own marker line so you can tell all three apart.',
+        'Fan them out in one request: <em>&ldquo;Review the codebase using three subagents in parallel &mdash; controller, service and repository &mdash; then report each layer&rsquo;s top finding.&rdquo;</em> Reference: three distinct findings came back (no endpoint for <code>resolveManualReview</code>; strict <code>&gt;</code> at 0.85; the N+1 + dead batch finder), plus a convergence &mdash; two reviewers flagged the same N+1 independently.',
+        'Measure the concurrency instead of trusting it. Re-run with <code>--output-format json</code> and compare <code>duration_api_ms</code> to <code>duration_ms</code>. Reference: 185,890ms of API work in 87,981ms of wall-clock &mdash; 2.1&times;. That gap <em>is</em> the parallelism.',
+        'Prove they actually delegated. The synthesised answer had <b>no marker lines</b> &mdash; the parent summarised them away. Re-run with <code>--output-format stream-json --verbose</code> and confirm all three markers appear in the trace and that all three were dispatched before any returned. When the parent synthesises, the trace is your proof, not the prose.',
+        'Success: three layer reviewers, one fan-out with three findings, the api-vs-wall-clock ratio measured, and delegation proven from the stream &mdash; plus one honest sentence that it was faster and leaner but not cheaper.'
+      ]
+    },
+    labB:{
+      title:'Fan-out with Copilot',
+      steps:[
+        'Define the three layer reviewers as Copilot custom agents (<code>.agent.md</code>), each scoped read-only. Ask Copilot to review the three layers with a separate sub-agent each &mdash; the runtime runs each &ldquo;in an isolated context&rdquo;, the same overlap you measured in labA.',
+        'Confirm you get three layer findings and note how Copilot surfaces which sub-agent produced which &mdash; the analogue of labA&rsquo;s markers.',
+        'Success: a three-way review in Copilot with each layer scoped to its own read-only agent, and one line on how you verified all three ran.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the fan-out rule',
+      steps:[
+        'Run the same three-layer review with Cursor subagents (each &ldquo;starts with a clean context&rdquo;, its &ldquo;own context window&rdquo;). Scope each to read-only and one layer.',
+        'Write the rule this module exists for: <em>fan out independent work across scoped subagents and it finishes in the slowest one&rsquo;s time, not the sum, while your main context stays lean &mdash; but you pay for every child, so parallel is faster and cleaner, not cheaper; and when the parent synthesises, prove it ran from the trace, not the summary.</em>',
+        'Success: the three-way fan-out run in a third tool, the rule written, and one task from your week named that you would split across scoped reviewers for the wall-clock win.'
+      ]
+    },
+    checklist:[
+      'My three reviewers are each scoped to one layer and read-only.',
+      'One fan-out returned three distinct layer findings (and I noticed any convergence).',
+      'I compared <code>duration_api_ms</code> to <code>duration_ms</code> and saw the parallel speed-up.',
+      'I can state the honest limit: faster and leaner, <em>not</em> cheaper &mdash; I pay for every child.',
+      'I proved delegation from the <code>stream-json</code> trace, because the synthesis stripped the markers.'
+    ],
+    quiz:[
+      {q:'The run reported <code>duration_api_ms</code> 185,890 but <code>duration_ms</code> 87,981. What does that gap show?',
+       options:['A measurement error','The three subagents ran concurrently &mdash; ~186s of model work was delivered in ~88s of wall-clock (2.1&times;), i.e. &ldquo;the time of the slowest, not the sum&rdquo;','The API was slow','Caching saved time'], answer:1},
+      {q:'Does fanning out three reviewers in parallel make the work <em>cheaper</em> than one agent doing it sequentially?',
+       options:['Yes, parallel always costs less','No &mdash; you still pay for every child (here $0.70 for three reviews); parallel buys wall-clock and a lean parent context, not fewer tokens','Yes, because subagents share a context','Only if you use a cheaper model'], answer:1},
+      {q:'The synthesised final answer contained none of the three subagents&rsquo; marker lines. How do you prove the fan-out actually delegated?',
+       options:['Trust the summary','Inspect the trace &mdash; <code>--output-format stream-json</code> shows the markers in the subagents&rsquo; results and shows all three dispatched before any returned; when the parent synthesises, the proof is in the trace, not the prose','Count the turns','Re-run until markers appear'], answer:1},
+      {q:'What did the fan-out surface that a single generalist agent would be unlikely to?',
+       options:['Nothing new','Three layer-scoped findings plus a <em>convergence</em> &mdash; two reviewers independently flagged the same N+1 from opposite directions, a confidence signal you only get from independent specialists','Faster typing','A cheaper bill'], answer:1}
+    ]
   }
 ];
 
@@ -5662,15 +5719,20 @@ VISUALS['ANIM-08'] = function(mount, opts){
    measured result from recordings/m94-first-subagent.txt. Shared M-9.4 / M-9.5. */
 VISUALS['SIM-05'] = function(mount, opts){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const KIDS = [
+  const fanout = !!(opts && opts.fanout);
+  const KIDS = fanout ? [
+    {name:'controller-review', role:'read-only · controller layer', lvl:64, ret:'&#8617; returns: resolveManualReview has no endpoint'},
+    {name:'service-review', role:'read-only · service layer', lvl:78, ret:'&#8617; returns: strict &gt; at the 0.85 boundary'},
+    {name:'repo-review', role:'read-only · repository layer', lvl:88, ret:'&#8617; returns: N+1 + dead batch finder'}
+  ] : [
     {name:'pa-reviewer', role:'read-only · service rules', lvl:72, ret:'&#8617; returns: 1 violation + 3 passes'},
     {name:'test-writer', role:'read-only · boundary tests', lvl:54, ret:'&#8617; returns: 0.85 test missing'},
     {name:'security-scan', role:'read-only · PHI &amp; secrets', lvl:83, ret:'&#8617; returns: no PHI in logs'}
   ];
-  const PAR_LEAN = 24, PAR_FLOOD = 94;
+  const PAR_LEAN = fanout ? 20 : 24, PAR_FLOOD = 94;
   mount.innerHTML =
     '<div class="sim05" aria-label="Subagent org chart: delegate vs no subagents">' +
-      '<div class="s5head"><span>SIM-05 · SUBAGENT ORG CHART</span>' +
+      '<div class="s5head"><span>SIM-05 · ' + (fanout ? 'PARALLEL FAN-OUT · 3 LAYERS AT ONCE' : 'SUBAGENT ORG CHART') + '</span>' +
         '<span class="s5modes">' +
           '<button class="s5mb on" type="button" data-mode="delegate">DELEGATE</button>' +
           '<button class="s5mb" type="button" data-mode="solo">NO SUBAGENTS</button>' +
@@ -5695,8 +5757,12 @@ VISUALS['SIM-05'] = function(mount, opts){
   const kidsWrap = mount.querySelector('[data-kids]');
   const cap = mount.querySelector('[data-cap]');
   const kidEls = [...mount.querySelectorAll('.s5kid')];
-  const CAP_DELEGATE = 'What to notice: each child reads in its <b>own</b> context and returns only a summary &mdash; the main bar stays lean. Real run: the read-only <b>pa-reviewer</b> returned <b>1 violation + 3 passes</b> and could not edit even when told to (recordings/m94-first-subagent.txt).';
-  const CAP_SOLO = 'What to notice: with no subagents, every file the work touches lands in the <b>main</b> context &mdash; the bar floods, and you carry all of it, every turn (the T-08 bill). Isolation is what keeps it lean.';
+  const CAP_DELEGATE = fanout
+    ? 'What to notice: three layer reviewers ran <b>at once</b>, each in its own window. Measured (recordings/m95-parallel-fanout.txt): <b>186s of review delivered in 88s</b> of wall-clock (api 185,890ms vs clock 87,981ms &asymp; <b>2.1&times;</b>), the parent&rsquo;s own output just <b>1,415 tokens</b> &mdash; and still <b>$0.70</b>: faster and leaner, <em>not</em> cheaper.'
+    : 'What to notice: each child reads in its <b>own</b> context and returns only a summary &mdash; the main bar stays lean. Real run: the read-only <b>pa-reviewer</b> returned <b>1 violation + 3 passes</b> and could not edit even when told to (recordings/m94-first-subagent.txt).';
+  const CAP_SOLO = fanout
+    ? 'What to notice: one agent reading all three layers into <b>one</b> context floods it &mdash; and runs them in sequence, so you wait the <b>sum</b> of the three, not the slowest. Fan-out trades that for wall-clock and a clean parent.'
+    : 'What to notice: with no subagents, every file the work touches lands in the <b>main</b> context &mdash; the bar floods, and you carry all of it, every turn (the T-08 bill). Isolation is what keeps it lean.';
   let timers = [];
   function stop(){ timers.forEach(clearTimeout); timers = []; }
   function setMode(mode){
