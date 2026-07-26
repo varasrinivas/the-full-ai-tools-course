@@ -1310,6 +1310,23 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .anim12 .a12cap b{color:var(--text);font-weight:500}
 .anim12 .a12replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
 .anim12 .a12replay:hover{border-color:var(--gold)}
+.anim33{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.anim33 .a33head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:12px}
+.anim33 .a33row{display:grid;grid-template-columns:74px 1fr;align-items:baseline;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(5px);transition:opacity .4s,transform .4s}
+.anim33 .a33row.on{opacity:1;transform:none}
+.anim33 .a33who{font-size:8.5px;letter-spacing:.06em;padding:2px 7px;border-radius:999px;border:1px solid var(--line);text-align:center;white-space:nowrap}
+.anim33 .a33who.agent{color:var(--dim)}
+.anim33 .a33who.human{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.anim33 .a33who.gate{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.anim33 .a33what{font-size:9.5px;color:var(--dim);line-height:1.5}
+.anim33 .a33row.hum .a33what,.anim33 .a33row.gat .a33what{color:var(--text)}
+.anim33 .a33what code{font-size:8.5px}
+.anim33 .a33what b{color:var(--text);font-weight:500}
+.anim33 .a33tag{font-size:8px;color:var(--faint);letter-spacing:.03em}
+.anim33 .a33cap{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.anim33 .a33cap b{color:var(--text);font-weight:500}
+.anim33 .a33replay{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--dim);cursor:pointer}
+.anim33 .a33replay:hover{border-color:var(--gold)}
 
 /* ============ ANIM-07: Ghost Text Editor ============ */
 .anim07{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2);font-family:var(--mono)}
@@ -4852,6 +4869,54 @@ const MODS = [
       {q:'The migration caught BUG-API-01 but left it in place. What is the lesson?',
        options:['The agent made a mistake','<b>A faithful migration carries your bugs forward</b> &mdash; spec-first copies what is there, defects included, unless you consciously decide otherwise; migration is not a cleanup','Bugs get fixed automatically','You should always fix bugs mid-migration'], answer:1}
     ]
+  },
+  {
+    id:'L-1.1', path:'lead', track:'L-01', title:'What agents actually do all day', minutes:35,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'The charge nurse&rsquo;s view of the floor. You do not insert the IVs or draw the labs; you stand where you can see the whole shift &mdash; who is doing what, where the sign-offs are, and which cases need a physician&rsquo;s decision before they move. Watching an engineer-and-agent pair is that same vantage: the value is in seeing the <em>workflow and the decision points</em>, not the keystrokes. And the first thing a good charge nurse does on a new floor is watch a shift, not grab a needle.',
+      body:
+        '<p><strong>The mental model most leaders start with is wrong, and it costs them.</strong> The picture of &ldquo;the AI writes the code&rdquo; leads to the wrong questions (how many lines? how fast can it type?) and the wrong fears. What an engineer-and-agent pair actually does across a shift is run a <em>lifecycle</em> &mdash; read, plan, build, test, gate, review, ship &mdash; in which the agent is the crew doing the mechanical volume and the human is the <b>approver at every gate</b>. Watch a real shift and the striking thing is how much less the human types and how much more they <em>decide</em>.</p>' +
+        '<p><strong>Here is a shift, concretely &mdash; and every moment is a run this course actually recorded.</strong> Morning: the human states an intent (&ldquo;cut the review queue 20%&rdquo;); the agent reads the whole repo, plans, and asks the question a senior would &mdash; <em>&ldquo;20% of what?&rdquo;</em> &mdash; and the human answers and validates the plan. Midday: the agent builds a feature end to end, from issue to a reviewable pull request with tests, in minutes, not days. Along the way a <b>gate fires on its own</b> &mdash; a pre-commit check blocks a red build deterministically, no judgement required &mdash; and the human reads the diff and signs off. That is the day: the agent does a great deal; the human does a little, and all of it is decisions and sign-offs.</p>' +
+        '<p><strong>The moments that matter most are the ones where the agent stops.</strong> A well-run pair does not just build fast; it <em>refuses</em> the calls a human must own. In this course&rsquo;s own runs, an agent asked to promote claim history into an approval decision <b>stopped and said it needs clinical and compliance sign-off</b>, naming the disparate-impact risk; another, asked whether a payer covers a drug without access to the policy, <b>refused to guess</b> rather than invent a coverage answer. Those refusals are not failures &mdash; they are the system working. The old rule holds: the model may say yes alone; it may never say no alone. A leader&rsquo;s job is to make sure those decision gates exist and are staffed by the right humans.</p>' +
+        '<p><strong>So the unit of work you manage has changed, and so has the bottleneck.</strong> The output is no longer lines typed; it is a <b>reviewable pull request</b> and the decisions around it. The constraint moves from <em>writing</em> the code to <em>reviewing and deciding</em> on it &mdash; which means your leverage as a leader is not &ldquo;more AI,&rdquo; it is the <b>guardrails</b>: the tests, the review policy, the instruction files, the human gates. That is not a soft claim. The current DORA research finds AI now lifts throughput but still <em>hurts</em> stability, and that <em>&ldquo;AI doesn&rsquo;t fix a team; it amplifies what&rsquo;s already there&rdquo;</em> &mdash; strong practices turn AI&rsquo;s speed into a gain, weak ones let the extra volume magnify existing problems. The pair goes exactly as far as your guardrails let it.</p>' +
+        '<p><strong>Which is why the leadership move here is literally &ldquo;watch, don&rsquo;t type.&rdquo;</strong> Before you set policy, budgets, or targets, sit with a pair for a work session and watch: where does the agent do the mechanical work, where does the human decide, where do the gates fire, and where is a gate <em>missing</em>? You will learn more about your team&rsquo;s AI risk and leverage in one observed shift than in a quarter of dashboards. The rest of this path builds on that vantage &mdash; the risk lens (L-1.2), the instruction file as the asset (L-1.3), and the fleet decision (L-1.4).</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-33'},
+    labA:{
+      title:'Shadow a pair for a shift',
+      steps:[
+        'Sit with one engineer running an agent for a real work session &mdash; an hour is enough. Do not direct; observe. Keep a simple two-column tally: <b>AGENT did</b> (the mechanical work) versus <b>HUMAN decided</b> (intent, clarifications, diff reviews, sign-offs).',
+        'Mark every <b>gate</b> &mdash; a test that had to pass, a review before merge, a moment the agent stopped and asked or refused. Note which gates fired automatically and which depended on the human remembering.',
+        'Find the <b>missing gate</b>: one place where a decision that should need a human sign-off could have slipped through unreviewed. That gap is your highest-value action item.',
+        'Success: a one-page shift map &mdash; the agent/human split, the gates that exist, and the one gate you will add &mdash; written from what you saw, not what you assumed.'
+      ]
+    },
+    labB:{
+      title:'Watch one real agent moment',
+      steps:[
+        'Watch a single recorded or live agent run end to end &mdash; a request trace, or an issue driven to a pull request. Do not read the code; watch the <em>shape</em>: where it plans, where it builds, where it tests, where it stops.',
+        'At each step, ask the manager&rsquo;s question: <em>who would I want to decide this?</em> Mark the one or two points where you would insist a human signs off before the work advances.',
+        'Success: for one real run, a list of the human decision points you would require &mdash; the beginnings of your team&rsquo;s review-and-gate policy, drawn from a real workflow rather than a slide.'
+      ]
+    },
+    checklist:[
+      'I can describe an engineer+agent shift as a lifecycle, not &ldquo;the AI writes code.&rdquo;',
+      'I watched a real shift and tallied agent-did versus human-decided.',
+      'I identified where the gates are &mdash; and at least one that is missing.',
+      'I can state the new unit of output (a reviewable PR) and the new bottleneck (review/decide).',
+      'I can explain &ldquo;AI amplifies what&rsquo;s already there&rdquo; in terms of my own guardrails.'
+    ],
+    quiz:[
+      {q:'What does an engineer+agent pair actually spend a shift doing?',
+       options:['The AI writes all the code while the human waits','Running a <b>lifecycle</b> &mdash; read, plan, build, test, gate, review, ship &mdash; where the agent does the mechanical volume and the human is the <b>approver at every gate</b>, typing less and deciding more','Only writing tests','Watching dashboards'], answer:1},
+      {q:'When a well-run agent <em>stops</em> and refuses a call (e.g. &ldquo;this needs clinical sign-off&rdquo;), what is that?',
+       options:['A failure to be fixed','<b>The system working</b> &mdash; the model may say yes alone but may never say no alone; those refusals are the decision gates, and a leader&rsquo;s job is to ensure they exist and are staffed','A sign the tool is too weak','An excuse'], answer:1},
+      {q:'What is a leader&rsquo;s real leverage over an engineer+agent pair&rsquo;s output?',
+       options:['Buying more AI seats','The <b>guardrails</b> &mdash; tests, review policy, instruction files, human gates &mdash; because AI &ldquo;amplifies what&rsquo;s already there&rdquo;: strong practices turn its speed into a gain, weak ones magnify existing problems','Faster typing targets','Counting lines generated'], answer:1},
+      {q:'Why is the first leadership move &ldquo;watch, don&rsquo;t type&rdquo;?',
+       options:['Leaders shouldn&rsquo;t understand the work','Because one <b>observed shift</b> &mdash; seeing the agent/human split, the gates that fire, and the gate that&rsquo;s missing &mdash; teaches you more about your team&rsquo;s AI risk and leverage than a quarter of dashboards','To avoid slowing the engineer','Because the tools are secret'], answer:1}
+    ]
   }
 ];
 
@@ -7452,6 +7517,50 @@ VISUALS['SIM-10'] = function(mount, opts){
   refresh();
 };
 
+/* ---------- ANIM-33 · A Shift in the Life (spec: VISUALS.md) ----------
+   A leader's view of an engineer+agent pair across one work session: the AGENT does the
+   mechanical volume, the HUMAN does the few load-bearing decisions, the GATES fire
+   automatically. Every moment is a real course run (M-12.2/10.5/10.2/5.1/12.3). The point
+   is the split: watch a shift and you see typing replaced by deciding. L-1.1. */
+VISUALS['ANIM-33'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SHIFT = [
+    ['human','states the intent &mdash; <em>&ldquo;cut the review queue 20%&rdquo;</em> (a sentence)', ''],
+    ['agent','reads the repo, plans, asks <b>&ldquo;20% of what?&rdquo;</b>', 'M-12.2'],
+    ['human','answers the questions, <b>validates the units of work</b>', 'a decision'],
+    ['agent','builds a feature end to end &mdash; issue &rarr; PR, tests green', 'M-10.5'],
+    ['gate','pre-commit gate <b>blocks a red commit</b> &mdash; deterministic, not a vibe', 'M-10.2'],
+    ['agent','debugs a failure: traces the request, proposes a one-line fix', 'M-5.1'],
+    ['human','<b>reads the diff</b>, requests a change, then signs off', 'a decision'],
+    ['gate','the agent <b>refuses the policy call</b> &mdash; &ldquo;needs clinical sign-off&rdquo;', 'M-12.3'],
+    ['human','<b>approves the PR</b> &rarr; ship', 'a decision'],
+  ];
+  const LBL = {agent:'AGENT', human:'HUMAN', gate:'GATE'};
+  mount.innerHTML =
+    '<div class="anim33" aria-label="A shift in the life of an engineer and agent pair">' +
+      '<div class="a33head"><span>ANIM-33 · A SHIFT IN THE LIFE &mdash; WATCH, DON&rsquo;T TYPE</span>' +
+        '<button class="a33replay" data-a33replay>REPLAY &#9656;</button></div>' +
+      SHIFT.map(s =>
+        '<div class="a33row ' + (s[0]==='human'?'hum':s[0]==='gate'?'gat':'ag') + '">' +
+          '<span class="a33who ' + s[0] + '">' + LBL[s[0]] + '</span>' +
+          '<span class="a33what">' + s[1] + (s[2] ? ' <span class="a33tag">&middot; ' + s[2] + '</span>' : '') + '</span>' +
+        '</div>').join('') +
+      '<div class="a33cap">What to notice: the <b>agent</b> does the mechanical volume; the <b>human</b> moments are few but every one is a <b>decision</b>, and the <b>gates</b> fire on their own. The unit of output is a <b>reviewable PR, not lines typed</b> &mdash; so you manage the pair by staffing the decisions and wiring the gates, not by counting keystrokes.</div>' +
+    '</div>';
+  const rows = [...mount.querySelectorAll('.a33row')];
+  let timers = [];
+  function stop(){ timers.forEach(clearTimeout); timers = []; }
+  function play(){
+    stop();
+    if(reduce){ rows.forEach(r => r.classList.add('on')); return; }
+    rows.forEach(r => r.classList.remove('on'));
+    rows.forEach((r,i) => timers.push(setTimeout(() => r.classList.add('on'), 300 + i*430)));
+    timers.push(setTimeout(play, 300 + rows.length*430 + 5000));
+  }
+  mount.querySelector('[data-a33replay]').addEventListener('click', play);
+  play();
+};
+
 /* ---------- ANIM-12 · AI-DLC Ceremony Flow (spec: VISUALS.md) ----------
    Intent card explodes into units of work (Inception / Mob Elaboration), agents
    pick them up (Construction / Mob Construction), converge into a PR node. Each
@@ -8390,6 +8499,7 @@ function renderModule(mod){
   document.getElementById('modNV').hidden = !mod.needsVerification;
   const nLabs = ['labA','labB','labC'].filter(k => mod[k]).length;
   document.getElementById('modPill').textContent =
+    mod.path === 'lead' ? 'LEADERSHIP' :
     nLabs >= 3 ? 'TRI-PATH LAB' : nLabs === 2 ? 'DUAL-PATH LAB' :
     mod.labA ? 'CLAUDE-LED' : mod.labB ? 'COPILOT-LED' : mod.labC ? 'CURSOR-LED' : 'PLAYBOOK';
   document.getElementById('modConceptLabel').textContent = 'Concept · ' + (mod.minutes || '—') + ' min';
@@ -8433,9 +8543,15 @@ function renderLabs(mod){
   const body = document.getElementById('labBody');
   tabs.innerHTML = ''; body.innerHTML = '';
   const labs = [];
-  if(mod.labA) labs.push({key:'a', label:'◆ CLAUDE CODE', lab:mod.labA});
-  if(mod.labB) labs.push({key:'b', label:'◆ COPILOT', lab:mod.labB});
-  if(mod.labC) labs.push({key:'c', label:'◆ CURSOR', lab:mod.labC});
+  if(mod.path === 'lead'){
+    // Leadership path: Playbook lab (cyan, first) + Live-tool walkthrough (gold).
+    if(mod.labA) labs.push({key:'b', label:'◆ PLAYBOOK LAB', lab:mod.labA});
+    if(mod.labB) labs.push({key:'a', label:'◆ LIVE-TOOL WALKTHROUGH', lab:mod.labB});
+  } else {
+    if(mod.labA) labs.push({key:'a', label:'◆ CLAUDE CODE', lab:mod.labA});
+    if(mod.labB) labs.push({key:'b', label:'◆ COPILOT', lab:mod.labB});
+    if(mod.labC) labs.push({key:'c', label:'◆ CURSOR', lab:mod.labC});
+  }
   if(!labs.length){ tabs.hidden = true; return; }
   tabs.hidden = false;
   function show(entry){
