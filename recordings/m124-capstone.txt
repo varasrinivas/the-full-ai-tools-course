@@ -1,0 +1,63 @@
+M-12.4 — Capstone: ship one full feature end to end (API -> React screen -> tests -> PR)
+Live artifact: a full-stack feature shipped across BOTH repos in one sitting, tests green
+both sides, PR-ready diffs, plants intact, with the agent's own defend-the-diff notes.
+Recorded 2026-07-26, claude 2.1.220. Disposable clones (deleted after; teaching repos
+untouched, all plants intact).
+
+THE FEATURE (the capstone of the queue arc)
+  "Surface the manual-review queue depth to reviewers" — end to end:
+  a new API endpoint -> a React screen -> tests both sides -> two PR-ready diffs.
+  (This is UoW-1 from M-12.2's elaboration — un-built until now, so a genuine new feature.)
+
+API SIDE — priorauth-api (Claude Code, live)  194s, branch feat/queue-depth, commit 6137cf3
+  Built: GET /api/requests/queue-depth -> {"count": n}; new ReviewQueueService.queuedCount()
+  = requestRepo.countByStatus(RequestStatus.MANUAL_REVIEW) [Spring Data derived query];
+  a MockMvc controller test + a ReviewQueueService test.
+  Tests: `./mvnw test` BUILD SUCCESS — 41 run, 0 failures, 0 errors, 6 skipped (the
+  Testcontainers tests self-disable via disabledWithoutDocker; all unit+web green).
+  Diff: 5 files, +96 / -2 (PriorAuthController, PriorAuthRequestRepo, ReviewQueueService,
+  + the two tests). PLANTS UNTOUCHED — the agent explicitly flagged it left ApprovalService's
+  `score > AUTO_APPROVE_THRESHOLD` (BUG-API-01) and ClaimHistoryService.historyFor's per-patient
+  loop (BUG-API-03) alone.
+
+WEB SIDE — priorauth-web (Claude Code, live)  256s, branch feat/queue-depth-capstone, commit c437012
+  Built: getQueueDepth() in the typed api client; a QueueDepthBadge React component with
+  loading + error states rendering "<n> awaiting review", wired into the App header; an RTL
+  test mocking fetch and asserting the count renders.
+  Tests: `npx vitest run` — 10 files, 23 tests, all passing (was 9 files/20; +3 are the delta).
+  `npx tsc -b` and `npx oxlint` both clean. (Ran npm install first; node_modules wasn't present.)
+  Diff: 5 files, +85 (App.tsx, api/client.ts, QueueDepthBadge.tsx, index.css, the test).
+  Stayed off all four plant files (ConfidenceGauge, usePriorAuthStatus, RequestTable, SubmitRequest.test).
+
+FULL-STACK READ-OUT (the capstone's own metrics, T-11 panel applied)
+  Cycle time: ~450s (~7.5 min) for a full-stack feature, elaborate-implied -> two PR-ready diffs.
+  Tests: +7 added (4 api + 3 web), ALL GREEN both sides; existing suites stayed green.
+  Rework: ~0 — minimal, additive diffs (+181 lines total, -2), no churn.
+  Quality held: plants intact both repos (didn't break or "helpfully fix" anything) — a speed
+  win with quality holding is a real win (M-11.3's test), not the amplifier.
+
+DEFEND THE DIFF (the honest notes the agent surfaced for the reviewer to rule on)
+  - WEB: "the badge fetches once on mount and never refreshes, so the count goes stale as
+    reviewers work the queue" — named the follow-up (poll it on usePriorAuthStatus's interval).
+  - WEB: npm install reported "2 high-severity vulnerabilities" — flagged, not touched (out of scope).
+  - API: unknown-id/wrong-status behaviour inherited from the service; plants left alone by design.
+  These are exactly what "defend the diff" means: the agent proposes and surfaces its own edges;
+  the human reads the diff and decides. You are the approver, not the spectator.
+
+THREE TIMES, ONCE PER TOOL (the capstone's comparison)
+  Ran ONE tool live end to end (Claude Code) as the worked exemplar. Per M-12.1, AI-DLC is
+  tool-agnostic — the ceremony is identical in Copilot (delegate to the cloud agent -> PR) and
+  Cursor; the student ships the same feature three ways and compares cycle time / diff / defend-
+  ability (the labs). We did NOT re-run it in Copilot/Cursor here (that's the student's exercise
+  and Copilot's cloud agent needs remote infra) — stated honestly, not claimed.
+
+WHY THIS IS THE CAPSTONE
+  Everything composes: an intent became units (M-12.2), the crew built the safe ones and stopped
+  at the human decision (M-12.3), and here a full feature goes API -> UI -> tests -> PR with the
+  quality metrics holding and the diff defended. The human's job across all of it was the two
+  ends and the gates: state the intent, wire the guardrails, read the diffs, sign off. That is
+  the whole course, executed once, end to end.
+
+HYGIENE
+  Disposable clones scratchpad/m124-api + m124-web deleted after. Teaching repos priorauth-api
+  and priorauth-web untouched (main, clean); every plant intact (BUG-API-01 line 99 still `>`).

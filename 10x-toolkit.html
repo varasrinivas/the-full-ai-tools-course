@@ -1083,6 +1083,31 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim23 .s23pill.green{color:var(--s23green);border-color:var(--s23green)}
 .sim23 .s23foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim23 .s23foot b{color:var(--text);font-weight:500}
+.sim24{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim24 .s24head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim24 .s24feat{font-size:10.5px;color:var(--text);margin-bottom:10px}
+.sim24 .s24feat b{color:var(--gold);font-weight:600}
+.sim24 .s24cols{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.sim24 .s24col{flex:1;min-width:150px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px}
+.sim24 .s24ct{font-size:9px;letter-spacing:.08em;margin-bottom:5px}
+.sim24 .s24col.api .s24ct{color:var(--gold)} .sim24 .s24col.web .s24ct{color:var(--cyan)}
+.sim24 .s24line{font-size:9.5px;color:var(--dim);line-height:1.55}
+.sim24 .s24line code{font-size:8.5px}
+.sim24 .s24line b{color:var(--text);font-weight:500}
+.sim24 .s24metrics{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sim24 .s24m{font-size:9px;letter-spacing:.03em;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.sim24 .s24m.green{color:#3E9A6B;border-color:#3E9A6B}
+[data-theme="light"] .sim24 .s24m.green{color:#2d7350;border-color:#2d7350}
+.sim24 .s24defend{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:0;margin-bottom:8px;overflow:hidden}
+.sim24 .s24dh{font-size:9.5px;color:var(--text);padding:8px 11px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.sim24 .s24dh b{font-weight:600}
+.sim24 .s24dl{font-size:9px;color:var(--dim);line-height:1.55;padding:0 11px 9px;display:none}
+.sim24 .s24dl code{font-size:8.5px}
+.sim24 .s24defend.open .s24dl{display:block}
+.sim24 .s24defend.open .s24chev{transform:rotate(90deg)}
+.sim24 .s24chev{transition:transform .2s;color:var(--faint)}
+.sim24 .s24foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
+.sim24 .s24foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4685,6 +4710,63 @@ const MODS = [
       {q:'How does Mob Construction connect to what you built earlier in the course?',
        options:['It doesn&rsquo;t reuse anything','The branch diff is exactly M-10.5&rsquo;s <b>reviewable PR</b>, and the M-10.2 <b>pre-commit test gate</b> is the check on the way in &mdash; Construction turns validated units into that PR-ready, gated diff','It replaces version control','It skips tests'], answer:1}
     ]
+  },
+  {
+    id:'M-12.4', path:'eng', track:'T-12', title:'Capstone', minutes:60,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'The solo shift the whole residency was for. One real case, admission to discharge, the attending watching but not touching &mdash; you work it up, you treat it, you discharge it, and you defend every call on the way. It is not a new skill; it is proof you can run the whole lifecycle yourself, and know which decisions were never yours to make alone.',
+      body:
+        '<p><strong>The capstone is the whole course, executed once, end to end.</strong> Ship one full feature &mdash; a new API endpoint, a React screen, tests on both sides, a pull request &mdash; and then do three things the course spent twelve tracks preparing you for: <b>defend the diff</b>, <b>read the metrics</b>, and <b>ship it three ways</b> to form your own tool judgement. It is not about the feature; it is about proving the lifecycle runs with you as the approver, not the typist.</p>' +
+        '<p><strong>We ran it live, full-stack, as the worked exemplar.</strong> The feature was the natural close of the whole T-12 arc &mdash; <em>surface the manual-review queue depth to reviewers</em>. On the API (194s), the crew added <code>GET /api/requests/queue-depth</code> backed by a new <code>ReviewQueueService</code> over a derived <code>countByStatus</code>, with a MockMvc test and a service test: <b>41 tests, 0 failures</b>, <code>+96/&minus;2</code>. On the web (256s), a typed <code>getQueueDepth()</code> and a <code>QueueDepthBadge</code> with loading and error states, wired into the header, with an RTL test mocking the fetch: <b>23 tests passing</b>, <code>tsc</code> and <code>oxlint</code> clean, <code>+85</code>. About <b>seven and a half minutes</b> for a full-stack feature, two PR-ready diffs &mdash; and both plants left untouched, in both repos.</p>' +
+        '<p><strong>Defending the diff is the skill the capstone actually tests.</strong> &ldquo;Did CI pass&rdquo; is table stakes; defending the diff means you can stand behind every line and, just as important, <em>name what you did not do</em>. The agent handed you exactly that material: it flagged that the badge <em>&ldquo;fetches once on mount and never refreshes, so the count goes stale&rdquo;</em> (with the poll-it follow-up), that <code>npm install</code> reported <em>&ldquo;2 high-severity vulnerabilities&rdquo;</em>, that unknown-id handling was inherited from the service, and that it deliberately left both planted bugs alone. That is the agent proposing and surfacing its own edges; your job is to read the diff and rule on each one. An agent that hides its edges is the dangerous one; this is what a defensible PR looks like.</p>' +
+        '<p><strong>Then read the metrics &mdash; the capstone is itself a measured task.</strong> This is T-11 pointed at the work you just did: cycle time about seven minutes, seven tests added and all green, essentially zero rework (minimal additive diffs), and the quality metrics holding &mdash; plants intact, existing suites green. Speed with quality holding is a <em>real</em> win by M-11.3&rsquo;s test, not the amplifier. That read-out, not a feeling, is how you know the toolkit paid off on this feature; run it against your M-11.1 baseline and it is a number you own.</p>' +
+        '<p><strong>Finally, ship it three ways &mdash; that is where your tool judgement gets made.</strong> The ceremony is tool-agnostic (M-12.1), so the same feature runs in Claude Code, in Copilot (delegate to the cloud agent, it opens the PR), and in Cursor; what differs is the crew, and comparing cycle time, diff shape, and how defensible each result is turns M-2.5&rsquo;s editorial tool-fit table into <em>your</em> measured verdict &mdash; the overturn-with-evidence you were promised in T-02. That is the graduate move: not &ldquo;which tool is best,&rdquo; but &ldquo;I shipped the same thing three ways and here is what I measured.&rdquo; One feature remains &mdash; M-12.5 takes these exact skills to a larger canvas: an agent-driven migration of the whole domain.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-24'},
+    labA:{
+      title:'Ship the feature end to end, defend it, measure it — Claude Code',
+      steps:[
+        'Ship one full feature across both repos on a branch: a new API endpoint (with tests), then the React screen that consumes it (with an RTL test), tests green both sides, two commits. Reference: our queue-depth feature was ~7.5 min full-stack, <code>+96/&minus;2</code> API and <code>+85</code> web, 41 + 23 tests green.',
+        'Defend the diff: write the two-minute review you would give in a PR &mdash; what each change does, and explicitly what you did NOT do (the follow-ups, the flagged risks, the plants left alone). If you can&rsquo;t name what you deferred, you haven&rsquo;t reviewed it.',
+        'Read the metrics on the feature you just shipped (T-11): cycle time, tests added, rework, and whether quality held (existing suites green, nothing broken). A speed win only counts if quality held (M-11.3).',
+        'Confirm the composition: the two branch diffs are M-10.5-style PRs; the M-10.2 gate is the check on the way in; the units trace back to an intent you could have elaborated (M-12.2). The whole lifecycle should be visible in one feature.',
+        'Success: a full-stack feature shipped to two defended PRs, a written diff defence naming the deferrals, and a metrics read-out showing speed with quality holding.'
+      ]
+    },
+    labB:{
+      title:'Ship the same feature — Copilot',
+      steps:[
+        'Ship the identical feature with Copilot: delegate to the cloud agent (M-10.4) or build in agent mode, and let it open the PR on your infra. Keep the feature and the definition of done identical so the comparison is fair.',
+        'Defend that diff the same way, and record the same metrics (cycle time, tests, rework) so you can compare like-for-like.',
+        'Success: the same feature shipped via Copilot with its own PR and metrics, comparable to labA.'
+      ]
+    },
+    labC:{
+      title:'Ship it a third way, then your measured tool verdict',
+      steps:[
+        'Ship the feature once more in Cursor, same definition of done, same measurements.',
+        'Now write your <em>measured</em> tool-fit verdict: for THIS class of feature, which tool gave the best cycle time / diff / defensibility, citing your three runs &mdash; the overturn-with-evidence M-2.5 promised, not the editorial default.',
+        'Success: the feature shipped three ways, three metrics read-outs, and a one-paragraph tool-fit conclusion backed by your own numbers.'
+      ]
+    },
+    checklist:[
+      'I shipped a full feature end to end: API endpoint + React screen + tests + PR.',
+      'Both test suites are green and I did not break or &ldquo;fix&rdquo; anything unrelated.',
+      'I defended the diff &mdash; including naming what I deferred and why.',
+      'I read the metrics on the feature (cycle time, tests, rework) and quality held.',
+      'I shipped it three ways and formed a tool-fit verdict from my own numbers.'
+    ],
+    quiz:[
+      {q:'What does the capstone actually test, beyond &ldquo;did the feature work&rdquo;?',
+       options:['Typing speed','That you can run the <b>whole lifecycle</b> as the approver &mdash; ship end to end, <b>defend the diff</b> (including what you deferred), <b>read the metrics</b>, and <b>ship it three ways</b> to judge tools by measurement','Which model is biggest','Memorising the API'], answer:1},
+      {q:'What does &ldquo;defend the diff&rdquo; mean in practice?',
+       options:['Prove CI passed','Stand behind every line AND <b>name what you did not do</b> &mdash; the follow-ups, flagged risks (the stale badge, the npm vulns), and the plants left alone; an agent that surfaces its own edges gives you a defensible PR','Argue with the reviewer','Hide the risky parts'], answer:1},
+      {q:'The full-stack feature shipped in ~7.5 min with +7 tests green and both plants intact. Why is that a real win, not the amplifier?',
+       options:['It was fast','<b>Quality held</b> &mdash; tests green both sides, nothing unrelated broken &mdash; so the speed gain didn&rsquo;t come at the cost of rework or stability; a speed win only counts when the quality metrics hold (M-11.3)','It used three tools','The diff was small'], answer:1},
+      {q:'Why ship the same feature three times, once per tool?',
+       options:['To triple the work','To turn M-2.5&rsquo;s editorial tool-fit table into <b>your own measured verdict</b> &mdash; the ceremony is tool-agnostic, so comparing cycle time / diff / defensibility across three runs is the overturn-with-evidence you were promised','Because one tool always fails','To use more tokens'], answer:1}
+    ]
   }
 ];
 
@@ -6811,6 +6893,33 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-24 · Capstone Read-out (spec: VISUALS.md; deviation from ANIM-12 logged) ----------
+   The REAL full-stack capstone run (recordings/m124-capstone.txt): one feature shipped end
+   to end across both repos, tests green both sides, PR-ready diffs, plants intact, with the
+   agent's own defend-the-diff notes and the T-11 metrics read-out. ANIM-12 remains the shared
+   ceremony flow; this carries the capstone's actual numbers. */
+VISUALS['SIM-24'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="sim24" aria-label="Capstone read-out: a full-stack feature shipped end to end">' +
+      '<div class="s24head"><span>SIM-24 · CAPSTONE READ-OUT · END TO END</span><span>1 FEATURE · 2 REPOS</span></div>' +
+      '<div class="s24feat">Feature: <b>surface the manual-review queue depth to reviewers</b> &mdash; new API endpoint &rarr; React screen &rarr; tests &rarr; PR.</div>' +
+      '<div class="s24cols">' +
+        '<div class="s24col api"><div class="s24ct">API &middot; priorauth-api &middot; 194s</div>' +
+          '<div class="s24line"><code>GET /api/requests/queue-depth</code> &rarr; <code>{count}</code>; new <code>ReviewQueueService</code> over <code>countByStatus</code>; MockMvc + service tests. <b>41 tests, 0 failures</b> (6 Testcontainers skipped). <code>+96 / &minus;2</code>.</div></div>' +
+        '<div class="s24col web"><div class="s24ct">WEB &middot; priorauth-web &middot; 256s</div>' +
+          '<div class="s24line"><code>getQueueDepth()</code> + a <code>QueueDepthBadge</code> (loading/error) wired to the header; RTL test mocks the fetch. <b>23 tests, all pass</b> (+3); <code>tsc</code> + <code>oxlint</code> clean. <code>+85</code>.</div></div>' +
+      '</div>' +
+      '<div class="s24metrics"><span class="s24m">cycle time ~7.5 min (full stack)</span><span class="s24m green">+7 tests, all green</span><span class="s24m green">rework ~0 (additive)</span><span class="s24m green">plants intact &mdash; quality held</span></div>' +
+      '<div class="s24defend" data-defend><div class="s24dh"><b>Defend the diff &mdash; the agent&rsquo;s own notes</b> <span class="s24chev">&#9656;</span></div>' +
+        '<div class="s24dl">The agent surfaced its edges for you to rule on, which is the point: the badge <b>fetches once and goes stale</b> as reviewers work the queue (follow-up: poll it like <code>usePriorAuthStatus</code>); <code>npm install</code> reported <b>2 high-severity vulnerabilities</b> (flagged, untouched); unknown-id / wrong-status behaviour is inherited from the service; and both plants (<code>&gt;</code> at line 99, the <code>historyFor</code> N+1) were <b>deliberately left alone</b>. You read the diff and decide &mdash; approver, not spectator.</div></div>' +
+      '<div class="s24foot">What to notice: everything composed &mdash; intent &rarr; units (M-12.2) &rarr; build + stop (M-12.3) &rarr; here, a full feature to a defended PR with the <b>quality metrics holding</b> (M-11.3&rsquo;s test for a real win). Ship it <b>three ways</b> to compare tools; the ceremony is tool-agnostic (M-12.1), only the crew changes.</div>' +
+    '</div>';
+  const d = mount.querySelector('[data-defend]');
+  d.querySelector('.s24dh').addEventListener('click', () => d.classList.toggle('open'));
+  if(reduce){ d.classList.add('open'); }
 };
 
 /* ---------- SIM-23 · Mob Construction (spec: VISUALS.md) ----------
