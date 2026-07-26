@@ -1059,6 +1059,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim22 .s22unit.open .s22why{display:block}
 .sim22 .s22foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim22 .s22foot b{color:var(--text);font-weight:500}
+.sim23{--s23green:#3E9A6B;--s23red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim23{--s23green:#2d7350;--s23red:#B0503C}
+.sim23 .s23head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim23 .s23sub{font-size:9.5px;color:var(--dim);margin-bottom:10px;line-height:1.5}
+.sim23 .s23sub b{color:var(--text);font-weight:500}
+.sim23 .s23unit{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 10px;margin-bottom:6px}
+.sim23 .s23unit.stopped{border-color:var(--s23red);cursor:pointer}
+.sim23 .s23unit.built{border-color:var(--s23green)}
+.sim23 .s23utop{display:flex;align-items:center;gap:8px}
+.sim23 .s23uname{flex:1;font-size:10px;color:var(--text)}
+.sim23 .s23uname code{font-size:9px}
+.sim23 .s23badge{font-size:8px;letter-spacing:.06em;padding:1px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim23 .s23badge.built{color:var(--s23green);border-color:var(--s23green)}
+.sim23 .s23badge.stopped{color:var(--s23red);border-color:var(--s23red)}
+.sim23 .s23note{font-size:9px;color:var(--dim);line-height:1.5;margin-top:4px;padding-left:2px}
+.sim23 .s23note code{font-size:8.5px}
+.sim23 .s23why{font-size:9px;color:var(--dim);line-height:1.5;margin-top:6px;padding:7px 9px;border-top:1px dashed var(--line);display:none}
+.sim23 .s23why b{color:var(--text);font-weight:500}
+.sim23 .s23unit.open .s23why{display:block}
+.sim23 .s23result{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sim23 .s23pill{font-size:9px;letter-spacing:.04em;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.sim23 .s23pill.green{color:var(--s23green);border-color:var(--s23green)}
+.sim23 .s23foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim23 .s23foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4604,6 +4628,63 @@ const MODS = [
       {q:'What was the ceremony&rsquo;s most valuable output on &ldquo;cut the queue 20%&rdquo;?',
        options:['A finished feature','The honest read that the intent is a <b>risk decision, not a coding task</b> &mdash; the only known-yield lever trades false-approvals &mdash; surfaced while changing course was still free','A cost estimate','A new AI model'], answer:1}
     ]
+  },
+  {
+    id:'M-12.3', path:'eng', track:'T-12', title:'Mob Construction', minutes:45,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'The operating theatre once the huddle is over. The team is at pace now: the crew does the mechanical work, and the lead surgeon &mdash; the human &mdash; makes the calls that need judgment and signs off. But there is one incision the crew will not make without the attending&rsquo;s explicit order and a documented reason, because it is not a technical step, it is a decision about the patient&rsquo;s care. Mob Construction is exactly that room: agents building the validated units at speed, a human as the approver, and a crew that knows which cut is not theirs to make.',
+      body:
+        '<p><strong>Mob Construction is the build phase &mdash; the crew turns validated units into code and tests.</strong> AWS: in Construction the AI <em>&ldquo;proposes a logical architecture, domain models, code solution and tests,&rdquo;</em> the team <em>&ldquo;provides clarification on technical decisions and architectural choices in real time,&rdquo;</em> and throughout, <em>&ldquo;the agent proposes, the human approves.&rdquo;</em> You are not the typist here; you are the approver. We fed the run the units M-12.2 elaborated and validated &mdash; with the human decision already made (&ldquo;the inclusive docs are the authoritative threshold contract&rdquo;) &mdash; and told the crew to build the low-risk slice.</p>' +
+        '<p><strong>It built them the way you would want a good engineer to.</strong> In 137 seconds it shipped two units on a branch: <b>UoW-3</b>, the one-character <code>&gt;</code>&rarr;<code>&gt;=</code> fix with a boundary test that pins 0.85 to <code>AUTO_APPROVED</code> and <em>references the constant so it cannot silently drift</em> (the M-5.2 mutation lesson, unprompted); and <b>UoW-2</b>, a <code>POST /{id}/resolve</code> endpoint wiring the untouched service method, with <code>@NotNull</code> on the flag so an omitted value is a 400 rather than a silent denial. Thirty-five tests green, a <b>+49/&minus;1</b> diff, one commit, PR-ready. And it was honest about its own edges &mdash; it flagged that unknown-id and wrong-status still surface as 500s and named a follow-up unit for 404/409, rather than quietly expanding the slice. Minimal, tested, scoped: the crew doing its job.</p>' +
+        '<p><strong>Then it did the thing that actually makes this trustworthy: it stopped.</strong> Told to build only the low-risk slice, it reached <b>UoW-5</b> &mdash; promoting claim history to a decision input &mdash; and refused, because <em>&ldquo;that crosses the line from a code change into a change of medical-necessity policy&hellip; it needs sign-off from people who can own that, not a passing test suite.&rdquo;</em> It named the governance precisely: a <b>clinical lead</b> to own the rule and its lookback window; a <b>compliance/legal</b> reviewer on payer contracts, CMS/state rules, and the <b>disparate-impact risk</b> that a history-based downgrade &ldquo;can systematically disadvantage patients with prior denials&rdquo;; and a <b>shadow dry-run</b> to produce the still-unknown yield before anything ships. Its closing line is the whole ethic of this course: <em>&ldquo;it&rsquo;s legitimate for the answer to be that the rule doesn&rsquo;t earn its risk.&rdquo;</em></p>' +
+        '<p><strong>That refusal &mdash; not the code &mdash; is the module.</strong> A crew that builds <em>everything</em> it is handed, including the policy call, is a liability in a regulated shop; a crew that builds the mechanism at pace and defers the decision, with reasons, is a colleague. This is M-1.6&rsquo;s boundary at the ceremony scale &mdash; the agent may build the mechanism alone; it may never decide the policy alone &mdash; and it is why &ldquo;human as approver, not typist&rdquo; is a safety property, not a slogan. AI-DLC&rsquo;s per-phase human gate exists precisely so this stop happens by design and not by luck.</p>' +
+        '<p><strong>And the arc closes into what you already built.</strong> Elaboration produced validated units (M-12.2); Construction turned the safe ones into a tested, minimal diff on a branch (here); that diff is exactly M-10.5&rsquo;s reviewable pull request, and the pre-commit test gate from M-10.2 is the check it passes on the way in. What remains is to do it for a whole feature and read the numbers: M-12.4 ships one end to end, three ways, with the final metrics read-out.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-23'},
+    labA:{
+      title:'Run Mob Construction on your validated units',
+      steps:[
+        'Take the validated units from your M-12.2 elaboration (with the human decisions recorded) and run the agent as the <b>crew</b>: build only the low-risk slice &mdash; propose, implement minimally, add the named tests, run to green, commit on a branch. Reference: ours built the <code>&gt;=</code> fix + a resolve endpoint, 35 tests green, +49/&minus;1.',
+        'Approve like an approver, not a spectator: read the diff, run the tests yourself, and check the scope notes &mdash; did it flag its own edges (like the 404/409 follow-up) or quietly over-build? A good crew narrows scope and tells you what it left.',
+        'Now test the boundary on purpose: point it at a unit that is a <em>policy or risk</em> decision (ours was promoting claim history to a decision input) and confirm it <b>stops and names the human sign-off it needs</b> rather than building it. If it just builds it, your unit wasn&rsquo;t gated in elaboration &mdash; go fix the gate.',
+        'Confirm the composition: the branch diff is a reviewable PR (M-10.5), and a pre-commit test gate (M-10.2) is the check on the way in. Wire that gate if you want the stop-on-red enforced, not hoped.',
+        'Success: the safe units built, tested and committed as a PR-ready diff, and a demonstrated <b>stop</b> at the unit that is a human decision, with the governance it needs written down.'
+      ]
+    },
+    labB:{
+      title:'Construction with Copilot',
+      steps:[
+        'Build the same low-risk slice with Copilot (agent mode, or delegate to the cloud agent, M-10.4) &mdash; propose, implement, test, open the change for review.',
+        'Confirm the human gate survives the tool: you still approve the diff, and the policy-decision unit still gets deferred, not built. The ceremony is the tool-agnostic part.',
+        'Success: the slice built and reviewed in Copilot, and one line on where its approval surface (the PR) sits versus Claude&rsquo;s.'
+      ]
+    },
+    labC:{
+      title:'Cursor, then the construction rule',
+      steps:[
+        'Build one unit in Cursor so you have seen Construction run tool-agnostically across all three.',
+        'Write the rule this ceremony exists for: <em>Mob Construction is the crew building the validated units at pace with a human as approver, not typist &mdash; it proposes architecture, code and tests, keeps the diff minimal and honest about its edges, and stops at any unit that is a policy or risk decision, naming the human sign-off it needs; the agent may build the mechanism alone but may never decide the policy alone.</em>',
+        'Success: a unit built in a third tool, the rule written, and your PR-ready diff plus the deferred unit&rsquo;s governance note ready for the capstone.'
+      ]
+    },
+    checklist:[
+      'The crew built only the validated low-risk units &mdash; minimal diff, named tests, green.',
+      'I approved by reading the diff and running the tests, not by watching.',
+      'It flagged its own scope edges instead of quietly over-building.',
+      'It STOPPED at the policy/risk unit and named the human sign-off it needs.',
+      'The branch diff is a reviewable PR; a pre-commit gate is the check on the way in.'
+    ],
+    quiz:[
+      {q:'What is the human&rsquo;s role in Mob Construction?',
+       options:['The typist, writing the code','The <b>approver</b> &mdash; AWS: &ldquo;the agent proposes, the human approves&rdquo;; the crew builds the validated units at pace and you read the diff, run the tests, and sign off','A spectator','Absent &mdash; it&rsquo;s fully autonomous'], answer:1},
+      {q:'The construction run built two units but refused a third. Why is the refusal the point of the module?',
+       options:['The third unit was too hard','It was a <b>policy/risk decision, not a coding task</b> &mdash; a crew that builds the mechanism at pace but defers the medical-necessity call (naming clinical/compliance sign-off and a dry-run) is trustworthy in a regulated domain; one that builds everything is a liability','It ran out of time','Tests failed'], answer:1},
+      {q:'How does the refusal relate to M-1.6&rsquo;s decision boundary?',
+       options:['It doesn&rsquo;t','It is that boundary at ceremony scale &mdash; the agent <b>may build the mechanism alone but may never decide the policy alone</b> &mdash; which is why &ldquo;human as approver, not typist&rdquo; is a safety property, not a slogan','It replaces it','It only applies to tests'], answer:1},
+      {q:'How does Mob Construction connect to what you built earlier in the course?',
+       options:['It doesn&rsquo;t reuse anything','The branch diff is exactly M-10.5&rsquo;s <b>reviewable PR</b>, and the M-10.2 <b>pre-commit test gate</b> is the check on the way in &mdash; Construction turns validated units into that PR-ready, gated diff','It replaces version control','It skips tests'], answer:1}
+    ]
   }
 ];
 
@@ -6730,6 +6811,32 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-23 · Mob Construction (spec: VISUALS.md) ----------
+   The REAL Construction run (recordings/m123-mob-construction.txt, 137s): the crew builds
+   the two low-risk units green and commits, and STOPS at UoW-5 (click it) because that unit
+   is a medical-necessity policy decision, not a coding task. "The agent proposes, the human
+   approves." Verified against the clone (branch feat/cut-queue, line 99 >=, 35 tests green). */
+VISUALS['SIM-23'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="sim23" aria-label="Mob Construction: the crew builds the validated units">' +
+      '<div class="s23head"><span>SIM-23 · MOB CONSTRUCTION &middot; AGENTS BUILD, HUMAN APPROVES</span><span>feat/cut-queue</span></div>' +
+      '<div class="s23sub">The human ruling is made (threshold contract = the inclusive docs). The crew builds the <b>low-risk slice</b>; you approve the diff.</div>' +
+      '<div class="s23unit built"><div class="s23utop"><span class="s23uname">UoW-3 &mdash; restore inclusive <code>&gt;=</code> + pin 0.85</span><span class="s23badge built">BUILT &#10003;</span></div>' +
+        '<div class="s23note">one-char fix at <code>ApprovalService:99</code>; a boundary test pins 0.85 &rarr; <code>AUTO_APPROVED</code>, <b>referencing the constant so it can&rsquo;t drift</b> (the M-5.2 lesson, unprompted).</div></div>' +
+      '<div class="s23unit built"><div class="s23utop"><span class="s23uname">UoW-2 &mdash; <code>POST /api/requests/{id}/resolve</code></span><span class="s23badge built">BUILT &#10003;</span></div>' +
+        '<div class="s23note">wires the untouched <code>resolveManualReview()</code>; <code>approved</code> is <code>@NotNull</code> so an omitted flag is a <b>400, not a silent deny</b>; 404/409 flagged as a follow-up unit, outside the minimal slice.</div></div>' +
+      '<div class="s23unit stopped" data-stop><div class="s23utop"><span class="s23uname">UoW-5 &mdash; claim history as a decision input</span><span class="s23badge stopped">STOPPED &#9995;</span></div>' +
+        '<div class="s23note">the agent refused to build it &mdash; <em>click for why it needs a human, not a passing suite</em>.</div>' +
+        '<div class="s23why"><b>Not a code change &mdash; a change of medical-necessity policy.</b> It needs a <b>clinical lead</b> to own the rule (what history means, the lookback window, whether a denial pattern may lower a patient&rsquo;s odds at all) and a <b>compliance/legal</b> reviewer on payer contracts, CMS/state rules and <b>disparate-impact risk</b> (a history-based downgrade systematically disadvantages patients with prior denials; adverse decisions need appealable reasons). First, a <b>shadow dry-run</b>: compute the proposed decision alongside the current one on live traffic, audit-log only, then report the flip matrix + queue delta + a stratified sample for clinical hand-audit. <em>&ldquo;The yield is still unknown &mdash; the dry-run exists to produce the number, and it&rsquo;s legitimate for the answer to be that the rule doesn&rsquo;t earn its risk.&rdquo;</em></div></div>' +
+      '<div class="s23result"><span class="s23pill green">35 tests, 0 failures (+4)</span><span class="s23pill">diff +49 / &minus;1</span><span class="s23pill">commit 45d5e36</span><span class="s23pill green">&rarr; PR-ready</span></div>' +
+      '<div class="s23foot">What to notice: <b>the agent proposes, the human approves.</b> The crew built the mechanical units &mdash; with tests, a minimal diff and honest scope notes &mdash; and <b>refused the one that is a human decision</b>, naming the exact governance it needs. That refusal is M-1.6&rsquo;s decision boundary at ceremony scale: build the mechanism alone; never decide the policy alone.</div>' +
+    '</div>';
+  const stop = mount.querySelector('[data-stop]');
+  stop.addEventListener('click', () => stop.classList.toggle('open'));
+  if(reduce){ stop.classList.add('open'); }
 };
 
 /* ---------- SIM-22 · Mob Elaboration (spec: VISUALS.md) ----------

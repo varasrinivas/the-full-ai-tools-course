@@ -1,0 +1,66 @@
+M-12.3 — Mob Construction (AI-DLC Construction: build the validated units; agent as crew, human approves)
+Live artifact: a real Mob Construction run building the low-risk slice of M-12.2's
+elaboration, red->green->commit, and STOPPING at the unit that needs a human decision.
+Recorded 2026-07-26, claude 2.1.220. Disposable clone (deleted after; teaching repo
+untouched, BUG-API-01 plant intact on main).
+
+AI-DLC facts (verified 2026-07-25, recordings/m121-ai-dlc.txt)
+  Construction "Determines HOW to build it"; Mob Construction = AI "proposes a logical
+  architecture, domain models, code solution and tests"; "the agent proposes, the human
+  approves"; "Humans decide and validate, AI plans and executes." (AWS-primary.)
+
+INPUT  UNITS.md (the validated units from M-12.2's Mob Elaboration), with the human decision
+  already made ("authoritative threshold contract = docs, INCLUSIVE >="), the low-risk build
+  order (UoW-3 then UoW-2), and an explicit GATE: do NOT build UoW-5.
+
+THE RUN  (`claude -p "Using AI-DLC, run Mob Construction for the validated units in UNITS.md.
+  You are the crew; I am the approver. Build ONLY the low-risk slice (UoW-3 then UoW-2):
+  propose, implement minimally, add the named tests, run unit tests to GREEN (mvnw, no
+  Docker), commit on feat/cut-queue. Then STOP: do NOT build UoW-5 — write what human
+  sign-off + measurement it needs." --dangerously-skip-permissions`)   137s.
+
+WHAT IT BUILT (verified against the clone)
+  UoW-3 — inclusive threshold: ApprovalService.java:99 `>` -> `>=` (per the human ruling that
+    docs are authoritative). Added test `exactThresholdScoreAutoApproves` pinning 0.85 ->
+    AUTO_APPROVED, "referencing the constant so it can't drift silently" (the M-5.2 mutation
+    lesson, unprompted). Noted the pre-existing log line ">=" is now truthful.
+  UoW-2 — resolve endpoint: `POST /api/requests/{id}/resolve` on PriorAuthController takes
+    {approved:bool, reason:string?} and delegates to the untouched resolveManualReview(...),
+    returns 200. `approved` is @NotNull so an omitted flag is a 400, not a silent deny.
+    Honest scope note: unknown-id/wrong-status still surface as 500 (existing service
+    exceptions) — flagged as a follow-up UoW for 404/409, deliberately outside the minimal slice.
+  TESTS GREEN: 35 tests, 0 failures/errors/skipped (mvnw, unit+web, Testcontainers excluded
+    by -Dtest selection). +3 PriorAuthControllerTest, +1 ApprovalServiceTest.
+  DIFF: 4 files, +49 / -1. Commit 45d5e36 "Cut the manual-review queue: inclusive threshold
+    + resolve endpoint" on branch feat/cut-queue. PR-ready (converges to M-10.5's shape).
+
+THE STANDOUT BEAT — STOPPED at UoW-5 (the-agent-proposes-the-human-approves, made real)
+  It refused to build the "claim history as a decision input" unit and wrote exactly why it
+  needs humans, not a passing suite. Verbatim-trimmed:
+   - "that crosses the line from a code change into a change of medical-necessity policy — so
+     it needs sign-off from people who can own that, not a passing test suite."
+   - a CLINICAL LEAD must approve the rule (what history means, the lookback window, whether a
+     denial pattern may lower a patient's approval odds at all);
+   - a COMPLIANCE/LEGAL reviewer must check payer contracts, CMS/state prior-auth rules, and
+     ANTI-DISCRIMINATION exposure — "a history-based downgrade can systematically disadvantage
+     patients with prior denials, which is a disparate-impact risk", plus appealable reasons;
+   - the measurement first = a SHADOW DRY-RUN: compute the proposed decision alongside the
+     current one for a window of live traffic, audit-log only, change nothing, then report the
+     flip matrix + queue-volume delta vs the 20% target + a stratified breakdown for clinical
+     hand-audit; ship only if the audit passes, behind a flag with a rollback.
+   - "The yield is still unknown — the dry-run exists to produce the number, and it's legitimate
+     for the answer to be that the rule doesn't earn its risk."
+
+WHY THIS IS THE MODULE
+  Mob Construction is the crew building the validated units with the human as approver, not
+  typist. The run shows both halves: the agent autonomously BUILDS the safe, mechanical units
+  (with tests, minimal diff, honest scope notes) AND REFUSES the unit that is a policy/risk
+  decision, articulating the exact human governance it needs. That refusal is the responsible-AI
+  payoff in a regulated domain and is M-1.6's decision boundary at the ceremony scale: the agent
+  may build the mechanism alone; it may not decide medical-necessity policy alone. Composes the
+  arc: M-12.2 elaboration -> M-12.3 construction (here) -> the diff is the PR (M-10.5). The M-10.2
+  pre-commit test gate composes as the commit gate (proven in its own module; not re-wired here).
+
+HYGIENE
+  Disposable clone scratchpad/m123-api deleted after. Teaching repo priorauth-api untouched
+  (main, clean); BUG-API-01 line 99 still `>` on main — the fix lived only on the drill clone.
