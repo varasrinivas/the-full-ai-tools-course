@@ -1136,6 +1136,28 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim25 .s25tier code{font-size:8.5px} .sim25 .s25tier b{color:var(--text);font-weight:500}
 .sim25 .s25foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
 .sim25 .s25foot b{color:var(--text);font-weight:500}
+.sim26{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim26 .s26head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim26 .s26sub{font-size:9.5px;color:var(--dim);margin-bottom:10px;line-height:1.5}
+.sim26 .s26sub b{color:var(--text);font-weight:500}
+.sim26 .s26tier{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 10px;margin-bottom:5px;cursor:pointer;border-left-width:3px}
+.sim26 .s26tier.t0{border-left-color:#3E9A6B} .sim26 .s26tier.t1{border-left-color:var(--cyan)}
+.sim26 .s26tier.t2{border-left-color:var(--gold)} .sim26 .s26tier.t3{border-left-color:var(--s10red,#d0705a)}
+.sim26 .s26top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+.sim26 .s26name{font-size:10px;color:var(--text);font-weight:600}
+.sim26 .s26name .s26br{display:block;font-size:8.5px;color:var(--faint);font-weight:400;letter-spacing:.02em}
+.sim26 .s26ctrl{font-size:8.5px;letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim26 .s26tier.t0 .s26ctrl{color:#3E9A6B} .sim26 .s26tier.t1 .s26ctrl{color:var(--cyan)}
+.sim26 .s26tier.t2 .s26ctrl{color:var(--gold)} .sim26 .s26tier.t3 .s26ctrl{color:var(--s10red,#d0705a)}
+[data-theme="light"] .sim26 .s26tier.t0 .s26ctrl{color:#2d7350}
+.sim26 .s26ex{font-size:9px;color:var(--dim);line-height:1.5;margin-top:6px;padding-left:2px;display:none}
+.sim26 .s26ex code{font-size:8.5px} .sim26 .s26ex b{color:var(--text);font-weight:500}
+.sim26 .s26tier.open .s26ex{display:block}
+.sim26 .s26warn{border:1px solid var(--s10red,#d0705a);border-radius:8px;background:var(--panel);padding:8px 11px;margin:8px 0;font-size:9.5px;color:var(--dim);line-height:1.55}
+.sim26 .s26warn b{color:var(--text);font-weight:500}
+.sim26 .s26wl{font-size:8px;letter-spacing:.06em;color:var(--s10red,#d0705a);border:1px solid var(--s10red,#d0705a);border-radius:999px;padding:1px 7px;margin-right:6px;white-space:nowrap}
+.sim26 .s26foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
+.sim26 .s26foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4917,6 +4939,54 @@ const MODS = [
       {q:'Why is the first leadership move &ldquo;watch, don&rsquo;t type&rdquo;?',
        options:['Leaders shouldn&rsquo;t understand the work','Because one <b>observed shift</b> &mdash; seeing the agent/human split, the gates that fire, and the gate that&rsquo;s missing &mdash; teaches you more about your team&rsquo;s AI risk and leverage than a quarter of dashboards','To avoid slowing the engineer','Because the tools are secret'], answer:1}
     ]
+  },
+  {
+    id:'L-1.2', path:'lead', track:'L-01', title:'Vibe vs spec as a risk lens', minutes:35,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'The formulary&rsquo;s risk tiers. A pharmacy does not ban a drug for being new; it <em>tiers</em> it &mdash; over-the-counter for the low-risk, prescription for the higher, prior authorization for the ones that can seriously hurt someone. Nobody argues about whether the pill is &ldquo;good&rdquo;; they ask how much damage a wrong dose does and act accordingly. AI-written code wants the same treatment: not a ban, not a blanket blessing, but a tier &mdash; and the tier, not the author, decides how much control it must pass through before it reaches a patient.',
+      body:
+        '<p><strong>&ldquo;Vibe versus spec&rdquo; is not a style debate for your engineers to settle &mdash; it is a risk decision you own.</strong> Vibe coding (describe it, accept it by eye) is fast and perfect for throwaway work; spec-driven (write the intent, plan, test, review) is slower and right for anything that lasts. Your engineers already have the rubric: <b>cost-of-wrong &times; lifespan</b>. Read that rubric as your <b>risk classification</b>, and it tells you exactly how much control a piece of AI-written code must pass through. A demo can be vibed and thrown away; the eligibility path cannot.</p>' +
+        '<p><strong>The reason this matters to a leader is that vibe fails <em>silently</em> &mdash; and you must feel that in your bones.</strong> In this course&rsquo;s own recorded run, a vibe-coded widget passed <b>25 of 25 tests</b> and was still <b>&ldquo;unavailable for every user&rdquo;</b> in production, because the agent invented an endpoint that did not exist. Read that twice: <em>green CI, shipped broken</em>. A passing suite proves the code does what its tests assert, not what production needs &mdash; and vibe-coded work often has tests that assert the wrong thing. A leader who treats &ldquo;the tests pass&rdquo; as &ldquo;safe to ship&rdquo; will keep being surprised in exactly the places that hurt.</p>' +
+        '<p><strong>So put AI-written code on your risk register by blast radius, not by provenance.</strong> The instinct to ask &ldquo;was this written by AI?&rdquo; is the wrong question; the right one is &ldquo;what is the cost if it&rsquo;s wrong, and how long will it live?&rdquo; A four-tier register is enough: <b>disposable</b> (vibe, label it, delete it), <b>internal/low-stakes</b> (vibe plus a quick review), <b>production feature</b> (spec, tests, review), and <b>high-blast</b> &mdash; billing, eligibility, PHI, the decision path &mdash; which additionally requires a <b>named human to own the decision</b>. AI does not move a task between tiers; a human writing the same eligibility rule needs the same controls. What AI changes is the <b>volume</b>: it produces far more code at every tier, and the current DORA research is blunt that it <em>&ldquo;amplifies what&rsquo;s already there&rdquo;</em> &mdash; so more Tier-2 and Tier-3 code arriving faster simply means your guardrails have to scale with it, or the extra volume becomes extra instability.</p>' +
+        '<p><strong>The failure mode to police is drift.</strong> The dangerous pattern is not someone vibing a spike &mdash; that is correct. It is the Tier-0 spike that <em>works in the demo</em> and gets quietly promoted toward production without ever being re-tiered, re-specced, or reviewed. That is how un-reviewed AI-written code ends up on your eligibility path with nobody having decided it should be there. The control is cheap and specific: a <b>re-tiering gate</b> &mdash; anything moving from prototype toward production stops and gets classified before it advances. It is the same &ldquo;human at the gate&rdquo; discipline from L-1.1, applied to the code&rsquo;s risk tier rather than a single decision.</p>' +
+        '<p><strong>So the leadership move is small and firm.</strong> Do not ban vibe coding &mdash; it is the right tool for the bottom two tiers and banning it just drives it underground. Instead: name the tiers, set the required control per tier, and put a re-tiering gate on the path to production. Then most of your review energy goes where the blast radius is, your engineers keep their speed on the disposable work, and the eligibility path gets the spec, the review, and the signature it deserves. L-1.3 makes the next move concrete &mdash; the instruction file that encodes these rules so the tiers are enforced by default, not by memory.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-26'},
+    labA:{
+      title:'Tier your team’s recent AI-written work',
+      steps:[
+        'Take five to eight real changes your team shipped recently with AI help. For each, ignore who typed it and score two things only: <b>cost if wrong</b> and <b>how long it will live</b>. Place each on the four-tier register (disposable / internal / production / high-blast).',
+        'Now check the control that was actually applied against the tier: was any <b>production or high-blast</b> change vibe-coded without a spec or a real review? Was a throwaway spike over-ceremonied? Mismatches in the risky direction are your action items.',
+        'Hunt for <b>drift</b>: find one thing that started as a prototype and is now doing real work in production without ever being re-tiered. Decide its correct tier and the control it now needs.',
+        'Success: your recent AI-written work placed on the register, every tier/control mismatch in the risky direction named, and one drift case caught and re-tiered.'
+      ]
+    },
+    labB:{
+      title:'Watch vibe break, on the green check',
+      steps:[
+        'Watch a vibe run meet a new requirement &mdash; the recorded &ldquo;add auth&rdquo; break (SIM-02 / M-2.2), or a live vibe task where you add a constraint mid-flight. Watch for the moment the suite stays green while the behaviour goes wrong.',
+        'Name what a passing CI did <em>not</em> catch (ours: a widget that was &ldquo;unavailable for every user&rdquo; against a non-existent endpoint). That gap is precisely what your risk register and its reviews exist to cover &mdash; write down the one review step that would have caught it.',
+        'Success: a concrete example, from a real run, of green-CI-but-wrong &mdash; and the specific control (spec, review, or a re-tiering gate) you would require to catch that class of failure on production-tier work.'
+      ]
+    },
+    checklist:[
+      'I can state the risk rubric: cost-of-wrong &times; lifespan sets the tier.',
+      'I have a four-tier register and the required control for each tier.',
+      'I understand green CI does not mean safe &mdash; vibe can pass tests and still be wrong.',
+      'I classify AI-written code by blast radius, not by whether AI wrote it.',
+      'I have a re-tiering gate on the path from prototype to production (drift control).'
+    ],
+    quiz:[
+      {q:'How should a leader classify AI-written code on the risk register?',
+       options:['By whether AI or a human wrote it','By <b>blast radius</b> &mdash; cost-of-wrong &times; lifespan &mdash; not by provenance; the tier (disposable / internal / production / high-blast) sets the required control, and a human writing the same code would need the same controls','By lines of code','By which model wrote it'], answer:1},
+      {q:'A vibe-coded widget passed 25/25 tests but was &ldquo;unavailable for every user&rdquo; in production. What is the leadership lesson?',
+       options:['Write more tests','<b>Green CI does not mean safe</b> &mdash; a passing suite proves the code does what its tests assert, not what production needs; vibe fails silently, so risky-tier work needs spec and review, not just a green check','Ban all AI code','Tests are useless'], answer:1},
+      {q:'What does AI actually change about a task&rsquo;s risk &mdash; and what doesn&rsquo;t it change?',
+       options:['It lowers every task&rsquo;s risk','It does <b>not</b> change the risk <em>tier</em> (the same eligibility rule needs the same controls) &mdash; it changes the <b>volume</b>; per DORA it &ldquo;amplifies what&rsquo;s already there&rdquo;, so guardrails must scale with the extra code','It removes the need for review','It makes everything high-blast'], answer:1},
+      {q:'What is the specific failure mode a leader must police?',
+       options:['Engineers vibing prototypes','<b>Drift</b> &mdash; a disposable spike quietly promoted toward production without being re-tiered, re-specced, or reviewed; the control is a re-tiering gate on the path to production','Too much documentation','Using spec at all'], answer:1}
+    ]
   }
 ];
 
@@ -7043,6 +7113,35 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-26 · The AI-Code Risk Register (spec: VISUALS.md) ----------
+   The vibe/spec rubric read as a manager's risk register: tier AI-written code by BLAST
+   RADIUS x lifespan, and the tier sets the required control (from vibe to spec-and-sign-off).
+   The cautionary anchor is the real M-2.2 run (green CI, still wrong in prod). Reuses only
+   verified facts (M-2.4 rubric, M-2.2 failure, DORA-2025 amplifier). L-1.2. */
+VISUALS['SIM-26'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TIERS = [
+    ['t0','DISPOSABLE','spike · demo · throwaway','VIBE OK','Accepted by eye, <b>labelled disposable</b>, and deleted after. No spec, no ceremony &mdash; the cost of wrong is a redo. (M-2.1&rsquo;s recorded 4-min vibe run lives here.)'],
+    ['t1','INTERNAL / LOW-STAKES','short-lived, small blast','VIBE + QUICK REVIEW','An internal tool, a script, a low-traffic screen. Vibe it, but a second engineer skims the diff before it lands. Cheap insurance, low ceremony.'],
+    ['t2','PRODUCTION FEATURE','durable, real users','SPEC + TESTS + REVIEW','It will live and be maintained. Spec the intent (M-2.3), require tests, review the diff. This is where most of your work is &mdash; and where vibe quietly becomes a liability.'],
+    ['t3','HIGH-BLAST','billing · eligibility · PHI · the decision path','SPEC + REVIEW + HUMAN SIGN-OFF','A wrong answer harms a patient or breaks a contract. Spec, review, AND a named human owns the decision &mdash; the model may build the mechanism but may never decide the policy alone (M-1.6, M-12.3).'],
+  ];
+  mount.innerHTML =
+    '<div class="sim26" aria-label="The AI-code risk register: tier by blast radius">' +
+      '<div class="s26head"><span>SIM-26 · THE AI-CODE RISK REGISTER</span><span>TIER BY BLAST RADIUS</span></div>' +
+      '<div class="s26sub">The question is not &ldquo;did AI write it?&rdquo; It is <b>&ldquo;what is the cost if it&rsquo;s wrong, and how long will it live?&rdquo;</b> &mdash; the same rubric your engineers use (cost-of-wrong &times; lifespan), read as your risk classification. Click a tier.</div>' +
+      TIERS.map((t,i) =>
+        '<div class="s26tier ' + t[0] + '" data-t="' + i + '"><div class="s26top">' +
+          '<span class="s26name">' + t[1] + '<span class="s26br">' + t[2] + '</span></span>' +
+          '<span class="s26ctrl">' + t[3] + '</span></div>' +
+          '<div class="s26ex">' + t[4] + '</div></div>').join('') +
+      '<div class="s26warn"><span class="s26wl">GREEN CI &ne; SAFE</span>The risk vibe hides: in this course&rsquo;s recorded M-2.2 run, a vibe-coded widget passed <b>25/25 tests</b> and was still <b>&ldquo;unavailable for every user&rdquo;</b> &mdash; it called an endpoint that doesn&rsquo;t exist. A passing suite proves the code does what its tests say, not what production needs. Tier by blast radius, not by the green check.</div>' +
+      '<div class="s26foot">What to notice: AI does not change a task&rsquo;s risk <em>tier</em> &mdash; it changes the <b>volume</b>, and per DORA <em>&ldquo;AI amplifies what&rsquo;s already there&rdquo;</em>, so more code at the same tier needs your guardrails to scale with it. The failure to watch for is <b>drift</b>: a Tier-0 spike quietly promoted to production without ever being re-tiered &mdash; the commonest way un-reviewed AI risk enters a codebase.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s26tier').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s26tier').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-25 · Migration Read-out (spec: VISUALS.md) ----------
