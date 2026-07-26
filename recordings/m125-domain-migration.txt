@@ -1,0 +1,76 @@
+M-12.5 — Bonus capstone: the domain migration (clinical PA -> pharmacy PA / PBM)
+Live artifact: a spec-first, agent-driven migration of a coherent slice (the eligibility
+stage), tests green, with an honest ripple map and a measured effort — the migration
+pattern demonstrated, not the whole two-repo port claimed. Recorded 2026-07-26,
+claude 2.1.220. Disposable clone (deleted after; teaching repo untouched, plants intact).
+
+TARGET (REPO-SPECS.md §pharmacy)
+  Port both repos clinical PA -> pharmacy PA (PBM). Same pipeline shape, new vocabulary:
+  NDC codes replace CPT; eligibility adds formulary-tier + days-supply checks; payers become
+  PBMs (CaremarkRx-like "ScriptGuard"). AUTO_APPROVE_THRESHOLD semantics unchanged (>=0.85).
+
+SPEC-FIRST  Wrote PHARMACY-SPEC.md scoping the ELIGIBILITY slice: CPT(\d{5})->NDC(\d{11});
+  Payer->PBM; PBM formulary = covered NDCs; reason codes NDC-001/PBM-001/NDC-002; NEW
+  days-supply (DS-001, >90) and formulary-tier (1-3; tier 3 advisory/flagged, not a denial);
+  Stage-3 threshold NOT touched; DoD = EligibilityService + test migrated, model/callers
+  compile + unit tests green, full seed/controller/web port out of this slice.
+
+THE RUN  (`claude -p "Spec-first: migrate the ELIGIBILITY slice ... per PHARMACY-SPEC.md ...
+  run unit tests GREEN, do NOT touch the Stage-3 threshold (line ~99), report what you
+  migrated + test result + diff stat + the ripple that remains + measure the effort."
+  --dangerously-skip-permissions`)   480s.
+
+WHAT IT MIGRATED (verified against the clone)
+  - CPT -> NDC: EligibilityService NDC_FORMAT = `\d{11}`; reason NDC-001 "Malformed NDC".
+  - Payer -> Pbm: git RENAME Payer.java -> Pbm.java; request.getPbm(); PBM-001 "Unknown PBM".
+  - Formulary: FORMULARY = Map<PBM, Map<NDC, tier>>; not-on-formulary -> NDC-002.
+  - NEW days-supply: DS-001 "Exceeds days supply limit" (>90).
+  - NEW formulary tier: tier 3 passes but is FLAGGED for the audit trail (tiers 1-2 silent).
+  - Threshold UNCHANGED: ApprovalService:99 still `score > AUTO_APPROVE_THRESHOLD` (untouched).
+  - Migrated EligibilityServiceTest + fixed callers to compile.
+  TESTS GREEN: 36 run, 0 failures (13 eligibility + 10 approval + 7 controller + 4 claim-history
+  + 2 denial; Testcontainers excluded). One intermediate RED -> two "CPT-002" string literals
+  left in DenialControllerTest assertions, caught and fixed (a real red->green cycle).
+  DIFF: 16 files, +213 / -137 (10 main incl. 1 rename/1 add/1 delete, 6 test).
+
+THE STANDOUT — the honest RIPPLE MAP + effort (this is "defend the migration, measure the effort")
+  BLOCKING (this repo):
+   1. seed.sql (1081 lines) IS the schema and ddl-auto=validate — still declares payer/cpt_code/
+      payer_id, no days_supply. "The entities no longer match it, so every Testcontainers test and
+      any real boot will fail validation the moment Docker is present." It didn't surface here only
+      because those classes are disabledWithoutDocker. "Regenerating the 500-request fixture with
+      NDCs, PBM rows and days-supply values is the single largest remaining item."
+   2. API contract break: POST /api/requests renamed cptCode->ndc, payerCode->pbmCode, added a
+      REQUIRED daysSupply; RequestResponse gained a field. Un-versioned -> any client breaks.
+  NON-BLOCKING (this repo): Claim.cptCode + ClaimRepo/ClaimHistoryService still clinical vocab;
+   ApprovalService "Stage 2: clinical review context" comment; README still clinical; DS-001/NDC-00x
+   reason codes have no catalog; days-supply bound duplicated (@Min(1) controller + >90 service).
+  SECOND REPO (web) — INFERRED, NOT VERIFIED (not in this workspace): needs the request/response
+   field renames, the daysSupply input, PBM-name display, and the new reason codes. (Honest: inferred
+   from the contract, not checked.)
+  PLANT CARRIED FORWARD (caught + left, per instruction): ApprovalService:99 `>` is exclusive while
+   the spec's "Unchanged" section + javadoc + the line-101 log all say `>=` inclusive; exactly-0.85 ->
+   MANUAL_REVIEW; no test pins 0.85 so the suite is green either way. "Left alone per your instruction —
+   flagging it because a full port would carry the discrepancy across."
+  EFFORT: "6m15s wall clock, first file read to final diff stat — including two full Maven runs (~35s
+   each) and one red->green fix cycle. ~30 tool calls, no subagents. Roughly 60/40 mechanical rename
+   vs new rule logic; the rename half was the bulk of the line count but nearly all compiler-guided...
+   The real cost centre isn't this slice — it's the 1081-line seed regeneration."
+
+THE LESSONS (the module)
+  1. Spec-first bounds a migration: the SPEC scoped the slice, named the vocab and the new rules, and
+     froze what must NOT change (the threshold) — so the agent migrated exactly that and reported the rest.
+  2. A vocab migration is ~60/40 mechanical-rename vs new-logic, and the rename half is COMPILER-GUIDED —
+     the type system does most of the work; the one thing it can't see (string literals in test assertions)
+     is exactly what the single red->green cycle caught. This is why migrations are agent-friendly.
+  3. The real cost centre is rarely the code — here it's the 1081-line seed fixture (the schema under
+     ddl-auto=validate) and the un-versioned API contract. "Measure the effort" means finding THAT, not
+     counting the renamed lines.
+  4. A faithful migration CARRIES YOUR BUGS FORWARD: spec-first doesn't fix BUG-API-01, it propagates it
+     across the new domain unless you decide otherwise. Migration is not a cleanup.
+  5. Honest scope: one slice migrated + measured; the full two-repo port extrapolates from this real
+     number; the web side is inferred, not verified, and the module says so.
+
+HYGIENE
+  Disposable clone scratchpad/m125-api deleted after. Teaching repo priorauth-api untouched (main,
+  clean); BUG-API-01 line 99 still `>` on main. Web repo NOT modified (migration was inferred for it).

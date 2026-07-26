@@ -1108,6 +1108,34 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim24 .s24chev{transition:transform .2s;color:var(--faint)}
 .sim24 .s24foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
 .sim24 .s24foot b{color:var(--text);font-weight:500}
+.sim25{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim25 .s25head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim25 .s25swap{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:8px}
+.sim25 .s25st{font-size:9px;letter-spacing:.08em;color:var(--gold);margin-bottom:5px}
+.sim25 .s25row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:baseline;font-size:9.5px;margin-bottom:3px}
+.sim25 .s25from{color:var(--dim);text-align:right} .sim25 .s25from code{font-size:8.5px}
+.sim25 .s25arrow{color:var(--faint)}
+.sim25 .s25to{color:var(--text)} .sim25 .s25to code{font-size:8.5px}
+.sim25 .s25to.keep{color:var(--faint)}
+.sim25 .s25metrics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sim25 .s25m{font-size:9px;letter-spacing:.03em;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.sim25 .s25m.green{color:#3E9A6B;border-color:#3E9A6B}
+[data-theme="light"] .sim25 .s25m.green{color:#2d7350;border-color:#2d7350}
+.sim25 .s25rip{border:1px solid var(--line);border-radius:9px;background:var(--panel);margin-bottom:8px;overflow:hidden}
+.sim25 .s25rh{font-size:9.5px;color:var(--text);padding:8px 11px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.sim25 .s25rh b{font-weight:600}
+.sim25 .s25rl{display:none;padding:0 11px 9px}
+.sim25 .s25rip.open .s25rl{display:block}
+.sim25 .s25rip.open .s25chev{transform:rotate(90deg)}
+.sim25 .s25chev{transition:transform .2s;color:var(--faint)}
+.sim25 .s25tier{font-size:9px;line-height:1.55;margin-bottom:5px;color:var(--dim)}
+.sim25 .s25tl{font-size:8px;letter-spacing:.06em;border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-right:6px;white-space:nowrap}
+.sim25 .s25tl.block{color:var(--s10red,#d0705a);border-color:var(--s10red,#d0705a)}
+.sim25 .s25tl.nonblock{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim25 .s25tl.infer{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim25 .s25tier code{font-size:8.5px} .sim25 .s25tier b{color:var(--text);font-weight:500}
+.sim25 .s25foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
+.sim25 .s25foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4767,6 +4795,63 @@ const MODS = [
       {q:'Why ship the same feature three times, once per tool?',
        options:['To triple the work','To turn M-2.5&rsquo;s editorial tool-fit table into <b>your own measured verdict</b> &mdash; the ceremony is tool-agnostic, so comparing cycle time / diff / defensibility across three runs is the overturn-with-evidence you were promised','Because one tool always fails','To use more tokens'], answer:1}
     ]
+  },
+  {
+    id:'M-12.5', path:'eng', track:'T-12', title:'Bonus capstone: domain migration', minutes:60,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'Translating the hospital&rsquo;s entire protocol binder into another specialty&rsquo;s language. The pipeline is the same &mdash; intake, eligibility, decision, notify &mdash; but every term changes (a procedure code becomes a drug code, a payer becomes a pharmacy-benefit manager) and two new checks appear. The translation itself is mostly mechanical once you fix the glossary; the hard part is everything downstream that still speaks the old language &mdash; the forms, the database, the other department&rsquo;s system &mdash; and knowing that a faithful translation copies the chart&rsquo;s errors along with its facts.',
+      body:
+        '<p><strong>The bonus capstone is the whole toolkit aimed at a big, scary change: a domain migration.</strong> Port both repos from clinical prior authorization to pharmacy PA &mdash; CPT codes become NDC codes, payers become PBMs, eligibility grows a formulary-tier and a days-supply check &mdash; while the pipeline shape and the threshold stay put. This is the M-12.4 pattern at scale, and it is the honest test of the skill nobody teaches: can you <b>scope a large change and measure what it actually costs</b>, rather than wading in and hoping.</p>' +
+        '<p><strong>Spec-first is what keeps a migration from sprawling.</strong> We wrote a short spec that fixed the glossary (CPT&rarr;NDC, Payer&rarr;PBM, the new formulary and days-supply rules), scoped the run to <em>one coherent slice</em> &mdash; the eligibility stage &mdash; and, crucially, <b>froze what must not change</b>: the Stage-3 threshold, semantics untouched. Given that spec, the agent migrated exactly that slice: renamed <code>Payer</code>&rarr;<code>Pbm</code> (a real git rename), swapped the CPT pattern for <code>\\d{11}</code>, turned per-payer coverage into a per-PBM <b>formulary</b> with tiers, added the <code>DS-001</code> days-supply rule and a tier-3 flag, and migrated the test. <b>36 tests green</b> &mdash; through one honest red&rarr;green when two <code>&ldquo;CPT-002&rdquo;</code> string literals lingered in test assertions &mdash; a <code>+213/&minus;137</code> diff across 16 files, in about six minutes.</p>' +
+        '<p><strong>The number that matters is not the renamed lines &mdash; it is where the cost actually hides.</strong> A vocabulary migration is roughly <b>60/40 mechanical rename versus new logic</b>, and the rename half is <em>compiler-guided</em>: the type system marches you to every call site, which is precisely why this is agent-friendly work and why the one thing the compiler <em>cannot</em> see &mdash; a string literal in a test assertion &mdash; is exactly what the single red cycle caught. So the agent&rsquo;s ripple map is the real deliverable. It found the true cost centre: the <b>1081-line <code>seed.sql</code> is the schema</b> (under <code>ddl-auto=validate</code>), still speaking the old vocabulary with no days-supply column, so &ldquo;every Testcontainers test and any real boot will fail validation the moment Docker is present&rdquo; &mdash; hidden here only because those tests self-skip without Docker. That fixture, plus an un-versioned API contract break, is the migration; the renamed Java was the easy part.</p>' +
+        '<p><strong>Two honesties the run models, and you must too.</strong> First, <b>scope</b>: the web repo was not in the workspace, so its port is <em>inferred from the contract, not verified</em> &mdash; and the run said so, rather than pretending. A migration estimate that hides its unverified half is a lie. Second, and this is the one people miss: <b>a faithful migration carries your bugs forward</b>. The run caught <code>ApprovalService:99</code> &mdash; the strict <code>&gt;</code> against the inclusive docs &mdash; left it exactly as the spec demanded, and <em>flagged that a full port would propagate the discrepancy across the new domain</em>. Migration is not cleanup; spec-first faithfully copies whatever is there, defects included, unless you consciously decide otherwise.</p>' +
+        '<p><strong>And that is the course.</strong> You can read a strange codebase, plan a change and steer it, debug and test and gate it, write the constitution and the workflows and the agents that make it repeatable, count what it costs, run the whole lifecycle from intent to a defended PR, and now take an entire domain somewhere new &mdash; spec-first, compiler-guided, measured, and honest about your bugs and your scope. The tools will keep changing under you; the discipline &mdash; state the intent, wire the guardrails, read the diff, measure the delta, and never let the model decide alone what only a human may &mdash; will not. Go build.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-25'},
+    labA:{
+      title:'Migrate a slice, spec-first, and measure it',
+      steps:[
+        'Write a short migration spec: fix the glossary (the old&rarr;new vocabulary), scope it to ONE coherent slice, and explicitly freeze what must NOT change. Reference: our pharmacy spec scoped the eligibility stage and froze the threshold.',
+        'Run the migration on a disposable clone: let the compiler drive the mechanical renames, add the new rules, migrate the tests, and get to green. Reference: <code>Payer&rarr;Pbm</code> rename, NDC format, formulary + days-supply, 36 tests green, one red&rarr;green, ~6 min.',
+        'Produce the ripple map &mdash; the real deliverable: what remains, split into <b>blocking</b> (ours: the seed fixture that IS the schema, the un-versioned API break), <b>non-blocking</b>, and <b>inferred/unverified</b> (be honest about what you did not check). Find the true cost centre; it is rarely the renamed code.',
+        'Measure the effort honestly and extrapolate: time and diff for the slice, the rename-vs-new-logic split, and a defensible estimate for the full port anchored on the slice&rsquo;s real numbers &mdash; not a guess.',
+        'Success: a slice migrated green spec-first, a three-tier ripple map with the real cost centre named, an honest effort measurement, and a note on any existing bug the migration would carry forward.'
+      ]
+    },
+    labB:{
+      title:'Any tool on deck (per the tool-fit table)',
+      steps:[
+        'A migration is long-horizon, compiler-guided, multi-file work &mdash; check the tool-fit table (BLUEPRINT / M-2.5) for which tool you would reach for, and run the slice there. Note whether your measured experience matches the table&rsquo;s editorial default.',
+        'Confirm the discipline is tool-independent: spec-first, freeze the invariants, green tests, ripple map, honest scope &mdash; the crew changes, the method does not.',
+        'Success: the slice migrated in your chosen tool with a one-line note on whether it confirmed or overturned the tool-fit default for migration work.'
+      ]
+    },
+    labC:{
+      title:'The migration rule, and the course close',
+      steps:[
+        'Write the rule this capstone exists for: <em>migrate spec-first &mdash; fix the glossary, scope a slice, freeze the invariants; let the compiler drive the mechanical bulk (a vocab migration is ~60/40 rename-vs-logic); the real cost is downstream (fixtures, schemas, contracts, the other repo), so measure THAT; be honest about what you could not verify; and remember a faithful migration carries your bugs forward &mdash; it is not a cleanup.</em>',
+        'Then look back: map this migration onto the whole lifecycle &mdash; you just used reading, planning, testing, gating, and measuring, all at once, on a real domain change.',
+        'Success: the migration rule written, the full-port estimate anchored on your measured slice, and &mdash; you&rsquo;ve finished the engineer path. Go build.'
+      ]
+    },
+    checklist:[
+      'I wrote a spec that fixed the glossary, scoped one slice, and froze the invariants.',
+      'The compiler drove the renames; I got the slice to green (with the tests migrated).',
+      'I produced a three-tier ripple map and named the real cost centre (not the renamed code).',
+      'I was honest about what I inferred vs verified (e.g. a second repo I couldn&rsquo;t open).',
+      'I noted any existing bug the migration would carry forward &mdash; migration is not cleanup.'
+    ],
+    quiz:[
+      {q:'Why run a domain migration spec-first?',
+       options:['Specs are mandatory','To <b>bound it</b> &mdash; fix the glossary, scope one coherent slice, and freeze what must not change (we froze the threshold) &mdash; so the agent migrates exactly that and reports the rest, instead of sprawling','To make it slower','Because agents can&rsquo;t migrate without a spec'], answer:1},
+      {q:'What is the true cost centre of a vocabulary migration, and why?',
+       options:['The renamed code','The <b>downstream that still speaks the old language</b> &mdash; here the 1081-line <code>seed.sql</code> that IS the schema (under ddl-auto=validate) and an un-versioned API contract; the renamed Java is ~60/40 and compiler-guided, i.e. the easy half','The number of files','The test count'], answer:1},
+      {q:'The run said the second repo&rsquo;s port was &ldquo;inferred, not verified.&rdquo; Why does that matter?',
+       options:['It doesn&rsquo;t','A migration estimate that hides its unverified half is misleading &mdash; being explicit about what you <b>checked vs inferred</b> is what makes the estimate defensible','Inference is always wrong','It means the migration failed'], answer:1},
+      {q:'The migration caught BUG-API-01 but left it in place. What is the lesson?',
+       options:['The agent made a mistake','<b>A faithful migration carries your bugs forward</b> &mdash; spec-first copies what is there, defects included, unless you consciously decide otherwise; migration is not a cleanup','Bugs get fixed automatically','You should always fix bugs mid-migration'], answer:1}
+    ]
   }
 ];
 
@@ -6893,6 +6978,41 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-25 · Migration Read-out (spec: VISUALS.md) ----------
+   The REAL spec-first migration slice (recordings/m125-domain-migration.txt, 480s, verified
+   vs the clone): the vocabulary swap, the green diff, the honest ripple map (blocking /
+   non-blocking / second-repo-inferred), and the plant-rides-along flag. The lessons live in
+   the ripple and the foot, not the renamed lines. Closes the engineer path. */
+VISUALS['SIM-25'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SWAP = [
+    ['CPT code <code>\\d{5}</code>', 'NDC code <code>\\d{11}</code>', ''],
+    ['Payer', 'Pbm <span style="color:var(--faint)">(git rename)</span>', ''],
+    ['payer covers CPT', 'PBM <b>formulary</b>: NDC &rarr; tier 1&ndash;3', ''],
+    ['&mdash;', '<b>+ days-supply</b> rule (<code>DS-001</code>, &gt;90)', ''],
+    ['&mdash;', '<b>+ formulary tier</b> (tier 3 flagged, not denied)', ''],
+    ['threshold <code>&gt;= 0.85</code>', 'UNCHANGED &mdash; Stage 3 not touched', 'keep'],
+  ];
+  mount.innerHTML =
+    '<div class="sim25" aria-label="Domain migration read-out: clinical PA to pharmacy PA">' +
+      '<div class="s25head"><span>SIM-25 · MIGRATION READ-OUT · CLINICAL &rarr; PHARMACY (PBM)</span><span>SPEC-FIRST · 1 SLICE</span></div>' +
+      '<div class="s25swap"><div class="s25st">THE VOCABULARY SWAP &mdash; ELIGIBILITY SLICE</div>' +
+        SWAP.map(s => '<div class="s25row"><span class="s25from">' + s[0] + '</span><span class="s25arrow">&rarr;</span><span class="s25to ' + s[2] + '">' + s[1] + '</span></div>').join('') + '</div>' +
+      '<div class="s25metrics"><span class="s25m green">36 tests, 0 failures</span><span class="s25m">one red&rarr;green</span><span class="s25m">+213 / &minus;137 · 16 files</span><span class="s25m">6m15s</span></div>' +
+      '<div class="s25rip" data-rip><div class="s25rh"><b>The ripple that remains &mdash; and where the real cost is</b> <span class="s25chev">&#9656;</span></div>' +
+        '<div class="s25rl">' +
+          '<div class="s25tier"><span class="s25tl block">BLOCKING</span><b>The 1081-line <code>seed.sql</code> is the schema</b> (<code>ddl-auto=validate</code>) &mdash; still <code>payer</code>/<code>cpt_code</code>, no <code>days_supply</code>; every Testcontainers test &amp; real boot fails once Docker is present. Regenerating it is the <b>single largest item</b>. Plus an un-versioned API contract break.</div>' +
+          '<div class="s25tier"><span class="s25tl nonblock">NON-BLOCKING</span><code>Claim.cptCode</code> + history still clinical; the &ldquo;clinical review&rdquo; comment; the README; no reason-code catalog; days-supply bound duplicated in two places.</div>' +
+          '<div class="s25tier"><span class="s25tl infer">2ND REPO</span>the web port (field renames, <code>daysSupply</code> input, PBM display, new reason codes) is <b>inferred from the contract, not verified</b> &mdash; that repo wasn&rsquo;t in the workspace.</div>' +
+          '<div class="s25tier"><span class="s25tl block">PLANT</span>it caught <code>ApprovalService:99</code> (<code>&gt;</code> vs the inclusive docs), <b>left it per the spec</b>, and flagged that <b>a faithful port carries the discrepancy forward</b>. Migration is not a cleanup.</div>' +
+        '</div></div>' +
+      '<div class="s25foot">What to notice: the renamed lines are the <em>cheap</em> half &mdash; a vocab migration is ~60/40 rename-vs-new-logic and the rename half is <b>compiler-guided</b> (the one red cycle caught a string literal the types couldn&rsquo;t see). &ldquo;Measure the effort&rdquo; means finding the <b>real cost centre</b> (the seed fixture, the contract), and remembering a faithful migration <b>carries your bugs forward</b> unless you decide otherwise.</div>' +
+    '</div>';
+  const r = mount.querySelector('[data-rip]');
+  r.querySelector('.s25rh').addEventListener('click', () => r.classList.toggle('open'));
+  if(reduce){ r.classList.add('open'); }
 };
 
 /* ---------- SIM-24 · Capstone Read-out (spec: VISUALS.md; deviation from ANIM-12 logged) ----------
