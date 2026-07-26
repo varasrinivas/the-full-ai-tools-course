@@ -1158,6 +1158,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim26 .s26wl{font-size:8px;letter-spacing:.06em;color:var(--s10red,#d0705a);border:1px solid var(--s10red,#d0705a);border-radius:999px;padding:1px 7px;margin-right:6px;white-space:nowrap}
 .sim26 .s26foot{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
 .sim26 .s26foot b{color:var(--text);font-weight:500}
+.sim27{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim27 .s27head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:10px}
+.sim27 .s27card{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:9px 11px;margin-bottom:6px;cursor:pointer;border-left-width:3px}
+.sim27 .s27card.asset{border-left-color:#3E9A6B}
+.sim27 .s27card.liab{border-left-color:var(--s10red,#d0705a)}
+.sim27 .s27card.gov{border-left-color:var(--gold)}
+.sim27 .s27top{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline}
+.sim27 .s27lbl{font-size:9px;letter-spacing:.06em;padding:1px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim27 .s27card.asset .s27lbl{color:#3E9A6B;border-color:#3E9A6B}
+[data-theme="light"] .sim27 .s27card.asset .s27lbl{color:#2d7350;border-color:#2d7350}
+.sim27 .s27card.liab .s27lbl{color:var(--s10red,#d0705a);border-color:var(--s10red,#d0705a)}
+.sim27 .s27card.gov .s27lbl{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim27 .s27hd{font-size:10px;color:var(--text);font-weight:600}
+.sim27 .s27num{font-size:9px;color:var(--dim);white-space:nowrap}
+.sim27 .s27num b{color:var(--text);font-weight:600}
+.sim27 .s27ex{font-size:9px;color:var(--dim);line-height:1.55;margin-top:6px;display:none}
+.sim27 .s27ex code{font-size:8.5px} .sim27 .s27ex b{color:var(--text);font-weight:500}
+.sim27 .s27card.open .s27ex{display:block}
+.sim27 .s27foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim27 .s27foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -4987,6 +5007,54 @@ const MODS = [
       {q:'What is the specific failure mode a leader must police?',
        options:['Engineers vibing prototypes','<b>Drift</b> &mdash; a disposable spike quietly promoted toward production without being re-tiered, re-specced, or reviewed; the control is a re-tiering gate on the path to production','Too much documentation','Using spec at all'], answer:1}
     ]
+  },
+  {
+    id:'L-1.3', path:'lead', track:'L-01', title:'The instruction file is the asset', minutes:35,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'The protocol binder every good unit keeps at the nurses&rsquo; station. A locum walks in and is useful on day one &mdash; not because they are brilliant, but because the binder encodes how <em>this</em> hospital works: the formulary, the escalation rules, who signs off on what. A great binder makes every clinician on every shift faster and safer; a stale one sends a confident clinician down exactly the wrong path. Your instruction file is that binder for every agent your team runs &mdash; and, like the binder, its <em>quality</em> is not a nicety, it is the difference between help and confident harm.',
+      body:
+        '<p><strong>Treat the instruction file as an asset on your balance sheet, not a doc in a folder.</strong> A <code>CLAUDE.md</code> / <code>AGENTS.md</code> is a small, versioned, shared artifact that <em>every</em> agent run in the repo draws on &mdash; which makes its quality a leading indicator of your team&rsquo;s AI ROI. It is also, per the improvement playbook (M-11.3), the <b>first</b> place a leader should invest: instruction files, <em>then</em> workflows, <em>then</em> agents. Most teams invert that &mdash; they buy the agent fleet and skip the constitution, then wonder why the return is thin.</p>' +
+        '<p><strong>The return is measured, and it is the good kind: cheap in, compounding out.</strong> In this course&rsquo;s recorded run, the same question &mdash; &ldquo;at what score does a request auto-approve, and what should I implement?&rdquo; &mdash; was asked twice. <b>Without</b> a constitution the agent did brilliant forensics and then <b>recommended shipping the bug</b>, in 90 seconds. <b>With</b> a <b>36-line</b> constitution it answered in <b>24 seconds</b>, cited the signed rule by name, and warned against copying the buggy code. Read what that buys: the file did not add <em>capability</em>; it <b>settled an ambiguity the code could not</b>, and it does so on every session, for every engineer, forever. A tiny artifact with an outsized, compounding return is the definition of a good asset.</p>' +
+        '<p><strong>And like any asset, a neglected one turns into a liability.</strong> Two measured failure modes: a <b>bloated</b> constitution is rent &mdash; a 170-line file cost <b>+3,584 tokens every session</b> (M-7.3) for no added correctness, a tax on every run. And a <b>stale</b> line that fails soft &mdash; a build command that no longer does what it claims &mdash; is <b>load-bearing misinformation</b> the agent trusts and acts on (M-7.5). So this asset has a maintenance cost: it needs an <b>owner</b> and a <b>review cadence</b>, exactly like a runbook. A write-once constitution that nobody prunes drifts from appreciating to depreciating without anyone noticing.</p>' +
+        '<p><strong>It is also where your governance actually lives &mdash; if you put it there.</strong> The same file exists at four scopes with nearest-wins precedence (M-9.6): the enterprise sets a floor, the org tunes it, an individual repo can still override for its own needs. That hierarchy is the lever for a leader: you decide what the <b>org-level</b> file <em>enforces by default</em> versus what teams are free to tune. And the sharp distinction to hold: <b>learnings may be discovered, but rules must be signed.</b> The constitution encodes the decisions the code cannot resolve on its own &mdash; the 0.85-inclusive policy of record &mdash; and they are authoritative precisely because a named owner signed them, not because the model inferred them. Deciding which rules are signed, and at which scope, is a governance act, and it is yours.</p>' +
+        '<p><strong>So the leadership move is unglamorous and high-return.</strong> Make sure every repo that matters has a real instruction file, not a stub; give it an owner and a review cadence; decide what the org-level constitution signs and enforces; and fund this <em>before</em> the agent fleet, because a team with a good constitution beats a team with better tools and no constitution. Instruction-file quality predicts ROI &mdash; so it is a thing you measure, own, and maintain. L-1.4 turns to the other side of the investment: which <em>tools</em> for which use cases, read as a manager rather than a fan.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-27'},
+    labA:{
+      title:'Audit your instruction files as assets',
+      steps:[
+        'Inventory the repos that matter to your team. For each, answer four questions: is there a real instruction file (not a stub)? does it contain <b>signed rules</b> (the decisions the code can&rsquo;t resolve) or just vague prose? does it have a named <b>owner</b>? when was it last reviewed?',
+        'Flag the gaps in ROI terms: a critical repo with no constitution is leaving a measurable delta on the table (recall the recorded 90s&rarr;24s and the flipped recommendation). A bloated or stale one is charging rent and, worse, may be feeding agents confident misinformation.',
+        'Assign each a real owner and a review cadence, and decide one thing to promote to the <b>org-level</b> file &mdash; a rule you want enforced by default across teams. Note who signs it.',
+        'Success: an asset register of your instruction files &mdash; owner, freshness, signed-rules-or-not per repo &mdash; the highest-value gap named, and one org-level rule chosen and assigned a signer.'
+      ]
+    },
+    labB:{
+      title:'Watch the constitution change the answer',
+      steps:[
+        'Watch the same question answered with and without a constitution (the M-7.1 replay, or run it on your own repo). Focus on the <em>recommendation</em>, not the speed: without the file the agent recommended the bug; with 36 lines it cited the signed rule and refused to.',
+        'Name what the file actually added &mdash; not capability, but a <b>settled decision the code could not resolve</b>. That is the asset working, and it is why quality (which rules are signed) matters more than length.',
+        'Success: a concrete before/after from a real run showing the instruction file changing the <em>decision</em>, and a one-line statement of what your team&rsquo;s constitution must sign to get that effect.'
+      ]
+    },
+    checklist:[
+      'I treat the instruction file as an owned, maintained asset &mdash; not a write-once doc.',
+      'I can state its measured ROI: a small constitution made runs faster AND flipped a wrong recommendation.',
+      'I know the liability side: bloat is per-session rent; stale fail-soft lines are misinformation.',
+      'I invest here first &mdash; instruction files before workflows before agents.',
+      'I decide what the org-level file signs and enforces by default (governance).'
+    ],
+    quiz:[
+      {q:'Why is an instruction file an <em>asset</em> whose quality predicts team ROI?',
+       options:['It documents the code','It is a small shared artifact <b>every agent run draws on</b>, so its quality compounds &mdash; measured: a 36-line constitution made a task faster (90s&rarr;24s) AND <b>flipped a recommendation from shipping the bug to citing the signed rule</b>','It replaces code review','It stores passwords'], answer:1},
+      {q:'What did the 36-line constitution actually add?',
+       options:['New capability the model lacked','Not capability &mdash; it <b>settled an ambiguity the code could not resolve</b> (the signed 0.85 rule), on every session for every engineer; that compounding, decision-changing effect is the ROI','More tokens','A faster model'], answer:1},
+      {q:'How can this asset become a liability?',
+       options:['It can&rsquo;t','A <b>bloated</b> one is per-session rent (+3,584 tokens for 170 lines, no added correctness) and a <b>stale fail-soft</b> line is load-bearing misinformation the agent trusts &mdash; so it needs an owner and a review cadence','Only if deleted','If it&rsquo;s too short'], answer:1},
+      {q:'Where should a leader invest first, and why?',
+       options:['The biggest agent fleet','The <b>instruction file</b> &mdash; the playbook is instruction files &rarr; workflows &rarr; agents (M-11.3); it&rsquo;s the cheapest, highest-leverage lever, and a team with a good constitution beats one with better tools and no constitution','A new model subscription','More seats'], answer:1}
+    ]
   }
 ];
 
@@ -7113,6 +7181,34 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-27 · The Constitution as an Asset (spec: VISUALS.md) ----------
+   The instruction file read as a manager's asset: the measured ROI (M-7.1 90s->24s +
+   recommendation flip), the liability of a bad one (M-7.3 bloat rent, M-7.5 stale
+   fail-soft), and the governance lever (M-9.6 scope + signed rules). Reuses only verified
+   engineer-path numbers. Click a card for the manager's move. L-1.3. */
+VISUALS['SIM-27'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CARDS = [
+    ['asset','ASSET','a 36-line constitution, measured','&minus;73% &amp; a flipped call',
+     'Same question, same repo (M-7.1): <b>without</b> a constitution the agent was brilliant &mdash; and <b>recommended shipping the bug</b> (90s); <b>with</b> 36 signed lines it answered in <b>24s</b>, cited the rule by name, and flagged the bug. Cheap to write, it <b>appreciates</b> &mdash; every engineer&rsquo;s every session is faster <em>and</em> more correct. <b>Manager&rsquo;s move:</b> fund it first; it is the highest-leverage line item you have.'],
+    ['liab','LIABILITY','an unmaintained one, measured','+3,584 tok / session',
+     'A bloated constitution is <b>rent charged every session</b> &mdash; a 170-line file cost <b>+3,584 tokens</b> forever (M-7.3), for no added correctness. Worse, a <b>stale</b> line that fails soft &mdash; a command that no longer does what it claims &mdash; is <b>load-bearing misinformation</b> the agent trusts (M-7.5). <b>Manager&rsquo;s move:</b> treat it as a maintained asset with an owner and a review cadence, not a write-once doc.'],
+    ['gov','GOVERNANCE','scope &amp; the signature','repo &rarr; user &rarr; org &rarr; enterprise',
+     'The same file lives at four scopes with <b>nearest-wins</b> precedence (M-9.6): the enterprise sets a floor, the org tunes it, a repo can still override. And the dividing line: <b>learnings may be discovered, rules must be signed</b> &mdash; the constitution encodes the decisions the code cannot resolve (the 0.85 inclusive policy), authoritative because a named owner signed them. <b>Manager&rsquo;s move:</b> decide what the org-level file <em>enforces by default</em> vs what teams tune &mdash; this is where your governance actually lives.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim27" aria-label="The instruction file as a managed asset">' +
+      '<div class="s27head"><span>SIM-27 · THE CONSTITUTION AS AN ASSET</span><span>CLAUDE.md / AGENTS.md</span></div>' +
+      CARDS.map((c,i) =>
+        '<div class="s27card ' + c[0] + '" data-c="' + i + '"><div class="s27top">' +
+          '<span class="s27lbl">' + c[1] + '</span><span class="s27hd">' + c[2] + '</span><span class="s27num">' + c[3] + '</span></div>' +
+          '<div class="s27ex">' + c[4] + '</div></div>').join('') +
+      '<div class="s27foot">What to notice: this is the <b>cheapest, highest-leverage</b> lever you own &mdash; the improvement playbook is <b>instruction files &rarr; workflows &rarr; agents</b> (M-11.3), and most teams invert it, buying agent fleets first and wondering why the ROI is thin. A team with a good constitution beats one with better tools and no constitution. <b>Instruction-file quality predicts team ROI</b> &mdash; so it is a thing you fund, own, and review, not a file someone wrote once.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s27card').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s27card').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-26 · The AI-Code Risk Register (spec: VISUALS.md) ----------
