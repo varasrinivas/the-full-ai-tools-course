@@ -1178,6 +1178,24 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim27 .s27card.open .s27ex{display:block}
 .sim27 .s27foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim27 .s27foot b{color:var(--text);font-weight:500}
+.sim28{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+.sim28 .s28head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim28 .s28caveat{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.5}
+.sim28 .s28caveat b{color:var(--text);font-weight:500}
+.sim28 .s28row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 10px;margin-bottom:5px;cursor:pointer}
+.sim28 .s28top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+.sim28 .s28team{font-size:10px;color:var(--text);font-weight:600}
+.sim28 .s28team .s28uc{display:block;font-size:8.5px;color:var(--faint);font-weight:400}
+.sim28 .s28tool{font-size:9px;letter-spacing:.04em;padding:2px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.sim28 .s28tool.g{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim28 .s28tool.c{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim28 .s28tool.p{color:var(--purple);border-color:var(--purple)}
+[data-theme="light"] .sim28 .s28tool.p{color:#5a4a91;border-color:#5a4a91}
+.sim28 .s28why{font-size:9px;color:var(--dim);line-height:1.55;margin-top:6px;display:none}
+.sim28 .s28why b{color:var(--text);font-weight:500}
+.sim28 .s28row.open .s28why{display:block}
+.sim28 .s28foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim28 .s28foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5055,6 +5073,54 @@ const MODS = [
       {q:'Where should a leader invest first, and why?',
        options:['The biggest agent fleet','The <b>instruction file</b> &mdash; the playbook is instruction files &rarr; workflows &rarr; agents (M-11.3); it&rsquo;s the cheapest, highest-leverage lever, and a team with a good constitution beats one with better tools and no constitution','A new model subscription','More seats'], answer:1}
     ]
+  },
+  {
+    id:'L-1.4', path:'lead', track:'L-01', title:'The fleet decision', minutes:35,
+    lastVerified:'2026-07-26',
+    concept:{
+      analogy:'Choosing the department&rsquo;s equipment, not your own favourite gadget. You do not buy the monitor the head of cardiology personally loves; you decide by <em>use case</em> &mdash; the ICU needs different kit than the outpatient clinic &mdash; and you weigh standardizing on one vendor (simpler training, procurement, and maintenance) against best-of-breed per unit. And when two options are genuinely contested, you run a real bake-off on your own floor, not a vendor&rsquo;s demo. Choosing your AI tools is that same procurement decision, and it goes wrong the same way: when someone buys the tool they like instead of the one the work needs.',
+      body:
+        '<p><strong>The manager&rsquo;s question is not &ldquo;which tool is best.&rdquo; That is the fan&rsquo;s question.</strong> Yours is: <em>which tool for which use case, and do we standardize or allow choice?</em> The course&rsquo;s tool-fit table gives you defensible starting points &mdash; a <b>UI-heavy squad</b> leans <b>Cursor</b> (fast, visual, multi-file frontend edits); a <b>platform/backend team</b> leans <b>Claude Code</b> (Plan Mode, subagents, hooks, and a first-class headless story for long-horizon and CI work); a <b>GitHub-native org</b> leans <b>Copilot</b> (cloud agents, the PR surface, enterprise controls, VS 2026). Read that as a procurement map keyed to how each team actually works, not as a ranking of who wins.</p>' +
+        '<p><strong>But hold the table loosely &mdash; the defaults are editorial, and the honest way to settle a contested call is measurement.</strong> Those recommendations are dated and versioned, not laws; the course is explicit that you should <b>overturn any of them with your own bake-off</b>. And you already have the instrument: the capstone&rsquo;s ship-the-same-feature-three-ways, comparing cycle time, diff shape, and how defensible each result is. When a team argues about tools, do not adjudicate by opinion &mdash; have them ship one real feature each way and bring you the numbers. A measured overturn is worth more than any table, including this one.</p>' +
+        '<p><strong>The genuinely hard call is standardize versus allow choice, and it is a governance tradeoff.</strong> <b>Standardizing</b> on one tool buys real things: simpler procurement and licensing, one training path, and &mdash; crucially &mdash; a <em>single</em> set of instruction files, workflows, hooks, and policies to maintain and enforce (the L-1.3 asset and the L-3 guardrails, kept in one shape). <b>Allowing choice</b> buys per-team fit &mdash; and a UI squad and a platform team really do differ &mdash; at the cost of fragmenting all of that governance across tools with different config. There is no universal answer; there is your answer, which depends on how much you value one governance surface versus best-fit-per-team.</p>' +
+        '<p><strong>What lowers the stakes of the whole decision is that the tools have converged.</strong> A year ago these were very different products; now all three ship <b>skills, hooks, subagents, and MCP</b> with near-identical semantics (you saw this across T-09 and T-10), a skill file written once is honoured across tools, and the AI-DLC method is explicitly <em>tool-agnostic</em>. The practical consequence for a leader is large: your <b>portable layer</b> &mdash; the constitution, the method, the way you gate and review &mdash; travels across tools, so it matters more than the badge on the tool, and the switching cost is far lower than the debate implies. Invest in that portable layer (L-1.3) and you are not locked into any vendor&rsquo;s roadmap.</p>' +
+        '<p><strong>So make the fleet decision like a manager.</strong> Segment your teams by use case, map them to the tool-fit defaults, decide standardize-versus-choice by weighing one governance surface against per-team fit, and let a measured bake-off &mdash; never fandom &mdash; settle the contested ones. Then put your real energy into the portable layer that outlives any tool choice. That closes the leader&rsquo;s mental model: you now know what an engineer+agent pair does (L-1.1), how to classify its output as risk (L-1.2), the asset to fund first (L-1.3), and how to choose the fleet without being a fan (here). L-02 turns to actually rolling it out &mdash; the adoption playbook.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-28'},
+    labA:{
+      title:'Map your fleet',
+      steps:[
+        'Segment your teams by <b>use case</b>, not by preference: which are UI-heavy, which are platform/backend, which live GitHub-native, which do headless/CI automation. Map each to the tool-fit default and write one sentence on why that fit is real for that team.',
+        'Pick your one genuinely <b>contested</b> team and design a bake-off: the same real feature shipped each way (the capstone shape), measured on cycle time, diff, and defensibility. Decide the winner on the numbers, not the loudest advocate.',
+        'Make the standardize-vs-choice call explicitly: write what standardizing would buy you (one governance surface) versus what allowing choice would buy (per-team fit), and choose &mdash; with the reason stated, so it can be revisited.',
+        'Success: a fleet map (team &rarr; tool &rarr; why), one contested call assigned to a measured bake-off, and a stated standardize-or-choice decision with its governance rationale.'
+      ]
+    },
+    labB:{
+      title:'See the fit — and the portable layer',
+      steps:[
+        'Watch the same task done in two of the tools (a tool-fit drill, or two real runs). Judge where the fit difference is <em>real</em> for a given use case versus where it is marginal &mdash; managers overweight small differences.',
+        'Then test the thing that de-risks the decision: confirm your <b>portable layer</b> travels &mdash; the same skill or instruction file honoured across both tools (M-9.2 / M-7.2). If it does, the tool badge matters less than the debate assumes.',
+        'Success: an honest read on where tool fit is real versus marginal for your teams, and a confirmation that your constitution/method carries across tools &mdash; the argument for investing there first.'
+      ]
+    },
+    checklist:[
+      'I frame the choice as use-case fit + standardize-vs-choice, not &ldquo;which tool is best.&rdquo;',
+      'I treat the tool-fit table as editorial defaults to overturn with measurement.',
+      'I have a bake-off (ship-3-ways) planned for any genuinely contested call.',
+      'I can state what standardizing buys (one governance surface) vs allowing choice (fit).',
+      'I invest in the portable layer (constitution, method) that travels across the converged tools.'
+    ],
+    quiz:[
+      {q:'What is the manager&rsquo;s version of the tool question?',
+       options:['Which tool is objectively best','<b>Which tool for which use case, and do we standardize or allow choice</b> &mdash; a procurement decision keyed to how each team works, read as a manager not a fan','Which tool is cheapest','Which tool the best engineer prefers'], answer:1},
+      {q:'How should a leader treat the tool-fit table&rsquo;s recommendations?',
+       options:['As fixed rankings','As <b>editorial defaults</b> (dated, versioned) to <b>overturn with a measured bake-off</b> &mdash; ship the same feature each way and compare cycle time / diff / defensibility (M-2.5, the capstone)','As vendor marketing to ignore','As permanent org policy'], answer:1},
+      {q:'What is the real tradeoff in standardize-vs-allow-choice?',
+       options:['Cost vs speed','<b>One governance surface</b> (simpler procurement, training, and a single set of instruction files / workflows / policies to maintain) <b>vs per-team fit</b> (better match, but fragmented governance across tools)','New vs old tools','Cloud vs local'], answer:1},
+      {q:'Why does tool convergence lower the stakes of the fleet decision?',
+       options:['The tools are now identical','All three ship skills/hooks/subagents/MCP with near-identical semantics and AI-DLC is tool-agnostic &mdash; so your <b>portable layer (constitution + method) travels</b>, matters more than the tool badge, and switching costs less than the debate implies','It doesn&rsquo;t','Because only one tool will survive'], answer:1}
+    ]
   }
 ];
 
@@ -7181,6 +7247,39 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-28 · The Fleet Decision (spec: VISUALS.md) ----------
+   The tool-fit table read as a manager's procurement map: team archetype -> the editorial
+   default tool + why. Caveat banner: defaults, not laws (overturn with a bake-off, M-2.5).
+   Foot: standardize-vs-choice + the convergence fact (all three ship skills/hooks/subagents
+   /MCP; AI-DLC is tool-agnostic) so the portable layer matters more than the tool. Reuses
+   verified capability claims only. L-1.4. */
+VISUALS['SIM-28'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FLEET = [
+    ['UI-heavy squad','rapid components, styling, layout passes','Cursor','p',
+     '<b>Cursor</b> &mdash; Tab and its multi-file edits are strongest at fast, visual frontend work. A squad shipping screens all day feels this most.'],
+    ['Platform / backend team','refactors, debug loops, test-driven work, long-horizon agentic','Claude Code','g',
+     '<b>Claude Code</b> &mdash; Plan Mode, subagents, hooks and checkpoints are built for long, multi-step backend work; the headless/CI story is first-class.'],
+    ['GitHub-native org','issue &rarr; PR, code review, org policy, Visual Studio shops','Copilot','c',
+     '<b>Copilot</b> &mdash; cloud agents, the PR surface, enterprise controls and VS 2026 integration fit a team whose whole flow already lives in GitHub.'],
+    ['Automation / CI / platform','headless, scheduled and scripted agent runs','Claude Code','g',
+     '<b>Claude Code</b> &mdash; first-class headless and background modes make it the natural fit for scripted and CI-driven runs.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim28" aria-label="The fleet decision: team archetype to tool-fit default">' +
+      '<div class="s28head"><span>SIM-28 · THE FLEET DECISION</span><span>USE CASE &rarr; DEFAULT</span></div>' +
+      '<div class="s28caveat">These are <b>editorial defaults</b> (dated, versioned) &mdash; <b>not laws</b>. The right way to settle a contested call is a measured bake-off: ship the same feature each way and compare (M-2.5, and the capstone&rsquo;s ship-3-ways). Read the table as a manager, not a fan.</div>' +
+      FLEET.map((f,i) =>
+        '<div class="s28row" data-f="' + i + '"><div class="s28top">' +
+          '<span class="s28team">' + f[0] + '<span class="s28uc">' + f[1] + '</span></span>' +
+          '<span class="s28tool ' + f[3] + '">' + f[2] + '</span></div>' +
+          '<div class="s28why">' + f[4] + '</div></div>').join('') +
+      '<div class="s28foot">The two manager questions: <b>(1) which tool per use case</b> &mdash; the table above, but overturn any row with your own measurement; <b>(2) standardize or allow choice</b> &mdash; one tool buys simpler governance, procurement and shared workflows; per-team choice buys fit but fragments them. And the fact that lowers the stakes: the three tools have <b>converged</b> &mdash; all now ship skills, hooks, subagents and MCP with near-identical semantics, and AI-DLC is tool-agnostic &mdash; so your <b>portable layer</b> (the constitution, the method) matters more than the badge, and switching costs less than the debate suggests.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s28row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s28row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-27 · The Constitution as an Asset (spec: VISUALS.md) ----------
