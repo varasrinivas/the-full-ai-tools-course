@@ -1255,6 +1255,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim31 .s31leak{font-size:8px;color:var(--faint);text-align:center;padding:5px 0;line-height:1.45}
 .sim31 .s31foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim31 .s31foot b{color:var(--text);font-weight:500}
+.sim32{--s32green:#3E9A6B;--s32red:#d0705a;--s32amber:#c99a3a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim32{--s32green:#2d7350;--s32red:#B0503C;--s32amber:#976f16}
+.sim32 .s32head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim32 .s32axis{border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:9.5px;color:var(--dim);line-height:1.55;text-align:center}
+.sim32 .s32axis b{color:var(--text);font-weight:600}
+.sim32 .s32grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.sim32 .s32grid{grid-template-columns:1fr}}
+.sim32 .s32card{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 11px;cursor:pointer}
+.sim32 .s32card.skept{border-top:3px solid var(--s32amber)}
+.sim32 .s32card.over{border-top:3px solid var(--s32red)}
+.sim32 .s32who{font-size:10px;color:var(--text);font-weight:600}
+.sim32 .s32who .s32tag{font-size:8px;letter-spacing:.05em;color:var(--faint);font-weight:400}
+.sim32 .s32sig{font-size:9px;color:var(--dim);line-height:1.55;margin-top:6px}
+.sim32 .s32sig b{color:var(--text);font-weight:500}
+.sim32 .s32body{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:9px;line-height:1.55}
+.sim32 .s32card.open .s32body{display:block}
+.sim32 .s32row{margin-bottom:6px;color:var(--dim)}
+.sim32 .s32row b{color:var(--text);font-weight:500}
+.sim32 .s32wrong b{color:var(--s32red)}
+.sim32 .s32right b{color:var(--s32green)}
+.sim32 .s32becomes{color:var(--s32green)}
+.sim32 .s32becomes b{color:var(--s32green)}
+.sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.sim32 .s32foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5324,6 +5348,54 @@ const MODS = [
       {q:'Why expect a J-curve, and what is the 2&rarr;200 engine?',
        options:['There is no dip; adoption is linear','Expect an <b>early dip</b> (people are briefly slower while learning; the DORA stability tension) &mdash; do not panic or over-claim on week-one; and the <b>champion loop</b> (each champion seeds the next cohort) is the only arithmetic that reaches 200','The engine is buying more licences','The dip means the tool failed'], answer:1}
     ]
+  },
+  {
+    id:'L-2.4', path:'lead', track:'L-02', title:'Resistance patterns', minutes:35,
+    lastVerified:'2026-07-27',
+    concept:{
+      analogy:'Your PA review team gets a new auto-approval model, and two reviewers react in opposite ways. The <b>veteran</b> distrusts it and keeps hand-checking &mdash; and keeps catching the edge cases the model misses. The <b>new hire</b> rubber-stamps whatever it scores &mdash; and a 0.86 that should have gone to the queue sails through. The mistake a manager makes is symmetrical: disciplining the veteran into trusting it, and praising the new hire for clearing the queue fast. The fix is mirror-image: put the veteran in charge of the audit and threshold policy, and require the new hire to justify every override until they can read the case themselves. Same tool, opposite guardrails &mdash; and that is exactly how you handle resistance to AI.',
+      body:
+        '<p><strong>Resistance is not one thing to overcome; it is two opposite failure modes that need mirror-image fixes.</strong> Confusing them makes both worse. The unifying idea is DORA&rsquo;s: <em>&ldquo;AI doesn&rsquo;t fix a team; it amplifies what&rsquo;s already there.&rdquo;</em> An amplifier applied to a senior&rsquo;s <b>judgment</b> and to a junior&rsquo;s <b>lack</b> of it produces two very different problems &mdash; so you need two different, almost opposite, responses.</p>' +
+        '<p><strong>Senior-engineer skepticism is usually rational &mdash; recruit it, do not crush it.</strong> The experienced engineer has seen hype cycles and distrusts the code (that 30% from L-2.2). Very often they are <em>right</em>: they see the failure modes first. The wrong move is to dismiss or mandate them into line &mdash; you lose your most valuable reviewer and harden the doubt into opposition. The right move is to <b>recruit the skepticism</b>: hand them the show-the-diff demo on genuinely hard code, invite them to find where the agent breaks, and put them in charge of the gates and review policy (which is exactly L-03). A converted skeptic becomes your most credible champion &mdash; they vouch in a way no mandate can &mdash; and their skepticism, formalized, <em>is</em> your guardrail.</p>' +
+        '<p><strong>Junior over-reliance is the opposite &mdash; and the more dangerous, because it is silent.</strong> The junior accepts every diff, doesn&rsquo;t build the underlying judgment, and ships plausible-but-wrong code &mdash; the 0.86 that should have been queued, the threshold flipped from <code>&gt;=</code> to <code>&gt;</code>. It is dangerous precisely because it <em>looks like productivity</em>: velocity is up, everyone&rsquo;s happy, and the risk is invisible until it isn&rsquo;t. The fix is not less tooling; it is <b>review discipline</b> &mdash; require them to explain the diff before they ship it, apply the vibe-vs-spec risk lens (L-1.2), keep the gates on (M-10.2), ask &ldquo;did the test catch it?&rdquo; (T-06) &mdash; and pair them with the very skeptic from the last paragraph. Over-reliance is a training-and-gates problem, never a tooling problem.</p>' +
+        '<p><strong>The meta-trap ties both back to how you measure.</strong> The tempting error is to treat both as &ldquo;resistance to overcome with enthusiasm&rdquo; &mdash; the senior a laggard to convert, the junior a star to celebrate for high usage. Both readings are the vanity-metric mistake wearing a people costume. A high <b>AI-usage %</b> from an over-relying junior is a <b>risk flag, not a win</b>; a low one from a careful senior may be entirely appropriate. So reward <b>outcome and defensibility</b>, never usage &mdash; the same honest-measurement discipline from L-2.3, now applied to people. Manufacturing usage numbers is exactly how you get the over-reliance you should fear.</p>' +
+        '<p><strong>Handle both and the Adoption Playbook is complete.</strong> You have the whole arc: a <b>pilot</b> designed as an experiment (L-2.1), a <b>cadence</b> that builds trust (L-2.2), a <b>funnel</b> measured honestly (L-2.3), and the two hard, people-shaped failure modes named and countered (here). Notice where this points: the senior&rsquo;s recruited skepticism becomes formal policy &mdash; permission modes, review rules, guardrails &mdash; which is exactly L-03, Governance &amp; Guardrails, where the playbook turns into the controls that keep all of this safe.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-32'},
+    labA:{
+      title:'Name your two resistances',
+      steps:[
+        'Identify a real <b>senior skeptic</b> and a real <b>junior over-relier</b> on your team &mdash; by behaviour, not label. The skeptic distrusts the output; the over-relier ships whatever the agent produces without being able to defend the diff.',
+        'Write the <b>mirror-image intervention</b> for each: for the skeptic, recruit them &mdash; a show-the-diff on hard code and ownership of a gate or review rule (L-03); for the over-relier, review discipline &mdash; explain-the-diff, the L-1.2 risk lens, gates (M-10.2), and pairing with the skeptic.',
+        'Audit your own incentives: are you (even implicitly) rewarding <b>usage</b>? If a high AI-usage % would be celebrated, you are manufacturing over-reliance &mdash; switch the reward to outcome + defensibility (L-2.3).',
+        'Success: two named people-patterns, a mirror-image plan for each, and a check that your metrics reward defensible outcomes rather than raw usage.'
+      ]
+    },
+    labB:{
+      title:'Convert one skeptic',
+      steps:[
+        'Take your most credible skeptic and run a <b>show-the-diff</b> with them on genuinely hard, real code &mdash; and explicitly invite them to <em>find where the agent breaks</em>. Do not defend the tool; let them stress it.',
+        'Offer them ownership of the thing they just proved they care about: a <b>gate or a review-policy rule</b> (the seed of L-03). Watch whether their skepticism converts into a guardrail &mdash; and whether they start vouching to peers.',
+        'Success: one skeptic moved from opposition to owning a control, and a concrete read on whether recruited skepticism &mdash; not enthusiasm &mdash; is what actually converts your hardest reviewers.'
+      ]
+    },
+    checklist:[
+      'I treat resistance as two opposite modes (senior skepticism / junior over-reliance), not one.',
+      'I recruit the senior&rsquo;s skepticism onto gates &amp; review policy rather than mandating adoption.',
+      'I fix junior over-reliance with review discipline + explain-the-diff + pairing, not less tooling.',
+      'I read high AI-usage from an over-relier as a risk flag, not a win.',
+      'I reward outcome &amp; defensibility, never usage &mdash; the honest measure applied to people.'
+    ],
+    quiz:[
+      {q:'Why are the two resistances &ldquo;mirror-image&rdquo;?',
+       options:['They are the same problem at different ages','Because <b>AI amplifies what&rsquo;s already there</b> &mdash; a senior&rsquo;s judgment and a junior&rsquo;s lack of it &mdash; so senior skepticism must be <em>recruited</em> while junior over-reliance must be <em>disciplined</em>: same amplifier, opposite guardrails','Both are solved by more training','Both need the tool taken away'], answer:1},
+      {q:'What should you do with a skeptical senior engineer?',
+       options:['Mandate adoption and move on','<b>Recruit the skepticism</b> &mdash; show-the-diff on hard code, let them find the breaks, and put them in charge of the gates &amp; review policy (L-03); a converted skeptic becomes your most credible champion and your guardrail','Exclude them from the rollout','Wait for them to retire'], answer:1},
+      {q:'Why is junior over-reliance the more dangerous mode?',
+       options:['Juniors write more code','It is <b>silent</b> &mdash; it looks like productivity while shipping plausible-but-wrong code (the 0.86 that should have queued); the fix is review discipline (explain-the-diff, L-1.2 risk lens, gates M-10.2, T-06) + pairing, not less tooling','Juniors use more tokens','It is not dangerous'], answer:1},
+      {q:'Why is a high AI-usage % from a junior a risk flag, not a win?',
+       options:['It costs too much','It is likely <b>over-reliance</b> &mdash; the vanity-metric mistake in human form; rewarding usage manufactures the very over-reliance you should fear, so reward <b>outcome and defensibility</b> instead (L-2.3 / L-5.3)','Usage should always be maximized','It means the senior isn&rsquo;t using it'], answer:1}
+    ]
   }
 ];
 
@@ -7450,6 +7522,41 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-32 · The Two Resistances (spec: VISUALS.md) ----------
+   Resistance is two opposite failure modes needing mirror-image fixes, unified by the verified
+   DORA 2025 amplifier quote (m112-frameworks.txt:30). Two click-to-expand cards: Senior skepticism
+   (amber, often rational -> recruit it onto the gates/review policy L-03 -> best champion) and
+   Junior over-reliance (red, silent/dangerous -> review discipline L-1.2/M-10.2/T-06 + pair ->
+   real judgment). Foot: usage from an over-reliant junior is a risk flag not a win; reward
+   outcome+defensibility (L-2.3/L-5.3). Closes L-02. Reframe-only. L-2.4. */
+VISUALS['SIM-32'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mount.innerHTML =
+    '<div class="sim32" aria-label="The two resistance patterns: senior skepticism vs junior over-reliance">' +
+      '<div class="s32head"><span>SIM-32 · THE TWO RESISTANCES</span><span>MIRROR-IMAGE FIXES</span></div>' +
+      '<div class="s32axis"><b>&ldquo;AI amplifies what&rsquo;s already there.&rdquo;</b> (DORA 2025) It amplifies a senior&rsquo;s <em>judgment</em> and a junior&rsquo;s <em>lack</em> of it &mdash; same amplifier, <b>opposite guardrails</b>. Tap each.</div>' +
+      '<div class="s32grid">' +
+        '<div class="s32card skept" data-c="0"><div class="s32who">Senior skepticism <span class="s32tag">· often rational</span></div>' +
+          '<div class="s32sig"><b>Signal:</b> distrusts the code, has seen the hype cycles, won&rsquo;t adopt on faith (the 30% from L-2.2). Frequently <em>right</em> &mdash; they see the failure modes first.</div>' +
+          '<div class="s32body">' +
+            '<div class="s32row s32wrong"><b>&#10007; Wrong:</b> dismiss or mandate them &mdash; &ldquo;get on board.&rdquo; You lose your best reviewer and harden the doubt.</div>' +
+            '<div class="s32row s32right"><b>&#10003; Right:</b> recruit the skepticism &mdash; show-the-diff on hard code, let them find where the agent breaks, and put them in charge of the gates &amp; review policy (L-03).</div>' +
+            '<div class="s32row s32becomes">&#8594; <b>Becomes:</b> your most credible champion and your guardrail &mdash; a converted skeptic vouches in a way no mandate can.</div>' +
+          '</div></div>' +
+        '<div class="s32card over" data-c="1"><div class="s32who">Junior over-reliance <span class="s32tag">· the dangerous one</span></div>' +
+          '<div class="s32sig"><b>Signal:</b> accepts every diff, ships plausible-but-wrong code (the 0.86 that should have queued; the threshold bug). <b>Silent</b> &mdash; it looks like productivity.</div>' +
+          '<div class="s32body">' +
+            '<div class="s32row s32wrong"><b>&#10007; Wrong:</b> reward the velocity / high AI-usage %. You are paying for risk and calling it output.</div>' +
+            '<div class="s32row s32right"><b>&#10003; Right:</b> enforce the review discipline &mdash; explain-the-diff before shipping, the vibe-vs-spec risk lens (L-1.2), gates (M-10.2), &ldquo;did the test catch it?&rdquo; (T-06) &mdash; and pair them with the skeptic.</div>' +
+            '<div class="s32row s32becomes">&#8594; <b>Becomes:</b> real judgment, built before the amplifier outruns it &mdash; the tool accelerating a skill they actually have.</div>' +
+          '</div></div>' +
+      '</div>' +
+      '<div class="s32foot">The meta-trap: treating both as &ldquo;resistance to overcome with enthusiasm.&rdquo; The senior is not a laggard to convert with a mandate, and the junior is not a star to celebrate for high usage &mdash; a high <b>AI-usage %</b> from an over-relying junior is a <b>risk flag, not a win</b> (L-2.3, L-5.3). Reward <b>outcome and defensibility</b>, never usage. Handle both and L-02 is complete: a pilot, a cadence, a funnel, and the two hard people-shaped failure modes named.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s32card').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s32card').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-31 · The Enablement Funnel (spec: VISUALS.md) ----------
