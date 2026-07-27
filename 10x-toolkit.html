@@ -1238,6 +1238,23 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim30 .s30card.open .s30anti{display:block}
 .sim30 .s30foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim30 .s30foot b{color:var(--text);font-weight:500}
+.sim31{--s31red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim31{--s31red:#B0503C}
+.sim31 .s31head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim31 .s31banner{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.5}
+.sim31 .s31banner b{color:var(--text);font-weight:500}
+.sim31 .s31stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 11px;cursor:pointer;margin:0 auto;min-width:150px}
+.sim31 .s31top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sim31 .s31name{font-size:10px;color:var(--text);font-weight:600}
+.sim31 .s31name .s31sub{display:block;font-size:8px;color:var(--faint);font-weight:400}
+.sim31 .s31count{font-size:10px;color:var(--dim);white-space:nowrap}
+.sim31 .s31detail{display:none;font-size:9px;color:var(--dim);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim31 .s31detail b{color:var(--text);font-weight:500}
+.sim31 .s31detail .s31refuse{color:var(--s31red);font-weight:500}
+.sim31 .s31stage.open .s31detail{display:block}
+.sim31 .s31leak{font-size:8px;color:var(--faint);text-align:center;padding:5px 0;line-height:1.45}
+.sim31 .s31foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim31 .s31foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5259,6 +5276,54 @@ const MODS = [
       {q:'Why prefer pull over push, and cadence over a big-bang launch?',
        options:['It is cheaper','<b>Unprompted attendance/reuse (pull) is the real signal trust is forming</b>; a mandate (push) only manufactures vanity usage and hardens skeptics &mdash; and a predictable weekly rhythm, not a heroic event, is what turns 2 power users into 200','Launch events are hard to schedule','Push is against policy'], answer:1}
     ]
+  },
+  {
+    id:'L-2.3', path:'lead', track:'L-02', title:'From 2 power users to 200', minutes:35,
+    lastVerified:'2026-07-27',
+    concept:{
+      analogy:'You already run a funnel, and you already know how to measure it: the PA pipeline. You do not judge that pipeline by how many requests came in the door &mdash; intake volume tells you nothing. You judge it by how many reach a clean decision, and you manage it by finding where cases <em>stall</em> (the review queue) and working that one spot. An enablement funnel is the same object: seats provisioned is intake volume, progression to fluent-on-real-work is throughput, and the stage where people pile up unmoved is your queue &mdash; the one place worth intervening.',
+      body:
+        '<p><strong>L-2.2 gave you mechanisms; this is the system that moves a whole org through them.</strong> Adoption is a <b>funnel</b> with four stages &mdash; <b>Aware &rarr; Tried &rarr; Habitual &rarr; Champion</b> &mdash; and the point of naming the stages is that each needs a <em>different</em> intervention. You do not hand a fluent user a starter course drop, and you do not ask a skeptic to write a workflow. Treating adoption as one undifferentiated push is exactly why it stalls; treating it as a managed pipeline is what makes it move.</p>' +
+        '<p><strong>Match the intervention to the stage.</strong> <b>Aware</b> (saw the pilot) is moved by the reach mechanisms &mdash; show-the-diff demos and course drops. <b>Tried</b> (ran it on one real task) is moved by <em>office hours</em>, pairing on their own stuck work &mdash; this is the activation step and usually the biggest leak. <b>Habitual</b> (daily flow, a working constitution) is moved by advanced patterns &mdash; gates, workflows, subagents (T-09/T-10) and a maintained CLAUDE.md. <b>Champion</b> (can teach) is moved by being <em>given a squad to seed</em> &mdash; the loop that makes two become two hundred.</p>' +
+        '<p><strong>Now measure it honestly &mdash; which means measuring progression and outcome, never headcount.</strong> The seductive metrics are all intake: seats provisioned, &ldquo;% of engineers who logged in,&rdquo; &ldquo;AI-usage %,&rdquo; lines generated. They go up whether or not anything real is happening (the full refuse-list is L-5.3). The honest questions are two: <em>are people progressing through the stages on real work</em>, and <em>is the pilot&rsquo;s baselined business outcome moving</em> &mdash; the manual-review-queue &minus;20%? Adoption that does not move the outcome is theatre no matter how many seats lit up.</p>' +
+        '<p><strong>Honest measurement also means reading the leaks and expecting the dip.</strong> Find where people <em>stall</em> &mdash; almost always Aware&rarr;Tried (activation) and Tried&rarr;Habitual (retention) &mdash; and intervene there, not everywhere, exactly as you work the review queue rather than the intake. And expect a <b>J-curve</b>: early on, people are briefly <em>slower</em> as they learn, and delivery stability can wobble (the DORA 2025 tension you saw in T-11). That dip is normal. Do not panic and kill the program at the trough, and do not declare victory on week-one enthusiasm before anyone is habitual.</p>' +
+        '<p><strong>The engine underneath all of it is the champion loop.</strong> Each engineer who reaches the Champion stage seeds the next cohort&rsquo;s funnel, which is the only arithmetic that actually gets you from 2 to 200 &mdash; linear hand-holding by a central team never does. Fund the loop: protect champions&rsquo; time to teach, and measure that they have genuinely taught team #2. L-05 will formalize the measurement side (DORA, SPACE, DX at org level, and the vanity metrics to refuse); next, L-2.4 deals with the people who will not move through the funnel on their own &mdash; the resistance patterns.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-31'},
+    labA:{
+      title:'Draw your funnel',
+      steps:[
+        'Place your real people in the four stages &mdash; <b>Aware / Tried / Habitual / Champion</b> &mdash; with rough counts. The shape alone tells you a lot: a wide top and empty middle is an activation problem, not an awareness one.',
+        'Find your <b>biggest leak</b> (usually Aware&rarr;Tried or Tried&rarr;Habitual) and name the one intervention that works it &mdash; office hours on real tasks for activation, advanced-pattern support for retention. Intervene at the stall, like working the review queue, not everywhere at once.',
+        'Pick your <b>honest metrics</b>: one <em>progression</em> signal (are people moving up on real work) and the <em>business outcome</em> (the queue &minus;20%). Then write the vanity metrics you will explicitly refuse &mdash; seats provisioned, &ldquo;AI-usage %,&rdquo; lines generated (L-5.3).',
+        'Success: a stage-by-stage funnel with counts, one named leak with its intervention, and an honest metric pair (progression + outcome) plus a stated refuse-list.'
+      ]
+    },
+    labB:{
+      title:'Instrument it honestly',
+      steps:[
+        'For your funnel, define exactly what you will report up: the <b>one progression metric</b> and the <b>one business outcome</b> &mdash; and sanity-check that neither is a seat count, a login rate, or an &ldquo;AI-usage %.&rdquo; If it would rise while nothing real improves, throw it out.',
+        'Set the <b>J-curve expectation</b> with your leadership in writing: an early dip in speed/stability while people learn is expected (DORA 2025), so it is not read as failure &mdash; and week-one enthusiasm is not read as success.',
+        'Success: a one-page honest-measurement plan &mdash; progression + outcome, an explicit refuse-list, and a pre-agreed J-curve expectation &mdash; that survives a skeptical CFO&rsquo;s reading.'
+      ]
+    },
+    checklist:[
+      'I treat adoption as a four-stage funnel with a different intervention per stage.',
+      'I intervene at the biggest leak (usually activation) rather than pushing everywhere.',
+      'I measure progression + the business outcome (queue &minus;20%), never seat count.',
+      'I have an explicit refuse-list of vanity metrics (seats, AI-usage %, lines).',
+      'I set a J-curve expectation so an early dip is not misread as failure.'
+    ],
+    quiz:[
+      {q:'What is the enablement funnel?',
+       options:['A sales pipeline for licences','The four adoption stages <b>Aware &rarr; Tried &rarr; Habitual &rarr; Champion</b>, each needing a <em>different</em> intervention &mdash; a managed pipeline, not one undifferentiated push','A ranking of engineers by skill','A dashboard of AI-usage %'], answer:1},
+      {q:'How do you measure adoption honestly?',
+       options:['Count seats provisioned and logins','By <b>progression through the stages on real work + the pilot&rsquo;s business outcome</b> (the queue &minus;20%) &mdash; never intake/vanity counts like seats, &ldquo;AI-usage %,&rdquo; or lines generated (L-5.3)','By lines of AI-generated code','By total tokens spent'], answer:1},
+      {q:'Where is the funnel&rsquo;s biggest leak, and what do you do?',
+       options:['At the Champion stage; promote more people','Usually <b>activation (Aware&rarr;Tried)</b>; fix it at office hours on their real work &mdash; find the stall and work that one spot, like the PA review queue, rather than pushing everywhere','There are no leaks if you buy enough seats','At awareness; run more all-hands'], answer:1},
+      {q:'Why expect a J-curve, and what is the 2&rarr;200 engine?',
+       options:['There is no dip; adoption is linear','Expect an <b>early dip</b> (people are briefly slower while learning; the DORA stability tension) &mdash; do not panic or over-claim on week-one; and the <b>champion loop</b> (each champion seeds the next cohort) is the only arithmetic that reaches 200','The engine is buying more licences','The dip means the tool failed'], answer:1}
+    ]
   }
 ];
 
@@ -7385,6 +7450,57 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-31 · The Enablement Funnel (spec: VISUALS.md) ----------
+   2->200 as a managed funnel: 4 narrowing stage bars (Aware/Tried/Habitual/Champion), each
+   click-to-expand with its intervention, honest metric, and the vanity metric to refuse at that
+   stage. Leak markers between stages (activation biggest, retention = the J-curve dip, leadership).
+   Foot: measure progression + the business outcome (queue -20%), not seats; expect the dip; the
+   champion loop is the 2->200 engine; L-05 formalizes the frameworks. Reframe-only. L-2.3. */
+VISUALS['SIM-31'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STAGES = [
+    ['Aware','saw the pilot / knows the tooling exists',100,'&#8776;200 eng',
+     'Show-the-diff demos and course drops (L-2.2) &mdash; the reach mechanisms.',
+     'Reach. (At this one stage, reach genuinely is the metric.)',
+     '&mdash; nothing to refuse yet'],
+    ['Tried','ran it on one real task',72,'&#8776;124',
+     'Office hours &mdash; pair on their <em>own</em> stuck work. The activation step.',
+     'A first real task shipped with the tool.',
+     '&ldquo;logged in once,&rdquo; seats provisioned'],
+    ['Habitual','uses it in daily flow, has a working constitution',48,'&#8776;56',
+     'Advanced patterns &mdash; gates, workflows, subagents (T-09/T-10) and a maintained CLAUDE.md.',
+     'Sustained use on real work <em>and</em> the pilot outcome moving (queue &minus;20%).',
+     '&ldquo;AI-usage %,&rdquo; lines generated, acceptance rate'],
+    ['Champion','can teach the next team',26,'&#8776;12',
+     'Give them a squad to seed &mdash; the loop that makes 2 become 200.',
+     'They have actually taught team #2.',
+     'self-reported &ldquo;expert&rdquo;'],
+  ];
+  const LEAKS = [
+    'ACTIVATION leak (Aware &rarr; Tried) &mdash; usually the biggest. Fix it at office hours, on their real task.',
+    'RETENTION leak (Tried &rarr; Habitual) &mdash; the J-curve dip lives here: people are briefly slower while learning. Expected, not failure.',
+    'LEADERSHIP leak (Habitual &rarr; Champion) &mdash; the multiplier stalls if no one is handed a team to seed.',
+  ];
+  let rows = '';
+  STAGES.forEach((s,i) => {
+    rows += '<div class="s31stage" data-s="' + i + '" style="width:' + s[2] + '%">' +
+      '<div class="s31top"><span class="s31name">' + s[0] + '<span class="s31sub">' + s[1] + '</span></span>' +
+      '<span class="s31count">' + s[3] + '</span></div>' +
+      '<div class="s31detail"><b>Move them up:</b> ' + s[4] + '<br><b>Measure honestly:</b> ' + s[5] +
+      '<br><span class="s31refuse">Refuse:</span> ' + s[6] + '</div></div>';
+    if(i < LEAKS.length) rows += '<div class="s31leak">&#9662; ' + LEAKS[i] + '</div>';
+  });
+  mount.innerHTML =
+    '<div class="sim31" aria-label="The enablement funnel: moving an org from 2 power users to 200">' +
+      '<div class="s31head"><span>SIM-31 · THE ENABLEMENT FUNNEL</span><span>AWARE &rarr; CHAMPION</span></div>' +
+      '<div class="s31banner">Measure the funnel by <b>progression + the business outcome</b> (the queue &minus;20%), <b>not by seat count</b>. Counting seats is counting intake &mdash; it tells you nothing about where people actually stall. Tap a stage for its intervention, its honest metric, and the vanity metric to refuse there.</div>' +
+      rows +
+      '<div class="s31foot">Two honest-measurement habits: <b>expect the J-curve dip</b> &mdash; an early slowdown while people learn is normal (the DORA stability tension), so do not panic at it or declare victory on week-one enthusiasm; and <b>find the stall like you find the review queue</b> &mdash; intervene where people pile up, not everywhere. The <b>champion loop</b> (each new champion seeds the next cohort) is the actual engine that turns 2 into 200. L-05 formalizes the frameworks; L-2.4 handles the people who will not move through on their own.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s31stage').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s31stage').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-30 · The Cadence Board (spec: VISUALS.md) ----------
