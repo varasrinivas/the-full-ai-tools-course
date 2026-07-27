@@ -1,0 +1,126 @@
+L-3.1 — Permission architecture (modes, sandboxes, checkpoints; "safe by default")
+LEADERSHIP L-03 opener. Hard-verification zone. All claims below verified against
+primary docs on 2026-07-27 (fresh, this session). Cursor + Copilot confirmed; Claude
+Code section filled from the claude-code-guide agent brief (same session).
+
+=========================================================================
+THE CONVERGENCE (the module's spine — all three tools independently land here)
+=========================================================================
+1. There is a MODE dial, from most-guarded to no-guardrails. The manager sets the
+   DEFAULT posture; individuals shouldn't quietly ratchet it down.
+2. Allowlists/denylists are CONVENIENCE, not a security boundary. Deny-beats-allow
+   precedence is universal, but a denylist is porous (prompt injection / determined agent).
+3. The SANDBOX is the real boundary. "Safe by default" = a good default mode + a sandbox,
+   not a hand-tuned allowlist.
+4. There is an ENTERPRISE POLICY layer that enforces the above org-wide so a developer
+   can't override it. That's where governance actually lives.
+
+=========================================================================
+GITHUB COPILOT / VS CODE  (code.visualstudio.com/docs/agents/approvals + /security,
+                           /docs/enterprise/ai-settings — verified 2026-07-27)
+=========================================================================
+PERMISSION LEVELS (Chat view permissions picker, per session):
+  - Default Approvals — uses configured approval settings (prompts for risky ops)
+  - Bypass Approvals  — auto-approves ALL tool calls
+  - Autopilot         — auto-approve + autonomous iteration; "continues working without
+                        user intervention until it marks the task as complete"
+AUTO-APPROVE SETTINGS:
+  - chat.tools.global.autoApprove          (global tool auto-approve; org-manageable)
+  - chat.tools.terminal.autoApprove        (rule-based terminal approve; allowList+denyList
+                                            were MERGED into this one setting)
+    * value map: command -> true (approve) / false (block); regex patterns supported
+      (with flags, e.g. case-insensitive for PowerShell); object syntax w/ matchCommandLine
+    * "All subcommands in a compound command must match an approved rule."
+    * DENY RULES ALWAYS TAKE PRECEDENCE OVER ALLOW RULES.  (verbatim)
+    * example: {"mkdir":true, "/^git (status|show\\b.*)$/":true, "del":false, "/dangerous/":false}
+SCOPING: session (temporary, recommended) / workspace / user.
+SECURITY (verbatim): "Agent sandboxing is the strongest protection against malicious
+  terminal commands. If prompt injection is a concern, use agent sandboxing or run VS Code
+  in a dev container instead of relying on auto-approval rules alone."
+ENTERPRISE POLICY (admin-enforced, dev can't override):
+  - ChatToolsAutoApprove              — disables global auto-approve; HIDES Bypass + Autopilot
+  - ChatToolsTerminalEnableAutoApprove— disables rule-based terminal auto-approve
+  - ChatToolsEligibleForAutoApproval  — forces manual approval for specific tools
+
+=========================================================================
+CURSOR  (cursor.com/docs/enterprise/llm-safety-and-controls — verified 2026-07-27)
+=========================================================================
+RUN MODES (Cursor 3.6+, end-user selectable):
+  - Auto-review (DEFAULT) — runs allowlisted calls, SANDBOXES shell commands when it can,
+    routes the rest through an LLM classifier that returns allow/block on safety + intent-match
+  - Allowlist             — only pre-approved commands (npm install, pip install, cargo build,
+    make test...) run without approval; everything else prompts
+  - Run Everything        — executes all commands without review
+AGENT SANDBOXING (introduced Cursor 2.0): macOS auto-runs allowlisted commands in a secure
+  sandbox when 'Run in Sandbox' is active.
+KEY VERBATIM (the module's thesis handed over by the vendor's own docs):
+  - The allowlist is "best-effort, not a security boundary" and "determined agents or prompt
+    injection might bypass it."
+  - Agents run "on your local machine by default" with access to "files you can read, write
+    files you can write, execute commands you can execute" — "there is NO security boundary
+    between agents and your user account."
+  - Stronger isolation = separate VMs via Cloud Agents, or filesystem permissions.
+ENTERPRISE/ADMIN: Run Mode set in team dashboard; .cursor Directory Protection (agent can't
+  modify .cursor); Browser Controls (approved-domain allowlist); custom enforcement hooks.
+REAL-WORLD CAUTION (secondary, framed as illustration NOT quoted as spec):
+  - Documented bug: Command Allowlist silently ignored when "Auto-Run in Sandbox" enabled.
+  - Backslash Security: multiple denylist-bypass techniques found. => teaching point:
+    denylists are fragile; prefer default-safe mode + sandbox + allowlist-as-convenience.
+  DO NOT state these as current product behavior — use as "why a denylist is not a boundary."
+
+=========================================================================
+CLAUDE CODE  (claude-code-guide agent brief + docs.claude.com — verified 2026-07-27)
+=========================================================================
+Sources: code.claude.com/docs/en/{permission-modes,permissions,sandboxing,checkpointing,
+  server-managed-settings}.md — fetched live 2026-07-27 (v2.1.200+ terminology).
+PERMISSION MODES (six; Shift+Tab cycles default->acceptEdits->plan (->optional bypass->auto)):
+  - default  = "Manual"             — per-tool first-use approval (sensitive work)
+  - acceptEdits = "Edit automatically" — file edits + common fs cmds auto within cwd
+  - plan     = "Plan"               — reads/read-only shell; edits blocked until plan approved
+  - auto     = "Auto"               — everything with a background SAFETY classifier (not a
+                                      permission layer); needs Opus 4.6+/Sonnet 4.6+/Fable 5
+  - dontAsk  = "Don't ask"          — only pre-approved tools; locked-down CI
+  - bypassPermissions = "Bypass permissions" — everything except explicit ask rules + a
+                        rm -rf / , rm -rf ~ circuit breaker; CONTAINERS/VMs ONLY
+  Cloud sessions ignore bypassPermissions + dontAsk. Set: --permission-mode / permissions.defaultMode.
+RULES (settings.json permissions.allow/ask/deny): EVAL ORDER = DENY -> ASK -> ALLOW, first
+  match wins; specificity does NOT override order (deny beats a narrower allow). Specifiers:
+  Bash(npm *), PowerShell(Get-ChildItem *), Read/Edit/Write(gitignore-style, //abs ~home /src),
+  WebFetch(domain:*.example.com) [wildcard won't cross a dot], mcp__server__tool, Agent(Explore),
+  input-param Bash(run_in_background:true). Bare deny name removes tool from context entirely.
+  Protected paths (never auto-approved unless bypass): .git, .claude, .bashrc, .npmrc, .mcp.json...
+SANDBOX ("safe by default"): OS-enforced — macOS Seatbelt / Linux bubblewrap / WSL2. NOT
+  native Windows (use WSL2), NOT WSL1. Write access = cwd + $TMPDIR only; read = all but denied
+  paths; network isolation (first-connect-per-domain approval; no TLS termination by default).
+  Enable /sandbox or sandbox.enabled. Orthogonal to modes (controls what a running Bash CAN
+  touch; modes control whether it runs). Fail-safe: missing bubblewrap -> warns, runs unsandboxed
+  unless sandbox.failIfUnavailable. Credential protection sandbox.credentials.{files,envVars}.
+CHECKPOINTS / REWIND: Esc-Esc (empty prompt) or /rewind. Tracks Read/Edit/Write edits ONLY —
+  NOT Bash file changes (rm/mv/cp), NOT subagent edits, NOT external changes. Last 100 per
+  session; persists across resume. Menu: restore code/convo/both, summarize. NOT a VCS
+  replacement — use git for permanent history + to revert Bash/subagent changes.
+ENTERPRISE/MANAGED: server-managed (claude.ai Admin > Claude Code) OR endpoint managed-settings.json
+  (MDM/registry). Precedence: MANAGED > CLI > project.local > project > user; managed can't be
+  overridden. Deny-first holds across scopes (managed deny + user allow -> deny wins). Managed-only
+  locks: disableBypassPermissionsMode, disableAutoMode, allowManagedPermissionRulesOnly,
+  sandbox.network.allowManagedDomainsOnly, disableSideloadFlags, strictPluginOnlyCustomization.
+NB (Windows author machine): CC sandbox unsupported on native Windows -> WSL2/dev-container is the
+  honest caveat to teach (same platform-honesty as M-10.2's PowerShell/.mvnw.cmd discovery).
+
+=========================================================================
+MODULE FRAMING (leadership, tools tag 'gc' = Claude Code + Copilot; Cursor named for completeness)
+=========================================================================
+Analogy: hospital system access / privileged-account control. You don't let every clinician
+  run every query against the live payer DB with production write access "because it's faster."
+  You set a DEFAULT least-privilege posture, put the dangerous actions behind approval, and the
+  real boundary is the isolated environment (a read replica / sandbox), not a list of blocked
+  queries a determined user could rephrase around. Permission architecture for agents is the
+  same privileged-access-management decision.
+Spine: "safe by default" is a MANAGER'S choice of default posture, not a per-dev toggle.
+  Four levers: (1) the default MODE, (2) allow/deny rules (convenience, deny>allow), (3) the
+  SANDBOX = the real boundary, (4) enterprise POLICY that enforces 1-3 so devs can't override.
+Non-negotiable teaching: an allowlist is not a security boundary (Cursor says so in its own
+  docs); a denylist is porous; the sandbox + a safe default + an enforced policy layer is what
+  "safe by default" means. Autopilot/Run-Everything/bypassPermissions are the modes to gate.
+Ties: M-1.3/M-1.4 permission modes (eng), M-10.2/9.7 gates, T-01 responsible-AI, and forward
+  to L-3.2 (MCP & data boundaries) which handles WHAT agents may touch.

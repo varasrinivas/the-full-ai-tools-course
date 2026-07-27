@@ -1279,6 +1279,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim33{--s33green:#3E9A6B;--s33amber:#c99a3a;--s33red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim33{--s33green:#2d7350;--s33amber:#976f16;--s33red:#B0503C}
+.sim33 .s33head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim33 .s33thesis{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.55}
+.sim33 .s33thesis b{color:var(--text);font-weight:500}
+.sim33 .s33row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer}
+.sim33 .s33row.t1{border-left:3px solid var(--s33green)}
+.sim33 .s33row.t2{border-left:3px solid var(--s33amber)}
+.sim33 .s33row.t3{border-left:3px solid var(--s33red)}
+.sim33 .s33tier{font-size:10px;color:var(--text);font-weight:600}
+.sim33 .s33tier .s33sub{display:block;font-size:8.5px;color:var(--faint);font-weight:400;margin-top:1px}
+.sim33 .s33tools{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sim33 .s33tool{font-size:8px;letter-spacing:.02em;padding:2px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;color:var(--dim)}
+.sim33 .s33tool.g{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim33 .s33tool.c{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim33 .s33tool.p{color:var(--purple);border-color:var(--purple)}
+[data-theme="light"] .sim33 .s33tool.p{color:#5a4a91;border-color:#5a4a91}
+.sim33 .s33tool b{font-weight:600}
+.sim33 .s33why{display:none;font-size:9px;color:var(--dim);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim33 .s33why b{color:var(--text);font-weight:500}
+.sim33 .s33row.open .s33why{display:block}
+.sim33 .s33foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.55}
+.sim33 .s33foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5396,6 +5419,54 @@ const MODS = [
       {q:'Why is a high AI-usage % from a junior a risk flag, not a win?',
        options:['It costs too much','It is likely <b>over-reliance</b> &mdash; the vanity-metric mistake in human form; rewarding usage manufactures the very over-reliance you should fear, so reward <b>outcome and defensibility</b> instead (L-2.3 / L-5.3)','Usage should always be maximized','It means the senior isn&rsquo;t using it'], answer:1}
     ]
+  },
+  {
+    id:'L-3.1', path:'lead', track:'L-03', title:'Permission architecture', minutes:35,
+    lastVerified:'2026-07-27',
+    concept:{
+      analogy:'Privileged-access management, the way a hospital already runs it. You do not let every clinician hold production write access to the live payer database &ldquo;because it is faster.&rdquo; You set a <em>least-privilege default</em>, put the dangerous actions behind an approval, and &mdash; the part people forget &mdash; the real safety is the <em>isolated environment</em>: a read replica, a sandboxed account, a break-glass workflow. A blocklist of forbidden queries is not the boundary; a determined or confused user rephrases around it. Permission architecture for coding agents is exactly this privileged-access decision, made for a tool that runs commands as <em>you</em>.',
+      body:
+        '<p><strong>Start from the uncomfortable fact the vendors say out loud: an agent runs with your privileges, on your machine.</strong> Cursor&rsquo;s own docs put it plainly &mdash; there is &ldquo;no security boundary between agents and your user account&rdquo;; the agent can read what you can read, write what you can write, run what you can run. So permission architecture is not a feature toggle, it is a <b>privileged-access decision</b> &mdash; and &ldquo;safe by default&rdquo; is a <em>posture a leader sets</em>, not something you leave to each developer&rsquo;s taste. It comes down to four levers.</p>' +
+        '<p><strong>Lever 1 &mdash; the mode dial, and every tool has the same one.</strong> It runs from guarded to open, and the terms map across tools. <em>Ask-first</em> (the safe default): Claude Code <b>Manual</b>, Copilot <b>Default Approvals</b>, Cursor <b>Auto-review</b>. <em>Auto-run with rules</em>: Claude Code <b>Edit-automatically / Auto</b>, Copilot <b>terminal auto-approve rules</b>, Cursor <b>Allowlist</b>. <em>No guardrails</em>: Claude Code <b>Bypass permissions</b>, Copilot <b>Bypass Approvals / Autopilot</b>, Cursor <b>Run Everything</b>. The manager&rsquo;s job is two decisions: set a <em>guarded</em> default, and <em>gate the open end</em> &mdash; those bottom-tier modes belong in disposable containers only, never on a laptop with production credentials.</p>' +
+        '<p><strong>Lever 2 &mdash; allow/deny rules, and the counterintuitive truth about them.</strong> Every tool lets you pre-approve and pre-block commands, and <b>deny always beats allow</b> everywhere (Copilot states it verbatim: &ldquo;deny rules always take precedence&rdquo;; Claude Code evaluates deny&rarr;ask&rarr;allow). Useful &mdash; but do not mistake it for safety. An allowlist is, in Cursor&rsquo;s own words, <b>&ldquo;best-effort, not a security boundary&rdquo;</b>; a denylist is porous to a prompt-injected or confused agent that simply rephrases the blocked command. Rules are convenience and hygiene, not the wall.</p>' +
+        '<p><strong>Lever 3 &mdash; the sandbox, which is the actual boundary.</strong> This is the one that&rsquo;s real: OS-enforced isolation (macOS Seatbelt, Linux bubblewrap, WSL2) that confines a running command&rsquo;s filesystem writes to the working directory and gates its network access &mdash; independent of whether a rule let it start. Both Anthropic and Microsoft point here as the strong control: Copilot&rsquo;s guidance is to &ldquo;use agent sandboxing or run VS Code in a dev container instead of relying on auto-approval rules alone.&rdquo; One honest caveat worth knowing as a leader: Claude Code&rsquo;s sandbox is <em>not</em> supported on native Windows &mdash; it needs WSL2 or a dev container &mdash; so &ldquo;safe by default&rdquo; on a Windows fleet has a real setup implication, not a checkbox.</p>' +
+        '<p><strong>Lever 4 &mdash; enforced org policy, which is where governance actually lives.</strong> The first three levers are worthless if a developer can quietly turn them off, so every tool has a managed layer that the individual cannot override: Claude Code&rsquo;s <b>managed settings</b> (precedence: managed &gt; CLI &gt; project &gt; user; locks like <code>disableBypassPermissionsMode</code>), Copilot&rsquo;s admin policies (<code>ChatToolsAutoApprove</code> hides Bypass and Autopilot), Cursor&rsquo;s team-dashboard Run Mode and <code>.cursor</code> protection. That is the difference between a suggestion and a control. So the leader&rsquo;s permission architecture is four decisions: a guarded default, sane rules, a real sandbox, and an enforced policy that pins all three &mdash; and then L-3.2 takes the next question, <em>what</em> the agent may reach at all: MCP and data boundaries.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-33'},
+    labA:{
+      title:'Set your default posture',
+      steps:[
+        'For each tool your teams use, write the <b>default mode</b> you will standardize on &mdash; and it should be the guarded one (Claude Code Manual, Copilot Default Approvals, Cursor Auto-review). Name the <b>open modes you will disable or gate</b> (Bypass / Autopilot / Run Everything) and where they are allowed (disposable containers only).',
+        'Draft the handful of <b>deny rules</b> that genuinely matter for a healthcare codebase (e.g. block writes to secrets/config, block destructive shell) &mdash; remembering deny beats allow, and that the list is hygiene, <em>not</em> your security boundary.',
+        'Specify the <b>real boundary</b>: is the sandbox on, and does your fleet support it (note the native-Windows &rarr; WSL2 / dev-container caveat)? Then name the <b>enforced-policy mechanism</b> (managed settings / ChatTools* policies / team dashboard) that stops a developer overriding any of the above.',
+        'Success: a one-page permission posture &mdash; default mode, gated modes, key deny rules, sandbox decision, and the enforced-policy control &mdash; that is safe by default and cannot be quietly turned off.'
+      ]
+    },
+    labB:{
+      title:'See the dial and the boundary',
+      steps:[
+        'In one tool, <b>cycle the modes</b> (in Claude Code, <code>Shift+Tab</code> moves default &rarr; acceptEdits &rarr; plan) and watch what changes about what auto-runs versus what prompts. Feel the dial &mdash; this is the lever your default posture sets.',
+        'Now prove the <b>boundary</b> is the sandbox, not the rules: with sandboxing on, have the agent try to write outside the working directory (or reach a new network domain) and watch it be blocked at the OS level regardless of any allow rule. Confirm a <b>deny</b> rule beats an <b>allow</b> on the same command.',
+        'Success: a first-hand read on how the mode dial changes behavior and a demonstration that the sandbox &mdash; not the allowlist &mdash; is what actually stops an action; note the Windows/WSL2 caveat if it applies to your machine.'
+      ]
+    },
+    checklist:[
+      'I treat permissions as privileged-access management &mdash; the agent runs as the user.',
+      'I set a guarded <b>default mode</b> and gate the open modes to disposable containers.',
+      'I use allow/deny rules for hygiene (deny beats allow) but do not call them a boundary.',
+      'I make the <b>sandbox</b> the real boundary &mdash; and know the native-Windows &rarr; WSL2 caveat.',
+      'I pin all of it with <b>enforced org policy</b> a developer cannot override.'
+    ],
+    quiz:[
+      {q:'What does &ldquo;safe by default&rdquo; actually mean for agent permissions?',
+       options:['Trusting each developer to pick sensible settings','A <b>posture a leader sets</b> across four levers &mdash; a guarded default mode, allow/deny rules, a real sandbox, and an enforced org policy &mdash; because the agent runs with the user&rsquo;s own privileges','Turning off all AI features','Buying the enterprise tier'], answer:1},
+      {q:'Is an allowlist a security boundary?',
+       options:['Yes, if it is long enough','<b>No</b> &mdash; it is &ldquo;best-effort, not a security boundary&rdquo; (Cursor&rsquo;s own docs); deny beats allow everywhere, but a denylist is porous to prompt injection. The <b>sandbox</b> (OS-enforced isolation) is the real boundary','Only denylists are boundaries','Yes, allowlists cannot be bypassed'], answer:1},
+      {q:'Which modes must a leader gate, and to where?',
+       options:['None; all modes are equally safe','The <b>no-guardrails tier</b> &mdash; Claude Code Bypass permissions, Copilot Bypass Approvals / Autopilot, Cursor Run Everything &mdash; to <b>disposable containers / VMs only</b>, and disable org-wide via managed policy (<code>disableBypassPermissionsMode</code>, <code>ChatToolsAutoApprove</code>)','Only Plan mode','The read-only modes'], answer:1},
+      {q:'Where does governance actually live, and what is the real boundary?',
+       options:['In each developer&rsquo;s local settings','In <b>enforced org policy</b> (managed settings that outrank user/project config, so a dev cannot override) plus the <b>OS-enforced sandbox</b> (Seatbelt / bubblewrap / WSL2 &mdash; not native Windows) as the real boundary','In the allowlist','In the model choice'], answer:1}
+    ]
   }
 ];
 
@@ -7522,6 +7593,41 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-33 · The Permission Dial (spec: VISUALS.md) ----------
+   The same guarded->open mode spectrum across all three tools, in 3 posture tiers with the
+   verified mode names (Claude Code / Copilot / Cursor, gold/cyan/purple). Thesis banner + reveal
+   carry the sourced governance point: an allowlist is "best-effort, not a security boundary"
+   (Cursor's own docs), deny-beats-allow is universal, the SANDBOX is the real boundary, and an
+   enforced policy layer is where governance lives. All mode names/settings verified 2026-07-27
+   (l31-permission-architecture.txt). Foot: the four levers + the native-Windows sandbox caveat. L-3.1. */
+VISUALS['SIM-33'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TIERS = [
+    ['t1','Ask-first','approve risky actions as they surface &mdash; the safe default',
+     [['g','Claude Code','Manual (default)'],['c','Copilot','Default Approvals'],['p','Cursor','Auto-review (default)']],
+     'Reads and known-safe commands run; edits and shell either prompt (Claude Code, Copilot) or are sandboxed and intent-classified (Cursor Auto-review). This is where most engineers should live &mdash; and the DEFAULT a manager should set.'],
+    ['t2','Auto-run with rules','edits + allowlisted / classified commands run without prompts',
+     [['g','Claude Code','Edit automatically / Auto'],['c','Copilot','terminal auto-approve rules'],['p','Cursor','Allowlist']],
+     'Convenience for flow, and <b>deny-beats-allow is universal</b> here (Copilot: &ldquo;deny rules always take precedence&rdquo;). But an allowlist is, in Cursor&rsquo;s own words, <b>&ldquo;best-effort, not a security boundary&rdquo;</b> &mdash; and a denylist is porous to prompt injection. This tier is only safe with a sandbox underneath it.'],
+    ['t3','No guardrails','everything auto-runs &mdash; GATE THIS',
+     [['g','Claude Code','Bypass permissions'],['c','Copilot','Bypass Approvals / Autopilot'],['p','Cursor','Run Everything']],
+     'Disposable containers / VMs <b>only</b>. Copilot&rsquo;s Autopilot even iterates autonomously &ldquo;until it marks the task complete.&rdquo; This is the tier a leader gates or disables org-wide (Copilot policy <code>ChatToolsAutoApprove</code>; Claude Code <code>disableBypassPermissionsMode</code> in managed settings).'],
+  ];
+  mount.innerHTML =
+    '<div class="sim33" aria-label="The permission dial: mode postures across Claude Code, Copilot and Cursor">' +
+      '<div class="s33head"><span>SIM-33 · THE PERMISSION DIAL</span><span>GUARDED &rarr; OPEN</span></div>' +
+      '<div class="s33thesis"><b>&ldquo;Safe by default&rdquo; is a posture you set, not a per-dev toggle.</b> All three tools expose the same guarded&rarr;open dial. An allowlist is convenience; the <b>sandbox is the boundary</b>. Tap a tier for the sourced detail.</div>' +
+      TIERS.map((t,i) =>
+        '<div class="s33row ' + t[0] + '" data-t="' + i + '"><div class="s33tier">' + t[1] +
+          '<span class="s33sub">' + t[2] + '</span></div>' +
+          '<div class="s33tools">' + t[3].map(m => '<span class="s33tool ' + m[0] + '"><b>' + m[1] + '</b> &middot; ' + m[2] + '</span>').join('') + '</div>' +
+          '<div class="s33why">' + t[4] + '</div></div>').join('') +
+      '<div class="s33foot">Four levers set your posture: <b>(1) the default mode</b> &mdash; set it guarded, not open; <b>(2) allow/deny rules</b> &mdash; convenience, deny always beats allow, but <em>not</em> a boundary; <b>(3) the sandbox</b> &mdash; the REAL boundary, OS-enforced (macOS Seatbelt / Linux bubblewrap / WSL2 &mdash; note Claude Code sandboxing is <em>not</em> supported on native Windows, use WSL2 or a dev container); <b>(4) enforced org policy</b> (managed settings / <code>ChatTools*</code> / team dashboard) so a developer cannot quietly override 1&ndash;3. &ldquo;Safe by default&rdquo; is all four, chosen by you.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s33row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s33row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-32 · The Two Resistances (spec: VISUALS.md) ----------
