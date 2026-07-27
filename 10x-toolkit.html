@@ -1196,6 +1196,29 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim28 .s28row.open .s28why{display:block}
 .sim28 .s28foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim28 .s28foot b{color:var(--text);font-weight:500}
+.sim29{--s29green:#3E9A6B;--s29red:#d0705a;--s29amber:#c99a3a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim29{--s29green:#2d7350;--s29red:#B0503C;--s29amber:#976f16}
+.sim29 .s29head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim29 .s29caveat{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.5}
+.sim29 .s29caveat b{color:var(--text);font-weight:500}
+.sim29 .s29row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 10px;margin-bottom:5px;cursor:pointer}
+.sim29 .s29top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+.sim29 .s29team{font-size:10px;color:var(--text);font-weight:600}
+.sim29 .s29team .s29uc{display:block;font-size:8.5px;color:var(--faint);font-weight:400}
+.sim29 .s29verdict{font-size:8.5px;font-weight:600;letter-spacing:.05em;white-space:nowrap;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+.sim29 .s29verdict.pick{color:var(--s29green);border-color:var(--s29green)}
+.sim29 .s29verdict.trap{color:var(--s29red);border-color:var(--s29red)}
+.sim29 .s29marks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sim29 .s29chip{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--faint);letter-spacing:.04em;border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.sim29 .s29mark{width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;border:1px solid var(--line)}
+.sim29 .s29mark.y{color:var(--s29green);border-color:var(--s29green)}
+.sim29 .s29mark.a{color:var(--s29amber);border-color:var(--s29amber)}
+.sim29 .s29mark.n{color:var(--s29red);border-color:var(--s29red)}
+.sim29 .s29why{font-size:9px;color:var(--dim);line-height:1.55;margin-top:8px;display:none}
+.sim29 .s29why b{color:var(--text);font-weight:500}
+.sim29 .s29row.open .s29why{display:block}
+.sim29 .s29foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim29 .s29foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5121,6 +5144,54 @@ const MODS = [
       {q:'Why does tool convergence lower the stakes of the fleet decision?',
        options:['The tools are now identical','All three ship skills/hooks/subagents/MCP with near-identical semantics and AI-DLC is tool-agnostic &mdash; so your <b>portable layer (constitution + method) travels</b>, matters more than the tool badge, and switching costs less than the debate implies','It doesn&rsquo;t','Because only one tool will survive'], answer:1}
     ]
+  },
+  {
+    id:'L-2.1', path:'lead', track:'L-02', title:'Pilot design', minutes:35,
+    lastVerified:'2026-07-27',
+    concept:{
+      analogy:'Piloting a new clinical protocol before you take it network-wide. You do not switch every payer and every CPT code to a new auto-approval model on day one. You pick <em>one</em> line of business, write down the current approval rate, cycle time and appeal rate as a baseline, run the new protocol for a fixed window, and only expand if the numbers move without the appeals spiking. Rolling out AI tooling is the same discipline: one squad, one repo, one baselined metric, one time box &mdash; an experiment with a decision gate, not a company-wide switch you can never take back.',
+      body:
+        '<p><strong>A pilot is an experiment, not a rollout.</strong> The point is not to &ldquo;get everyone on AI&rdquo;; it is to test one hypothesis &mdash; <em>does this tooling move a metric this team already cares about?</em> &mdash; under conditions clean enough that the answer is trustworthy. That reframing decides everything downstream: you scope it to <b>one squad, one repo, one metric, one time box</b>, and you commit up front to a decision gate at the end &mdash; scale, adjust, or stop. Design it to produce evidence, not activity.</p>' +
+        '<p><strong>Pick the first squad by profile, not by volume of enthusiasm.</strong> Score each candidate on four things: a <b>real, measured pain</b> (a problem the team and the business already agree matters); <b>AI-fit code</b> (structured enough, and with tests, so gates and the rework radar actually work); a <b>fast release cadence</b> (so signal arrives in weeks, not quarters); and an <b>honest champion</b> &mdash; a credible engineer who will tell you the truth, good or bad. In this course&rsquo;s world that is the <b>intake squad</b> on the PA pipeline: the manual-review-queue backlog is the pain, the service is tested, they ship weekly, and their senior is curious-but-skeptical in the right way.</p>' +
+        '<p><strong>Learn the two traps, because both are magnetic.</strong> The <b>eager-volunteer</b> trap: a keen team on a low-stakes greenfield tool &mdash; easy and willing, but nobody downstream depends on it and there is no agreed business metric, so a win there convinces no skeptic and hands you no baseline worth quoting. The <b>too-hard</b> trap: the oldest, most painful legacy monolith &mdash; no tests, quarterly releases, a skeptical team &mdash; where a stall becomes &ldquo;we tried AI and it didn&rsquo;t work&rdquo; and poisons the whole program. Enthusiasm and severity are both real, but neither is a selection criterion; trustworthy-evidence-fast is.</p>' +
+        '<p><strong>The first win has to be a metric you baselined before you touched anything.</strong> This is the T-11 discipline carried up to the org level: without a before, there is no after. Pick <em>one</em> business metric everyone already accepts as a win &mdash; here, the <b>manual-review-queue &minus;20%</b> initiative that runs through the whole course &mdash; and refuse the vanity counts (lines generated, &ldquo;AI-usage %&rdquo;, acceptance rate; the full list is L-5.3). Record the baseline, run the time box, and read the delta honestly, including where it went sideways.</p>' +
+        '<p><strong>And the pilot&rsquo;s real deliverable is not the feature &mdash; it is what makes the next ten teams possible.</strong> You come out of a good pilot with three assets: a <b>measured delta</b> you can defend to a skeptic or a CFO; a working <b>portable layer</b> (the constitution, workflows, hooks and gates from L-1.3) that the next team can inherit instead of rebuilding; and a <b>champion</b> who has done it for real and can now teach. Those three are exactly what turns two power users into two hundred &mdash; which is where L-2.2 (champions &amp; cadence) picks up.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-29'},
+    labA:{
+      title:'Design your pilot',
+      steps:[
+        'List three candidate squads and score each on the four criteria &mdash; <b>real measured pain, AI-fit code + tests, release cadence, honest champion</b>. Circle the one that scores highest on <em>trustworthy-evidence-fast</em>, and name out loud which of yours is the &ldquo;eager volunteer&rdquo; trap and which is the &ldquo;too hard&rdquo; trap.',
+        'Write the pilot as an experiment on one page: the <b>one repo</b>, the <b>one business metric</b> (already agreed to be a win, never a vanity count), the <b>baseline you will record first</b>, and the <b>time box</b> (4&ndash;6 weeks) with an explicit decision gate &mdash; scale / adjust / stop &mdash; and who makes that call.',
+        'Define the pilot&rsquo;s real deliverables, not just the feature: the <b>measured delta</b>, the <b>portable layer</b> (constitution + workflows + gates from L-1.3) the next team will inherit, and the <b>champion</b> who will teach team #2.',
+        'Success: a one-page pilot design &mdash; squad, repo, baselined metric, time box + decision gate, and named deliverables &mdash; that a skeptical peer would call a fair experiment.'
+      ]
+    },
+    labB:{
+      title:'Baseline the first win',
+      steps:[
+        'For your chosen squad&rsquo;s metric, capture the <b>before</b> honestly &mdash; the current manual-review-queue size / cycle time (the T-11 baseline). Watch a single real task run with the tool so you can see where the time actually goes, not where you assume it does.',
+        'Sanity-check that the win is a <em>business</em> metric, not a vanity one: would a skeptic and a CFO both accept it? If it is lines generated or &ldquo;AI-usage %&rdquo;, throw it out and pick again (L-5.3).',
+        'Success: a recorded baseline for one agreed metric and a confirmation that the pilot will be judged on a number people already care about &mdash; the thing that makes the delta worth quoting later.'
+      ]
+    },
+    checklist:[
+      'I framed the pilot as an experiment with a decision gate, not a rollout.',
+      'I picked the squad on the four criteria &mdash; and can name my eager-volunteer and too-hard traps.',
+      'I chose one agreed business metric and recorded its baseline before touching anything.',
+      'I time-boxed it (4&ndash;6 weeks) with an explicit scale / adjust / stop gate.',
+      'I designed the pilot to produce a portable layer and a champion, not just a feature.'
+    ],
+    quiz:[
+      {q:'What is a pilot, framed correctly?',
+       options:['A company-wide switch to AI tooling','An <b>experiment</b> &mdash; one squad, one repo, one baselined metric, a fixed time box, and a decision gate (scale / adjust / stop) &mdash; designed to produce trustworthy evidence, not activity','A permanent trial with no end date','A demo for leadership'], answer:1},
+      {q:'Which squad makes the best first pilot?',
+       options:['The most enthusiastic volunteers on a greenfield internal tool','The one that scores highest on <b>real measured pain + AI-fit code/tests + fast cadence + an honest champion</b> &mdash; trustworthy evidence fast, not the keenest or the hardest team','The oldest, most painful legacy monolith &mdash; biggest pain, biggest win','Whichever team the CTO names'], answer:1},
+      {q:'Why avoid piloting on the eager-volunteer greenfield team?',
+       options:['They are too junior','A win there <b>convinces no skeptic and yields no baseline worth quoting</b> &mdash; nobody downstream depends on it and there is no agreed business metric; enthusiasm is not a selection criterion','Greenfield code is too hard for AI','They will not use the tool'], answer:1},
+      {q:'What is the pilot&rsquo;s real deliverable?',
+       options:['The shipped feature','A <b>measured delta + a portable layer</b> (constitution / workflows / gates, L-1.3) <b>+ a champion</b> who can teach team #2 &mdash; the three things that turn 2 power users into 200','A vendor contract','A count of lines the AI generated'], answer:1}
+    ]
   }
 ];
 
@@ -7247,6 +7318,41 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-29 · The Pilot Selection Board (spec: VISUALS.md) ----------
+   Pilot design as a manager's selection call: three candidate squads scored on the four
+   pilot-fit criteria (real pain / AI-fit code+tests / cadence / honest champion) with a
+   verdict — the right pilot vs the two traps (too eager/low-stakes, too hard). Caveat: a
+   pilot is an experiment, not a rollout. Foot: baseline-first (T-11), one agreed business
+   metric not a vanity count (queue -20%), time-box + decision gate, and the real deliverable
+   (measured delta + portable layer L-1.3 + champion for L-2.2). No new external claims. L-2.1. */
+VISUALS['SIM-29'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CRIT = ['PAIN','FIT','SPEED','VOICE'];
+  const TEAMS = [
+    ['Intake squad','the PA intake / eligibility service','pick','THE PILOT',['y','y','y','y'],
+     'All four line up: a <b>real, measured pain</b> (the manual-review-queue backlog &mdash; the course&rsquo;s &minus;20% initiative), a <b>structured service with tests</b> so gates and the rework radar actually work, <b>weekly releases</b> so signal arrives fast, and a <b>credible senior</b> who is curious but will tell you the honest truth. This is the pilot &mdash; not the keenest team, not the hardest one.'],
+    ['&ldquo;Eager volunteers&rdquo;','a greenfield internal tool, keen to try anything','trap','TRAP &middot; TOO LOW-STAKES',['n','y','y','a'],
+     'Enthusiasm is not a selection criterion. The code is easy and the team is willing, but <b>nobody downstream depends on it</b> and there is <b>no metric the business already agrees is a win</b>. A success here convinces no skeptic and gives you no baseline worth quoting. Keep them as early adopters &mdash; but the pilot has to move a number people care about.'],
+    ['Legacy claims-core team','the 12-year-old adjudication monolith, no tests','trap','TRAP &middot; TOO HARD',['y','n','n','n'],
+     'The pain is real and large &mdash; which is exactly the temptation. But a <b>test-less monolith</b>, <b>quarterly releases</b>, and a <b>skeptical team</b> make this the hardest possible first proof. A stall here becomes &ldquo;we tried AI and it didn&rsquo;t work&rdquo; and poisons the whole rollout. Come back once you have wins and a portable layer to bring with you.'],
+  ];
+  const mk = m => '<span class="s29mark ' + m + '">' + (m==='y'?'&#10003;':m==='a'?'~':'&#10007;') + '</span>';
+  mount.innerHTML =
+    '<div class="sim29" aria-label="Pilot design: choosing the first squad, repo and win">' +
+      '<div class="s29head"><span>SIM-29 · THE PILOT SELECTION BOARD</span><span>CANDIDATE &rarr; VERDICT</span></div>' +
+      '<div class="s29caveat">A pilot is an <b>experiment, not a rollout</b>: one squad, one repo, one baselined metric, a fixed time box, and a decision gate at the end (scale / adjust / stop). Pick the candidate that will produce <b>trustworthy evidence fast</b> &mdash; not the keenest, not the hardest. <span style="color:var(--faint)">PAIN &middot; FIT &middot; SPEED &middot; VOICE = real pain / AI-fit code+tests / release cadence / an honest champion.</span></div>' +
+      TEAMS.map((t,i) =>
+        '<div class="s29row" data-t="' + i + '"><div class="s29top">' +
+          '<span class="s29team">' + t[0] + '<span class="s29uc">' + t[1] + '</span></span>' +
+          '<span class="s29verdict ' + t[2] + '">' + t[3] + '</span></div>' +
+          '<div class="s29marks">' + t[4].map((m,j) => '<span class="s29chip">' + CRIT[j] + mk(m) + '</span>').join('') + '</div>' +
+          '<div class="s29why">' + t[5] + '</div></div>').join('') +
+      '<div class="s29foot">Three rules once you have picked: <b>(1) baseline before you touch anything</b> &mdash; no before/after, no evidence (T-11); <b>(2) one business metric already agreed to be a win</b> &mdash; the queue &minus;20%, never a vanity count like lines generated or &ldquo;AI-usage %&rdquo;; <b>(3) a fixed time box with a decision gate</b> &mdash; scale, adjust, or stop. And the pilot&rsquo;s real deliverable is <b>not the feature</b>: it is the measured delta, a working <b>portable layer</b> (the constitution, workflows and gates from L-1.3), and a <b>champion</b> who can teach team #2 &mdash; which is how 2 becomes 200 (L-2.2).</div>' +
+    '</div>';
+  mount.querySelectorAll('.s29row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s29row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-28 · The Fleet Decision (spec: VISUALS.md) ----------
