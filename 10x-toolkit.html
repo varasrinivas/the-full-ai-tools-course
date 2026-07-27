@@ -1219,6 +1219,25 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim29 .s29row.open .s29why{display:block}
 .sim29 .s29foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
 .sim29 .s29foot b{color:var(--text);font-weight:500}
+.sim30{--s30red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim30{--s30red:#B0503C}
+.sim30 .s30head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim30 .s30stat{border:1px solid var(--line);border-left:3px solid var(--dim);border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:9.5px;color:var(--dim);line-height:1.55}
+.sim30 .s30stat b{color:var(--text);font-weight:600}
+.sim30 .s30stat .s30big{color:var(--text);font-weight:700;font-size:13px;margin-right:2px}
+.sim30 .s30grid{display:grid;grid-template-columns:1fr;gap:6px}
+.sim30 .s30card{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;cursor:pointer}
+.sim30 .s30ctop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sim30 .s30name{font-size:10.5px;color:var(--text);font-weight:600}
+.sim30 .s30flip{font-size:8px;color:var(--faint);letter-spacing:.06em;white-space:nowrap}
+.sim30 .s30builds{font-size:9px;color:var(--dim);margin-top:4px;line-height:1.5}
+.sim30 .s30builds b{color:var(--text);font-weight:500}
+.sim30 .s30anti{font-size:9px;color:var(--dim);line-height:1.55;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:none}
+.sim30 .s30anti b{color:var(--text);font-weight:500}
+.sim30 .s30anti .s30x{color:var(--s30red);font-weight:700}
+.sim30 .s30card.open .s30anti{display:block}
+.sim30 .s30foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+.sim30 .s30foot b{color:var(--text);font-weight:500}
 
 /* ============ ANIM-18: Scope Ladder & Key Map ============ */
 .anim18{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
@@ -5192,6 +5211,54 @@ const MODS = [
       {q:'What is the pilot&rsquo;s real deliverable?',
        options:['The shipped feature','A <b>measured delta + a portable layer</b> (constitution / workflows / gates, L-1.3) <b>+ a champion</b> who can teach team #2 &mdash; the three things that turn 2 power users into 200','A vendor contract','A count of lines the AI generated'], answer:1}
     ]
+  },
+  {
+    id:'L-2.2', path:'lead', track:'L-02', title:'Champions & cadence', minutes:35,
+    lastVerified:'2026-07-27',
+    concept:{
+      analogy:'How a hospital actually adopts a new clinical protocol &mdash; not by memo. It spreads through <em>grand rounds</em> (a senior clinician walks a real case, including where the call was hard), a standing <em>journal club</em> where anyone brings a tough case, and short written <em>care pathways</em> a resident can follow at 2am. The attending&rsquo;s job is to teach residents who become attendings &mdash; not to personally manage every case forever. Trust in the new protocol is built by showing the case, not by asserting the guideline. Spreading AI practice runs on the same three machines and the same handoff.',
+      body:
+        '<p><strong>The pilot handed you two things &mdash; a measured win and a champion. Cadence is the machinery that turns those into spreading practice.</strong> And the first thing to get right is <em>what you are actually fighting</em>. It is not capability. Per DORA&rsquo;s 2025 data, <b>90% of developers already use AI and 80%-plus feel more productive &mdash; yet 30% report little or no trust in the code it generates.</b> <b>Trust is the bottleneck</b>, and you do not close a trust gap with a mandate or a dashboard. You close it by making the work visible and reproducible, on a rhythm people can rely on. Three mechanisms do that.</p>' +
+        '<p><strong>Office hours &mdash; a standing weekly slot to pair on real, stuck work.</strong> Not a training course booked once and never applied; a low-stakes recurring room where anyone brings their <em>actual</em> task and a champion pairs on it live &mdash; the L-1.1 watch-don&rsquo;t-type demo, but on the person&rsquo;s own code. It drops the activation energy to &ldquo;just show up,&rdquo; and people learn on the work they already have to do, which is the only learning that sticks.</p>' +
+        '<p><strong>Show-the-diff demos &mdash; the single highest-trust artifact you have.</strong> The instinct is to demo speed on a clean greenfield build; a skeptic who maintains gnarly legacy code correctly dismisses that as irrelevant theatre. Do the opposite: demo the <b>diff</b> on real, hard code, and deliberately show where the agent was <em>wrong</em> and the gate caught it (M-10.2, the rework radar). Honesty about the failure mode is exactly what converts a skeptic &mdash; you are showing them the review, not asking them to trust the magic.</p>' +
+        '<p><strong>Internal course drops &mdash; the portable layer packaged for self-serve.</strong> Small async artifacts the next team inherits instead of rebuilding: a starter <b>CLAUDE.md</b> for your stack (the L-1.3 asset), a five-minute recorded walkthrough, a &ldquo;how we gate&rdquo; note. This is what stops your champion from decaying into a permanent AI help-desk &mdash; the reusable drop scales, the human doesn&rsquo;t have to. A champion who does everyone&rsquo;s AI work <em>for</em> them is a bottleneck wearing a hero costume.</p>' +
+        '<p><strong>Two disciplines hold the whole thing together, and both are how you tell real adoption from vanity.</strong> First, <b>pull beats push</b>: people showing up unprompted &mdash; asking, bringing cases &mdash; is the real signal that trust is forming, whereas a &ldquo;everyone must use AI by Q3&rdquo; mandate only manufactures usage numbers and hardens the skeptics (that is L-2.4&rsquo;s resistance and L-5.3&rsquo;s vanity metrics, previewed here). Second, <b>the champion&rsquo;s job is to become unnecessary</b> &mdash; teach team #2 to teach team #3. A predictable weekly rhythm, not a heroic launch event, is what actually turns two power users into two hundred. L-2.3 takes that from mechanism to system: the enablement funnel, and measuring adoption honestly.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-30'},
+    labA:{
+      title:'Build your cadence',
+      steps:[
+        'Put the three mechanisms on the calendar as a <em>rhythm</em>, not an event: a <b>weekly office-hour</b> slot (who hosts, where), one <b>show-the-diff demo</b> booked on real hard code, and one <b>course drop</b> to ship (a starter CLAUDE.md for your stack, or a 5-minute walkthrough). Predictable beats heroic.',
+        'Script the show-the-diff demo so it builds trust, not awe: pick a real change, and deliberately include a moment where the <b>agent was wrong and a gate caught it</b> (M-10.2 / rework radar). Showing the review is what converts the skeptic &mdash; a flawless greenfield demo does not.',
+        'Name the <b>pull signal</b> you will watch instead of a mandate: unprompted office-hours attendance, people bringing their own cases, drops being reused. Decide what &ldquo;trust is forming&rdquo; looks like &mdash; and what you will <em>not</em> do (mandate usage, chase an &ldquo;AI-usage %&rdquo;).',
+        'Success: a weekly cadence on the calendar, a trust-building demo scripted, one reusable course drop shipped, and a pull-based adoption signal you will watch &mdash; with the champion set up to teach, not to become the help-desk.'
+      ]
+    },
+    labB:{
+      title:'Run a show-the-diff',
+      steps:[
+        'Take one real change and run it as a <b>show-the-diff</b> walkthrough: read the diff out loud, name what you would have missed, and surface the point where a gate or review caught an agent mistake (M-10.2). Contrast it, honestly, with what a pure speed-demo would have hidden.',
+        'Watch which one a skeptical peer actually trusts. Note what built the trust &mdash; almost always the <em>caught failure</em> and the visible review, not the raw speed.',
+        'Success: a real diff-demo delivered, and a concrete read on what moved a skeptic from doubt toward trust &mdash; the raw material for your standing show-the-diff slot.'
+      ]
+    },
+    checklist:[
+      'I treat trust &mdash; not capability &mdash; as the adoption bottleneck (30% distrust, DORA 2025).',
+      'I run a predictable weekly cadence (office hours), not a one-off launch event.',
+      'My demos show the diff and a caught failure on real code &mdash; not greenfield speed theatre.',
+      'I ship reusable course drops so the champion scales instead of becoming a help-desk.',
+      'I watch a pull signal (unprompted attendance/reuse), and refuse mandate-driven vanity usage.'
+    ],
+    quiz:[
+      {q:'What is the real bottleneck to spreading AI adoption?',
+       options:['Capability &mdash; the tools are not good enough yet','<b>Trust</b> &mdash; 90% already use AI and 80%+ feel more productive, but 30% distrust the code it generates (DORA 2025); you close that gap by making work visible and reproducible, not by mandate','License cost','A shortage of GPUs'], answer:1},
+      {q:'What makes a demo actually convert a skeptic?',
+       options:['Showing the fastest possible greenfield build','Showing the <b>diff on real hard code &mdash; including where the agent was wrong and a gate caught it</b> (M-10.2); the visible review builds trust, where speed theatre on a to-do app does not','A polished slide deck','A vendor-run session'], answer:1},
+      {q:'What is the champion&rsquo;s actual job?',
+       options:['To do everyone&rsquo;s AI work for them','To <b>become unnecessary</b> &mdash; teach team #2 to teach team #3, and ship reusable course drops &mdash; not to decay into a permanent AI help-desk','To enforce an AI-usage mandate','To pick the org&rsquo;s single tool'], answer:1},
+      {q:'Why prefer pull over push, and cadence over a big-bang launch?',
+       options:['It is cheaper','<b>Unprompted attendance/reuse (pull) is the real signal trust is forming</b>; a mandate (push) only manufactures vanity usage and hardens skeptics &mdash; and a predictable weekly rhythm, not a heroic event, is what turns 2 power users into 200','Launch events are hard to schedule','Push is against policy'], answer:1}
+    ]
   }
 ];
 
@@ -7318,6 +7385,41 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-30 · The Cadence Board (spec: VISUALS.md) ----------
+   Champions & cadence as the machinery that spreads adoption. Header stat: the verified DORA
+   2025 primary figures (90% use AI / 80%+ feel more productive / 30% little-or-no trust in
+   AI-generated code — m112-frameworks.txt, dora.dev 2026-07-25) framing trust as the bottleneck.
+   Three click-to-flip mechanism cards (office hours / show-the-diff / course drops), each vs the
+   anti-pattern it replaces. Foot: pull>push, champion-becomes-unnecessary, cadence>big-bang =
+   the 2->200 multiplier. Reuses verified facts only. L-2.2. */
+VISUALS['SIM-30'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CARDS = [
+    ['Office hours','a standing weekly slot to pair on real stuck work, live','a one-off training course nobody applies afterwards',
+     'A low-stakes recurring slot where anyone brings their <em>actual</em> task &mdash; not a toy exercise &mdash; and a champion pairs on it live (the L-1.1 watch-don&rsquo;t-type demo, but on your own code). The activation energy drops to &ldquo;just show up,&rdquo; and people learn on the work they already have to do.'],
+    ['Show-the-diff demos','trust &mdash; by showing the review, not just the speed','demo theatre: the flashy greenfield build a skeptic rightly dismisses',
+     'Demo the <b>diff</b> on real, hard, legacy-adjacent code &mdash; and show where the agent was <em>wrong</em> and the gate caught it (M-10.2, the rework radar). Honesty about the failure is exactly what converts a skeptic; a frictionless to-do-app demo convinces no one who maintains gnarly code.'],
+    ['Internal course drops','reach &mdash; by packaging the portable layer for self-serve','leaning on a hero champion as a permanent AI help-desk',
+     'Small async artifacts the next team inherits instead of rebuilding: a starter <b>CLAUDE.md</b> for your stack (L-1.3), a 5-minute recorded walkthrough, a &ldquo;how we gate&rdquo; note. Reusable, so the champion scales &mdash; and does not become the bottleneck they were meant to remove.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim30" aria-label="Champions and cadence: the mechanisms that spread adoption">' +
+      '<div class="s30head"><span>SIM-30 · THE CADENCE BOARD</span><span>MECHANISM &harr; ANTI-PATTERN</span></div>' +
+      '<div class="s30stat"><span class="s30big">30%</span> of developers report <b>little or no trust</b> in AI-generated code (DORA 2025) &mdash; even as 90% use it and 80%+ feel more productive. <b>Trust, not capability, is the adoption bottleneck</b>, and you build it by making the work visible and reproducible &mdash; never by mandate.</div>' +
+      '<div class="s30grid">' +
+      CARDS.map((c,i) =>
+        '<div class="s30card" data-c="' + i + '"><div class="s30ctop">' +
+          '<span class="s30name">' + c[0] + '</span><span class="s30flip">TAP: WHAT IT REPLACES &#9656;</span></div>' +
+          '<div class="s30builds">Builds <b>' + c[1] + '</b></div>' +
+          '<div class="s30anti"><span class="s30x">&#10007;</span> Instead of ' + c[2] + '. ' + c[3] + '</div>' +
+        '</div>').join('') +
+      '</div>' +
+      '<div class="s30foot">Two disciplines hold it together: <b>pull beats push</b> &mdash; people showing up unprompted is the real signal trust is forming, where a mandate only manufactures vanity usage (L-2.4, L-5.3); and <b>the champion&rsquo;s job is to become unnecessary</b> &mdash; teach team #2 to teach team #3. A predictable weekly rhythm, not a heroic big-bang launch, is what turns 2 power users into 200.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s30card').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s30card').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-29 · The Pilot Selection Board (spec: VISUALS.md) ----------
