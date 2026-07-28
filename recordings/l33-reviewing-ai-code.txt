@@ -1,0 +1,212 @@
+L-3.3 — Reviewing AI-written code (policy that scales; rework radar as a control)
+LEADERSHIP L-03 (3/4). Hard-verification zone, like L-3.1 and L-3.2. Tool-capability
+claims verified against primary docs 2026-07-28 (fresh, this session). Metric definitions
+marked [M-11.1] / [M-11.2] were primary-verified 2026-07-25 and RE-READ from their
+recording sheets before quoting (the L-2.2 precedent). No fresh fetch for those.
+
+=========================================================================
+THE HEADLINE FINDING (the module's spine — and it is unanimous)
+=========================================================================
+ALL THREE AI CODE REVIEWERS ARE ADVISORS, NOT GATES — BY DESIGN, BY DEFAULT.
+  - Claude Code Code Review: "Findings are tagged by severity and don't approve or block
+    your PR, so existing review workflows stay intact." AND "The check run always completes
+    with a neutral conclusion so it never blocks merging through branch protection rules."
+  - Cursor Bugbot: "Requiring the status alone does not block merges on findings because
+    findings default to `neutral`."
+  - GitHub Copilot code review: "Copilot is not guaranteed to spot all problems or issues in
+    a pull request. Sometimes it will make mistakes. Always validate Copilot's feedback
+    carefully. Supplement Copilot's feedback with a human review."
+=> A leader who switches on AI review and believes "review is covered" is wrong twice: it
+   does not block, and it is not guaranteed to catch. If you want it to gate, that is YOUR
+   CI work — Claude Code documents the gh/jq recipe for reading the severity breakdown out
+   of the check run precisely because the product will not do it for you.
+=> This is the THIRD honest caveat in a row in L-03, same shape as L-3.1's native-Windows
+   sandbox gap and L-3.2's content-exclusion-misses-Agent-mode. Name the pattern: the
+   control a leader assumes is a boundary is, in the vendor's own docs, an advisory.
+
+AND THE THESIS, HANDED OVER VERBATIM BY ANTHROPIC'S OWN DOCS:
+  "Each later stage catches what earlier ones miss. The plugin's value is reducing the
+   volume that reaches them, not eliminating the need for them."
+=> AI review buys VOLUME REDUCTION, not sign-off elimination. That is exactly what a review
+   policy that scales has to be built around.
+
+=========================================================================
+CLAUDE CODE  (code.claude.com/docs/en/{code-review,security-guidance}.md — verified 2026-07-28)
+=========================================================================
+CODE REVIEW (PR-time, managed service):
+  - "Code Review is in research preview, available for Team and Enterprise subscriptions.
+    It is not available for organizations with Zero Data Retention enabled." (On other plans
+    you can still review a diff locally with `/code-review`.)  <- PLAN/ZDR GATING IS REAL;
+    say it, do not imply everyone has it.
+  - "Code Review analyzes your GitHub pull requests and posts findings as inline comments on
+    the lines of code where it found issues. A fleet of specialized agents examine the code
+    changes in the context of your full codebase, looking for logic errors, security
+    vulnerabilities, broken edge cases, and subtle regressions."
+  - "multiple agents analyze the diff and surrounding code in parallel ... Each agent looks
+    for a different class of issue, then a verification step checks candidates against actual
+    code behavior to filter out false positives." (= M-9.5 fan-out + adversarial verify, as a
+    product.)
+  - SEVERITY: 🔴 Important "A bug that should be fixed before merging" / 🟡 Nit / 🟣
+    Pre-existing "A bug that exists in the codebase but was not introduced by this PR."
+  - NON-BLOCKING (quoted above). To gate, parse the check run yourself:
+    `gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID --jq '.output.text | split(...)'`
+    returns e.g. {"normal": 2, "nit": 1, "pre_existing": 0}.
+  - TRIGGERS, per repo (a real policy dial): "Once after PR creation" / "After every push" /
+    "Manual" (`@claude review`, `@claude review always`). "Reviewing on every push runs the
+    most reviews and costs the most."
+  - COST: "Each review averages $15-25 in cost, scaling with PR size, codebase complexity,
+    and how many issues require verification." Monthly spend cap configurable; when hit,
+    "Code Review posts a single comment on the PR explaining that the review was skipped."
+    => review policy has a PRICE and a per-repo dial. Forward-links L-04 economics.
+  - DEFAULT SCOPE: "By default, Code Review focuses on correctness: bugs that would break
+    production, not formatting preferences or missing test coverage."
+  - *** REVIEW.md — THE REVIEW POLICY AS A VERSIONED FILE (the leadership payoff) ***
+    "REVIEW.md: review-only instructions, injected directly into every agent in the review
+    pipeline as highest priority. Use it to change what gets flagged, at what severity, and
+    how findings are reported."  Tunable per the docs: SEVERITY recalibration ("redefine what
+    🔴 Important means for your repo"), NIT VOLUME caps, SKIP RULES (generated code,
+    lockfiles, "anything your CI already enforces"), REPO-SPECIFIC CHECKS ("new API routes
+    must have an integration test"), VERIFICATION BAR ("behavior claims need a `file:line`
+    citation in the source, not an inference from naming"), RE-REVIEW CONVERGENCE, SUMMARY
+    SHAPE. Also: "CLAUDE.md ... Code Review reads it as project context and flags newly
+    introduced violations as nits."  And the discipline: "Length has a cost: a long REVIEW.md
+    dilutes the rules that matter most."
+    => This is L-1.3's "the instruction file is an ASSET" applied to REVIEW POLICY. A leader
+       can literally check the review standard into the repo. Strongest new idea in the module.
+  - LOCAL: `/code-review` reviews "your branch's commits ahead of its upstream plus any
+    uncommitted changes"; flags `--fix` and `--comment`; runs as a background subagent "with
+    its own context window" (= M-9.4 isolation); effort levels trade coverage for confidence
+    ("At low and medium, the review reports only the findings it's most confident in ... high
+    through max cast a wider net and may include findings the review is less sure about").
+SECURITY-GUIDANCE PLUGIN (in-session, earlier layer):
+  - Three depths: per-edit deterministic pattern match (no model call, no cost) / end-of-turn
+    background model review of the turn's diff / deeper agentic review on each commit or push
+    Claude makes ("reads surrounding code, including callers, sanitizers, and related files").
+  - *** REVIEW INDEPENDENCE — the doc-backed answer to "can AI review AI" ***
+    "The plugin does not ask the same Claude instance that wrote the code to grade itself.
+     The per-edit check is a deterministic string match with no model involved. The
+     end-of-turn and commit reviews run as a separate Claude call with a fresh context and a
+     security-focused prompt: the reviewer starts from the diff, has no investment in the
+     original approach, and is instructed only to find problems."
+    => Independence is DESIGNED IN, deliberately. So "AI can't review AI" is too lazy; the
+       right frame is that independence has to be engineered, and it still is not sign-off.
+  - LIMITS (verbatim): "None of the layers block writes or commits ... the review model can
+    miss issues. Treat the plugin as one layer of defense in depth, not a complete security
+    solution."  Also: commit review "fires only on commits and pushes Claude makes through
+    its Bash tool. Commits you run from your own shell ... are not reviewed."  <- a real
+    coverage hole worth a leader knowing.
+  - THE LAYERED STACK (the product's own answer to "a policy that scales"): in session
+    (plugin) -> on demand single pass (`/security-review`) -> on demand deep scan (Claude
+    Security plugin) -> on pull request (Code Review, Team/Enterprise) -> in CI (your
+    existing static analysis and dependency scanners, "policy enforcement the plugin does
+    not attempt").
+  - Org-wide enablement via `enabledPlugins` in managed settings (ties L-3.1/L-3.2's
+    enforced-layer discipline).
+
+=========================================================================
+GITHUB COPILOT CODE REVIEW  (docs.github.com/en/copilot/concepts/code-review — 2026-07-28)
+=========================================================================
+  - "Copilot reviews your pull requests, identifies issues, and suggests fixes you can apply
+    in a couple of clicks." Reviews "code written in any language."
+  - TRIGGER: "By default, Copilot only reviews a pull request if you assign it to the pull
+    request. However, you can configure automatic reviews." Automatic review configurable by
+    individual user / repository owner / organization owner ("in some or all of the
+    repositories in the organization").
+  - SCOPE: "targeted feedback on common issues such as bugs, security vulnerabilities, and
+    style inconsistencies"; can identify "complex logic, security-sensitive code, and
+    cross-service changes."
+  - LIMIT (verbatim, the load-bearing one): "Copilot is not guaranteed to spot all problems
+    or issues in a pull request. Sometimes it will make mistakes. Always validate Copilot's
+    feedback carefully. Supplement Copilot's feedback with a human review."
+  - EXCLUSIONS: dependency management files ("such as package.json and Gemfile.lock"), log
+    files, and SVG files are not reviewed.
+
+=========================================================================
+CURSOR BUGBOT  (cursor.com/docs/bugbot — verified 2026-07-28)
+=========================================================================
+  - "Bugbot reviews pull requests and identifies bugs, security issues, and code quality
+    problems." Runs on GitHub (incl. Enterprise), GitLab (incl. Self-Hosted), Bitbucket
+    (incl. Data Center). "It runs automatically on each PR update or manually when triggered."
+  - ENABLEMENT: connect repositories through the Cursor dashboard, then enable per repository.
+    Options: "Run only when mentioned by commenting `cursor review` or `bugbot run`", "Run
+    only once per PR, skipping subsequent commits", "Enable reviews on draft PRs."
+  - "Bugbot analyzes PR diffs and leaves comments with explanations and fix suggestions." It
+    "reads connected PR comments (top-level and inline) to avoid duplicate suggestions and
+    build on prior feedback." Incremental Review reviews "only the changes since the previous
+    Bugbot review."
+  - NON-BLOCKING (verbatim): "Requiring the status alone does not block merges on findings
+    because findings default to `neutral`."
+  - NOTE: the docs do not state a "does not replace human review" line; do NOT invent one for
+    Cursor. The non-blocking default is the sourced fact.
+
+=========================================================================
+THE TWO REWORKS — a precision catch worth teaching  [M-11.1] / [M-11.2]
+=========================================================================
+These are DIFFERENT metrics with the same word, at different altitudes. A leader who says
+"our rework is fine" has to say which one. Do not conflate them.
+  1. CODE CHURN / REWORK (code level, LEADING) [M-11.1, GitClear, verified 2026-07-25]
+     "For a line to qualify as 'churned,' it must have been authored, pushed to the git repo,
+      and then reverted or substantially revised within the subsequent two weeks."
+     GitClear's measured figures: 2021=3.6%, 2022=4.0%, 2023=5.5%, 2024 projected ~7.1%;
+     "the rise of AI Assistants are strongly correlated with 'mistake code'."
+     SOURCING DISCIPLINE (carried from M-11.1): cite as GITCLEAR'S ANALYSIS, correlation not
+     causation, and flag the 2024 figure as a PROJECTION. Do not launder it into a fact.
+  2. DEPLOYMENT REWORK RATE (delivery level, the NEW 5th DORA metric) [M-11.2, verified
+     2026-07-25] "The ratio of deployments that are unplanned but happen as a result of an
+     incident in production."  Sits on DORA's STABILITY side.
+  => The radar reads both: churn moves first (weeks), deployment rework and escaped defects
+     move later (incidents). That ordering is the whole reason churn is the control signal.
+  ESCAPED DEFECT [M-11.1, Plandek, hedged as reputable-vendor-not-standards-body]: "any
+     defect found after the development team has declared the work done."
+
+DORA 2025 CONTEXT [M-11.2, primary, verified 2026-07-25]
+  - "Unlike last year, we observe a positive relationship between AI adoption on both
+    software delivery throughput and product performance." / "However, AI adoption does
+    continue to have a negative relationship with software delivery stability."
+  - THE MECHANISM (this module's justification for gates + review policy, verbatim):
+    "AI accelerates software development, but that acceleration can expose weaknesses
+     downstream. Without robust control systems, like strong automated testing, mature
+     version control practices, and fast feedback loops, an increase in change volume leads
+     to instability."
+  - AMPLIFIER: "AI doesn't fix a team; it amplifies what's already there."
+
+=========================================================================
+THE COURSE'S OWN EVIDENCE (reused, no new verification)
+=========================================================================
+  - M-2.2 GREEN-BUT-WRONG (the cautionary anchor): a real run produced 25/25 tests green
+    while inventing `GET /api/me`, which does not exist in priorauth-api — the widget was
+    "unavailable" for EVERY user, and the agent disclosed it only in a report caveat.
+    => Green CI is a filter, not a verdict. No AI reviewer caught this either; it is exactly
+       the intent-level failure that survives mechanical checking.
+  - M-9.4 the read-only `pa-reviewer` subagent found BUG-API-01 (strict `>` at line 99) and
+    cited it AGAINST the contradicting javadoc — a real find, in the real repo. => AI review
+    genuinely earns its place as a first pass.
+  - M-12.4 DEFEND-THE-DIFF: the agent surfaced its own edges (badge goes stale -> poll
+    follow-up, 2 high-sev npm vulns, unknown-id inherited, plants deliberately left).
+    => The reviewable unit is the diff PLUS the defense; agent-authored code has an author
+       who is awake and can answer.
+  - M-10.2 the pre-commit test gate: non-bypassable, blocked a red commit for real
+    ("--no-verify wouldn't dodge it"). => THIS is what a gate looks like, in contrast to an
+    advisory AI reviewer. The distinction is the module's practical core.
+  - L-1.2 risk register (tier by blast radius, not provenance); L-2.4 recruit the skeptic to
+    own the gates/review policy — this module is where that lands.
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: utilization review / claims audit in a payer. Nobody re-adjudicates every claim by
+  hand — volume forbids it. You automate the mechanical edits, sample by risk, escalate the
+  high-dollar and clinically risky to a human reviewer who signs, and then you watch reopens,
+  appeals and post-payment adjustments to tell you whether the front end is calibrated.
+  Rising rework means your review is in the wrong place, however good throughput looks.
+Spine: the agent did not change the risk tier, it changed the ARRIVAL RATE — and review
+  capacity is the one control that does not scale by adding eyeballs. So: make review effort
+  deliberately unequal by blast radius, push mechanical checking onto gates and AI first
+  passes (which reduce VOLUME, not the need for sign-off), change what review asks for
+  (the defense), and watch churn as the leading signal that the calibration is wrong.
+Non-negotiable teaching: an AI reviewer is an ADVISOR, not a GATE — all three vendors ship it
+  non-blocking by default. A gate is a hook/CI check that says no (M-10.2). Know which one
+  you have. And green CI is not a verdict (M-2.2).
+Scope held: provenance / IP / audit trail = L-3.4. Org-level DORA + the vanity refuse-list =
+  L-05 (rework is used here only as a review-policy control, and only at team level —
+  as an individual scorecard it is a Goodhart metric, L-5.3).

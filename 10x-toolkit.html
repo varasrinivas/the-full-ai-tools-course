@@ -1279,6 +1279,40 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim35{--s35green:#3E9A6B;--s35amber:#c99a3a;--s35red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim35{--s35green:#2d7350;--s35amber:#976f16;--s35red:#B0503C}
+.sim35 .s35head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim35 .s35thesis{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.55}
+.sim35 .s35thesis b{color:var(--text);font-weight:500}
+.sim35 .s35row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer;display:grid;grid-template-columns:1fr 84px;gap:8px;align-items:start}
+.sim35 .s35row.adv{border-left:3px solid var(--s35amber)}
+.sim35 .s35row.gate{border-left:3px solid var(--s35green)}
+.sim35 .s35stage{font-size:8px;color:var(--faint);letter-spacing:.1em}
+.sim35 .s35name{font-size:10px;color:var(--text);font-weight:600;margin-top:1px}
+.sim35 .s35tools{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sim35 .s35t{font-size:8px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.sim35 .s35t.g{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim35 .s35t.c{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim35 .s35t.p{color:var(--purple);border-color:var(--purple)}
+[data-theme="light"] .sim35 .s35t.p{color:#5a4a91;border-color:#5a4a91}
+.sim35 .s35verdict{font-size:8.5px;letter-spacing:.08em;font-weight:600;text-align:center;padding:4px 6px;border-radius:999px;border:1px solid var(--line);color:var(--dim);line-height:1.3}
+.sim35 .s35row.adv .s35verdict{color:var(--s35amber);border-color:var(--s35amber)}
+.sim35 .s35row.gate .s35verdict{color:var(--s35green);border-color:var(--s35green)}
+.sim35 .s35why{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim35 .s35why b{color:var(--text);font-weight:500}
+.sim35 .s35row.open .s35why{display:block}
+.sim35 .s35warn{border:1px solid var(--s35red);border-radius:8px;padding:8px 10px;margin:9px 0 4px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim35 .s35warn b{color:var(--s35red);font-weight:600}
+.sim35 .s35radar{border:1px dashed var(--line);border-radius:8px;padding:9px 11px;margin-top:8px}
+.sim35 .s35rlab{font-size:8px;color:var(--faint);letter-spacing:.1em;margin-bottom:7px}
+.sim35 .s35sig{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;color:var(--dim);padding:3px 0;border-bottom:1px dotted var(--line)}
+.sim35 .s35sig:last-of-type{border-bottom:none}
+.sim35 .s35sig b{color:var(--text);font-weight:600}
+.sim35 .s35sig .s35when{color:var(--faint);white-space:nowrap}
+.sim35 .s35lead{color:var(--s35amber);font-weight:600}
+.sim35 .s35foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.55}
+.sim35 .s35foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim35 .s35row{grid-template-columns:1fr}.sim35 .s35verdict{justify-self:start}.sim35 .s35sig{flex-direction:column;gap:1px}}
 .sim34{--s34green:#3E9A6B;--s34amber:#c99a3a;--s34red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim34{--s34green:#2d7350;--s34amber:#976f16;--s34red:#B0503C}
 .sim34 .s34head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5552,6 +5586,55 @@ const MODS = [
       {q:'Every connector on your register is approved. What risk remains?',
        options:['None &mdash; an approved list is a closed system','<b>Exfiltration through an approved path</b>: private data + untrusted content (ticket text, a web page) + network egress is a working leak regardless of approval &mdash; break one leg. And file-level controls can miss the agent entirely (Copilot content exclusion is not supported in Agent mode)','Only cost overruns','Only that the servers may go offline'], answer:1}
     ]
+  },
+  {
+    id:'L-3.3', path:'lead', track:'L-03', title:'Reviewing AI-written code', minutes:35,
+    lastVerified:'2026-07-28',
+    concept:{
+      analogy:'Utilization review, the way your payer already runs it. Nobody re-adjudicates every claim by hand &mdash; the volume forbids it. So you automate the mechanical edits, sample by risk, escalate the high-dollar and clinically risky to a reviewer who actually <em>signs</em>, and then you watch the back end: reopens, appeals, post-payment adjustments. That last part is the instrument. If adjustments are climbing, your front-end review is in the wrong place &mdash; no matter how good throughput looks on the dashboard. Reviewing AI-written code is the same problem with the same instrument: unequal review by risk, and a signal that tells you whether you calibrated it right.',
+      body:
+        '<p><strong>Start with what actually changed.</strong> The agent did not change your risk tiers &mdash; L-1.2 still holds, blast radius is the question and &ldquo;was AI involved?&rdquo; is not. What it changed is the <b>arrival rate</b>. And review capacity is the one control that does not scale by adding eyeballs: you cannot hire your way out of three times the diffs. So a review policy that scales is not &ldquo;review everything more carefully.&rdquo; It is a policy that spends attention <b>unequally, on purpose</b>.</p>' +
+        '<p><strong>The most important thing to know before you lean on AI review: it is an advisor, not a gate &mdash; in all three tools, by default.</strong> This is not a criticism, it is the shipped design, and each vendor says it plainly. Claude Code&rsquo;s Code Review posts findings that &ldquo;don&rsquo;t approve or block your PR,&rdquo; and its check run &ldquo;always completes with a neutral conclusion so it never blocks merging.&rdquo; Cursor&rsquo;s Bugbot: &ldquo;findings default to <code>neutral</code>.&rdquo; GitHub&rsquo;s guidance on Copilot code review is the bluntest &mdash; it is &ldquo;not guaranteed to spot all problems&hellip; Sometimes it will make mistakes&hellip; <b>Supplement Copilot&rsquo;s feedback with a human review.</b>&rdquo; A leader who switches these on and reports that review is covered is wrong twice: they do not block, and they are not guaranteed to catch. If you want AI findings to gate, <em>you</em> build that in CI &mdash; Claude Code even documents the <code>gh</code>/<code>jq</code> recipe for reading severity counts out of the check run, because the product will not do it for you.</p>' +
+        '<p><strong>So know which of your layers actually refuses.</strong> A gate is a thing that says no: the pre-commit hook in M-10.2 ran the test suite itself, saw a failure and <em>denied the commit</em> &mdash; and <code>--no-verify</code> would not dodge it. An advisory is a comment on a pull request. Both are useful; only one is a control. And the layer everyone over-trusts is the test suite, because green is a <em>filter</em>, not a verdict: the course&rsquo;s own M-2.2 run shipped <b>25 of 25 tests green</b> while inventing an API endpoint that does not exist, leaving the feature &ldquo;unavailable&rdquo; for every user. Every mechanical layer passed it. The failure was at the level of intent, which is precisely what the human tier is for.</p>' +
+        '<p><strong>Then change what a review asks for.</strong> Reading an agent&rsquo;s diff line by line does not scale and is not where the risk is. Ask for <b>the defense</b> &mdash; why this approach, what did you not do, what breaks at 2am &mdash; because agent-authored code has one real advantage over the usual review: the author is awake and can answer. In M-12.4 the agent volunteered its own edges (a badge that would go stale, two high-severity dependency vulnerabilities, an inherited unknown-id case). Better still, you can <b>encode the standard as a file</b>: Claude Code&rsquo;s <code>REVIEW.md</code> is injected into every agent in the review pipeline as the highest-priority instruction, and it lets you redefine what &ldquo;Important&rdquo; means for your repo, cap nit volume, skip what CI already enforces, and set a verification bar (the docs&rsquo; own example: behaviour claims need a <code>file:line</code> citation, &ldquo;not an inference from naming&rdquo;). That is L-1.3&rsquo;s asset argument applied to review policy &mdash; a versioned, reviewable artifact instead of a convention people half-remember.</p>' +
+        '<p><strong>Finally, the instrument that tells you the calibration is wrong.</strong> Watch <b>code churn</b> &mdash; lines reverted or substantially revised within about two weeks, on GitClear&rsquo;s definition &mdash; because it moves in weeks, while escaped defects and incidents move in months. (GitClear&rsquo;s own analysis reports churn rising as AI assistants spread; treat that as <em>their</em> measurement and a correlation, not a proven cause &mdash; what makes churn useful to you is that it is <em>your</em> number, moving early.) Rising churn alongside rising throughput is the amplifier, not a win; DORA 2025 still finds AI adoption has a negative relationship with delivery stability, precisely because &ldquo;without robust control systems&hellip; an increase in change volume leads to instability.&rdquo; Two cautions. First, be precise: &ldquo;rework&rdquo; means <em>both</em> code churn and DORA&rsquo;s new <em>deployment rework rate</em> (unplanned deploys caused by an incident) &mdash; say which one you mean. Second, read it at <b>team level only</b>; the moment churn becomes an individual scorecard it stops being a signal and becomes a number people manage (L-5.3). Give the policy to the skeptic who has been asking hard questions since L-2.4 &mdash; this is the job they were right about. L-3.4 closes the track with what you can prove after the fact: provenance and the audit trail.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-35'},
+    labA:{
+      title:'Write the review policy that scales',
+      steps:[
+        'Tier the work by <b>blast radius</b> using your L-1.2 register, then decide per tier what the <b>machine</b> gates (tests, hooks, CI policy), what an <b>AI first pass</b> covers, and what a <b>human must personally sign</b>. The output should look deliberately uneven &mdash; if every tier gets the same review, you have not written a policy, you have written a wish.',
+        'Audit which of your layers actually <b>refuses</b>. List them and mark each ADVISORY or GATE, honestly &mdash; assume any AI reviewer is advisory unless you have built the CI check that reads its findings and fails the build. Every tier above &ldquo;internal&rdquo; needs at least one real gate.',
+        'Write the <b>two or three questions a reviewer must ask the author</b> (the defense: why this approach, what did you not do, what breaks at 2am). If your tooling supports it, encode the standard as a file &mdash; severity calibration, a nit cap, skip anything CI already enforces, and a verification bar for claims.',
+        'Success: a one-page policy with unequal review by tier, an honest advisory/gate audit, the required review questions, one named control signal with the threshold that triggers a policy change, and a named owner &mdash; ideally your most credible skeptic.'
+      ]
+    },
+    labB:{
+      title:'Watch a review catch what green missed',
+      steps:[
+        'Watch the read-only reviewer pass over the real repo: it finds the threshold bug and cites it <em>against the contradicting javadoc</em>. Note what makes that finding trustworthy &mdash; a citation to a specific line, not an impression &mdash; and note that it took a scoped, independent reviewer to produce it.',
+        'Now sit with the M-2.2 run: <b>25/25 tests green</b>, an invented endpoint, the feature unavailable for every user. Work out what each layer would have done &mdash; and confirm that the tests, the linters and a diff-scoped AI reviewer all pass it, because nothing in the diff is wrong <em>in itself</em>.',
+        'Then check your own stack for the same gap: name one change your pipeline would ship green today that is wrong at the level of intent, and name the layer that should have caught it.',
+        'Success: you can say plainly what machine review is good at, what it is structurally blind to, and the one question only a human reviewer can ask.'
+      ]
+    },
+    checklist:[
+      'I treat review effort as <b>unequal by blast radius</b> &mdash; volume changed, risk tiers did not.',
+      'I know which of my layers are <b>advisories</b> and which actually <b>refuse</b> &mdash; AI review is advisory by default in all three tools.',
+      'I never read a green suite as a verdict (25/25 green, endpoint invented, unavailable for every user).',
+      'I ask for <b>the defense</b>, not just the diff &mdash; and encode the standard as a versioned file where I can.',
+      'I watch <b>code churn</b> as the leading signal, name which &ldquo;rework&rdquo; I mean, and read it at team level only.'
+    ],
+    quiz:[
+      {q:'Diff volume has tripled. How should review policy respond?',
+       options:['Review everything more carefully','Make review effort <b>deliberately unequal by blast radius</b> &mdash; capacity does not scale by adding eyeballs. The agent changed the arrival rate, not the risk tiers','Require two human reviewers on every PR','Only review code the AI wrote'], answer:1},
+      {q:'You turn on AI code review across your repos. What have you added?',
+       options:['A gate &mdash; risky PRs will now be blocked','An <b>advisory</b>. All three tools ship it non-blocking by default (Claude Code findings &ldquo;don&rsquo;t approve or block your PR&rdquo;; Bugbot findings &ldquo;default to <code>neutral</code>&rdquo;; Copilot is &ldquo;not guaranteed to spot all problems&rdquo;). Making it gate is your own CI work','A replacement for human review on low-risk changes','Nothing &mdash; AI review has no value'], answer:1},
+      {q:'The suite is green on an agent-written PR. What does that tell you?',
+       options:['It is safe to merge','That it passed a <b>filter</b>, not a verdict &mdash; M-2.2 shipped 25/25 green with an invented endpoint that left the feature unavailable for every user. Mechanical layers cannot catch a failure of <em>intent</em>','That the tests are good','That review can be skipped'], answer:1},
+      {q:'Which signal tells you your review policy is miscalibrated, and how do you read it?',
+       options:['Lines of code reviewed per week','<b>Code churn</b> &mdash; work reverted or substantially revised within ~2 weeks &mdash; because it moves first. Throughput up <em>and</em> churn up is the amplifier, not a win. Read it at <b>team level</b>; as an individual scorecard it becomes a number people manage','Number of PR comments left by the AI reviewer','Escaped defects, which give you the earliest warning'], answer:1}
+    ]
   }
 ];
 
@@ -7678,6 +7761,59 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-35 · Advisory or Gate? (spec: VISUALS.md) ----------
+   The review stack read by the only question that matters to a leader: which layers actually
+   say no. Five click-to-expand layers, each pilled ADVISORY (amber) or GATE (green). The
+   headline is verified and unanimous — all three vendors ship PR-time AI review NON-BLOCKING
+   by default (l33-reviewing-ai-code.txt, 2026-07-28). Warning strip = the real M-2.2
+   green-but-wrong run. Foot = the rework radar, with the two DIFFERENT reworks kept distinct
+   (GitClear code churn = leading; DORA deployment rework rate = stability side). L-3.3. */
+VISUALS['SIM-35'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LAYERS = [
+    ['adv','IN SESSION','AI review as the agent writes','ADVISORY',
+     [['g','security-guidance plugin'],['','per-edit + end-of-turn']],
+     'Catches common vulnerabilities early and cheaply, and independence is <em>designed in</em> &mdash; the docs are explicit that it &ldquo;does not ask the same Claude instance that wrote the code to grade itself&rdquo;; the reviewer &ldquo;starts from the diff, has no investment in the original approach.&rdquo; But: <b>&ldquo;None of the layers block writes or commits&hellip; the review model can miss issues. Treat the plugin as one layer of defense in depth, not a complete security solution.&rdquo;</b>'],
+    ['gate','PRE-COMMIT','Tests + the hook that runs them','GATE',
+     [['g','PreToolUse hook (M-10.2)'],['','the suite']],
+     '<b>This one actually says no.</b> The course&rsquo;s own gate ran the suite itself, saw <code>Tests run: 4, Failures: 1</code> and <b>denied the commit</b> &mdash; and the agent noted <code>--no-verify</code> would not dodge it. That is the difference between a control and a comment: a gate is a thing that <em>refuses</em>.'],
+    ['adv','ON THE PR','AI code review &mdash; all three tools','ADVISORY',
+     [['g','Claude Code Code Review'],['c','Copilot code review'],['p','Cursor Bugbot']],
+     '<b>Unanimous, and by design.</b> Claude Code: findings &ldquo;don&rsquo;t approve or block your PR&rdquo; and the check run &ldquo;always completes with a neutral conclusion so it never blocks merging.&rdquo; Cursor Bugbot: &ldquo;findings default to <code>neutral</code>.&rdquo; Copilot: &ldquo;not guaranteed to spot all problems&hellip; <b>Supplement Copilot&rsquo;s feedback with a human review.</b>&rdquo; Real value &mdash; the read-only reviewer in M-9.4 found the threshold bug and cited it against the contradicting javadoc &mdash; but it is a first pass, not a sign-off.'],
+    ['gate','HUMAN','Review tiered by blast radius','GATE',
+     [['','the only layer that signs'],['','L-1.2 tiers']],
+     'Unequal <b>by design</b>: a disposable spike and a change to eligibility logic do not get the same attention, and the tier comes from blast radius &mdash; not from whether AI was involved. Ask for <b>the defense</b>, not just the diff (M-12.4): why this approach, what did you not do, what breaks at 2am. Agent-authored code has one genuine advantage &mdash; the author is awake and can answer.'],
+    ['gate','IN CI','Policy enforcement you build','GATE',
+     [['','your own check'],['','gh + jq']],
+     'If you want AI findings to <em>gate</em>, that is your work, and the vendors say so: Claude Code documents reading the severity breakdown out of the check run yourself (<code>gh api&hellip; --jq</code> returns e.g. <code>{"normal":2,"nit":1}</code>) so your CI can fail on Important findings. The plugin docs are equally plain that CI covers &ldquo;policy enforcement the plugin does not attempt.&rdquo;'],
+  ];
+  const SIGNALS = [
+    ['Code churn / rework','lines reverted or substantially revised within ~2 weeks','moves first &mdash; weeks',true],
+    ['Deployment rework rate','unplanned deploys caused by a production incident (DORA&rsquo;s 5th)','moves later',false],
+    ['Escaped defects','found after the team declared the work done','moves last',false],
+  ];
+  mount.innerHTML =
+    '<div class="sim35" aria-label="The review stack: which layers are advisory and which actually gate">' +
+      '<div class="s35head"><span>SIM-35 &middot; ADVISORY OR GATE?</span><span>THE REVIEW STACK</span></div>' +
+      '<div class="s35thesis"><b>The agent did not change the risk tier &mdash; it changed the arrival rate.</b> Review capacity is the one control that does not scale by adding eyeballs, so the stack has to absorb volume. Before you trust a layer, ask the only question that matters: <b>does it say no?</b> Tap a layer.</div>' +
+      LAYERS.map((l,i) =>
+        '<div class="s35row ' + l[0] + '" data-l="' + i + '">' +
+          '<div><div class="s35stage">' + l[1] + '</div><div class="s35name">' + l[2] + '</div>' +
+            '<div class="s35tools">' + l[4].map(t => '<span class="s35t ' + t[0] + '">' + t[1] + '</span>').join('') + '</div>' +
+          '</div>' +
+          '<div class="s35verdict">' + l[3] + '</div>' +
+          '<div class="s35why">' + l[5] + '</div>' +
+        '</div>').join('') +
+      '<div class="s35warn"><b>&#9888; And green is not a verdict.</b> The course&rsquo;s own run shipped <b>25/25 tests green</b> while inventing an endpoint that does not exist in the API &mdash; leaving the widget &ldquo;unavailable&rdquo; for <em>every</em> user. Mechanical layers passed it; the failure was at the level of <em>intent</em>. That is the gap a human tier exists to cover.</div>' +
+      '<div class="s35radar"><div class="s35rlab">THE REWORK RADAR &mdash; IS YOUR POLICY CALIBRATED?</div>' +
+        SIGNALS.map(s => '<div class="s35sig"><span>' + (s[3] ? '<b class="s35lead">' + s[0] + '</b>' : '<b>' + s[0] + '</b>') + ' &middot; ' + s[1] + '</span><span class="s35when">' + s[2] + '</span></div>').join('') +
+      '</div>' +
+      '<div class="s35foot">Two different things are called <b>rework</b> &mdash; code churn (the leading one, GitClear&rsquo;s measure, their analysis and correlation not causation) and DORA&rsquo;s <em>deployment rework rate</em> on the stability side. Say which you mean. Read the panel, not the number: <b>throughput up with churn up is the amplifier, not a win</b> &mdash; DORA 2025 still finds AI hurts delivery stability, because &ldquo;without robust control systems&hellip; an increase in change volume leads to instability.&rdquo; And read it at <b>team level only</b>: as an individual scorecard, churn becomes a number people manage instead of a signal you can trust (L-5.3).</div>' +
+    '</div>';
+  mount.querySelectorAll('.s35row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s35row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-34 · The Connection Register (spec: VISUALS.md) ----------
