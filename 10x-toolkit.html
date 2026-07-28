@@ -1279,6 +1279,30 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim36{--s36green:#3E9A6B;--s36amber:#c99a3a;--s36red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim36{--s36green:#2d7350;--s36amber:#976f16;--s36red:#B0503C}
+.sim36 .s36head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim36 .s36case{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.55}
+.sim36 .s36case b{color:var(--text);font-weight:500}
+.sim36 .s36diff{font-size:9px;color:var(--s36amber);margin-top:3px;display:block}
+.sim36 .s36row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;margin-bottom:4px;cursor:pointer;display:grid;grid-template-columns:1fr 118px;gap:8px;align-items:center}
+.sim36 .s36row.yes{border-left:3px solid var(--s36green)}
+.sim36 .s36row.cfg{border-left:3px solid var(--s36amber)}
+.sim36 .s36row.no{border-left:3px solid var(--s36red)}
+.sim36 .s36q{font-size:10px;color:var(--text);font-weight:600}
+.sim36 .s36pill{font-size:7.5px;letter-spacing:.06em;font-weight:600;text-align:center;padding:3px 6px;border-radius:999px;border:1px solid var(--line);color:var(--dim);line-height:1.3}
+.sim36 .s36row.yes .s36pill{color:var(--s36green);border-color:var(--s36green)}
+.sim36 .s36row.cfg .s36pill{color:var(--s36amber);border-color:var(--s36amber)}
+.sim36 .s36row.no .s36pill{color:var(--s36red);border-color:var(--s36red)}
+.sim36 .s36a{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.sim36 .s36a b{color:var(--text);font-weight:500}
+.sim36 .s36row.open .s36a{display:block}
+.sim36 .s36payoff{border:1px solid var(--s36green);border-radius:8px;padding:9px 11px;margin:9px 0 4px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim36 .s36payoff b{color:var(--s36green);font-weight:600}
+.sim36 .s36foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.55}
+.sim36 .s36foot b{color:var(--text);font-weight:500}
+.sim36 .s36note{font-size:8px;color:var(--faint);margin-top:7px;font-style:italic;line-height:1.5}
+@media(max-width:560px){.sim36 .s36row{grid-template-columns:1fr}.sim36 .s36pill{justify-self:start}}
 .sim35{--s35green:#3E9A6B;--s35amber:#c99a3a;--s35red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim35{--s35green:#2d7350;--s35amber:#976f16;--s35red:#B0503C}
 .sim35 .s35head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5635,6 +5659,55 @@ const MODS = [
       {q:'Which signal tells you your review policy is miscalibrated, and how do you read it?',
        options:['Lines of code reviewed per week','<b>Code churn</b> &mdash; work reverted or substantially revised within ~2 weeks &mdash; because it moves first. Throughput up <em>and</em> churn up is the amplifier, not a win. Read it at <b>team level</b>; as an individual scorecard it becomes a number people manage','Number of PR comments left by the AI reviewer','Escaped defects, which give you the earliest warning'], answer:1}
     ]
+  },
+  {
+    id:'L-3.4', path:'lead', track:'L-03', title:'IP, compliance &amp; the audit trail', minutes:35,
+    lastVerified:'2026-07-28',
+    concept:{
+      analogy:'The medical record, and the rule that governs it: if it isn&rsquo;t documented, it didn&rsquo;t happen. A chart audit never asks whether the clinician <em>remembers</em> deciding &mdash; it asks the record to show who decided, when, on what evidence, and under whose authority. That is exactly how you would reconstruct a prior-auth denial two years later for an appeal or a regulator. Agent-written code lands in the same place. The auditor&rsquo;s question is never &ldquo;did the AI write this&rdquo;; it is &ldquo;who authorized this change to the eligibility rule, and what supports it?&rdquo; &mdash; and that answer either exists in artifacts or it does not exist at all.',
+      body:
+        '<p><strong>You will be asked to prove three things, and &ldquo;was AI involved?&rdquo; is not one of them.</strong> The questions are <b>provenance</b> (where did this code come from), <b>data flow</b> (where did our code and data go), and <b>authority</b> (who authorized this change, on what evidence). Reframing matters, because the instinct &mdash; tag the AI-written commits &mdash; answers none of them. Your version control records the human who committed the change. It does not record how the change was produced, what the agent was told, or what it was shown. That gap is this module.</p>' +
+        '<p><strong>Provenance first, and be precise about what the controls actually are.</strong> The concrete mechanism is duplication detection: where enabled, suggestions matching public code are blocked, or annotated with the repository and licence. Genuinely worth turning on. But it is a <b>filter, not a chain of custody</b> &mdash; it suppresses a class of match, it does not record where anything came from, and GitHub is candid that &ldquo;while the probability is low, Copilot may generate code suggestions that match code in the training set,&rdquo; with responsible-use guidance placing the risk on the user. On the larger question &mdash; who owns AI-generated output &mdash; the honest answer for a leader is that it is unsettled and varies by jurisdiction, and that indemnity is a contract term, not a product feature. This course will not resolve that for you; your counsel will. What you can do is know which controls you have enabled and what they do.</p>' +
+        '<p><strong>Data flow is where the surprise lives, and the surprise is that your posture is per-login, not per-tool.</strong> The same binary, on the same laptop, against the same repo, falls under a different data policy depending on which <em>account</em> the engineer signed into. Commercial terms and consumer terms differ materially &mdash; Anthropic does not train on code or prompts under commercial terms, while consumer Free/Pro/Max accounts train when that setting is on; Cursor&rsquo;s Privacy Mode is what stops training and can be enforced so members cannot disable it; GitHub states Business and Enterprise data is not used for training. So an engineer quietly signed into a personal account on your PHI-adjacent repo has opted out of your agreement without touching a setting you control. Anthropic says it plainly for zero data retention: if a developer signs in with a personal account, <b>&ldquo;those sessions are not covered.&rdquo;</b> Every vendor ships the fix &mdash; enforced login (<code>forceLoginMethod</code>/<code>forceLoginOrgUUID</code>), Cursor&rsquo;s Allowed Team IDs via MDM, managed seats. Deploy one, and treat the rest &mdash; training use, retention periods, deletion, and a BAA where PHI is in scope &mdash; as answers you get <b>in writing from procurement and counsel</b>, not from a documentation page. Two details worth knowing before you promise anything: zero data retention is not a checkbox on a standard plan and it <em>costs you features</em> (web and cloud sessions, artifacts, feedback), and it does not extend to MCP servers or third-party integrations &mdash; the doors you opened in L-3.2.</p>' +
+        '<p><strong>Then authority &mdash; and here the artifact most leaders point to turns out to be the wrong one.</strong> The vendor audit log is an <em>access</em> log: it records policy changes and seat assignments, and GitHub states the limit outright &mdash; it &ldquo;does not include client session data, such as the prompts a user sends to Copilot locally.&rdquo; So the decision record is not something you retrieve; it is something you <b>build from artifacts you already produce</b>: the signed rule in the versioned instruction file (L-1.3), showing what was in force that day; the gate result on the commit, where a <em>refusal</em> is the strongest evidence a control was live (M-10.2); the pull request carrying the defense (L-3.3); and a test that pins the rule &mdash; a score of <b>0.85 or above auto-approves</b> &mdash; to the constant, so it cannot drift silently. None of those exist by accident.</p>' +
+        '<p><strong>Which is the whole lesson: the audit trail is designed before you need it, and its depth follows blast radius.</strong> Not every change needs a reconstruction &mdash; a disposable spike needs none, and a change to who gets auto-approved needs all of it (L-1.2 again, doing real work). The best illustration the course produced was unscripted: asked to feed claim history into the approval decision, the agent <em>stopped</em>, saying that crosses from a code change into &ldquo;a change of medical-necessity policy&hellip; needs sign-off from people who can own that, not a passing test suite,&rdquo; and named the clinical lead, compliance and legal, the disparate-impact risk, and a shadow dry-run. That refusal is exactly what an auditor hopes to find &mdash; and it exists only because a human was the approver rather than the typist. That arrangement, which L-1.1 introduced as a way of working, turns out to be an <b>audit property</b> too. That closes governance: permission, data, review, proof. L-04 turns to what all of this costs.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-36'},
+    labA:{
+      title:'Run the reconstruction on a real change',
+      steps:[
+        'Take the <b>highest-blast-radius change your team shipped in the last month</b> and answer the seven auditor questions <em>from artifacts alone</em> &mdash; no asking the engineer who wrote it, because that option disappears the day it matters. Mark each CAPTURED / ONLY-IF-CONFIGURED / NOT-CAPTURED.',
+        'Fix the top two gaps, and make the fix structural rather than a reminder: a required approver for changes to the rule-bearing files, a test that pins the rule to a constant, a PR template that demands the defense, an instruction file that is actually versioned.',
+        'Separately, get the <b>contractual</b> answers in writing for every tool in your fleet &mdash; training use, retention and deletion, indemnity posture, and a BAA where PHI is in scope. These come from procurement and counsel, not from a docs page you read once. Then check the one thing that silently voids them: is <b>enforced login</b> deployed, so a personal account cannot be used on company repos?',
+        'Success: a completed reconstruction with named gaps, two structural fixes scheduled, a written record of the contractual answers per tool &mdash; and an honest &ldquo;we do not know yet&rdquo; wherever that is the truth, because that is itself the finding.'
+      ]
+    },
+    labB:{
+      title:'Find where the record actually comes from',
+      steps:[
+        'Walk the artifacts this course produced and match each to the auditor question it answers: the signed threshold rule in the instruction file being <em>cited back</em> in the agent&rsquo;s reasoning; the pre-commit gate <em>denying</em> a red commit; the PR body carrying the defense; the boundary test pinning the inclusive rule (score &gt;= 0.85 auto-approves) to the constant.',
+        'Now look at what your vendor audit log actually contains &mdash; policy changes and seat assignments &mdash; and confirm for yourself that the session, the prompt and the context are not in it. This is the gap most compliance conversations assume is already covered.',
+        'Finally, read M-12.3&rsquo;s refusal as an <b>audit artifact</b> rather than a safety one: the agent naming clinical, compliance and legal sign-off is the authority record. Ask what your pipeline would have produced instead if the agent had simply built it.',
+        'Success: you can point at the specific artifact that answers each auditor question &mdash; and name the one question none of your artifacts answers today.'
+      ]
+    },
+    checklist:[
+      'I know the three questions &mdash; <b>provenance, data flow, authority</b> &mdash; and that &ldquo;was AI involved?&rdquo; is not one of them.',
+      'I treat duplication detection as a <b>filter, not a chain of custody</b>, and leave the IP question to counsel.',
+      'I have deployed <b>enforced login</b>, because the data posture is per-login, not per-tool.',
+      'I hold training, retention and BAA answers <b>in writing</b> &mdash; and know ZDR does not cover MCP or third-party integrations.',
+      'I build the decision record from artifacts (signed rule, gate result, PR + defense) and scale its depth to <b>blast radius</b>.'
+    ],
+    quiz:[
+      {q:'What does an auditor actually ask about an agent-written change?',
+       options:['Whether AI was involved, and which model wrote it','<b>Provenance, data flow and authority</b> &mdash; where the code came from, where your data went, and who authorized the change on what evidence. Tagging AI-written commits answers none of the three','How many lines the AI generated','Whether the tests passed'], answer:1},
+      {q:'Git shows a named engineer committed the change. What has that established?',
+       options:['Full authority and provenance for the change','<b>Authorship of record only.</b> It does not show who <em>authorized</em> it, on what evidence, or what the agent was told &mdash; and no vendor audit log holds the session either (GitHub: it &ldquo;does not include client session data&rdquo;). Those artifacts exist only if you designed them','That the change was reviewed','That the change complies with policy'], answer:1},
+      {q:'Your organization has a commercial agreement and zero data retention. What can still void it?',
+       options:['Nothing &mdash; the agreement covers the tool','<b>An engineer signed into a personal account.</b> The posture is per-login, not per-tool &mdash; personal-account sessions &ldquo;are not covered&rdquo; &mdash; so enforced login (<code>forceLoginMethod</code>, Allowed Team IDs, managed seats) is the actual control. ZDR also does not extend to MCP servers or third-party integrations','Using the tool on a laptop instead of a server','Reviewing the code too quickly'], answer:1},
+      {q:'When do you build the audit trail, and how deep?',
+       options:['Afterwards, when an auditor asks &mdash; the data will be in the logs','<b>Before you need it</b>, because almost none of it is captured by default &mdash; and with depth following <b>blast radius</b>, so a disposable spike carries none and a change to who gets auto-approved carries all of it','Uniformly for every change, to be safe','Only for changes an AI was involved in'], answer:1}
+    ]
   }
 ];
 
@@ -7761,6 +7834,51 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-36 · Reconstruct the Change (spec: VISUALS.md) ----------
+   An auditor's reconstruction run against the course's own highest-stakes change: the
+   eligibility threshold at ApprovalService line 99 (M-12.3's UoW-3), a one-character diff
+   that moves who gets auto-approved vs queued for human review. Seven questions, each pilled
+   CAPTURED (green) / ONLY IF CONFIGURED (amber) / NOT CAPTURED (red). Payoff = M-12.3's real
+   refusal as the authority record. Vendor facts verified 2026-07-28
+   (l34-ip-compliance-audit.txt). NOT legal advice — stated in the foot. L-3.4, closes L-03. */
+VISUALS['SIM-36'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const QS = [
+    ['yes','What changed?','CAPTURED',
+     'The diff and <code>git blame</code> have this cold. Note how little it looks like a policy change: one character. <b>Blast radius is not proportional to diff size</b> &mdash; which is exactly why the register (L-1.2) tiers by consequence, not by line count.'],
+    ['cfg','Who authorized it?','ONLY IF CONFIGURED',
+     'Git records the human who <em>committed</em> &mdash; that is authorship of record, <b>not authority</b>. Authority is a named approval on the PR by someone entitled to make a medical-necessity call, and it exists only because your review policy demanded it (L-3.3). No tool produces it for you.'],
+    ['cfg','On what evidence?','ONLY IF CONFIGURED',
+     'The defense in the PR body (L-3.3, M-12.4) plus the boundary test that pins 0.85 to AUTO_APPROVED &mdash; written referencing the constant so it <em>cannot silently drift</em>. A test that encodes the rule is evidence an auditor can re-run; a sentence in a ticket is not.'],
+    ['cfg','Which gates ran?','ONLY IF CONFIGURED',
+     'The CI and hook results attached to the commit. Worth remembering that a gate <em>refusing</em> is also a record: the pre-commit gate in M-10.2 denied a red commit outright, which is durable evidence the control was live on that date &mdash; not merely configured.'],
+    ['no','What was the agent told, and shown?','NOT CAPTURED',
+     'No vendor audit log holds this. GitHub states it outright: the audit log <b>&ldquo;does not include client session data, such as the prompts a user sends to Copilot locally.&rdquo;</b> Partial recovery: your <b>instruction file is versioned in git</b> (L-1.3), so you can at least show which rules were in force that day. The prompt itself is gone unless you chose to keep it.'],
+    ['cfg','Where did the data go?','ONLY IF CONFIGURED',
+     '<b>This is per-login, not per-tool.</b> Commercial terms and consumer terms differ, and a personal account on a company repo silently opts out of yours &mdash; Anthropic is explicit that if a developer signs in with a personal account &ldquo;those sessions are not covered&rdquo; by zero data retention. Every vendor ships a fix: <code>forceLoginMethod</code>/<code>forceLoginOrgUUID</code>, Cursor&rsquo;s Allowed Team IDs, managed seats. Deploy one.'],
+    ['cfg','Where did the code come from?','ONLY IF CONFIGURED',
+     'Duplication detection and code referencing, where enabled, block or annotate suggestions matching public code. Useful &mdash; and a <b>filter, not a chain of custody</b>: GitHub notes that &ldquo;while the probability is low, Copilot may generate code suggestions that match code in the training set,&rdquo; and its responsible-use guidance puts the risk on you.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim36" aria-label="Reconstructing an audit trail for one high-stakes change">' +
+      '<div class="s36head"><span>SIM-36 &middot; RECONSTRUCT THE CHANGE</span><span>CAN YOU PROVE IT?</span></div>' +
+      '<div class="s36case"><b>The change under audit:</b> the eligibility threshold in <code>ApprovalService</code> &mdash; who is auto-approved versus queued for human review, at exactly 0.85.' +
+        '<span class="s36diff">&minus; if (score &gt; 0.85) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43; if (score &gt;= 0.85)</span>' +
+        'One character. A medical-necessity policy change in disguise. An auditor asks seven questions &mdash; tap each to see whether your artifacts can answer it.</div>' +
+      QS.map((q,i) =>
+        '<div class="s36row ' + q[0] + '" data-q="' + i + '">' +
+          '<div class="s36q">' + q[1] + '</div>' +
+          '<div class="s36pill">' + q[2] + '</div>' +
+          '<div class="s36a">' + q[3] + '</div>' +
+        '</div>').join('') +
+      '<div class="s36payoff"><b>&#10003; The row that passes cleanly &mdash; because a human was the approver.</b> Asked to make claim history a decision input, the agent <em>stopped</em>: that &ldquo;crosses the line from a code change into a change of medical-necessity policy&hellip; needs sign-off from people who can own that, not a passing test suite&rdquo; &mdash; then named a clinical lead, compliance and legal (payer contracts, CMS and state rules, disparate-impact risk for patients with prior denials), and a shadow dry-run to measure the yield. That refusal is precisely what an auditor hopes to find in the record. It exists only because the human was the approver, not the typist &mdash; which makes that arrangement an <b>audit property</b>, not just a safety one.</div>' +
+      '<div class="s36foot">Read the column: one row is captured for free, one cannot be captured at all, and every other answer exists <b>only because someone decided in advance that it should</b>. That is the whole lesson &mdash; <b>the audit trail is designed before you need it</b>, and its depth should follow blast radius (L-1.2), not paperwork instinct. The contractual answers &mdash; training use, retention, deletion, and a BAA where PHI is in scope &mdash; are not settings you toggle; get them <b>in writing</b> from the vendor and your own counsel.' +
+        '<div class="s36note">Teaching aid, not legal advice: vendor statements quoted here were verified 2026-07-28 and change over time; your counsel and compliance team own the answers for your organization.</div></div>' +
+    '</div>';
+  mount.querySelectorAll('.s36row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s36row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-35 · Advisory or Gate? (spec: VISUALS.md) ----------

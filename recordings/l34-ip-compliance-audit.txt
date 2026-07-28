@@ -1,0 +1,196 @@
+L-3.4 — IP, compliance & the audit trail (provenance of generated code, regulated context)
+LEADERSHIP L-03 (4/4) — CLOSES THE TRACK. Hard-verification zone. All tool/vendor claims
+below verified against primary vendor docs on 2026-07-28 (fresh, this session).
+
+*** STANDING GUARDRAIL FOR THIS MODULE ***
+This module is NOT legal advice and must never read as it. It teaches which questions a
+leader must be able to answer, where the answers live, and what to get in writing. It does
+NOT assert any vendor's compliance status, does NOT resolve who owns AI-generated output
+(unsettled and jurisdiction-dependent), and does NOT summarize indemnity terms — those are
+contract questions for counsel and procurement. Where a vendor states something in its own
+docs, quote it and date it. Where they don't, say so.
+
+=========================================================================
+THE CONVERGENCE (the module's spine — three findings, all verified)
+=========================================================================
+1. YOUR DATA POSTURE IS PER-LOGIN, NOT PER-TOOL. The same binary on the same laptop against
+   the same repo lands under a different data policy depending on which ACCOUNT the engineer
+   signed into. All three vendors ship an enforcement mechanism for exactly this, which is
+   the tell that it is a real and common failure.
+2. THE VENDOR AUDIT LOG RECORDS ACCESS ADMINISTRATION, NOT DECISIONS. GitHub's Copilot audit
+   log states it plainly: it "does not include client session data, such as the prompts a
+   user sends to Copilot locally." What an auditor wants — who authorized this change, on
+   what evidence — is not in any vendor's log. You build that from artifacts.
+3. PROVENANCE CONTROLS ARE FILTERS, NOT A CHAIN OF CUSTODY. The duplication filter suppresses
+   matches above a length threshold; it does not record where a suggestion came from, and
+   GitHub's own responsible-use card puts the risk on the user.
+=> Fourth honest caveat in a row for L-03 (after the native-Windows sandbox, content
+   exclusion missing Agent mode, and AI review being advisory-not-gate): the artifact a
+   leader assumes is "the audit trail" is an access log.
+
+=========================================================================
+CLAUDE CODE / ANTHROPIC  (code.claude.com/docs/en/{data-usage,zero-data-retention}.md,
+                          + security.md from the L-3.2 sheet — verified 2026-07-28)
+=========================================================================
+TRAINING (verbatim, the load-bearing split):
+  - COMMERCIAL: "Commercial users: (Team and Enterprise plans, API, 3rd-party platforms, and
+    Claude Gov) maintain existing policies: Anthropic does not train generative models using
+    code or prompts sent to Claude Code under commercial terms, unless the customer has
+    chosen to provide their data to us for model improvement (for example, the Developer
+    Partner Program)."
+  - CONSUMER: "We will train new models using data from Free, Pro, and Max accounts when this
+    setting is on (including when you use Claude Code from these accounts)."
+    *** THIS IS THE LANDMINE. An engineer signed into a personal Pro account on the company
+    repo is on the consumer policy, not yours. ***
+RETENTION (verbatim / documented):
+  - Commercial standard: "30-day retention period." Consumer: 5-year if data use for model
+    improvement is allowed, 30-day if not.
+  - `/feedback` (and `/bug`, `/share`, same path): "Transcripts shared via /feedback ...
+    are retained for 5 years." Opt out with DISABLE_FEEDBACK_COMMAND=1.
+  - LOCAL DATA AT REST (matters in a regulated shop): "Claude Code clients store session
+    transcripts locally in plaintext under `~/.claude/projects/` for 30 days by default to
+    enable session resumption. Adjust the period with `cleanupPeriodDays`."
+  - Telemetry: "Metrics never include your code, prompts, or file paths." (DISABLE_TELEMETRY=1)
+ZERO DATA RETENTION (zero-data-retention.md):
+  - "Zero Data Retention (ZDR) for Claude Code is available to qualified accounts on Claude
+    for Enterprise. When ZDR is enabled, prompts and model responses generated during Claude
+    Code sessions are processed in real time and not stored by Anthropic after the response
+    is returned, except where needed to comply with law or combat misuse."
+  - NOT automatic: "ZDR is not included in the standard Claude for Enterprise plan and cannot
+    be enabled from your admin settings ... requires separate enablement by Anthropic."
+    Per-organization; a new org needs it enabled again.
+  - *** THE PER-LOGIN GAP, VERBATIM: "ZDR applies to requests that authenticate into a
+    ZDR-enabled organization. If a developer signs in to Claude Code with a personal account
+    or with an API key from a different organization, those sessions are not covered."
+    ENFORCEMENT: deploy the `forceLoginMethod` and `forceLoginOrgUUID` managed settings. ***
+  - ZDR DOES NOT COVER (verbatim, ties L-3.2): "Data processed by third-party tools, MCP
+    servers, or other external integrations is not covered by ZDR. Review those services'
+    data handling practices independently."  Also not covered: claude.ai chat, Cowork,
+    analytics metadata, seat/admin data.
+  - FEATURES DISABLED under ZDR: Claude Code on the Web, desktop cloud sessions, Artifacts,
+    feedback submission (/feedback, /bug, /share), Remote Control. Fable 5 unavailable
+    (requires retention). => A real capability/compliance TRADE, not a free switch.
+  - Even under ZDR: "Anthropic may retain data where required by law or to address Usage
+    Policy violations ... may retain the associated inputs and outputs for up to 2 years."
+  - ZDR orgs DO get: cost controls per user, Analytics dashboard, server-managed settings,
+    AUDIT LOGS. "All enablement actions are audit-logged."
+HIPAA: the docs reference a HIPAA agreement as an existing arrangement — error reporting is
+  on only when, among other conditions, "your organization doesn't have a zero data retention
+  or HIPAA agreement." => A HIPAA agreement is something you ARRANGE with the vendor. Do NOT
+  state a compliance status; state that this is a procurement/counsel conversation.
+AUDIT SURFACES: audit logs (ZDR/Enterprise admin), Analytics dashboard, and OpenTelemetry
+  export — from the L-3.2 sheet, `OTEL_LOG_TOOL_DETAILS=1` is required to include MCP server
+  and tool names in tool events. Cloud sessions (security.md): "All operations in cloud
+  environments are logged for compliance and audit purposes."
+
+=========================================================================
+GITHUB COPILOT  (docs.github.com — verified 2026-07-28)
+=========================================================================
+PROVENANCE — THE DUPLICATION DETECTION FILTER (responsible-use application card, verbatim):
+  - "GitHub Copilot uses a duplication detection system designed to identify when suggestions
+    match publicly available code."
+  - "Organizations and individuals can configure this to block matching suggestions or provide
+    code referencing with repository and license information."
+  - "Depending on your GitHub settings, the filter also blocks or annotates suggestions that
+    contain matches to public code."
+  - HONEST LIMIT, verbatim: "While the probability is low, Copilot may generate code
+    suggestions that match code in the training set."
+  - AND THE RISK ALLOCATION, verbatim: "Users assume all risks associated with generated code
+    including security vulnerabilities, bugs, and IP infringement."
+    => Quote this as GitHub's responsible-use guidance. Do NOT use it to characterize any
+       indemnity offering — separate contractual matter, counsel's call. The teaching point is
+       that a filter is not a warranty and not a chain of custody.
+  - THRESHOLD DETAIL (matching against public code of "65 lexemes or more (on average, 150
+    characters)"): this figure surfaced via search summary of GitHub material, NOT from a page
+    I fetched verbatim. => If used at all, attribute loosely ("above a length threshold") or
+    omit the number. DECISION: OMIT THE NUMBER in the module; the mechanism is the lesson.
+TRAINING: GitHub does not use Copilot Business or Copilot Enterprise customer data to train
+  its models (per GitHub product/trust material surfaced in search; the responsible-use card
+  I fetched did not restate it). => Present as "GitHub states Business/Enterprise data is not
+  used for training — confirm the current wording in your agreement," not as a hard quote.
+AUDIT LOG (docs.github.com .../review-audit-logs):
+  - Records Copilot ADMINISTRATIVE events: feature settings changed at org level, seat
+    management changes, seats added for users/teams. Searchable with `action:copilot`.
+  - Retention for the Copilot Business plan events: last 180 days.
+  - *** THE LIMITATION THAT MAKES THE MODULE: "The audit log does not include client session
+    data, such as the prompts a user sends to Copilot locally." ***
+CONTENT EXCLUSION (from L-3.3/L-3.2 sheets, relevant here): configurable at repo/org/
+  enterprise, but "not supported in Edit and Agent modes."
+
+=========================================================================
+CURSOR  (cursor.com/docs/enterprise/privacy-and-data-governance — verified 2026-07-28)
+=========================================================================
+  - PRIVACY MODE (verbatim): "With Privacy Mode enabled your code is never used for training
+    by Cursor or other AI model providers."
+  - Model providers: most models "run under Cursor's ZDR agreements" where "providers don't
+    store inputs or outputs or train on your data."
+  - ORG ENFORCEMENT: admins can enforce Privacy Mode from the team dashboard settings and
+    "enforce it so members can't disable it."
+  - *** PER-LOGIN ENFORCEMENT, the same control as Claude Code's forceLoginMethod: MDM
+    enforcement via the "Allowed Team IDs policy" to prevent personal account logins on
+    corporate devices. ***
+  - PRIVACY MODE OFF: Cursor material states it may then use and store codebase data, prompts,
+    editor actions and code snippets to improve AI features and train models. (Surfaced via
+    search of Cursor's data-use material; the enterprise page I fetched did not restate the
+    off-state in detail.) => Present as "with Privacy Mode off, the posture changes — check
+    the current data-use page," not as a verbatim quote.
+  - AUDIT LOGGING: the enterprise privacy page does NOT document audit logging or a compliance
+    API. => Say exactly that: not documented on this page, confirm with the vendor. Do not
+    invent a capability, and do not imply its absence is a product gap.
+  - COMPLIANCE CERTS: the page references a DPA and sub-processor agreements; it does NOT list
+    SOC 2 / HIPAA / BAA. => Do not assert certifications for Cursor from this source.
+
+=========================================================================
+THE RECONSTRUCTION (SIM-36's spine) — the change under audit
+=========================================================================
+Subject: the eligibility THRESHOLD change at ApprovalService line 99, `>` -> `>=`
+(BUG-API-01 / M-12.3's UoW-3). Chosen because it is not a refactor: it changes WHO GETS
+AUTO-APPROVED versus queued for human review, at exactly 0.85. That is a medical-necessity
+policy change wearing a one-character diff — the perfect audit subject for a regulated shop.
+
+  Q1 What changed?                 ✓ CAPTURED   git diff / blame; the one-character change.
+  Q2 Who authorized it?            ⚠ CONFIGURED git records the human COMMITTER = authorship
+                                                of record, NOT authority. Authority is the PR
+                                                approval + a named sign-off, and only exists
+                                                if your policy demands it (L-3.3).
+  Q3 On what evidence?             ⚠ CONFIGURED the defense in the PR body (M-12.4) + M-12.3's
+                                                boundary test pinning 0.85 -> AUTO_APPROVED,
+                                                constant-referenced so it cannot drift.
+  Q4 Which gates ran?              ⚠ CONFIGURED the CI/hook result on the commit. M-10.2's
+                                                pre-commit gate DENYING a red commit is itself
+                                                a record that the control fired.
+  Q5 What was the agent told?      ✗ NOT CAPTURED  no vendor audit log holds the session
+                                                ("does not include client session data").
+                                                Partial recovery: the INSTRUCTION FILE is
+                                                versioned in git (L-1.3), so you can show what
+                                                rules were in force on that date.
+  Q6 Where did the data go?        ⚠ CONFIGURED  depends which ACCOUNT was signed in. Enforce
+                                                with forceLoginMethod/forceLoginOrgUUID,
+                                                Cursor's Allowed Team IDs, managed seats.
+  Q7 Where did the code come from? ⚠ CONFIGURED  duplication filter / code referencing if
+                                                enabled — a filter, not a chain of custody.
+  THE PAYOFF ROW — M-12.3's REFUSAL as the authority record: asked to make claim history a
+  decision input, the agent STOPPED and refused: "that crosses the line from a code change
+  into a change of medical-necessity policy ... needs sign-off from people who can own that,
+  not a passing test suite," naming a clinical lead, compliance/legal (payer contracts,
+  CMS/state rules, disparate-impact risk for patients with prior denials, appealable reasons),
+  and a shadow dry-run. That refusal is EXACTLY what an auditor wants to find — and it exists
+  only because a human was the approver. "Human as approver, not typist" is an audit property.
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: the medical record. If it isn't documented, it didn't happen. A chart audit does not
+  ask whether the clinician remembers deciding; it asks the record to show who decided, when,
+  on what evidence, under whose authority — exactly how you would reconstruct a prior-auth
+  denial. Agent-written code lands in the same place, and the auditor's question is never
+  "did the AI write it," it is "who authorized this change to the eligibility rule."
+Spine: after the fact you must prove provenance, data flow and authority — and almost none of
+  it is captured by default, so the audit trail is a design decision made BEFORE you need it.
+Four moves: (1) reframe off "was AI involved" onto the three real questions; (2) know that
+  provenance controls are filters, not custody; (3) fix the per-login data posture with an
+  enforced login policy, and get training/retention/BAA answers IN WRITING from procurement,
+  not from a docs page; (4) build the decision record out of artifacts you already produce —
+  signed rule, gate result, PR + defense, and a refusal that names the sign-off — with depth
+  following blast radius (L-1.2), not paperwork instinct.
+Closes L-03 (permission -> data -> review -> proof) and hands to L-04 (economics).
