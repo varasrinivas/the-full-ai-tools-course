@@ -1279,6 +1279,42 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim34{--s34green:#3E9A6B;--s34amber:#c99a3a;--s34red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim34{--s34green:#2d7350;--s34amber:#976f16;--s34red:#B0503C}
+.sim34 .s34head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim34 .s34thesis{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.55}
+.sim34 .s34thesis b{color:var(--text);font-weight:500}
+.sim34 .s34legend{display:flex;justify-content:space-between;font-size:8px;color:var(--faint);letter-spacing:.1em;padding:0 2px 5px}
+.sim34 .s34row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer;display:grid;grid-template-columns:1fr 116px;gap:8px;align-items:start}
+.sim34 .s34row.ok{border-left:3px solid var(--s34green)}
+.sim34 .s34row.scoped{border-left:3px solid var(--s34amber)}
+.sim34 .s34row.no{border-left:3px solid var(--s34red)}
+.sim34 .s34name{font-size:10px;color:var(--text);font-weight:600}
+.sim34 .s34cross{border-left:1px dashed var(--line);margin-top:6px;padding-left:9px;font-size:8.5px;color:var(--faint);line-height:1.5}
+.sim34 .s34cross .s34arrow{color:var(--text);font-weight:700;font-size:11px;line-height:1;padding-right:2px}
+.sim34 .s34row.no .s34cross{border-left-style:solid;border-left-color:var(--s34red)}
+.sim34 .s34row.no .s34cross .s34arrow{color:var(--s34red)}
+.sim34 .s34chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sim34 .s34chip{font-size:8px;letter-spacing:.02em;padding:2px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;color:var(--dim)}
+.sim34 .s34chip.phi{color:var(--s34red);border-color:var(--s34red)}
+.sim34 .s34chip.warn{color:var(--s34amber);border-color:var(--s34amber)}
+.sim34 .s34verdict{font-size:8px;letter-spacing:.06em;text-align:center;padding:4px 6px;border-radius:999px;border:1px solid var(--line);color:var(--dim);line-height:1.35}
+.sim34 .s34row.ok .s34verdict{color:var(--s34green);border-color:var(--s34green)}
+.sim34 .s34row.scoped .s34verdict{color:var(--s34amber);border-color:var(--s34amber)}
+.sim34 .s34row.no .s34verdict{color:var(--s34red);border-color:var(--s34red)}
+.sim34 .s34rule{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim34 .s34rule b{color:var(--text);font-weight:500}
+.sim34 .s34row.open .s34rule{display:block}
+.sim34 .s34foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.55}
+.sim34 .s34foot b{color:var(--text);font-weight:500}
+.sim34 .s34enf{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px}
+.sim34 .s34e{font-size:8px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.sim34 .s34e.g{color:var(--gold);border-color:rgba(245,184,75,.5)}
+.sim34 .s34e.c{color:var(--cyan);border-color:rgba(79,216,235,.4)}
+.sim34 .s34e.p{color:var(--purple);border-color:var(--purple)}
+[data-theme="light"] .sim34 .s34e.p{color:#5a4a91;border-color:#5a4a91}
+.sim34 .s34e b{font-weight:600}
+@media(max-width:560px){.sim34 .s34row{grid-template-columns:1fr}.sim34 .s34verdict{justify-self:start}}
 .sim33{--s33green:#3E9A6B;--s33amber:#c99a3a;--s33red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim33{--s33green:#2d7350;--s33amber:#976f16;--s33red:#B0503C}
 .sim33 .s33head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5467,6 +5503,55 @@ const MODS = [
       {q:'Where does governance actually live, and what is the real boundary?',
        options:['In each developer&rsquo;s local settings','In <b>enforced org policy</b> (managed settings that outrank user/project config, so a dev cannot override) plus the <b>OS-enforced sandbox</b> (Seatbelt / bubblewrap / WSL2 &mdash; not native Windows) as the real boundary','In the allowlist','In the model choice'], answer:1}
     ]
+  },
+  {
+    id:'L-3.2', path:'lead', track:'L-03', title:'MCP &amp; data boundaries', minutes:35,
+    lastVerified:'2026-07-28',
+    concept:{
+      analogy:'The interface review your hospital already runs. No vendor gets a feed off the clinical data bus because an engineer liked it. Every interface goes through the same review: which fields, which direction, read or write, <em>minimum necessary</em> &mdash; the HIPAA principle of limiting use and disclosure of PHI to what the purpose actually requires &mdash; and then a named data steward signs it. Crucially, you identify the interface by <em>what system it actually is</em>, not by the label someone typed into a config. An MCP server is a new interface into your data. Same review, same register, same signature.',
+      body:
+        '<p><strong>L-3.1 settled how much an agent may <em>do</em>. This is the other half: what it may <em>reach</em>.</strong> The unit of governance here is the <b>connection</b> &mdash; an MCP server, a connector, a data source &mdash; and approving one is a data-access decision, not a plugin install. Start from the fact all three vendors state in their own docs: <b>nobody is vetting these for you.</b> Anthropic &ldquo;does not security-audit or manage any MCP server&rdquo;; VS Code warns that a local server &ldquo;can run arbitrary code on your machine&rdquo;; Cursor notes servers &ldquo;can access external services and execute code on your behalf.&rdquo; The review is yours.</p>' +
+        '<p><strong>Three questions per connection, and they are the same three an interface review asks.</strong> <b>Direction</b> &mdash; read, write, or both? <b>Data class</b> &mdash; public, internal, or PHI? <b>Blast radius</b> &mdash; what happens if this is wrong at 2am? Run them against real candidates and the rulings fall out fast. A payer-policy lookup (internal reference data, read-only, no patient identifiers) is an easy yes. The live PA database is not: the agent almost never needs <em>patients</em>, it needs <em>shapes</em> &mdash; schema, counts, a queue depth &mdash; so it gets a de-identified replica or a fixed-query service, never write access to live PHI. That is minimum necessary, applied to a non-human requester.</p>' +
+        '<p><strong>Then the move that actually makes it governance: a checked-in config is a proposal, not an approval.</strong> All three tools keep the connection in a file that is <em>meant</em> to be shared &mdash; <code>.mcp.json</code>, <code>.vscode/mcp.json</code>, <code>.cursor/mcp.json</code> &mdash; so without an org layer, whoever opens a pull request sets your data boundary. Claude Code is explicit: a project server sits at <code>&#9208; Pending approval</code>, and &ldquo;a cloned repository can&rsquo;t approve its own servers.&rdquo; Your job is to pick the enforced pattern and deploy it: a <b>fixed set</b> (<code>managed-mcp.json</code>, which users cannot add to), an <b>approved catalog</b> (<code>allowedMcpServers</code> with <code>allowManagedMcpServersOnly</code>), Copilot&rsquo;s <b>registry-only</b> (<code>chat.mcp.access</code>, or &ldquo;Restrict MCP access to registry servers&rdquo; at org level), or Cursor&rsquo;s dashboard MCP configuration. Without the managed lock, allowlists merge from every source &mdash; a developer can simply broaden yours.</p>' +
+        '<p><strong>And when you write the list, match on what the server <em>is</em>, never on what it is called.</strong> This is L-3.1&rsquo;s &ldquo;the list is not a boundary&rdquo; one level deeper, and Claude Code&rsquo;s docs say it outright: a <code>serverName</code> entry <b>&ldquo;is not a security control&rdquo;</b> &mdash; the name is just a label a user typed, so &ldquo;a user can call any server <code>github</code>.&rdquo; Enforce with <code>serverCommand</code> or <code>serverUrl</code>; Cursor&rsquo;s dashboard works the same way (command pattern or URL pattern). Two properties carry over from L-3.1 intact: <b>deny beats allow</b> (&ldquo;nothing overrides a denylist match&rdquo;), and granularity is per <em>tool</em>, not per server &mdash; approve <code>mcp__payer-policy__lookup_payer_policy</code>, not everything the server might grow next quarter.</p>' +
+        '<p><strong>Finally, know the two things the register does not buy you</strong> &mdash; because both are places a leader assumes cover they do not have. First, <b>an approved connector can still be the leak</b>: an agent holding private data, ingesting untrusted content (ticket text, a PR body, a web page), <em>and</em> able to reach the network is a working exfiltration path &mdash; Simon Willison&rsquo;s &ldquo;lethal trifecta.&rdquo; Break one leg, usually egress. Second, the file-level control you were counting on may stop where the agent starts: Copilot&rsquo;s content exclusion is, per GitHub&rsquo;s docs, <b>&ldquo;not supported in Edit and Agent modes&rdquo;</b>. Design instead for the good failure &mdash; in M-10.3, denied the payer tool, the agent <em>refused to guess</em> a coverage determination rather than inventing one. Your deliverable is a <b>connection register</b>: every server with its direction, data class, owner and approver, checked against what people actually connect to (Claude Code can export that via OpenTelemetry). L-3.3 takes the next surface: reviewing what the agent writes.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-34'},
+    labA:{
+      title:'Write your connection register',
+      steps:[
+        'Inventory what is already wired &mdash; search your repos for <code>.mcp.json</code>, <code>.vscode/mcp.json</code> and <code>.cursor/mcp.json</code>, and add every claude.ai / IDE connector your teams have enabled. Expect to find servers nobody formally approved; that is the point of the exercise.',
+        'Rule each one on the three questions: <b>direction</b> (read / write / both), <b>data class</b> (public / internal / <b>PHI</b>), <b>blast radius</b>. Mark it APPROVE, APPROVE-SCOPED, or DENY, and give every row an <b>owner</b> and an <b>approver of record</b>. Apply minimum necessary: if the agent needs shapes rather than patients, the ruling is a de-identified replica.',
+        'Move the decision out of the repo and into the enforced layer. Pick your pattern &mdash; fixed set, approved catalog, registry-only, or denylist-only &mdash; and write it down with the actual mechanism (<code>managed-mcp.json</code> / <code>allowedMcpServers</code> + <code>allowManagedMcpServersOnly</code> / <code>chat.mcp.access</code> / Cursor dashboard). Match entries on <b>command or URL</b>, never on server name.',
+        'Success: a register where every connection has a direction, a data class, an owner and a signer; at least one connection you are going to <b>revoke</b>; and a deny-by-default statement. One rollout note &mdash; announce it first: a newly blocked server &ldquo;silently disappears&hellip; with no warning,&rdquo; which your engineers will report as a bug.'
+      ]
+    },
+    labB:{
+      title:'Watch the boundary hold &mdash; and find where it does not',
+      steps:[
+        'Watch a query run with the payer-policy tool <b>allowlisted</b> (M-10.3&rsquo;s setup): the agent calls the tool and the answer is traceable to the source &mdash; a real coverage determination with its reason code, not a recollection.',
+        'Now watch the same query with the tool <b>not</b> allowlisted. It is blocked &mdash; and watch what the agent does next: it <b>refuses to guess</b> rather than fabricating a determination. That refusal is the behavior your data boundary is supposed to produce; a tool that invents an answer when denied is the real failure.',
+        'Then go find your own gap. Two to check on your fleet: does your automation path skip the trust prompt (Claude Code&rsquo;s trust verification &ldquo;is disabled when running non-interactively with the <code>-p</code> flag&rdquo;), and does your file-level exclusion actually cover agent mode (per GitHub&rsquo;s docs, content exclusion does not)?',
+        'Success: you have seen the allowlist act as the control surface, seen the good failure, and named at least one place where your assumed boundary does not reach.'
+      ]
+    },
+    checklist:[
+      'I treat every connection as a <b>data-access decision</b> &mdash; direction, data class, blast radius.',
+      'I know a checked-in <code>.mcp.json</code> is a <b>proposal</b>, and the decision lives in an enforced org layer.',
+      'I match allow/deny entries on <b>command or URL</b> &mdash; a server <em>name</em> is not a security control.',
+      'I apply <b>minimum necessary</b> to PHI: shapes, replicas and fixed queries, not live patient data.',
+      'I know the register does not stop exfiltration (break a trifecta leg) and that content exclusion misses Agent mode.'
+    ],
+    quiz:[
+      {q:'A team wants to add an MCP server. What kind of decision is that?',
+       options:['A tooling preference &mdash; let the team choose','A <b>data-access decision</b>: which direction, which data class, what blast radius &mdash; reviewed and signed like any system interface, because no vendor security-audits these servers for you','A procurement decision only if it costs money','A security decision only if it touches production'], answer:1},
+      {q:'Your standard is written in the repo&rsquo;s <code>.mcp.json</code>. Is that governance?',
+       options:['Yes &mdash; it is version-controlled and reviewed','<b>No</b> &mdash; a checked-in server config is a <em>proposal</em>, not an approval (Claude Code parks it at &ldquo;Pending approval&rdquo;; a cloned repo cannot approve its own servers). Governance is the enforced layer: a managed server set, an approved catalog, or registry-only policy','Yes, if the file is protected by CODEOWNERS','Only if every developer agrees to it'], answer:1},
+      {q:'You allowlist a server by the name <code>github</code>. What is wrong with that?',
+       options:['Nothing &mdash; names are unique','The name is a <b>user-assigned label</b>, so anyone can point that name at a different server &mdash; the docs state a <code>serverName</code> entry &ldquo;is not a security control.&rdquo; Enforce on <code>serverCommand</code> or <code>serverUrl</code> instead','Names are case-sensitive','It should have been a denylist entry'], answer:1},
+      {q:'Every connector on your register is approved. What risk remains?',
+       options:['None &mdash; an approved list is a closed system','<b>Exfiltration through an approved path</b>: private data + untrusted content (ticket text, a web page) + network egress is a working leak regardless of approval &mdash; break one leg. And file-level controls can miss the agent entirely (Copilot content exclusion is not supported in Agent mode)','Only cost overruns','Only that the servers may go offline'], answer:1}
+    ]
   }
 ];
 
@@ -7593,6 +7678,56 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-34 · The Connection Register (spec: VISUALS.md) ----------
+   Data boundaries as a register a leader signs. Four connectors cross (or fail to cross) a
+   dashed boundary line, each with data-class + direction chips and a verdict pill; click for
+   the ruling. Row 1 is the course's OWN real artifact (the M-10.3 payer-policy MCP server).
+   Foot carries the ENFORCED org layer per tool, all verified 2026-07-28
+   (l32-mcp-data-boundaries.txt): Claude Code managed-mcp.json / allowedMcpServers +
+   allowManagedMcpServersOnly; Copilot chat.mcp.access "registry" + GitHub "Registry only";
+   Cursor dashboard MCP Configuration by command/URL pattern. L-3.2. */
+VISUALS['SIM-34'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ROWS = [
+    ['ok','payer-policy lookup','&rarr;','payer coverage rules &mdash; reference data, no patient identifiers',
+     [['','INTERNAL'],['','READ-ONLY'],['','NO PHI']],'APPROVE',
+     'The course&rsquo;s own server from M-10.3. <b>Easy yes</b> &mdash; reference data, one direction, no PHI. Still scope it properly: allow the <em>single tool</em> (<code>mcp__payer-policy__lookup_payer_policy</code>), not the whole server, and pin it by <code>serverCommand</code>/<code>serverUrl</code> so a different binary cannot inherit the approval.'],
+    ['scoped','issue / PR tracker connector','&harr;','tickets, PR bodies, comments &mdash; text anyone can write',
+     [['','INTERNAL'],['','READ + WRITE'],['warn','UNTRUSTED CONTENT']],'APPROVE, SCOPED',
+     'Genuinely useful, and the one people underestimate. It pipes <b>attacker-writable text</b> straight into the agent&rsquo;s context &mdash; Anthropic&rsquo;s own warning is that &ldquo;servers that fetch external content can expose you to prompt injection risk.&rdquo; Approve it read-mostly, and make sure this session is not <em>also</em> holding private data and an egress path.'],
+    ['no','PA production database','&harr;','live requests, members, claim history &mdash; regulated PHI',
+     [['phi','PHI'],['','READ + WRITE'],['phi','REGULATED']],'DENY &mdash; REPLICA ONLY',
+     '<b>Minimum necessary.</b> The agent almost never needs patients &mdash; it needs <em>shapes</em>: schema, row counts, a queue depth. Give it a de-identified replica or a fixed-query service, never write access to live PHI. This is the row where &ldquo;it would be convenient&rdquo; has to lose.'],
+    ['no','unreviewed community server','&#8856;','npm package of unknown provenance &mdash; with network egress',
+     [['warn','UNKNOWN PROVENANCE'],['warn','NETWORK EGRESS']],'STOPPED AT THE LINE',
+     '<b>Nobody is vetting these for you</b>, and all three vendors say so: Anthropic &ldquo;does not security-audit or manage any MCP server&rdquo;; VS Code warns a local server &ldquo;can run arbitrary code on your machine&rdquo;; Cursor notes servers &ldquo;can access external services and execute code on your behalf.&rdquo; Deny by default. And do not lean on the <em>name</em> &mdash; a <code>serverName</code> entry &ldquo;is not a security control&hellip; a user can call any server <code>github</code>.&rdquo;'],
+  ];
+  mount.innerHTML =
+    '<div class="sim34" aria-label="The connection register: which data sources agents may reach, and in which direction">' +
+      '<div class="s34head"><span>SIM-34 &middot; THE CONNECTION REGISTER</span><span>WHAT AGENTS MAY TOUCH</span></div>' +
+      '<div class="s34thesis"><b>Every connection is a data-access decision, not a plugin install.</b> Ask three things: which <em>direction</em>, which <em>data class</em>, and what the blast radius is if it is wrong. A checked-in <code>.mcp.json</code> is a <b>proposal, not an approval</b>. Tap a row for the ruling.</div>' +
+      '<div class="s34legend"><span>CONNECTOR</span><span>&mdash; BOUNDARY &mdash;</span><span>VERDICT</span></div>' +
+      ROWS.map((r,i) =>
+        '<div class="s34row ' + r[0] + '" data-r="' + i + '">' +
+          '<div><div class="s34name">' + r[1] + '</div>' +
+            '<div class="s34cross"><span class="s34arrow">' + r[2] + '</span> ' + r[3] + '</div>' +
+            '<div class="s34chips">' + r[4].map(c => '<span class="s34chip ' + c[0] + '">' + c[1] + '</span>').join('') + '</div>' +
+          '</div>' +
+          '<div class="s34verdict">' + r[5] + '</div>' +
+          '<div class="s34rule">' + r[6] + '</div>' +
+        '</div>').join('') +
+      '<div class="s34foot">The register only holds if the decision lives in an <b>enforced org layer</b>, not a repo file a teammate can commit:' +
+        '<div class="s34enf">' +
+          '<span class="s34e g"><b>Claude Code</b> &middot; managed-mcp.json &middot; allowedMcpServers + allowManagedMcpServersOnly</span>' +
+          '<span class="s34e c"><b>Copilot</b> &middot; chat.mcp.access &ldquo;registry&rdquo; &middot; org &ldquo;Registry only&rdquo;</span>' +
+          '<span class="s34e p"><b>Cursor</b> &middot; dashboard MCP Configuration &middot; command / URL pattern</span>' +
+        '</div>' +
+        'Two things the register does <em>not</em> buy you. <b>An approved connector can still be the leak:</b> private data + untrusted content + an egress path is an exfiltration route (Simon Willison&rsquo;s &ldquo;lethal trifecta&rdquo;, 2025) &mdash; break one leg, usually egress. And <b>Copilot&rsquo;s content exclusion does not cover Agent mode</b> (&ldquo;not supported in Edit and Agent modes&rdquo;) &mdash; the file-level block most leaders assume protects them stops exactly where the agent starts.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s34row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s34row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-33 · The Permission Dial (spec: VISUALS.md) ----------

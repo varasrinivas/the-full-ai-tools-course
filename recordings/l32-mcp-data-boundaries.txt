@@ -1,0 +1,215 @@
+L-3.2 — MCP & data boundaries (allowlists, enterprise policy, what agents may touch)
+LEADERSHIP L-03 (2/4). Hard-verification zone, like L-3.1. Every claim below verified
+against primary vendor docs on 2026-07-28 (fresh, this session), EXCEPT where marked
+[M-10.3] = already primary-verified 2026-07-25 and re-read from recordings/m103-mcp.txt
+before reuse (the L-2.2 precedent), or [SECONDARY] = attributed, not vendor-sourced.
+
+=========================================================================
+THE CONVERGENCE (the module's spine — five points all three tools land on)
+=========================================================================
+1. A connection is a FILE, and it is usually checked into the repo. Claude Code
+   .mcp.json / VS Code .vscode/mcp.json / Cursor .cursor/mcp.json. Sharing is the
+   documented intent ("Include this file in source control to share MCP server
+   configurations with your team" — VS Code).
+2. A checked-in server is a PROPOSAL, NOT AN APPROVAL. Every tool gates it behind
+   a trust step; Claude Code literally shows `⏸ Pending approval`.
+3. NOBODY IS VETTING THESE FOR YOU. All three vendors say so in their own docs
+   (Anthropic: "does not security-audit or manage any MCP server").
+4. There is an ORG layer that decides which servers may run AT ALL — managed file /
+   registry-only policy / dashboard allowlist. This is where the control actually is.
+5. MATCH ON WHAT THE SERVER IS, NOT WHAT IT IS CALLED. A name is a user-assigned
+   label. Claude Code states it outright: a serverName entry "is not a security
+   control." This is L-3.1's "the list is not a boundary" one level deeper.
+
+=========================================================================
+CLAUDE CODE  (code.claude.com/docs/en/{mcp,managed-mcp,security}.md — verified 2026-07-28)
+=========================================================================
+TRUST / PROPOSAL-NOT-APPROVAL:
+  - mcp.md Warning (verbatim): "Verify you trust each server before connecting it.
+    Servers that fetch external content can expose you to prompt injection risk."
+  - Project-scoped servers from `.mcp.json` awaiting approval show as (verbatim):
+    "⏸ Pending approval (run `claude` to approve)"; rejected show "✘ Rejected".
+  - (verbatim) "A cloned repository can't approve its own servers:
+    `enableAllProjectMcpServers` or `enabledMcpjsonServers` committed to the project's
+    `.claude/settings.json` is ignored in an untrusted folder, and the server stays at
+    `⏸ Pending approval` instead of being connected and health-checked." (v2.1.196+)
+  - Approvals that DO still apply in an untrusted folder: user ~/.claude/settings.json,
+    managed settings, --settings. A `disabledMcpjsonServers` entry in ANY settings file
+    still rejects the server.
+  - security.md (verbatim): "Trust verification: First-time codebase runs and new MCP
+    servers require trust verification" — with the honest caveat, verbatim:
+    "Trust verification is disabled when running non-interactively with the `-p` flag."
+    => AUTOMATION/CI IS THE GAP. Teach this.
+WHO VETS (the leader's money quote, security.md, verbatim):
+  "We encourage either writing your own MCP servers or using MCP servers from providers
+   that you trust. ... Anthropic reviews connectors against its listing criteria before
+   adding them to the Anthropic Directory, but does not security-audit or manage any
+   MCP server."
+ORG CONTROL (managed-mcp.md) — the leader's menu, seven documented patterns:
+  | Disable MCP        | managed-mcp.json with an empty server map              |
+  | Fixed deployment   | managed-mcp.json with the servers you want             |
+  | Approved catalog   | allowedMcpServers + allowManagedMcpServersOnly: true   |
+  | Plugin servers only| strictPluginOnlyCustomization with `mcp` in the list   |
+  | Soft allowlist     | allowedMcpServers WITHOUT allowManagedMcpServersOnly   |
+  | Denylist only      | deniedMcpServers                                       |
+  | No restrictions    | deploy nothing                                         |
+  - managed-mcp.json paths: /Library/Application Support/ClaudeCode/ (macOS),
+    /etc/claude-code/ (Linux+WSL), C:\Program Files\ClaudeCode\ (Windows). Delivered by
+    MDM/GPO/Intune/Jamf — "cannot be set through server-managed settings."
+  - If deployed: "Claude Code loads only the servers that file defines. Users cannot add,
+    modify, or use any other MCP servers, including plugin-provided servers."
+  - EVALUATION ORDER (verbatim headings): 1. Merge the lists. 2. Check the denylist —
+    "A server that matches any denylist entry, by URL, command, or name, is blocked.
+    Nothing overrides a denylist match." 3. Check the allowlist.
+    => same deny-beats-allow law as L-3.1, now at the CONNECTION level.
+  - allowManagedMcpServersOnly: true => "allowlists from user, project, and local
+    settings are ignored. The denylist still merges from all sources, so users can
+    always block servers for themselves." (Without it, a user can BROADEN your allowlist.)
+  - MATCH KEYS: serverUrl (wildcards, hostname case-insensitive) / serverCommand (exact,
+    every argument in order) / serverName.
+    *** WARNING VERBATIM (load-bearing): "A `serverName` entry, in either list, is not a
+    security control. The name is the label a user assigns when running `claude mcp add`
+    or editing a config file, not the underlying server, so a user can call any server
+    `github`. To enforce which servers actually run, add `serverCommand` or `serverUrl`
+    entries." ***
+  - allowedMcpServers UNSET = all allowed; EMPTY ARRAY [] = none allowed. (Not the same.)
+  - Credentials: "Any user on the machine can read this file, so don't store API keys or
+    other credentials in `env` blocks."
+  - ROLLOUT UX CAVEAT (verbatim): a previously configured server newly blocked by policy —
+    "The server silently disappears from /mcp and claude mcp list with no warning."
+    => tell users before you enforce; a silent disappearance reads as a bug.
+  - MONITORING: OpenTelemetry export with OTEL_LOG_TOOL_DETAILS=1 records which MCP
+    servers and tools users invoke => the register can be checked against reality.
+  - [M-10.3, 2026-07-25] namespacing "MCP tools are exposed to Claude as
+    mcp__<server>__<tool>"; permission patterns mcp__<server> / mcp__<server>__<tool> /
+    mcp__<server>__*; deny ["mcp__*"] blocks all MCP tools. Enterprise allowManagedMcpServersOnly.
+  - [M-10.3 LIVE, the good failure — reused as labB] un-allowlisted tool under
+    --permission-mode dontAsk = BLOCKED, and the agent REFUSED TO GUESS: "a payer/CPT
+    coverage determination is exactly the kind of thing that shouldn't come from my
+    recollection." Allowlisted = it called the tool and returned CPT-002 for 70553,
+    matching EligibilityService exactly.
+
+=========================================================================
+GITHUB COPILOT / VS CODE  (code.visualstudio.com/docs/copilot/customization/mcp-servers,
+  /docs/enterprise/ai-settings, docs.github.com — verified 2026-07-28)
+=========================================================================
+CONFIG: workspace `.vscode/mcp.json` — "Include this file in source control to share MCP
+  server configurations with your team." Also user profile (MCP: Open User Configuration),
+  remote user config, and devcontainer.json customizations.vscode.mcp.
+TRUST (verbatim): "Local MCP servers can run arbitrary code on your machine. Only add
+  servers from trusted sources, and review the publisher and server configuration before
+  starting it." / "When you add an MCP server to your workspace or change its
+  configuration, you need to confirm that you trust the server and its capabilities
+  before starting it."
+SANDBOX INTERACTION (verbatim): "When sandboxing is enabled, tool calls from the server
+  are auto-approved because they run in a controlled environment." (= L-3.1 lever 3
+  paying off at the connection layer.)
+ENTERPRISE POLICY (VS Code /docs/enterprise/ai-settings):
+  - `ChatMCP` policy configures the `chat.mcp.access` setting:
+      "all"      — developers can run MCP servers from any source
+      "registry" — developers can only run MCP servers from the configured registry
+      "none"     — MCP server support is disabled
+  - `McpGalleryServiceUrl` policy hosts a private registry: lets orgs "provide a curated
+    list of approved MCP servers" and "block access to the public GitHub MCP registry."
+  - Related setting names seen on the MCP page: chat.mcp.discovery.enabled, chat.mcp.autoStart.
+GITHUB ORG/ENTERPRISE POLICY (docs.github.com .../configure-mcp-server-access):
+  - Dropdown "Restrict MCP access to registry servers":
+      "Allow all"     — "No restrictions. All MCP servers can be used."
+      "Registry only" — "Only servers from the registry may run."
+  - "MCP Registry URL" field (MCP v0.1 path appended automatically — do not add /v0.1/servers).
+  - Requires "MCP servers in Copilot" = "Enabled everywhere" (enterprise) / "Enabled" (org).
+  - "Your chosen policy will immediately apply to developers in your enterprise/organization."
+CONTENT EXCLUSION (docs.github.com/en/copilot/concepts/context/content-exclusion) — the
+  FILE-LEVEL "may not touch" control, configurable at repository, organization and
+  enterprise level. What it does (verbatim): "Inline suggestions will not be available in
+  the affected files. The content in affected files will not inform inline suggestions in
+  other files. The content in affected files will not inform GitHub Copilot Chat's
+  responses. Affected files will not be reviewed in a Copilot code review."
+  *** THE HONEST CAVEAT — verbatim: "Content exclusion is currently not supported in Edit
+  and Agent modes of Copilot Chat in Visual Studio Code and other editors." ***
+  Also verbatim: "It's possible that Copilot may use semantic information from an excluded
+  file if the information is provided by the IDE indirectly. Examples of such content
+  include type information and hover-over definitions for symbols used in code, as well as
+  general project properties such as build configuration information." And: "Currently,
+  content exclusions do not apply to symbolic links (symlinks) and repositories located on
+  remote filesystems." Changes can take up to 30 minutes to take effect in loaded IDEs.
+  => The exact same shape as L-3.1's native-Windows sandbox caveat: a control that a
+     leader will assume covers the agent, and per the vendor's own docs, does not.
+
+=========================================================================
+CURSOR  (cursor.com/docs/context/mcp — verified 2026-07-28)
+=========================================================================
+CONFIG: `.cursor/mcp.json` (project) / `~/.cursor/mcp.json` (global, "available everywhere").
+ADMIN CONTROL: enterprise admins "control which MCP servers users may run from the Cursor
+  dashboard" via Team Settings > MCP Configuration, defining approved servers "by command
+  pattern or URL entry pattern" (= match on identity, same as Claude Code's
+  serverCommand/serverUrl). Shared team servers under Dashboard > Integrations & MCP.
+TOOL-LEVEL: "Tool allowlists restrict which tools from an approved server can run
+  automatically. Leave a tool allowlist empty to allow all tools from that server."
+  (= per-tool granularity, Claude Code's mcp__server__tool by another name.)
+NETWORK: outbound access modes for local command-based servers — "Allow all," "Allowlist,"
+  "Deny all," "No sandbox."  => the egress leg is directly configurable here.
+APPROVAL: "Cursor asks for approval before using MCP tools by default." MCP "follows the
+  same Run Modes as terminal commands" — under Auto-review "allowlisted MCP tools run
+  immediately." (Ties straight back to L-3.1's mode dial.)
+SECURITY GUIDANCE (verbatim): "Only install MCP servers from trusted developers and
+  repositories." / "Check what data and APIs the server will access." / "Use restricted
+  API keys with minimal required permissions." / "For critical integrations, review the
+  server's source code." / "MCP servers can access external services and execute code on
+  your behalf."
+
+=========================================================================
+THE EXFILTRATION CONDITION  [SECONDARY — attributed, NOT vendor-sourced]
+=========================================================================
+"The lethal trifecta" — coined by Simon Willison, 2025-06-16
+  (simonwillison.net/2025/Jun/16/the-lethal-trifecta/): an agent is exposed when it
+  combines "Access to private data, exposure to untrusted content, and the ability to
+  communicate externally." Hold any two and there is no exfiltration path; grant all
+  three in one session and poisoned content can read private data and ship it out.
+ATTRIBUTION DISCIPLINE: name Willison, do NOT imply a vendor coined or endorsed it.
+VENDOR-VERIFIED SUPPORT for the mechanism (use these when stating it as fact):
+  - Claude Code mcp.md: "Servers that fetch external content can expose you to prompt
+    injection risk."
+  - Claude Code security.md: "Isolated context windows: Web fetch uses a separate context
+    window to avoid injecting potentially malicious prompts"; "Avoid piping untrusted
+    content directly to Claude"; network-fetch commands (curl/wget) "are not auto-approved
+    by default."
+  - Cursor: MCP servers "can access external services and execute code on your behalf."
+  - Cursor network modes (Allow all / Allowlist / Deny all) = the egress leg as a dial.
+
+=========================================================================
+ANALOGY SOURCE
+=========================================================================
+HIPAA "minimum necessary" standard (45 CFR 164.502(b)) — HHS states the Privacy Rule
+  "requires a covered entity to make reasonable efforts to limit use, disclosure of, and
+  requests for protected health information to the minimum necessary to accomplish the
+  intended purpose."
+  NOTE ON SOURCING: hhs.gov returned HTTP 403 to a direct fetch on 2026-07-28; the wording
+  above is the HHS Minimum Necessary FAQ text as surfaced in search results. It is used as
+  the ANALOGY's named principle, not as a compliance instruction — regulatory depth is
+  L-3.4's job. Do not present the module as legal guidance.
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: the hospital's interface review / data-use agreement. No vendor gets a feed off
+  the clinical data bus because an engineer liked it. Every interface gets reviewed:
+  which fields, which direction, read or write, minimum necessary, who is the data
+  steward, who signs. An MCP server is a new interface into your data — same review,
+  same register, same signature. And you identify the interface by the system it actually
+  is, not by the label someone typed in the config.
+Spine: L-3.1 set how much the agent may DO; L-3.2 sets what it may REACH. The unit of
+  governance is the CONNECTION, and approving one is a data-access decision.
+Four moves: (1) treat it as a data-access review — direction, data class, blast radius;
+  (2) put the decision in an ENFORCED org layer (managed set / registry-only / dashboard),
+  not a repo file, because a checked-in server is a proposal; (3) match on identity
+  (URL/command), never on name — the vendor says the name is not a security control;
+  (4) know what the allowlist does NOT solve — an approved connector that ingests
+  untrusted content plus an egress path is an exfiltration route (break one leg), and
+  Copilot's content exclusion does not cover Agent mode.
+The good failure (M-10.3, live): denied the data, the agent refused to invent a coverage
+  determination. Design for refusal, not fabrication.
+Deliverable: a connection register — every server with direction, data class, owner and
+  approver of record — checked against real usage (OTEL), reviewed on a cadence.
+Scope held: retention / training / IP / provenance / audit trail = L-3.4. Review policy
+  for AI-written code = L-3.3. No new external claims needed by either from this sheet.
