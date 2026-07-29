@@ -1,0 +1,146 @@
+L-4.2 — Budgeting a team (the PA-pipeline team budget lab; big-model/small-model policy)
+LEADERSHIP L-04 (2/4). Model lineup + pricing read from the claude-api skill (the designated
+authoritative source; its own rule is "never answer model pricing from memory"), 2026-07-29.
+Vendor billing mechanics carried from l41-seats-vs-tokens.txt (verified 2026-07-29). Measured
+ratios re-read from m81/m82/m83/m84/m95 at source.
+
+*** SOURCING RULE (inherited from L-4.1, restated because this module is full of prices) ***
+Prices are dated and volatile; the STRUCTURE (three bands, the checkability test) is durable.
+Every dollar figure carries its date and a verify-current-pricing instruction. What the module
+teaches is the shape, not the price list.
+
+=========================================================================
+THE CURRENT LINEUP (claude-api skill, cached 2026-06-24; read 2026-07-29)
+=========================================================================
+  Model             ID                  Context   Input $/1M   Output $/1M
+  Claude Fable 5    claude-fable-5      1M        $10.00       $50.00
+  Claude Opus 5     claude-opus-5       1M        $5.00        $25.00
+  Claude Sonnet 5   claude-sonnet-5     1M        $3.00*       $15.00*      (*$2/$10 intro
+                                                                             through 2026-08-31)
+  Claude Haiku 4.5  claude-haiku-4-5    200K      $1.00        $5.00
+  Cross-check: Cursor's own pricing page lists Claude Sonnet 5 at $3/M in, $15/M out
+  (pre-promotion) — matching first-party list price (l41 sheet, 2026-07-29).
+
+*** THE NUMBER THAT SHARPENS THE WHOLE MODULE ***
+  Cheapest to most expensive across the ENTIRE current lineup = **10x** ($1/$5 Haiku 4.5 →
+  $10/$50 Fable 5). The realistic working gap, Haiku → Opus, is **5x**.
+  Now put that beside what the course MEASURED on real work:
+      delivery method (paste vs path)   9.7x
+      turn count (1 turn vs 10)        21.1x
+  => THE MODEL TIER IS THE NARROWEST LEVER ON THE BOARD. Even the maximum possible model
+     swap (10x on paper) is smaller than a single bad decision about how you hand the agent
+     its context (9.7x measured, on the SAME model). This is the arithmetic behind M-8.4's
+     measured 1.8x on grind work and M-8.1's haiku-was-0.22%-of-the-bill split. Teach it.
+  NOTE ON HAIKU'S 200K CONTEXT: the small model also carries a 5x smaller context window than
+  the 1M-token models — a routing constraint that is not about price at all.
+
+=========================================================================
+THE SECOND DIAL — EFFORT (this is what makes it a 2026 policy, not a 2024 one)
+=========================================================================
+`output_config: {effort: "low"|"medium"|"high"|"xhigh"|"max"}` — GA, no beta header, default
+`high`. Claude Code exposes it as `/effort`. Per the skill's guidance:
+  - "use a minimum of `high` for intelligence-sensitive work, `max` when correctness matters
+    more than cost, and `low` for subagents or simple tasks"
+  - "lower effort means fewer and more-consolidated tool calls, less preamble, and terser
+    confirmations (`high` is often the sweet spot balancing quality and token efficiency)"
+  - Model-choice guidance (code.claude.com/docs/en/costs, l41 sheet): "Sonnet handles most
+    coding tasks well and costs less than Opus. Reserve Opus for complex architectural
+    decisions or multi-step reasoning. ... For simple subagent tasks, specify `model: haiku`
+    in your subagent configuration."
+=> A big/small-model policy written in 2026 has TWO dials, not one: WHICH MODEL and HOW MUCH
+   EFFORT. Effort is the finer-grained one, it does not change the model's judgment ceiling,
+   and lowering it on a capable model is frequently the better move than routing the task to
+   a weaker one. Leaders who only debate model tier are arguing about the narrow dial.
+   (Thinking tokens bill as output tokens, so effort moves real money.)
+CACHE ECONOMICS (same source, and it CONFIRMS M-8.2's measured finding): cache reads cost
+  ~0.1x base input; cache writes cost 1.25x (5-min TTL) or 2x (1-hour TTL). "Any byte change
+  anywhere in the prefix invalidates everything after it." => this is precisely why pasting a
+  file cost 9.7x: it forced cache CREATION (103,192 tokens) instead of cache reads.
+
+=========================================================================
+THE THREE BANDS (the lab's structure)
+=========================================================================
+BAND 1 — STEP (seats). Capitation. Forecast = seats x headcount. Predictable, moves only when
+  you hire. NOT a usage control.
+BAND 2 — SLOPE (usage). Fee-for-service. Forecast = active developers x active days/month x
+  cost per active day.
+  *** THE DENOMINATOR THAT MATTERS IS ACTIVE DAYS, NOT HEADCOUNT. *** A seat nobody uses costs
+  the step and nothing else.
+  PUBLIC PRIOR (Anthropic, code.claude.com/docs/en/costs, verified 2026-07-29, verbatim):
+    "Across enterprise deployments, the average cost is around $13 per developer per active
+     day and $150-250 per developer per month, with costs remaining below $30 per active day
+     for 90% of users."
+  AND THE METHOD, which is this course's own advice in the vendor's mouth:
+    "To estimate spend for your own team, start with a small pilot group and use the tracking
+     tools below to establish a baseline before wider rollout."  (= L-2.1 pilot + M-11.1
+     baseline). A prior you never replace is a guess with a citation.
+BAND 3 — LUMPY (everything not per-person). THIS IS WHERE BUDGETS BREAK, and it scales with
+  POLICY, not headcount:
+  - PR review on every push x number of pushes, at $15-25/review (Claude Code Code Review,
+    verified 2026-07-28, l33 sheet). "Reviewing on every push runs the most reviews and costs
+    the most."
+  - Automation / headless runs don't sleep (M-10.4's background agent: $0.2320, 9 turns, 24s).
+  - Scheduled tasks fire on their interval "even while the session is idle, sending your full
+    context each time."
+  - Agent teams: vendor-stated "approximately 7x more tokens than standard sessions when
+    teammates run in plan mode" — confirming M-9.5's measured "you pay for every child."
+  - Background/idle usage: "typically under $0.04 per session" (small, but non-zero, per session).
+  => Every one of these is something a leader switched on in L-03. Budget and policy are one
+     conversation.
+
+=========================================================================
+THE MODEL POLICY — ROUTE ON RISK, NOT COST
+=========================================================================
+THE ROUTING TEST [M-8.4, re-read at source m84-model-economics.txt:51-60, verbatim]:
+  "The tell is not task SIZE, it is whether you can CHECK the answer. A grind answer you can
+   verify in seconds; a judgment answer you cannot verify without redoing the judgment, which
+   is why you bought the model in the first place."
+  ESCALATION RULE, verbatim: "escalate on failure or on any task whose output you cannot
+   verify. Escalation must be triggered by the TASK TYPE, not by the model's confidence — the
+   small model was maximally confident while being wrong."
+THE MEASURED CAUTIONARY CASE [M-8.4]: on the threshold question the small model answered for
+  **$0.0368 and was WRONG** — it asserted the inclusive rule, citing javadoc + constant +
+  decision block by line number, while line 99 was strict `>`, and flagged NO discrepancy.
+  The large model led with "the repo contradicts itself" + 4 sources + the introducing commit.
+  Failure mode is **fluency, not stupidity**. Cheap-and-wrong is the expensive outcome.
+ON GRIND WORK [M-8.4]: both models answered 13; small $0.0912 vs large $0.1612 = only **1.8x**,
+  because both did the same 4 turns and carried context doesn't get cheaper when the model does.
+WHY A COST-MOTIVATED POLICY IS OPTIMIZING THE WRONG TERM [M-8.1]: in one metered invocation
+  that used two models, haiku was **$0.000616 = 0.22%** of the bill and opus **99.78%**.
+=> Write the policy for CORRECTNESS. It touches cost only incidentally — and the arithmetic
+   above (10x max spread vs 9.7x/21.1x measured behavioral levers) says why.
+
+=========================================================================
+VARIANCE IS A COACHING SIGNAL, NOT A COMPLIANCE ONE
+=========================================================================
+The vendor's own distribution says the tail is where the money is: $13/active-day average,
+"below $30 per active day for 90% of users" — i.e. a real spread, with a top decile above 2x
+the average. A developer at 3x the median is EITHER your highest-leverage engineer (the L-2.2
+champion doing the most valuable work) OR someone pasting 193KB files into prompts (the
+measured 9.7x). **Same number, opposite response** — so investigate before you intervene, and
+never turn it into an individual scorecard (L-5.3's Goodhart problem; the same discipline
+L-3.3 applied to code churn).
+CONTROLS: caps at org/group/user + a CHOSEN at-ceiling behaviour (Copilot states the choice
+  explicitly: "Usage continues at published per-credit rates" OR "Usage is blocked until the
+  next billing cycle" — l41 sheet). Rate limits sized from the per-user TPM/RPM table by org
+  size (1-5 users 200k-300k TPM/user down to 500+ users 10k-15k) — that table is a budget-lab
+  input, not just an ops detail.
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: how a payer manages drug spend. Forecast total = members x utilization x cost per
+  script (band 1+2). Handle SPECIALTY drugs separately because a tiny number of cases dominate
+  the total (band 3, the lumpy items). Publish a FORMULARY that tiers by clinical need, not by
+  price — with the failure mode every payer knows: force the cheapest option and you get worse
+  outcomes and higher downstream cost when the cheap drug doesn't work and the patient lands
+  in the ED. That maps to every beat, and "cheap drug fails" IS the $0.0368-and-wrong result.
+Spine: a team budget is a forecast of BEHAVIOR, built in three bands — and the model policy
+  on top of it should be written for CORRECTNESS, not cost, because the model barely moves the
+  bill while it moves the error rate a lot.
+Five moves: (1) three bands, not one number; (2) start from the public prior, replace it with
+  your own pilot baseline; (3) the lumpy band scales with policy, so audit the L-03 switches;
+  (4) route on "can you check the answer?", escalate on task type never on confidence, and
+  remember effort is the finer dial than model tier; (5) set caps + a chosen ceiling behaviour,
+  then read variance as a coaching signal.
+Hands to L-4.3 (the ROI narrative / CFO deck from your own DORA deltas).

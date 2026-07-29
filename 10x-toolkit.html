@@ -1279,6 +1279,38 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim38{--s38green:#3E9A6B;--s38amber:#c99a3a;--s38red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim38{--s38green:#2d7350;--s38amber:#976f16;--s38red:#B0503C}
+.sim38 .s38head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim38 .s38lab{font-size:8px;color:var(--faint);letter-spacing:.1em;margin:10px 0 6px}
+.sim38 .s38band{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.sim38 .s38band.step{border-left:3px solid var(--s38green)}
+.sim38 .s38band.slope{border-left:3px solid var(--s38amber)}
+.sim38 .s38band.lumpy{border-left:3px solid var(--s38red)}
+.sim38 .s38bn{font-size:9.5px;color:var(--text);font-weight:600}
+.sim38 .s38bf{font-size:8px;color:var(--faint);font-weight:400;display:block;margin-top:1px}
+.sim38 .s38amt{font-size:11px;font-weight:700;white-space:nowrap;color:var(--dim)}
+.sim38 .s38band.step .s38amt{color:var(--s38green)}
+.sim38 .s38band.slope .s38amt{color:var(--s38amber)}
+.sim38 .s38band.lumpy .s38amt{color:var(--s38red)}
+.sim38 .s38why{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.sim38 .s38why b{color:var(--text);font-weight:500}
+.sim38 .s38band.open .s38why{display:block}
+.sim38 .s38note{font-size:8.5px;color:var(--faint);line-height:1.55;margin-top:6px;font-style:italic}
+.sim38 .s38form{border:1px dashed var(--line);border-radius:8px;padding:10px 11px;margin-top:10px}
+.sim38 .s38q{font-size:10px;color:var(--text);font-weight:600;text-align:center;margin-bottom:8px}
+.sim38 .s38cols{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sim38 .s38col{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel)}
+.sim38 .s38col.yes{border-color:var(--s38green)}
+.sim38 .s38col.no{border-color:var(--s38red)}
+.sim38 .s38ct{font-size:9px;font-weight:700;letter-spacing:.04em}
+.sim38 .s38col.yes .s38ct{color:var(--s38green)}
+.sim38 .s38col.no .s38ct{color:var(--s38red)}
+.sim38 .s38cb{font-size:8.5px;color:var(--dim);line-height:1.55;margin-top:5px}
+.sim38 .s38cb b{color:var(--text);font-weight:500}
+.sim38 .s38foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim38 .s38foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim38 .s38band{grid-template-columns:1fr}.sim38 .s38amt{justify-self:start}.sim38 .s38cols{grid-template-columns:1fr}}
 .sim37{--s37green:#3E9A6B;--s37amber:#c99a3a;--s37red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim37{--s37green:#2d7350;--s37amber:#976f16;--s37red:#B0503C}
 .sim37 .s37head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5788,6 +5820,56 @@ const MODS = [
       {q:'Finance asks what one particular agent cost last month. What can you honestly give them?',
        options:['An exact invoiced figure per agent','<b>A directional number only.</b> Per-user and per-team spend is billing-grade, and per-session and per-model is precise &mdash; but within-session attribution to subagents and MCP servers is approximate, computed locally at list rates. Charge back at team or repo grain','Nothing &mdash; no attribution exists at any level','An exact figure, but only on enterprise plans'], answer:1}
     ]
+  },
+  {
+    id:'L-4.2', path:'lead', track:'L-04', title:'Budgeting a team', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'How your payer manages drug spend. Total is forecast as members &times; utilization &times; cost per script. <em>Specialty</em> drugs are handled separately, because a tiny number of cases dominate the total and they do not scale with membership at all. And the formulary tiers by <b>clinical need, not by price</b> &mdash; because every payer knows the failure mode of forcing the cheapest option: the cheap drug does not work, the patient lands in the ED, and the saving is wiped out several times over. All three ideas transfer directly, including the last one, which is the whole argument about model choice.',
+      body:
+        '<p><strong>Build the budget in three bands, not one number.</strong> The <b>step</b> is seats &mdash; forecastable from headcount, moving only when you hire. The <b>slope</b> is usage, and the denominator that matters there is <b>active days, not headcount</b>: a seat nobody touches costs the step and nothing else, so multiply active developers by active days by cost per active day. The <b>lumpy</b> band is everything that is not per-person. Most budgets contain only the first band, which is exactly why the invoice surprises people.</p>' +
+        '<p><strong>Start from a public prior, then replace it with your own baseline.</strong> Anthropic publishes a usable one: around <b>$13 per developer per active day</b>, <b>$150&ndash;250 per month</b>, with 90% of users under $30 per active day (figures dated &mdash; check current guidance before you commit them to a plan). That is enough to open a conversation with finance. It is not enough to close one, and the vendor&rsquo;s own recommended method is the one this course already taught you: start with a small pilot group and establish a baseline before wider rollout &mdash; L-2.1&rsquo;s pilot and M-11.1&rsquo;s baseline, in their words rather than mine. <b>A prior you never replace is just a guess with a citation attached.</b></p>' +
+        '<p><strong>The lumpy band is where budgets actually break, and it scales with policy rather than headcount.</strong> Pull-request review on every push multiplies a $15&ndash;25 per-review cost by the number of pushes. Headless automation does not sleep. Scheduled tasks fire on their interval even while a session sits idle, sending the full context each time. Agent teams run roughly <b>7&times;</b> the tokens of a standard session &mdash; the vendor&rsquo;s own figure, which independently confirms what the fan-out run in this course measured. Every one of those is something a leader switched on back in L-03, which is the point: <b>budget and governance are one conversation</b>, and forecasting them separately mis-states both.</p>' +
+        '<p><strong>Now the model policy &mdash; and the inversion worth the hour.</strong> Almost everyone writes big-model/small-model policy to save money. Look at the arithmetic. The entire current model lineup spans roughly <b>10&times;</b> from cheapest to most expensive, and the realistic small-to-large gap is nearer <b>5&times;</b>. Against that, on <em>the same model</em>, this course measured a <b>9.7&times;</b> swing from how context was handed over and <b>21.1&times;</b> from turn count &mdash; and in one metered run the cheap model accounted for <b>0.22%</b> of the bill. <b>Model tier is the narrowest lever on the board.</b> So write the policy for <em>correctness</em> instead, and route on one question: <b>can you check the answer?</b> A count you can re-run or a test that goes red is safe for a small model. A judgment call is not &mdash; you cannot verify it without redoing the judgment, which is the thing you bought the model for. The cautionary case here is measured, not hypothetical: asked which threshold rule the code actually implements, the cheap model answered for <b>$0.0368 and was confidently wrong</b>, citing the javadoc, the constant and a line number while flagging no discrepancy at all. The failure mode is <b>fluency, not stupidity</b> &mdash; which is precisely why you must <b>escalate on task type, never on the model&rsquo;s confidence</b>. It was maximally confident while wrong. One more thing has changed and is worth putting in the policy: model tier is no longer the only dial. <b>Effort levels</b> now move thinking spend up and down <em>without</em> changing whose judgment you are getting, with the low end explicitly recommended for subagents and simple tasks. Lowering effort on a capable model is often the better trade than routing the work to a weaker one.</p>' +
+        '<p><strong>Finally: set the controls, then read the variance like a manager.</strong> Put caps at org, group and user level, and choose the at-ceiling behaviour deliberately &mdash; keep working at published rates, or block until the next cycle. That is a policy decision, not a default to inherit. Then look at the spread, because the published distribution tells you the tail is where the money is. A developer at three times the median is <em>either</em> your highest-leverage engineer doing the most valuable work in the team, <em>or</em> someone pasting 193KB files into prompts. Same number, opposite response &mdash; so investigate before you intervene, and never turn it into an individual scorecard. That is the same discipline L-3.3 applied to churn and L-5.3 will make general: the moment a diagnostic becomes a personal target, it stops being a signal you can trust. L-4.3 turns all of this outward &mdash; the ROI narrative, built from your own deltas rather than a vendor&rsquo;s.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-38'},
+    labA:{
+      title:'Build the PA-squad budget',
+      steps:[
+        'Take one real squad and compute all three bands: <b>step</b> (seats &times; headcount), <b>slope</b> (active devs &times; <b>active days</b> &times; cost/active-day), and <b>lumpy</b>. Mark each line clearly as <em>public prior</em> or <em>our measured baseline</em> &mdash; if every line is still a prior after this exercise, that is your finding, and the fix is a pilot rather than a better spreadsheet.',
+        'Build the lumpy band by walking your own L-03 decisions rather than guessing: review triggers (per-push versus per-PR versus manual), scheduled and headless automation, approved connectors, and whether agent teams are enabled. Put a number against each, even a rough one &mdash; a named uncertainty beats an omission.',
+        'Write the <b>model policy as a routing rule on checkability</b>, in one sentence, plus the escalation trigger (<em>task type, never confidence</em>). Name two or three task classes on each side of the line from your own backlog. Add the second dial: where will you lower <b>effort</b> rather than change model?',
+        'Set caps at org, group and user level and <b>choose the at-ceiling behaviour explicitly</b>. Then decide, <em>before you look at any names</em>, what you will do when someone lands at 3&times; the median &mdash; writing that rule in advance is what stops a cost number turning into a performance conversation.',
+        'Success: a three-band budget with prior-versus-measured labelled per line, the lumpy band traced to specific governance switches, a one-sentence routing rule with named task classes, caps with a chosen ceiling behaviour, and a written response-to-variance you committed to before seeing who it applies to.'
+      ]
+    },
+    labB:{
+      title:'Watch routing decided both ways',
+      steps:[
+        'Watch the <b>grind</b> task run on both a small and a large model: same question, same correct answer, and only about <b>1.8&times;</b> between them &mdash; because both did the same four turns, and the carried context does not get cheaper when the model does. Note how little the model choice bought you here.',
+        'Now watch the <b>judgment</b> task: the small model answers the threshold question for <b>$0.0368</b> and is <em>wrong</em> &mdash; and note carefully <em>how</em> it is wrong. It cites the javadoc, the constant and a line number, and flags no discrepancy. Nothing about the answer looks cheap.',
+        'That is the whole lesson in one screen: the failure mode is <b>fluency, not stupidity</b>, and a confident wrong answer is undetectable at exactly the moment you most need to detect it. Work out what it would have cost you to ship it.',
+        'Success: you can state the routing test in one sentence, explain why escalation must trigger on task type rather than confidence, and name a task in your own backlog that must never go to the small model.'
+      ]
+    },
+    checklist:[
+      'I budget in <b>three bands</b> &mdash; step, slope, and the lumpy items most forecasts omit.',
+      'I forecast the slope on <b>active days</b>, and treat any public figure as a prior to replace.',
+      'I trace the lumpy band to the <b>governance switches</b> that drive it (review triggers, automation, teams).',
+      'I route models on <b>&ldquo;can you check the answer?&rdquo;</b> and escalate on task type, never on confidence.',
+      'I set caps with a chosen ceiling behaviour, and treat cost variance as a <b>coaching signal</b>, never a scorecard.'
+    ],
+    quiz:[
+      {q:'How should you forecast the usage half of a team budget?',
+       options:['Headcount &times; an average monthly cost per developer','<b>Active developers &times; active days &times; cost per active day</b> &mdash; the denominator is active days, not headcount, because an unused seat costs the step and nothing else. Start from a published prior, then replace it with a baseline from your own pilot','Last month&rsquo;s invoice plus a growth factor','Seats alone &mdash; usage is included'], answer:1},
+      {q:'Which part of the budget most often breaks the forecast?',
+       options:['Seat cost, when headcount grows faster than planned','The <b>lumpy band</b> &mdash; review-on-every-push, headless automation, scheduled tasks, and agent teams at ~7&times; a standard session. None of it is per-person, and all of it scales with <b>policy you set in L-03</b>','Model price increases','Developers writing longer prompts'], answer:1},
+      {q:'Why write a big-model/small-model policy at all?',
+       options:['To cut spend &mdash; the model is the largest line on the bill','For <b>correctness</b>. The whole lineup spans about 10&times; and the cheap model was 0.22% of one metered bill, while context delivery measured 9.7&times; on the <em>same</em> model &mdash; so tier is the narrowest lever. Route on whether you can check the answer','To standardize tooling across teams','To reduce latency for interactive work'], answer:1},
+      {q:'A developer&rsquo;s spend is 3&times; the team median. What is the right response?',
+       options:['Cap their usage and raise it in their next review','<b>Find out which kind of 3&times; it is first.</b> They are either your highest-leverage engineer or someone pasting large files into prompts &mdash; same number, opposite response. Cost variance is a coaching signal, and never an individual scorecard','Nothing &mdash; usage variance is expected','Move them to the cheaper model by default'], answer:1}
+    ]
   }
 ];
 
@@ -7914,6 +7996,46 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-38 · The Budget Build (spec: VISUALS.md) ----------
+   A team budget in three bands (step / slope / lumpy) with a worked 8-engineer PA squad, then
+   the model formulary as a routing rule on checkability. The prior ($13/active-day) and the
+   model list prices are dated 2026-07-29 (l42-budgeting-a-team.txt); the measured ratios come
+   from the course's own runs. Foot carries the arithmetic that makes the module: the whole
+   model lineup spans 10x, while delivery method measured 9.7x on ONE model. L-4.2. */
+VISUALS['SIM-38'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BANDS = [
+    ['step','STEP &middot; seats','forecastable from headcount &mdash; 8 seats','flat',
+     'Capitation. It moves when you hire and at no other time. Every organization budgets this band, which is why it is never the one that surprises anyone. Remember what it cannot do: <b>cutting seats removes people, not consumption</b>.'],
+    ['slope','SLOPE &middot; usage','active devs &times; <b>active days</b> &times; $/day','~$13/day',
+     'The denominator that matters is <b>active days, not headcount</b> &mdash; a seat nobody uses costs the step and nothing else. Anthropic publishes a usable prior: <b>&ldquo;around $13 per developer per active day and $150&ndash;250 per developer per month, with costs remaining below $30 per active day for 90% of users&rdquo;</b> (2026-07-29 &mdash; verify current figures). Use it to start, then replace it: the vendor&rsquo;s own method is to <em>&ldquo;start with a small pilot group&hellip; to establish a baseline before wider rollout&rdquo;</em> &mdash; which is L-2.1&rsquo;s pilot and M-11.1&rsquo;s baseline, in their words. <b>A prior you never replace is a guess with a citation.</b>'],
+    ['lumpy','LUMPY &middot; policy-driven','not per-person &mdash; scales with what you switched on','the surprise',
+     'The band most budgets omit entirely, and the one that breaks them. PR review on <em>every push</em> multiplies a $15&ndash;25 per-review cost by the number of pushes. Headless automation does not sleep. Scheduled tasks fire on their interval &ldquo;even while the session is idle, sending your full context each time.&rdquo; Agent teams run <b>~7&times;</b> the tokens of a standard session &mdash; the vendor&rsquo;s own number, confirming what the fan-out run measured. <b>Every one of these is something you switched on in L-03</b>, which is why budget and policy are one conversation, not two.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim38" aria-label="Building a team budget in three bands, plus the model routing rule">' +
+      '<div class="s38head"><span>SIM-38 &middot; THE BUDGET BUILD</span><span>ONE PA SQUAD &middot; 8 ENGINEERS</span></div>' +
+      '<div class="s38lab">THREE BANDS &mdash; NOT ONE NUMBER &middot; TAP EACH</div>' +
+      BANDS.map((b,i) =>
+        '<div class="s38band ' + b[0] + '" data-b="' + i + '">' +
+          '<div class="s38bn">' + b[1] + '<span class="s38bf">' + b[2] + '</span></div>' +
+          '<div class="s38amt">' + b[3] + '</div>' +
+          '<div class="s38why">' + b[4] + '</div>' +
+        '</div>').join('') +
+      '<div class="s38note">Worked as a starting shape, not a quote: 8 seats (step) + 8 devs &times; ~18 active days &times; ~$13 (slope, &asymp;$1.9k) + whatever your review triggers, automation and agent teams add (lumpy). Your baseline replaces every number here.</div>' +
+      '<div class="s38form"><div class="s38q">THE MODEL FORMULARY &mdash; &ldquo;Can you check the answer?&rdquo;</div>' +
+        '<div class="s38cols">' +
+          '<div class="s38col yes"><div class="s38ct">&#10003; YES &mdash; small model fine</div>' +
+            '<div class="s38cb">A count you can re-run, a compile, a test that goes red. Wrong is <b>cheap to detect</b>. Measured: on grind work the cheap model was only <b>1.8&times;</b> cheaper anyway &mdash; both did the same four turns, and carried context does not get cheaper when the model does. Genuine wins here: mechanical subagent volume, and lower <em>effort</em> on routine work.</div></div>' +
+          '<div class="s38col no"><div class="s38ct">&#10007; NO &mdash; big model required</div>' +
+            '<div class="s38cb">Judgment, policy semantics, ambiguity &mdash; <b>you cannot verify the answer without redoing the judgment</b>, which is why you bought the model. Measured: asked which threshold rule the code implements, the cheap model answered for <b>$0.0368 and was confidently wrong</b>, citing the javadoc, the constant and a line number while flagging no discrepancy. The failure mode is <b>fluency, not stupidity</b> &mdash; so escalate on <em>task type</em>, never on the model&rsquo;s confidence.</div></div>' +
+        '</div></div>' +
+      '<div class="s38foot"><b>Why this policy is about correctness, not cost.</b> Priced 2026-07-29, the entire current model lineup spans about <b>10&times;</b> end to end, and the realistic small-to-large gap is nearer <b>5&times;</b>. Set that beside what this course measured on <em>the same model</em>: handing the agent a pasted file instead of a path cost <b>9.7&times;</b>, and a ten-turn exploration cost <b>21.1&times;</b> a one-turn answer. <b>The model tier is the narrowest lever on the board</b> &mdash; and in one metered run the cheap model was 0.22% of the bill. There is a second, finer dial worth knowing: <b>effort levels</b> (low through max) move thinking spend without changing which model&rsquo;s judgment you get, and the guidance is to reserve the low end for subagents and simple tasks. Debating model tier alone is arguing about the narrow dial.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s38band').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s38band').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-37 · The Two Meters (spec: VISUALS.md) ----------
