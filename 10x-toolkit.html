@@ -1279,6 +1279,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim41{--s41green:#3E9A6B;--s41amber:#c99a3a;--s41red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim41{--s41green:#2d7350;--s41amber:#976f16;--s41red:#B0503C}
+.sim41 .s41head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim41 .s41thesis{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim41 .s41thesis b{color:var(--text);font-weight:500}
+.sim41 .s41lab{font-size:8px;color:var(--faint);letter-spacing:.1em;margin:9px 0 6px}
+.sim41 .s41row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;margin-bottom:4px;cursor:pointer;display:grid;grid-template-columns:1fr 92px;gap:9px;align-items:center}
+.sim41 .s41row.ask{border-left:3px solid var(--s41green)}
+.sim41 .s41row.inst{border-left:3px solid var(--s41amber)}
+.sim41 .s41dim{font-size:9.5px;color:var(--text);font-weight:600}
+.sim41 .s41warn{font-size:7px;letter-spacing:.06em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--s41amber);color:var(--s41amber);margin-left:5px;white-space:nowrap}
+.sim41 .s41how{font-size:7.5px;letter-spacing:.07em;font-weight:700;text-align:center;padding:3px 5px;border-radius:999px;border:1px solid var(--line);color:var(--dim);line-height:1.3}
+.sim41 .s41row.ask .s41how{color:var(--s41green);border-color:var(--s41green)}
+.sim41 .s41row.inst .s41how{color:var(--s41amber);border-color:var(--s41amber)}
+.sim41 .s41why{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.sim41 .s41why b{color:var(--text);font-weight:500}
+.sim41 .s41row.open .s41why{display:block}
+.sim41 .s41rules{border:1px solid var(--s41red);border-radius:8px;padding:9px 11px;margin-top:10px}
+.sim41 .s41rh{font-size:9px;color:var(--s41red);font-weight:700;line-height:1.55;margin-bottom:7px}
+.sim41 .s41rule{font-size:8.5px;color:var(--dim);line-height:1.55;padding:3px 0;border-bottom:1px dotted var(--line);display:flex;gap:7px}
+.sim41 .s41rule:last-child{border-bottom:none}
+.sim41 .s41rn{color:var(--s41red);font-weight:700;flex:0 0 auto}
+.sim41 .s41rule b{color:var(--text);font-weight:600}
+.sim41 .s41foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim41 .s41foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim41 .s41row{grid-template-columns:1fr}.sim41 .s41how{justify-self:start}}
 .sim40{--s40green:#3E9A6B;--s40amber:#c99a3a;--s40red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim40{--s40green:#2d7350;--s40amber:#976f16;--s40red:#B0503C}
 .sim40 .s40head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -6015,6 +6041,56 @@ const MODS = [
       {q:'An executive asks you to rank teams by their DORA numbers. What do you say?',
        options:['Agree, but only share the ranking privately with team leads','<b>Decline, and explain why:</b> ranked metrics become targets and stop measuring &mdash; teams optimize the number and definitions drift toward whatever flatters, so you lose the diagnostic permanently. Offer the distribution and a plan for the outliers instead','Agree, provided the metrics are risk-adjusted first','Agree &mdash; visibility drives improvement'], answer:1}
     ]
+  },
+  {
+    id:'L-5.2', path:'lead', track:'L-05', title:'SPACE &amp; DX Core 4', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'The patient-reported outcome measure. Labs, imaging and readmission rates tell you what the system did &mdash; and none of them tell you whether the patient can climb the stairs, sleep through the night, or go back to work. For that you have to <em>ask</em>, with a real instrument, at a cadence that does not exhaust the person answering. Every clinician also knows the trap that comes with it: run a symptom survey and then visibly ignore the answers, and you have damaged the relationship you were trying to measure. Asking is never neutral.',
+      body:
+        '<p><strong>Start with what a green dashboard is compatible with.</strong> Every one of L-5.1&rsquo;s five metrics can look healthy while your best reviewer is quietly done, while flow is being shredded by interruptions, or while the review queue is held together by two people who will not say so. Those metrics describe the delivery <em>system</em>; they are structurally blind to the people inside it. SPACE exists to say precisely this &mdash; that developer productivity <b>&ldquo;is about more than an individual&rsquo;s activity levels or the efficiency of the engineering systems relied on to ship software, and it cannot be measured by a single metric or dimension.&rdquo;</b></p>' +
+        '<p><strong>The useful way to hold SPACE&rsquo;s five dimensions is not as a list but as a sorting question: how do you actually get each one?</strong> Satisfaction and well-being, and communication and collaboration, exist only if you <b>ask</b>. Efficiency and flow is partly instrumentable &mdash; wait times, handoffs &mdash; but the part that matters, whether people can get into flow at all, is reported rather than measured. Performance and Activity are the two you can fully instrument, and here is the pattern worth sitting with: <b>the two dimensions you can measure without asking anyone are the two that tell you least about the humans.</b> Everything that would warn you early has to be asked for. <b>Activity deserves its own warning.</b> It is the easiest to collect, the most collected, and the least informative on its own &mdash; SPACE cautions against reading activity in isolation, and it is the dimension that quietly turns into a vanity metric the moment it is reported without the other four. L-5.3 refuses several of its descendants outright.</p>' +
+        '<p><strong>DX Core 4 is the assembly, not a rival framework.</strong> It <b>&ldquo;encapsulates DORA, SPACE, and DevEx&rdquo;</b> across four dimensions &mdash; <b>speed, effectiveness, quality, and business impact</b> &mdash; and its usefulness to you is mostly practical: you have to present <em>one</em> thing to an executive audience, not three. Two things about it are worth keeping rather than skimming. It carries an explicit balance warning &mdash; <b>&ldquo;changes to one dimension, such as speed, may negatively affect others&rdquo;</b> &mdash; which is L-5.1&rsquo;s divergence stated at framework level. And it declines to produce a single headline number <em>by design</em>. When someone asks you for the one number, that refusal is not evasion; it is the framework working as intended.</p>' +
+        '<p><strong>Now the part that decides whether any of this helps: the survey is an intervention, not just an instrument.</strong> Ask people how they are and then visibly do nothing, and you have not merely failed to measure &mdash; you have told them you know and do not care. Morale ends up <em>lower</em> than if you had never asked. Every rule for running one follows from that fact rather than from survey-design fashion. Keep it <b>short</b> enough to answer in one sitting. Run it <b>infrequently enough that you can act between rounds</b> &mdash; if nothing can change before you ask again, you are not measuring, you are nagging. <b>Close the loop visibly</b> (&ldquo;you said X, we changed Y&rdquo;), and decide who sends that message <em>before</em> the first survey goes out, because closing the loop is the step that always gets dropped. <b>Never let it become a ranking</b>: the moment scores are compared across teams or attached to a person, people answer strategically and the instrument is gone &mdash; the same Goodhart failure as churn, cost variance and DORA, now on the one measure that depends entirely on candour. And <b>be honest about anonymity</b>, because on a team of six &ldquo;anonymous&rdquo; is a claim nobody believes; say what you can actually promise and aggregate accordingly.</p>' +
+        '<p><strong>Finally, read the two instruments together, because each answers a question the other cannot.</strong> The worked example is already in this course: DORA 2025 found <b>30% report little or no trust in the code generated by AI.</b> No delivery metric will ever show you that. But it predicts a great deal &mdash; whether your review policy is respected or performed (L-3.3), whether your adoption funnel stalls at the activation step (L-2.3), and whether the throughput gain you are about to present is built on something people quietly believe is unsafe. System metrics tell you <em>what happened</em>; human metrics tell you <em>whether it is sustainable</em>. A leader who runs only the first is measuring a machine and guessing about everyone operating it. L-5.3 takes the sharper edge of this: the metrics to refuse outright, however often you are asked for them.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-41'},
+    labA:{
+      title:'Design a survey people don&rsquo;t hate',
+      steps:[
+        'Take your current survey &mdash; or its absence &mdash; and cut it to something <b>you would willingly answer yourself</b> in one sitting. Every question you keep should have a named person who would act on a bad answer; if no one would, delete it rather than collecting it.',
+        'Set a cadence you can genuinely <b>act between</b>. Quarterly with visible follow-through beats monthly with none, and if nothing can change between rounds you have chosen a cadence that only produces resentment.',
+        'Write the <b>close-the-loop message now</b>, before the first send &mdash; the &ldquo;you said X, we changed Y&rdquo; note, with a named sender and a date. This is the step that always gets dropped, and dropping it is what turns a survey into a morale problem.',
+        'Write the <b>no-ranking rule</b> and state honestly where <b>anonymity</b> holds. Do the arithmetic on your smallest team: if a group is six people, say what you can really promise rather than repeating a word nobody believes.',
+        'Success: a survey you would answer honestly yourself, with the close-the-loop step scheduled and owned before the first send, a written no-ranking rule, and an anonymity claim that survives contact with your actual team sizes.'
+      ]
+    },
+    labB:{
+      title:'Find the signal only asking reveals',
+      steps:[
+        'Put your delivery dashboard beside whatever human signal you have. Hunt specifically for the disagreement: a place where the system metrics look healthy and the people do not, or the reverse.',
+        'If you have no human signal at all, that <em>is</em> the finding &mdash; and the fastest probe is the one the industry already ran: how much do your engineers actually trust AI-generated code? Roughly <b>30% report little or no trust</b>, and knowing where your team sits changes what you should do next.',
+        'Trace the consequence downstream rather than filing it as sentiment. Low trust means review load that does not fall as adoption rises, a funnel that stalls at activation, and throughput gains built on something people believe is unsafe &mdash; all of which show up in your numbers <em>later</em>, as a surprise.',
+        'Success: you can name one thing that is true about your team which no delivery metric could ever have surfaced, say what it predicts about the next two quarters, and name what you will do about it.'
+      ]
+    },
+    checklist:[
+      'I know a green delivery dashboard is compatible with people quietly burning out.',
+      'I sort SPACE by <b>how I get it</b> &mdash; and know the two instrumentable dimensions say least about the humans.',
+      'I never report <b>Activity</b> on its own, and I know which vanity metrics descend from it.',
+      'I treat the survey as an <b>intervention</b>: short, actionable cadence, loop closed visibly, never a ranking, honest anonymity.',
+      'I read system and human metrics <b>together</b> &mdash; one says what happened, the other whether it is sustainable.'
+    ],
+    quiz:[
+      {q:'Your five delivery metrics are all healthy. What does that settle?',
+       options:['That the team is performing well and is sustainable','<b>Only what the delivery system did.</b> Those metrics are structurally blind to the people inside it &mdash; productivity &ldquo;cannot be measured by a single metric or dimension,&rdquo; and a green dashboard is entirely compatible with burnout, shredded flow, and a queue held together by two heroes','That quality is acceptable but morale is unknown and probably fine','Nothing at all &mdash; delivery metrics are not worth collecting'], answer:1},
+      {q:'Which SPACE dimension is the trap, and why?',
+       options:['Performance &mdash; outcomes are hard to attribute to a team','<b>Activity.</b> It is the easiest to collect, the most collected, and the least informative on its own &mdash; SPACE cautions against reading it in isolation, and it is where vanity metrics come from once it is reported without the other four','Satisfaction &mdash; self-report is unreliable','Efficiency and flow &mdash; it cannot be measured at all'], answer:1},
+      {q:'An executive asks for the single number that captures developer productivity. What does DX Core 4 give you?',
+       options:['A composite index combining its four dimensions into one score','<b>A principled refusal.</b> Core 4 &ldquo;encapsulates DORA, SPACE, and DevEx&rdquo; across speed, effectiveness, quality and business impact, warns that &ldquo;changes to one dimension, such as speed, may negatively affect others,&rdquo; and declines a single headline number <em>by design</em>','Speed, as the primary dimension with the others as context','Business impact, since it is the one executives care about'], answer:1},
+      {q:'Why can a badly-run survey be worse than running none at all?',
+       options:['Because low response rates make the data statistically useless','<b>Because a survey is an intervention.</b> Asking people how they are and then visibly doing nothing tells them you know and do not care &mdash; morale ends up lower than if you had never asked. Which is why closing the loop must be scheduled and owned before the first send','Because surveys take time away from delivery work','Because anonymous feedback tends to be unfairly negative'], answer:1}
+    ]
   }
 ];
 
@@ -8141,6 +8217,55 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-41 · The Asking Problem (spec: VISUALS.md) ----------
+   SPACE's five dimensions sorted by HOW YOU GET THEM (ASK / INSTRUMENT), which makes the
+   leadership point visible: the two you can fully instrument are the two that say least about
+   the humans. Activity carries the over-collected flag, with the in-isolation caution
+   PARAPHRASED per the M-11.2 hedge (ACM 403 — not quoted as verbatim). Rules panel carries the
+   module's sharpest idea: a survey is an intervention. Foot = DX Core 4 as the assembly.
+   All framework claims verified 2026-07-25 (m112-frameworks.txt), re-read this session. L-5.2. */
+VISUALS['SIM-41'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DIMS = [
+    ['ask','Satisfaction &amp; well-being','','ASK ONLY',
+     'Whether people are thriving or quietly burning out. There is <b>no system telemetry for this</b> &mdash; no dashboard reports that your best reviewer is done. It is also the dimension with the longest lag between the problem starting and the resignation landing, which is exactly why you cannot wait for attrition to tell you.'],
+    ['inst','Performance','','INSTRUMENT',
+     'Outcomes rather than output &mdash; did the thing work, stay up, serve the user. Your delivery metrics already cover most of this, which is why it feels like the safe dimension to report. <b>It is also why reporting only this looks responsible and tells you almost nothing new.</b>'],
+    ['inst','Activity','OVER-COLLECTED','INSTRUMENT',
+     'Counts of things done: commits, PRs, tickets. The <b>easiest to collect, the most collected, and the least informative on its own</b> &mdash; SPACE&rsquo;s own guidance cautions against reading activity in isolation, and this is the dimension that quietly becomes a vanity metric the moment it is reported without the other four (L-5.3 refuses several of them outright).'],
+    ['ask','Communication &amp; collaboration','','ASK ONLY',
+     'Whether people can find what they need, get unblocked, and know who owns what. System proxies exist &mdash; review latency, handoff counts &mdash; but they are <b>weak stand-ins</b>: fast reviews can mean a healthy team or one person rubber-stamping to clear a queue, and the number looks identical either way.'],
+    ['ask','Efficiency &amp; flow','','ASK &middot; SOME PROXY',
+     'Uninterrupted time and the ability to make progress without friction. Some of it is instrumentable &mdash; wait times, handoff delays &mdash; but the part that matters most, whether people can actually get into flow, is <b>reported, not measured</b>. This is often where an AI rollout shows up first, in either direction.'],
+  ];
+  const RULES = [
+    ['Short.','Answerable in one sitting. Every extra question costs you response rate on the next round, not this one.'],
+    ['Infrequent enough to act between rounds.','If you cannot change anything before you ask again, you are not measuring &mdash; you are nagging.'],
+    ['Close the loop visibly.','&ldquo;You said X, we changed Y.&rdquo; Schedule who sends it <b>before</b> the first send, because this is the step that always gets dropped.'],
+    ['Never a ranking.','The moment scores are compared across teams or attached to a person, people answer strategically and the instrument is gone.'],
+    ['Be honest about anonymity.','On a team of six, &ldquo;anonymous&rdquo; is a claim nobody believes. Say what you can actually promise, and aggregate accordingly.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim41" aria-label="SPACE dimensions sorted by how you get them, and the rules for a survey people do not hate">' +
+      '<div class="s41head"><span>SIM-41 &middot; THE ASKING PROBLEM</span><span>SPACE &middot; 5 DIMENSIONS</span></div>' +
+      '<div class="s41thesis">SPACE&rsquo;s founding claim, and the reason a green delivery dashboard settles nothing: developer productivity <b>&ldquo;is about more than an individual&rsquo;s activity levels or the efficiency of the engineering systems relied on to ship software, and it cannot be measured by a single metric or dimension.&rdquo;</b> Tap each dimension &mdash; and read the right-hand column, not the left.</div>' +
+      '<div class="s41lab">SORTED BY HOW YOU ACTUALLY GET IT</div>' +
+      DIMS.map((d,i) =>
+        '<div class="s41row ' + d[0] + '" data-d="' + i + '">' +
+          '<div class="s41dim">' + d[1] + (d[2] ? '<span class="s41warn">' + d[2] + '</span>' : '') + '</div>' +
+          '<div class="s41how">' + d[3] + '</div>' +
+          '<div class="s41why">' + d[4] + '</div>' +
+        '</div>').join('') +
+      '<div class="s41thesis" style="margin-top:9px;margin-bottom:0"><b>Notice the pattern.</b> The two dimensions you can fully instrument &mdash; Performance and Activity &mdash; are the two that say <em>least</em> about the humans. Everything that would warn you early has to be <b>asked for</b>.</div>' +
+      '<div class="s41rules"><div class="s41rh">&#9888; A survey is an intervention, not just an instrument. Ask people how they are and then visibly do nothing, and you have not merely failed to measure &mdash; you have told them you know and do not care. Morale ends up lower than if you had never asked. Five rules follow from that:</div>' +
+        RULES.map((r,i) => '<div class="s41rule"><span class="s41rn">' + (i+1) + '</span><span><b>' + r[0] + '</b> ' + r[1] + '</span></div>').join('') +
+      '</div>' +
+      '<div class="s41foot"><b>DX Core 4 is the assembly, not a rival.</b> It &ldquo;encapsulates DORA, SPACE, and DevEx&rdquo; across <b>speed, effectiveness, quality, and business impact</b> &mdash; useful precisely because you have to present <em>one</em> thing to an executive audience rather than three frameworks. Keep its balance warning, which is L-5.1&rsquo;s divergence restated: <b>&ldquo;changes to one dimension, such as speed, may negatively affect others.&rdquo;</b> It refuses a single headline number by design, and so should you. The worked example of a signal only asking reveals is already in this course: <b>30% report little or no trust in AI-generated code</b> &mdash; invisible to every delivery metric, and a direct predictor of whether your review policy gets respected and your adoption funnel stalls.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s41row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s41row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-40 · The Five, Split (spec: VISUALS.md) ----------
