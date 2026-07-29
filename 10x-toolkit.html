@@ -1279,6 +1279,25 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim39{--s39green:#3E9A6B;--s39amber:#c99a3a;--s39red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim39{--s39green:#2d7350;--s39amber:#976f16;--s39red:#B0503C}
+.sim39 .s39head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim39 .s39thesis{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.55}
+.sim39 .s39thesis b{color:var(--text);font-weight:500}
+.sim39 .s39lab{font-size:8px;color:var(--faint);letter-spacing:.1em;margin:9px 0 6px}
+.sim39 .s39row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;margin-bottom:4px;cursor:pointer;display:grid;grid-template-columns:1fr 96px;gap:9px;align-items:center}
+.sim39 .s39row.ok{border-left:3px solid var(--s39green)}
+.sim39 .s39row.no{border-left:3px solid var(--s39red)}
+.sim39 .s39claim{font-size:9.5px;color:var(--text);line-height:1.5}
+.sim39 .s39verdict{font-size:8px;letter-spacing:.08em;font-weight:700;text-align:center;padding:3px 6px;border-radius:999px;border:1px solid var(--line);line-height:1.3}
+.sim39 .s39row.ok .s39verdict{color:var(--s39green);border-color:var(--s39green)}
+.sim39 .s39row.no .s39verdict{color:var(--s39red);border-color:var(--s39red)}
+.sim39 .s39why{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.sim39 .s39why b{color:var(--text);font-weight:500}
+.sim39 .s39row.open .s39why{display:block}
+.sim39 .s39foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim39 .s39foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim39 .s39row{grid-template-columns:1fr}.sim39 .s39verdict{justify-self:start}}
 .sim38{--s38green:#3E9A6B;--s38amber:#c99a3a;--s38red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim38{--s38green:#2d7350;--s38amber:#976f16;--s38red:#B0503C}
 .sim38 .s38head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5870,6 +5889,56 @@ const MODS = [
       {q:'A developer&rsquo;s spend is 3&times; the team median. What is the right response?',
        options:['Cap their usage and raise it in their next review','<b>Find out which kind of 3&times; it is first.</b> They are either your highest-leverage engineer or someone pasting large files into prompts &mdash; same number, opposite response. Cost variance is a coaching signal, and never an individual scorecard','Nothing &mdash; usage variance is expected','Move them to the cheaper model by default'], answer:1}
     ]
+  },
+  {
+    id:'L-4.3', path:'lead', track:'L-04', title:'The ROI narrative', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'Your ROI deck is a prior-authorization request. You are asking an approver who can decline, and who applies a necessity test to what you submitted rather than to what you believe. Requests are not denied because the treatment was wrong &mdash; they are denied because the documentation did not support the claim. There is even a peer-to-peer: the follow-up meeting where you defend it live against someone who has read it properly. Everything you already know about writing a submission that clears review applies here, including the uncomfortable part &mdash; that a confident, well-formatted request with weak evidence is <em>easier</em> to deny than a modest one with good evidence.',
+      body:
+        '<p><strong>Start by noticing that the CFO is not asking your question.</strong> You want to demonstrate productivity. They need to know what moves on the P&amp;L, whether the number can be audited, and what happens if you are wrong. The good news is that after L-4.1 and L-4.2, <b>the cost half is the easy half</b> &mdash; you can state it in three bands, with the prior separated from your measured baseline. Almost every ROI deck fails on the other side, and it fails in three specific, predictable ways.</p>' +
+        '<p><strong>Failure one: the borrowed number.</strong> A vendor case study is someone else&rsquo;s experience, on someone else&rsquo;s codebase, published by the party selling the tool. A finance reviewer discounts it to zero &mdash; and then begins doubting the lines underneath it, which is the real damage. <b>Failure two: substituting self-report for delivery.</b> This one deserves care, because the industry&rsquo;s own data separates the two cleanly. DORA 2025 found <b>90% of respondents using AI at work</b> and <b>more than 80% believing it had increased their productivity</b> &mdash; while AI adoption continued to show a <em>negative</em> relationship with delivery stability. Those findings coexist. So &ldquo;the team feels faster&rdquo; is a genuine morale result worth having, and it is <b>not evidence that anything shipped sooner</b>. If the industry&rsquo;s own survey can hold both at once, so can your team, and a good reviewer knows it.</p>' +
+        '<p><strong>Failure three is the one that actually loses the room: hours saved &times; loaded rate.</strong> Eight developers, five hours a week, multiplied by a fully-loaded cost, presented as annual savings. The problem is simple and fatal &mdash; <b>those hours never left the payroll.</b> Nobody was let go; no invoice got smaller. That is cost <em>shifted</em>, not cost <em>avoided</em>, and any finance audience spots it instantly. There are three conversions that do survive audit. <b>Capacity redeployed</b>: legitimate, but only if you can name what got built with the freed time &mdash; otherwise you are claiming a benefit nobody received. <b>Cost avoided</b>: the strongest of the three, because it is how a CFO already thinks about risk &mdash; rework that did not happen, incidents that did not occur, which is where L-3.3&rsquo;s churn radar stops being an engineering diagnostic and becomes a financial instrument. <b>Revenue timing</b>: a feature shipped earlier, worth exactly as much as the earlier revenue is real. Pick the one you can defend and refuse the fake one out loud. <b>Declining the conversion you could have gotten away with is where your credibility comes from</b>, and reviewers notice it.</p>' +
+        '<p><strong>Then show the panel, including the bad news &mdash; which is the instruction people resist hardest.</strong> Speed only counts if quality held: a faster team with rising churn is the amplifier, not a win, and a deck that claims the speed while omitting the churn is one query away from collapsing. Name the <b>J-curve dip</b> yourself, before someone finds it &mdash; an early slowdown while people learn is normal and expected, and disclosing it costs you far less than being caught by it. State your confidence honestly: directional, small n, one task class. This feels like weakening your case and does the opposite. <b>A submission that names its own limits gets believed; a submission of pure upside invites the audit that finds those limits for you</b>, at a moment you do not control.</p>' +
+        '<p><strong>Finally, make the ask &mdash; and make it checkable.</strong> Say what you want, name the decision gate, and state <em>how the number will be verified next quarter</em>. That last part is where L-4.1&rsquo;s attribution grains come back with teeth: per-user and per-team spend is billing-grade, per-agent is not, so <b>promise only what your instrumentation can actually prove.</b> A claim you cannot re-measure is a claim you will be asked about anyway. The deeper point closing this track: the ROI narrative is not a one-time deck, it is a <b>position you will be held to</b> &mdash; which is why every discipline in L-04 pointed at building numbers you would be comfortable having audited by someone who wanted them to be wrong. L-05 takes measurement to org scale, where the same honesty problem arrives with far more people watching.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-39'},
+    labA:{
+      title:'Draft the submission',
+      steps:[
+        'State the <b>cost</b> first, in three bands, with each line marked as public prior or your own measured baseline. Leading with a precise, unflattering cost figure buys you more credibility than any benefit claim will &mdash; it signals you are not selling.',
+        'Build the <b>benefit</b> from one task class you own: the before, the after, the sample size, and the confounds named in your own words. Zero borrowed vendor numbers &mdash; if you cannot source a figure to your own instrumentation, it does not go in. Two shapes to copy, both from this course&rsquo;s own runs: an engineering line (<em>&ldquo;90s &rarr; 24s on our task class, small n, confounds named&rdquo;</em>) and, stronger, a business line (<em>&ldquo;manual-review queue down 20% against the baseline we captured first&rdquo;</em>). Aim for the second kind wherever you can &mdash; it needs no translation for the audience.',
+        'Pick <b>one</b> conversion you can defend (capacity redeployed with a named deliverable / cost avoided with a named incident class / revenue timing with real earlier revenue) &mdash; and write down, explicitly, that you are <b>refusing the hours &times; loaded-rate conversion and why</b>. Put that refusal in the deck, not just in your head.',
+        'Add the panel: the quality condition (what would have made this a false win), the <b>J-curve dip</b>, and your honest confidence level. Then the ask, the decision gate, and the verification method &mdash; naming the attribution grain you can actually prove.',
+        'Success: a one-page submission where every number traces to your own instrumentation, the fake conversion is refused in writing, the weaknesses are disclosed by you rather than discovered by them, and there is a stated way the claim can be checked against you next quarter.'
+      ]
+    },
+    labB:{
+      title:'Adjudicate a deck',
+      steps:[
+        'Run the six claims through review yourself before reading the rulings: approve or deny each, and write the reason in one sentence. Then compare &mdash; the goal is to internalize the reviewer&rsquo;s reflex, not to memorize six verdicts.',
+        'For each <b>denial</b>, answer the more useful question: what specific evidence would convert it into an approval? A denied claim is usually a real effect with the wrong support, and knowing the upgrade path is what lets you fix a deck rather than abandon it.',
+        'Now take a real ROI claim from your own organization &mdash; yours, a peer team&rsquo;s, or a vendor&rsquo;s pitch &mdash; and adjudicate it the same way. Most people find at least one hours &times; rate line or one self-report standing in for delivery.',
+        'Success: you can spot the borrowed number, the self-report substitution and the hours &times; rate fallacy on sight, and for each one name the evidence that would make the claim stand up.'
+      ]
+    },
+    checklist:[
+      'I lead with a precise <b>cost</b> figure, because it signals I am not selling.',
+      'I never submit a <b>borrowed number</b>, and I never let self-report stand in for delivery.',
+      'I refuse <b>hours &times; loaded rate</b> explicitly &mdash; those hours never left the payroll.',
+      'I show the panel including the <b>quality condition</b> and the J-curve dip, before I am asked.',
+      'I promise only what my <b>attribution grain</b> can prove, and state how the claim will be checked later.'
+    ],
+    quiz:[
+      {q:'Why not open with the vendor&rsquo;s published productivity figure?',
+       options:['Because vendors overstate results by a predictable margin you can discount','Because it is <b>someone else&rsquo;s experience</b>, published by the party selling the tool &mdash; a reviewer discounts it to zero and starts doubting your credible lines too. Your number must come from your own measured delta','Because the figure is usually out of date','Because CFOs prefer percentages to absolute numbers'], answer:1},
+      {q:'Your team reports saving five hours a week each. Is that an ROI claim?',
+       options:['Yes &mdash; multiply by the loaded rate to get the annual saving','<b>No &mdash; it is a morale finding.</b> DORA 2025 found 90% using AI and 80%+ believing it made them more productive, while adoption still showed a <em>negative</em> relationship with delivery stability. Feeling faster and shipping faster are separate claims needing separate evidence','Yes, if enough developers report the same figure','Only if the survey is anonymous'], answer:1},
+      {q:'What is wrong with &ldquo;8 devs &times; 5 hrs &times; loaded rate = savings&rdquo;?',
+       options:['The loaded rate is hard to calculate accurately','<b>Those hours never left the payroll</b> &mdash; nobody was let go and no invoice shrank. It is cost <em>shifted</em>, not cost <em>avoided</em>. The honest version is capacity redeployed, and it counts only if you can name what got built with the time','Five hours is too large an estimate to be believed','Nothing &mdash; it is the standard industry conversion'], answer:1},
+      {q:'What should the deck contain besides the upside?',
+       options:['Nothing &mdash; adding caveats weakens the case you are making','<b>The quality condition, the J-curve dip, and your honest confidence level.</b> A submission that names its own limits gets believed; one made of pure upside invites the audit that finds those limits for you, at a moment you do not control','A competitive comparison against other tools','A detailed technical appendix'], answer:1}
+    ]
   }
 ];
 
@@ -7996,6 +8065,45 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-39 · The ROI Submission (spec: VISUALS.md) ----------
+   The analogy made literal: the ROI deck as a prior-auth request, adjudicated line by line.
+   Six claims, each DENIED (red) or APPROVED (green) with the reviewer's reasoning on click.
+   The three denials are the three ways real decks fail: borrowed number, self-report, and
+   hours x loaded rate. Reframe-only — DORA 2025 wedge re-read at m112-frameworks.txt:31,
+   everything else is the course's own measured material. L-4.3, closes L-04. */
+VISUALS['SIM-39'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CLAIMS = [
+    ['no','&ldquo;The vendor&rsquo;s case study shows teams ship 30% faster.&rdquo;','DENIED',
+     'It is someone else&rsquo;s experience, on someone else&rsquo;s codebase, published by the party selling the tool. A finance reviewer discounts it to zero and now doubts the lines underneath it. <b>A borrowed number does not just fail on its own &mdash; it contaminates the credible claims around it.</b>'],
+    ['no','&ldquo;Our developers report saving about five hours a week.&rdquo;','DENIED',
+     'Self-report measures feeling, and the industry&rsquo;s own data separates feeling from delivery: DORA 2025 found <b>more than 80% believe AI has increased their productivity</b> &mdash; while AI adoption still showed a <em>negative</em> relationship with delivery stability. Both are true at once. So &ldquo;the team feels faster&rdquo; is a morale finding, which is worth having, and it is <b>not evidence that anything shipped sooner</b>.'],
+    ['no','&ldquo;8 devs &times; 5 hrs/week &times; loaded rate = $N saved annually.&rdquo;','DENIED',
+     '<b>The fastest way to lose the room.</b> Those hours never left the payroll &mdash; nobody was let go, no invoice got smaller. That is cost <em>shifted</em>, not cost <em>avoided</em>, and any finance audience spots it on sight. The honest version of this claim is <b>capacity redeployed</b>, and it only counts if you can name what got built with the freed time. <b>Refusing this conversion is where your credibility comes from.</b>'],
+    ['ok','&ldquo;On our own task class: 90s &rarr; 24s, small n, confounds named.&rdquo;','APPROVED',
+     'Your measurement, your repo, your task class &mdash; and the hedges are stated up front rather than extracted under questioning: small sample, one task class, and the reviewer is told the team also got better at the task independently of the tool. <b>Naming the confounds is what makes the number survive scrutiny</b>, not what weakens it.'],
+    ['ok','&ldquo;Rework fell on tiered work &mdash; here are the incidents that did not happen.&rdquo;','APPROVED',
+     '<b>Cost avoided is real money</b>, and this is the one conversion a CFO already understands, because it is how they think about risk. It holds only if you can point at the specific class of incident and show the before. The churn radar from L-3.3 stops being an engineering diagnostic here and becomes a financial instrument.'],
+    ['ok','&ldquo;Manual-review queue down 20% &mdash; the outcome we baselined before we started.&rdquo;','APPROVED',
+     'The strongest line in the submission, because it is a <b>business</b> outcome rather than an engineering one, and because the baseline was captured <em>before</em> the work started (L-2.1). It needs no translation for the audience: the queue is the thing the department exists to move. This is what &ldquo;measure the outcome, never the seat count&rdquo; buys you when the bill arrives.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim39" aria-label="An ROI submission adjudicated claim by claim">' +
+      '<div class="s39head"><span>SIM-39 &middot; THE ROI SUBMISSION</span><span>ADJUDICATED LINE BY LINE</span></div>' +
+      '<div class="s39thesis"><b>The cost side is already settled &mdash; you can state it to three bands.</b> Every ROI deck fails on the other half. Read these the way an approver would: does the submission actually carry the evidence it claims? Tap each line for the ruling.</div>' +
+      '<div class="s39lab">SUBMITTED CLAIMS</div>' +
+      CLAIMS.map((c,i) =>
+        '<div class="s39row ' + c[0] + '" data-c="' + i + '">' +
+          '<div class="s39claim">' + c[1] + '</div>' +
+          '<div class="s39verdict">' + c[2] + '</div>' +
+          '<div class="s39why">' + c[3] + '</div>' +
+        '</div>').join('') +
+      '<div class="s39foot">Notice what separates the two halves: every approved line is <b>your own instrumentation, on work you own, with the hedges stated</b>. Three more things belong in the submission and are missing from most. <b>Show the dip</b> &mdash; the early slowdown while people learn is real, so name it before someone else finds it. <b>Show the quality condition</b> &mdash; a speed gain with rising churn is the amplifier, not a win, and claiming it anyway is how you lose the next round. And <b>say how the number will be checked against you later</b>, promising only what your attribution can actually prove: per-user and per-team spend is billing-grade, per-agent is not. An ROI narrative is not a one-time deck. It is a claim you will be held to.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s39row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s39row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-38 · The Budget Build (spec: VISUALS.md) ----------
