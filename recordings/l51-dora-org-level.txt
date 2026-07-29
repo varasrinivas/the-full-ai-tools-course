@@ -1,0 +1,89 @@
+L-5.1 — DORA at org level (opens L-05 Measuring Teams Honestly)
+LEADERSHIP L-05 (1/4). Mostly a reframe of M-11.2's verified material, PLUS one fresh
+primary confirmation run 2026-07-29 because the metric GROUPING is this module's core content.
+
+=========================================================================
+THE FRESH CHECK, AND ITS RESULT (dora.dev/guides/dora-metrics-four-keys, 2026-07-29)
+=========================================================================
+WHY IT WAS RUN: L-5.1's spine is the speed/stability split, so the grouping had to be right.
+  Going in, I believed m112-frameworks.txt had MIS-grouped "failed deployment recovery time"
+  under throughput — reasoning from the classic four-keys mental model, where time-to-restore
+  is a STABILITY metric. That hypothesis was WRONG and the earlier sheet was correct.
+CONFIRMED CURRENT GROUPING — 5 metrics, 3 + 2, under DORA's own headings:
+  THROUGHPUT (3)
+   - Change lead time — "The amount of time it takes for a change to go from committed to
+     version control to deployed in production."
+   - Deployment frequency — "The number of deployments over a given period or the time
+     between deployments."
+   - Failed deployment recovery time — "The time it takes to recover from a deployment that
+     fails and requires immediate intervention."   <-- UNDER THROUGHPUT, NOT STABILITY
+  INSTABILITY (2)
+   - Change fail rate — "The ratio of deployments that require immediate intervention
+     following a deployment."
+   - Deployment rework rate — "The ratio of deployments that are unplanned but happen as a
+     result of an incident in production."
+NOTE THE HEADING WORD: DORA's second group is labelled **"Instability"**, not "Stability."
+  These are metrics you want LOW. A dashboard labelled "stability" with these two underneath
+  it inverts the direction-of-good for anyone reading it quickly.
+*** THE SECOND, SUBTLER STALENESS (new teaching point, discovered by this check) ***
+  Everyone carrying the classic four-keys model places time-to-restore on the stability side.
+  DORA's CURRENT grouping puts failed deployment recovery time under THROUGHPUT. So a leader
+  is wrong twice over: the metric was RENAMED (MTTR -> failed deployment recovery time) AND
+  RE-GROUPED. The rename is easy to notice; the regroup is not, and it silently changes what
+  your "stability half" contains.
+METHOD NOTE WORTH KEEPING: this is the second time a same-session check has been run against
+  the course's OWN prior recording rather than against a vendor (cf. L-4.1, where M-9.5's
+  per-subagent-attribution finding had genuinely aged). Here the prior work held and MY
+  HYPOTHESIS was the error. Both outcomes are worth the one fetch; neither is embarrassing.
+
+=========================================================================
+BLUEPRINT CORRECTION — STALE-CATCH #9 (first on the blueprint's LEADERSHIP half)
+=========================================================================
+BLUEPRINT.md L-5.1 reads: "DORA at org level — lead time, deploy frequency, change-failure
+  rate, MTTR with AI in the loop." That is the FOUR keys, including MTTR — a 2023 framing.
+  Current: FIVE metrics; MTTR renamed "failed deployment recovery time"; "deployment rework
+  rate" added; DORA de-acronymed and renamed its report to "State of AI-assisted Software
+  Development" (all verified 2026-07-25 in m112, grouping re-confirmed 2026-07-29 above).
+PER CONVENTION (M-3.3 / M-7.5 / M-9.6): blueprint text LEFT AS-IS; the correction becomes the
+  module's spine and is logged in PROGRESS.md. Prior catches: Composer, Edit mode, @workspace,
+  find_symbol, the # shortcut, the blueprint's Copilot user-path, DORA 2025 (four->five + the
+  finding flip), Copilot premium-requests -> AI Credits. This is #9.
+
+=========================================================================
+REUSED VERBATIM FROM m112-frameworks.txt (verified 2026-07-25, re-read this session)
+=========================================================================
+  - "Unlike last year, we observe a positive relationship between AI adoption on both
+     software delivery throughput and product performance."
+  - "However, AI adoption does continue to have a negative relationship with software
+     delivery stability."
+  - THE MECHANISM (this module's call to action): "AI accelerates software development, but
+     that acceleration can expose weaknesses downstream. Without robust control systems, like
+     strong automated testing, mature version control practices, and fast feedback loops, an
+     increase in change volume leads to instability."
+  - AMPLIFIER: "AI doesn't fix a team; it amplifies what's already there. Strong teams use AI
+     to become even better and more efficient. Struggling teams will find that AI only
+     highlights and intensifies their existing problems."
+  - SPACE single-metric anchor (for the read-the-panel argument): developer productivity
+     "cannot be measured by a single metric or dimension."
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: quality measurement across a provider network. No payer judges 200 practices on one
+  blended score — it would describe no practice. You standardize the measure definition so
+  "readmission" means the same thing everywhere, you read the DISTRIBUTION and go find the
+  outliers, and you use it to decide where to send help rather than to publish a league table
+  — because the moment practices are ranked they start coding to the measure instead of
+  treating to it. Every clause maps to org-level DORA, and it is payer-native.
+Spine: org-level DORA is not the team scorecard scaled up. Five metrics (3 throughput /
+  2 instability, and recovery time is NOT where you think); AI pushes the halves in OPPOSITE
+  directions so a throughput-only dashboard flatters you while instability grows; an org
+  average describes no team; and ranking teams destroys the measurement.
+Four moves: (1) fix the names AND the grouping — at org scale a stale definition propagates
+  into every dashboard and comparison built on it; (2) read the halves apart, expecting them
+  to diverge; (3) read the DISTRIBUTION, not the average — the metric is a pointer to where
+  help goes; (4) never rank — and respond to bad instability with CONTROL SYSTEMS (DORA's own
+  shopping list = T-06 tests, T-10 hooks/gates, L-3.3 review policy), not exhortation.
+Goodhart lineage now explicit at three scales: L-3.3 churn (team), L-4.2 cost variance
+  (individual), L-5.1 DORA (org) — same failure, escalating blast radius.
+Hands to L-5.2 (SPACE & DX Core 4 — the human dimensions).

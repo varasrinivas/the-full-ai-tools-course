@@ -1279,6 +1279,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim40{--s40green:#3E9A6B;--s40amber:#c99a3a;--s40red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim40{--s40green:#2d7350;--s40amber:#976f16;--s40red:#B0503C}
+.sim40 .s40head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim40 .s40stale{border:1px solid var(--s40red);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim40 .s40stale b{color:var(--s40red);font-weight:600}
+.sim40 .s40cols{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sim40 .s40col{border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--panel)}
+.sim40 .s40col.thru{border-left:3px solid var(--s40green)}
+.sim40 .s40col.inst{border-left:3px solid var(--s40red)}
+.sim40 .s40ch{font-size:9.5px;font-weight:700;letter-spacing:.04em}
+.sim40 .s40col.thru .s40ch{color:var(--s40green)}
+.sim40 .s40col.inst .s40ch{color:var(--s40red)}
+.sim40 .s40dir{font-size:8px;color:var(--faint);letter-spacing:.06em;margin-top:1px;display:block}
+.sim40 .s40m{border-top:1px dotted var(--line);margin-top:7px;padding-top:6px;cursor:pointer}
+.sim40 .s40mn{font-size:9px;color:var(--text);font-weight:600}
+.sim40 .s40flag{font-size:7px;letter-spacing:.08em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--s40amber);color:var(--s40amber);margin-left:5px;white-space:nowrap}
+.sim40 .s40def{display:none;font-size:8.5px;color:var(--dim);line-height:1.55;margin-top:4px}
+.sim40 .s40def b{color:var(--text);font-weight:500}
+.sim40 .s40m.open .s40def{display:block}
+.sim40 .s40split{text-align:center;font-size:9px;color:var(--dim);line-height:1.6;margin:9px 0 2px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px}
+.sim40 .s40split b{color:var(--text);font-weight:600}
+.sim40 .s40up{color:var(--s40green);font-weight:700}
+.sim40 .s40down{color:var(--s40red);font-weight:700}
+.sim40 .s40foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim40 .s40foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim40 .s40cols{grid-template-columns:1fr}}
 .sim39{--s39green:#3E9A6B;--s39amber:#c99a3a;--s39red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim39{--s39green:#2d7350;--s39amber:#976f16;--s39red:#B0503C}
 .sim39 .s39head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5939,6 +5965,56 @@ const MODS = [
       {q:'What should the deck contain besides the upside?',
        options:['Nothing &mdash; adding caveats weakens the case you are making','<b>The quality condition, the J-curve dip, and your honest confidence level.</b> A submission that names its own limits gets believed; one made of pure upside invites the audit that finds those limits for you, at a moment you do not control','A competitive comparison against other tools','A detailed technical appendix'], answer:1}
     ]
+  },
+  {
+    id:'L-5.1', path:'lead', track:'L-05', title:'DORA at org level', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'Quality measurement across a provider network. No payer judges two hundred practices on a single blended score &mdash; the number would describe no practice that exists. You standardize the measure definition first, so that &ldquo;readmission&rdquo; means the same thing in every clinic; you read the <em>distribution</em> and go find the outliers; and you use the result to decide <b>where to send help</b>, not to publish a league table. Because the moment practices are ranked, they stop treating to the patient and start coding to the measure &mdash; and you have lost the instrument that told you where the problem was.',
+      body:
+        '<p><strong>Start by checking whether your metric names are from 2023.</strong> There are <b>five</b> DORA metrics now, not four. <b>MTTR no longer exists</b> under that name &mdash; it is <em>failed deployment recovery time</em>. A fifth metric, <em>deployment rework rate</em>, was added. DORA also de-acronymed and renamed its annual report to the <em>State of AI-assisted Software Development</em>. For an individual engineer this is trivia. For you it is not: at org scale you are standardizing definitions across many teams, and <b>a stale definition propagates</b> &mdash; into every dashboard, every quarterly review, and every cross-team comparison built on top of it. This course&rsquo;s own blueprint still lists the old four keys including MTTR, which is precisely how durable the outdated version is.</p>' +
+        '<p><strong>And there is a second, subtler staleness that catches almost everyone.</strong> DORA groups the five under two headings: <b>Throughput</b> and <b>Instability</b>. Anyone carrying the classic four-keys mental model files time-to-restore on the stability side &mdash; that is what it always was. But <b>failed deployment recovery time is currently grouped under throughput</b>, which makes the split three and two rather than two and three. So the old mental model is wrong twice over: the metric was renamed <em>and</em> re-grouped, and only the rename is easy to notice. Worth reading the second heading carefully too &mdash; it says <em>Instability</em>, not <em>stability</em>. Those two metrics are ones you want <b>low</b>, and a dashboard that relabels them &ldquo;stability&rdquo; inverts the direction-of-good for everyone who glances at it.</p>' +
+        '<p><strong>The split matters more now than it ever has, because AI pulls the halves apart.</strong> DORA 2025 observes a positive relationship between AI adoption and throughput &mdash; and, in the same finding, that adoption <b>&ldquo;does continue to have a negative relationship with software delivery stability.&rdquo;</b> Both at once. So you should <em>expect</em> your two columns to diverge, and you should notice what that implies about the dashboard most organizations actually build: <b>a throughput-only view will look like a triumph while instability grows underneath it.</b> This is L-3.3&rsquo;s read-the-panel discipline, arriving at org scale with far more people looking at the chart.</p>' +
+        '<p><strong>Then the two failures specific to running this across an organization.</strong> The first is <b>aggregation</b>. These are team-level measures by design, so an org-wide average change fail rate describes no team that exists &mdash; and worse, it conceals exactly what you needed to see, averaging the two squads in trouble away behind the twelve that are fine. Read the spread, find the outliers, and treat the metric as a <em>pointer to where the help goes</em>. The second is <b>ranking</b>, and it is the more damaging. The instant DORA becomes a league table it becomes a target and stops measuring: teams optimize the number, definitions quietly drift toward whatever flatters, and you lose the diagnostic permanently. You have now seen this same failure three times in this course, each with a wider blast radius than the last: code churn turned into an individual scorecard (L-3.3), cost variance turned into a performance metric (L-4.2), and now delivery metrics turned into a league table across the whole organization.</p>' +
+        '<p><strong>Finally, know what the numbers actually point at &mdash; because it is not people.</strong> DORA names the mechanism directly: <b>&ldquo;without robust control systems, like strong automated testing, mature version control practices, and fast feedback loops, an increase in change volume leads to instability.&rdquo;</b> Read that as a shopping list, because it is one, and because you have already been handed every item on it: the test suites from T-06, the hooks and gates from T-10, the review policy from L-3.3. So when a team&rsquo;s instability climbs, the response is an <em>investment in control systems</em>, not a conversation about effort. The amplifier explains the rest of the variance you will see: <b>&ldquo;AI doesn&rsquo;t fix a team; it amplifies what&rsquo;s already there.&rdquo;</b> The same tool, handed to two teams, produces two different charts &mdash; and the chart is telling you which team needs the gates. L-5.2 turns to what these five metrics cannot see at all: the human dimensions.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-40'},
+    labA:{
+      title:'Audit your org dashboard',
+      steps:[
+        'Go through every DORA-derived metric your organization reports and check the <b>name</b> against the current five. Find the ones still called MTTR, the dashboards still counting four, and any place the second group is labelled &ldquo;stability&rdquo; when the metrics under it are instability measures you want low.',
+        'Now the harder and more valuable half: agree <b>one shared definition</b> for &ldquo;deployment&rdquo; and for where change lead time starts. The definition says <em>committed to version control</em> &mdash; teams starting the clock at ticket creation are measuring something else, and every cross-team comparison built on the mix is meaningless.',
+        'Find one place you are reporting an <b>org-wide average</b> and replace it with the distribution. Then look at what the average was hiding: name the teams at the tails, which is the information you were actually after.',
+        'Write the <b>no-ranking rule</b> down now, before anyone asks you for a league table &mdash; and write the reason next to it, so the rule survives the first executive who wants the chart sorted.',
+        'Success: a corrected five-metric list with one agreed definition each, at least one average replaced by a distribution with the outlier teams named, and a no-ranking rule in writing with its rationale attached.'
+      ]
+    },
+    labB:{
+      title:'Read the two halves apart',
+      steps:[
+        'Split your reporting into the two columns and look at them separately for one quarter. Specifically hunt for the pattern DORA predicts with AI in the loop: <b>throughput improving while instability also climbs</b>. If your current dashboard cannot show you that, you have found your first finding.',
+        'Take the team with the worst instability numbers and resist the obvious conclusion. Trace it to <b>control systems</b> instead &mdash; how good are the automated tests, how mature is the version-control practice, how fast is the feedback loop? DORA names those three specifically as what prevents change volume turning into instability.',
+        'Name the investment that team needs, and then articulate why <b>ranking them</b> against their peers would have made the situation worse rather than better &mdash; you would have got a defensive team, drifting definitions, and the same missing test suite.',
+        'Success: you can point at the two columns moving in opposite directions, name the specific control-system investment your worst-instability team needs, and explain why the league table was never going to produce it.'
+      ]
+    },
+    checklist:[
+      'I use the current <b>five</b> metrics &mdash; MTTR is now failed deployment recovery time.',
+      'I know recovery time sits under <b>throughput</b>, and that the second heading is <em>Instability</em> (lower is better).',
+      'I expect the halves to <b>diverge</b> with AI in the loop, and never ship a throughput-only dashboard.',
+      'I read the <b>distribution</b>, not the org average &mdash; the metric points at where help goes.',
+      'I <b>never rank teams</b>, and I answer rising instability with control systems rather than exhortation.'
+    ],
+    quiz:[
+      {q:'How many DORA metrics are there now, and what changed?',
+       options:['Four &mdash; lead time, deploy frequency, change fail rate and MTTR','<b>Five.</b> MTTR was renamed <em>failed deployment recovery time</em>, and <em>deployment rework rate</em> was added as a fifth. DORA also de-acronymed and renamed its report. At org scale a stale name propagates into every dashboard built on it','Five, but the fifth is optional','Four, plus a separate AI-specific metric'], answer:1},
+      {q:'Under which heading does failed deployment recovery time currently sit?',
+       options:['Stability &mdash; it replaced time-to-restore, which was always a stability metric','<b>Throughput.</b> The classic four-keys model files time-to-restore under stability, but DORA currently groups recovery time with throughput, making the split 3 and 2 &mdash; so the old mental model is wrong twice: renamed <em>and</em> re-grouped','It belongs to both groups equally','It is reported separately from the two groups'], answer:1},
+      {q:'Your org-wide DORA average looks healthy. What is the problem?',
+       options:['Nothing, provided the sample covers every team','<b>An average of team-level measures describes no team that exists</b> &mdash; and it hides the distribution you needed, averaging the squads in trouble away behind the ones that are fine. Read the spread and treat the metric as a pointer to where help goes','Averages are fine but should be weighted by team size','It needs a longer time window to be reliable'], answer:1},
+      {q:'An executive asks you to rank teams by their DORA numbers. What do you say?',
+       options:['Agree, but only share the ranking privately with team leads','<b>Decline, and explain why:</b> ranked metrics become targets and stop measuring &mdash; teams optimize the number and definitions drift toward whatever flatters, so you lose the diagnostic permanently. Offer the distribution and a plan for the outliers instead','Agree, provided the metrics are risk-adjusted first','Agree &mdash; visibility drives improvement'], answer:1}
+    ]
   }
 ];
 
@@ -8065,6 +8141,44 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-40 · The Five, Split (spec: VISUALS.md) ----------
+   The current five DORA metrics under DORA's OWN headings — Throughput (3) and Instability (2)
+   — with verbatim definitions, RENAMED/NEW flags, and the counterintuitive placement of
+   failed deployment recovery time under THROUGHPUT called out explicitly. Grouping and
+   definitions confirmed against dora.dev primary 2026-07-29 (l51-dora-org-level.txt); the
+   AI finding and mechanism reused verbatim from m112. Stale strip opens; foot carries the two
+   org-level disciplines (distribution not average; never rank). L-5.1, opens L-05. */
+VISUALS['SIM-40'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const THRU = [
+    ['Change lead time','','&ldquo;The amount of time it takes for a change to go from committed to version control to deployed in production.&rdquo; The definition names its own start point &mdash; <b>commit</b>, not ticket creation. Teams that start the clock earlier are not measuring this metric, and cross-team comparison quietly breaks.'],
+    ['Deployment frequency','','&ldquo;The number of deployments over a given period or the time between deployments.&rdquo; Harmless-looking, and the most common place org rollups go wrong: <b>&ldquo;deployment&rdquo; has to mean the same thing in every team</b> before any comparison means anything.'],
+    ['Failed deployment recovery time','RENAMED','&ldquo;The time it takes to recover from a deployment that fails and requires immediate intervention.&rdquo; This replaced <b>MTTR</b> &mdash; and note where it sits. Everyone carrying the classic four-keys model files time-to-restore under stability. DORA groups it under <b>throughput</b>. So the mental model is wrong twice: the metric was renamed <em>and</em> re-grouped, and only the rename is easy to spot.'],
+  ];
+  const INST = [
+    ['Change fail rate','','&ldquo;The ratio of deployments that require immediate intervention following a deployment.&rdquo; The half AI pressures hardest, which is why a throughput-only dashboard is dangerous rather than merely incomplete.'],
+    ['Deployment rework rate','NEW','&ldquo;The ratio of deployments that are unplanned but happen as a result of an incident in production.&rdquo; The fifth metric, and the one most dashboards do not have a field for yet. Distinct from the <em>code churn</em> in L-3.3 &mdash; same word, different altitude. Say which you mean.'],
+  ];
+  const col = (cls, head, dir, items) =>
+    '<div class="s40col ' + cls + '"><div class="s40ch">' + head + '<span class="s40dir">' + dir + '</span></div>' +
+    items.map((m,i) => '<div class="s40m" data-m="' + cls + i + '"><div class="s40mn">' + m[0] +
+      (m[1] ? '<span class="s40flag">' + m[1] + '</span>' : '') + '</div>' +
+      '<div class="s40def">' + m[2] + '</div></div>').join('') + '</div>';
+  mount.innerHTML =
+    '<div class="sim40" aria-label="The five current DORA metrics, split into throughput and instability">' +
+      '<div class="s40head"><span>SIM-40 &middot; THE FIVE, SPLIT</span><span>DORA&rsquo;S OWN HEADINGS</span></div>' +
+      '<div class="s40stale"><b>&#9888; If your dashboard says &ldquo;the four keys&rdquo; and &ldquo;MTTR&rdquo;, it is a 2023 dashboard.</b> There are <b>five</b> metrics now; MTTR was renamed; a fifth was added. At org scale this is not pedantry &mdash; a stale definition propagates into every dashboard, QBR and cross-team comparison built on top of it. Tap any metric for its current definition.</div>' +
+      '<div class="s40cols">' +
+        col('thru','THROUGHPUT &middot; 3','higher is better', THRU) +
+        col('inst','INSTABILITY &middot; 2','LOWER is better &mdash; note the heading', INST) +
+      '</div>' +
+      '<div class="s40split"><b>AI pulls the two halves apart.</b> DORA 2025 observes <span class="s40up">a positive relationship with throughput &#9650;</span> and, in the same breath, that adoption <span class="s40down">&ldquo;does continue to have a negative relationship with software delivery stability&rdquo; &#9660;</span>. Expect divergence &mdash; and notice what that means for a dashboard showing only the left column: <b>it will look like a triumph while the right column degrades underneath it.</b></div>' +
+      '<div class="s40foot">Two disciplines make this usable at org scale. <b>Read the distribution, not the average</b> &mdash; these are team-level measures, so an org-wide mean describes no team that exists and hides the two squads in trouble behind the twelve that are fine; the metric is a <em>pointer to where help goes</em>. And <b>never rank teams on it</b>: the moment it becomes a league table it becomes a target and stops measuring anything, which is the same failure as churn-as-scorecard (L-3.3) and cost-as-scorecard (L-4.2), now with the widest blast radius. When instability does climb, DORA names the response, and it is not exhortation: <b>&ldquo;without robust control systems, like strong automated testing, mature version control practices, and fast feedback loops, an increase in change volume leads to instability.&rdquo;</b> That is a shopping list you have already been given &mdash; T-06&rsquo;s tests, T-10&rsquo;s gates, L-3.3&rsquo;s review policy.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s40m').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s40m').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-39 · The ROI Submission (spec: VISUALS.md) ----------
