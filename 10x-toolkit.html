@@ -1279,6 +1279,26 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim42{--s42green:#3E9A6B;--s42amber:#c99a3a;--s42red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim42{--s42green:#2d7350;--s42amber:#976f16;--s42red:#B0503C}
+.sim42 .s42head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim42 .s42thesis{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim42 .s42thesis b{color:var(--text);font-weight:500}
+.sim42 .s42card{border:1px solid var(--line);border-left:3px solid var(--s42red);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer}
+.sim42 .s42ask{font-size:10px;color:var(--text);font-weight:600}
+.sim42 .s42sub{font-size:8px;color:var(--faint);font-weight:400;display:block;margin-top:2px}
+.sim42 .s42body{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim42 .s42card.open .s42body{display:block}
+.sim42 .s42f{font-size:8.5px;color:var(--dim);line-height:1.55;margin-bottom:6px}
+.sim42 .s42f b{color:var(--text);font-weight:600}
+.sim42 .s42k{color:var(--faint);letter-spacing:.06em;font-size:7.5px;font-weight:700;display:block;margin-bottom:1px}
+.sim42 .s42offer{border:1px solid var(--s42green);border-radius:7px;padding:7px 9px;margin-top:7px;font-size:8.5px;color:var(--dim);line-height:1.55}
+.sim42 .s42offer .s42k{color:var(--s42green)}
+.sim42 .s42offer b{color:var(--text);font-weight:600}
+.sim42 .s42inv{border:1px solid var(--s42amber);border-radius:8px;padding:8px 10px;margin-top:9px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim42 .s42inv b{color:var(--s42amber);font-weight:600}
+.sim42 .s42foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim42 .s42foot b{color:var(--text);font-weight:500}
 .sim41{--s41green:#3E9A6B;--s41amber:#c99a3a;--s41red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim41{--s41green:#2d7350;--s41amber:#976f16;--s41red:#B0503C}
 .sim41 .s41head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -6091,6 +6111,56 @@ const MODS = [
       {q:'Why can a badly-run survey be worse than running none at all?',
        options:['Because low response rates make the data statistically useless','<b>Because a survey is an intervention.</b> Asking people how they are and then visibly doing nothing tells them you know and do not care &mdash; morale ends up lower than if you had never asked. Which is why closing the loop must be scheduled and owned before the first send','Because surveys take time away from delivery work','Because anonymous feedback tends to be unfairly negative'], answer:1}
     ]
+  },
+  {
+    id:'L-5.3', path:'lead', track:'L-05', title:'Vanity metrics to refuse', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'Cases closed per hour, applied to your own utilization-review nurses. Easy to count, feels exactly like productivity, and rewarding it gets you <em>fast</em> determinations rather than <em>correct</em> ones &mdash; more denials that come back on appeal, more approvals that should have been queued for a human look. Every payer knows that measure is poison. What every payer also knows is that the hard part was never the analysis: it is the conversation with someone senior who wants the number by Friday and does not think they are asking for anything unreasonable.',
+      body:
+        '<p><strong>Start with the part most treatments of this topic skip: you are going to be asked.</strong> These metrics are not requested by people who fail to understand measurement. They are requested by a CIO who read an article, a procurement lead ahead of a renewal, a board member who wants reassurance that a visible investment is landing &mdash; all in good faith, all senior to you or adjacent enough that &ldquo;that&rsquo;s a bad metric&rdquo; is not a complete answer. <b>Refusing a vanity metric is a political act, not a technical one</b>, and leaders who treat it as a data-literacy problem tend to be right, sound obstructive, and lose the argument anyway.</p>' +
+        '<p><strong>So be precise about what each one actually measures.</strong> <b>Lines generated, or percentage AI-written</b>, measures volume of text &mdash; nothing about whether it was needed, correct, or kept. This course&rsquo;s own break run is the argument: it shipped <b>220 lines that were confidently wrong</b>, with 25 of 25 tests green, against an API endpoint that did not exist. On this metric that run looks <em>excellent</em>. <b>Acceptance rate</b> measures engagement with a suggestion interface &mdash; whether somebody pressed Tab. I want to be straight about the status of that claim: it is the reading this course argues for, not a line I can attribute to an authority, and it rests on SPACE&rsquo;s position that productivity <em>cannot be reduced to a single metric or dimension</em>. <b>AI usage percentage</b> measures adoption, and here the evidence is unusually clean &mdash; DORA 2025 found <b>90% of respondents using AI at work and more than 80% believing it had made them more productive, while adoption still showed a negative relationship with delivery stability</b>. Adoption and feeling are simply not delivery, and that is the industry&rsquo;s own survey saying so. <b>Seat count and logins</b> measure intake: counting seats is counting arrivals, not throughput.</p>' +
+        '<p><strong>Then the fact that makes these worse than merely uninformative.</strong> L-2.4 established the inversion and it belongs at the centre of this module: a high AI-usage number coming from an over-reliant junior who accepts every diff is a <b>risk flag, not a win</b>. So these measures do not just fail to tell you things &mdash; under the wrong conditions they <em>point the wrong way</em>, and reporting them leaves you most confident at exactly the moment you should be least. A dashboard that would have shown the M-2.2 run as a triumph is not a neutral dashboard. It is an actively misleading one.</p>' +
+        '<p><strong>Which brings the actual skill: never refuse without a substitute.</strong> Behind every one of these requests is a real question, and it is usually a reasonable one. &ldquo;What percentage is AI-written?&rdquo; nearly always means <em>is this investment working?</em> &mdash; which L-4.3 already taught you to answer properly, with a known cost, a measured delta on a task class you own, and a business outcome. &ldquo;What&rsquo;s our acceptance rate?&rdquo; means <em>is the tool any good?</em>, which is better answered by whether changes survived: rework and churn at team level, escaped defects. &ldquo;How many people are using it?&rdquo; means <em>is this taking hold?</em>, answered by the enablement funnel&rsquo;s progression stages (L-2.3) paired with the outcome you baselined. &ldquo;How many seats?&rdquo; at renewal is answered by active days, the denominator that actually drives your usage slope. <b>The move is always &ldquo;not that &mdash; this&rdquo;</b>, because a refusal attached to a better answer is a contribution, while a bare refusal is an obstacle, and the two land completely differently in a room where you are not the most senior person present.</p>' +
+        '<p><strong>Finally, one test, and one law you have now met five times.</strong> The test for anything you are asked to report at org level is simply: <b>what happens when someone optimizes this?</b> Ask it of lines generated and the answer arrives instantly &mdash; you get more lines. Ask it of usage percentage and you get mandates that manufacture the number. Said out loud, that question tends to end the argument faster than any amount of framework citation, because everyone in the room can complete the sentence themselves. And notice the shape of what you have been reading since L-03: churn turned into an individual scorecard (L-3.3), cost variance turned into a performance metric (L-4.2), DORA turned into a league table (L-5.1), survey scores turned into a target (L-5.2), and now these. <b>That is not five separate warnings. It is one law, and this is the module where you name it:</b> a measure that becomes a target stops being a measure. L-5.4 asks the constructive version of the same question &mdash; not which metrics to refuse, but which dashboard actually changes what people do.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-42'},
+    labA:{
+      title:'Write your refusal script',
+      steps:[
+        'List every metric you are currently asked for, including the ones you quietly report because it is easier than arguing. Be honest about which requests are recurring &mdash; those are the ones worth preparing for.',
+        'For each, write <b>three lines</b>: the one-sentence refusal, the substitute you will offer, and &mdash; the line that does the real work &mdash; <b>the underlying question the asker actually has</b>. If you cannot name that question, you are not ready to decline, because you do not yet know what they need.',
+        'Rehearse the hardest one out loud. &ldquo;That number would go up if we wrote more code, so it will not tell you what you want &mdash; here is what will&rdquo; is a different sentence spoken than written, and you want to have said it once before you say it to a CIO.',
+        '<b>Pre-agree the script with your own manager</b> before it comes up in a room where you are outranked. A refusal that your boss has already endorsed is a position; the same refusal improvised under pressure is an argument you are having alone.',
+        'Success: for every recurring request you have a refusal attached to a better answer and the underlying question named &mdash; and your manager has seen the list before anyone else asks for it.'
+      ]
+    },
+    labB:{
+      title:'Run the optimization test',
+      steps:[
+        'Take each metric on your list and answer honestly: <b>what would a team do to maximize this?</b> Not what you hope they would do &mdash; what the incentive actually rewards, assuming reasonable people responding to how they are judged.',
+        'Now run the same test on the domain parallel, because it makes the harm concrete: what happens to your review queue when you reward <b>cases closed per hour</b>? You get speed, and you get determinations that should have gone to a human &mdash; which is the same failure as the score of 0.86 that should have been queued.',
+        'Sort your list by what the gaming behavior would cost you. Some vanity metrics are merely noise; others actively produce the outcome you were trying to prevent, and those are the ones to stop reporting first.',
+        'Success: every metric on your list has a named gaming behavior beside it, and you have found at least one you currently report that fails the test &mdash; with a date for stopping.'
+      ]
+    },
+    checklist:[
+      'I treat refusing a metric as a <b>political</b> act &mdash; and never refuse without a substitute.',
+      'I can name what each vanity metric actually measures (text volume, keystrokes, adoption, intake).',
+      'I know a high usage number can be a <b>risk flag</b>, not a win.',
+      'I answer the <b>underlying question</b>: cost + measured delta + business outcome.',
+      'I apply the optimization test &mdash; <em>what happens when someone maximizes this?</em> &mdash; before reporting anything.'
+    ],
+    quiz:[
+      {q:'Why is acceptance rate not a measure of value?',
+       options:['Because vendors calculate it inconsistently across tools','<b>It measures engagement with a suggestion interface</b> &mdash; whether someone pressed Tab &mdash; not whether the change shipped, survived review, or held up. Better: did the change survive? Rework at team level, and escaped defects','Because it only counts inline suggestions, not chat','Because acceptance is subjective and varies by developer'], answer:1},
+      {q:'What does DORA&rsquo;s own data establish about &ldquo;AI usage %&rdquo;?',
+       options:['That adoption above 80% is where delivery gains begin to appear','<b>That adoption is not delivery.</b> 90% report using AI and more than 80% believe it made them more productive &mdash; while adoption still shows a negative relationship with delivery stability. Feeling and usage can rise while stability falls','That usage should be measured weekly rather than monthly','That usage correlates with throughput but not with quality'], answer:1},
+      {q:'Your AI-usage number is high and climbing. Is that good news?',
+       options:['Yes &mdash; it means the rollout is working and adoption has taken hold','<b>Not necessarily.</b> A high number from an over-reliant junior who accepts every diff is a <em>risk flag</em>. These metrics can point the wrong way, leaving you most confident exactly when you should be least','Yes, provided the number came from telemetry rather than a survey','It is neutral &mdash; usage says nothing either way'], answer:1},
+      {q:'A senior exec asks you for lines-of-AI-code generated. What do you do?',
+       options:['Explain that it is a discredited metric and decline to report it','<b>Answer the question underneath it.</b> They want to know the investment is working, so offer the known cost, your measured delta on a task class you own, and the business outcome. A refusal attached to a better answer is a contribution; a bare refusal is an obstacle','Report it with a written caveat about its limitations','Report it alongside several other metrics for balance'], answer:1}
+    ]
   }
 ];
 
@@ -8217,6 +8287,58 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-42 · Not That — This (spec: VISUALS.md) ----------
+   Deliberately NOT a re-skin of SIM-21 (M-11.2's engineer keep/refuse sorting drill). The
+   leadership problem is different: you get ASKED for these by someone senior, so each card
+   carries WHO ASKS / WHAT IT MEASURES / WHAT BREAKS / OFFER INSTEAD (green — the payload).
+   Amber strip = L-2.4's inversion (a high usage number can be a risk flag). Foot = the
+   optimization test + the five-appearance Goodhart lineage. Acceptance-rate framing is stated
+   in the COURSE'S OWN VOICE per M-11.2's hedge — never quoted as a primary. L-5.3. */
+VISUALS['SIM-42'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const M = [
+    ['&ldquo;What percentage of our code is AI-written now?&rdquo;','lines generated &middot; % AI-written',
+     'A CIO or board member who read an article, asking in good faith. What they actually want is reassurance that the investment is landing.',
+     'Volume of text produced. Nothing about whether it was needed, correct, or kept &mdash; and <b>more is not better</b>.',
+     'You reward verbosity. This course&rsquo;s own break run shipped <b>220 lines that were confidently wrong</b> &mdash; 25 of 25 tests green, against an endpoint that did not exist. That run would have looked <em>excellent</em> on this metric.',
+     'The submission from L-4.3: a known cost, a measured delta on a task class you own, and a business outcome. It answers the question they were actually asking.'],
+    ['&ldquo;What&rsquo;s our acceptance rate?&rdquo;','acceptance rate',
+     'A tooling team or a vendor-facing exec benchmarking adoption &mdash; often because the vendor&rsquo;s dashboard puts it front and centre.',
+     'Engagement with a suggestion interface &mdash; whether somebody pressed Tab. <em>This is the course&rsquo;s reading, not a quotation from anyone authoritative</em>, and it rests on SPACE&rsquo;s claim that productivity cannot be reduced to one metric or dimension.',
+     'It optimizes for suggestions that are <b>easy to accept</b> rather than work that is correct, and it says nothing about whether the change shipped, survived review, or held up in production.',
+     'Did the change survive? Rework and churn read at <b>team level</b> (L-3.3), plus escaped defects. Those measure what happened after the keystroke.'],
+    ['&ldquo;How many of our engineers are using AI?&rdquo;','AI usage % &middot; adoption rate',
+     'Whoever owns the rollout, needing to show the seats are not idle &mdash; frequently just before a renewal or a board update.',
+     'Adoption. And DORA&rsquo;s own data separates that from delivery about as cleanly as evidence ever does: <b>90% report using AI at work, more than 80% believe it made them more productive &mdash; while adoption still shows a negative relationship with delivery stability.</b>',
+     'Mandates manufacture the number (L-2.2: pull beats push), so you end up measuring compliance with your own instruction. And see the inversion below &mdash; a high number is not unambiguously good news.',
+     'Funnel progression &mdash; Aware, Tried, Habitual, Champion (L-2.3) &mdash; paired with the business outcome you baselined. Progression tells you adoption is real; the outcome tells you it mattered.'],
+    ['&ldquo;How many seats are we using?&rdquo;','seat count &middot; logins',
+     'Finance or procurement at renewal, which makes it the most reasonable-sounding request on this list.',
+     'Intake. Counting seats is counting <em>intake</em>, in exactly the sense the enablement funnel warns about &mdash; and a seat nobody uses costs the step and nothing else.',
+     'Optimizing it means <b>buying more licences</b>. It also invites the opposite error: cutting seats to control spend, when seats were never the usage control (L-4.1).',
+     '<b>Active days</b> &mdash; the denominator that actually drives the usage slope (L-4.2) &mdash; alongside funnel progression. That answers the renewal question honestly in both directions.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim42" aria-label="Vanity metrics you will be asked for, and what to offer instead">' +
+      '<div class="s42head"><span>SIM-42 &middot; NOT THAT &mdash; THIS</span><span>THE REQUESTS YOU WILL GET</span></div>' +
+      '<div class="s42thesis"><b>Refusing a metric is a political act, not a technical one.</b> These are not requests from people who do not understand measurement &mdash; they are usually senior, well-intentioned, and want reassurance the investment is working. So the skill is never a bare refusal. It is arriving with the substitute and the answer to the question underneath. Tap each request.</div>' +
+      M.map((m,i) =>
+        '<div class="s42card" data-m="' + i + '">' +
+          '<div class="s42ask">' + m[0] + '<span class="s42sub">' + m[1] + '</span></div>' +
+          '<div class="s42body">' +
+            '<div class="s42f"><span class="s42k">WHO ASKS &mdash; AND WHAT THEY ACTUALLY WANT</span>' + m[2] + '</div>' +
+            '<div class="s42f"><span class="s42k">WHAT IT MEASURES</span>' + m[3] + '</div>' +
+            '<div class="s42f"><span class="s42k">WHAT BREAKS WHEN YOU REWARD IT</span>' + m[4] + '</div>' +
+            '<div class="s42offer"><span class="s42k">&#8594; OFFER INSTEAD</span>' + m[5] + '</div>' +
+          '</div>' +
+        '</div>').join('') +
+      '<div class="s42inv"><b>&#9888; The inversion &mdash; why these are worse than merely uninformative.</b> A high AI-usage number coming from an over-reliant junior who accepts every diff is a <b>risk flag, not a win</b> (L-2.4). So these metrics do not simply fail to inform: under the wrong conditions they <em>point the wrong way</em>, and reporting them makes you most confident at precisely the moment you should be least.</div>' +
+      '<div class="s42foot"><b>The test to apply to anything you are asked to report at org level: what happens when someone optimizes it?</b> Ask that of lines generated, or usage %, and the answer arrives immediately and settles the argument &mdash; which also makes it the most persuasive sentence you can say out loud in the room. And notice you have now met this failure <b>five times</b> in this course, each with a wider blast radius: churn as an individual scorecard (L-3.3), cost variance as a performance metric (L-4.2), DORA as a league table (L-5.1), survey scores as a target (L-5.2), and these. It is not five warnings. It is one law, and this is where you name it.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s42card').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s42card').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-41 · The Asking Problem (spec: VISUALS.md) ----------
