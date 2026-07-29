@@ -1279,6 +1279,37 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim37{--s37green:#3E9A6B;--s37amber:#c99a3a;--s37red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim37{--s37green:#2d7350;--s37amber:#976f16;--s37red:#B0503C}
+.sim37 .s37head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim37 .s37meters{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.sim37 .s37m{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--panel)}
+.sim37 .s37m.step{border-left:3px solid var(--s37green)}
+.sim37 .s37m.slope{border-left:3px solid var(--s37amber)}
+.sim37 .s37mt{font-size:10px;color:var(--text);font-weight:600}
+.sim37 .s37mk{font-size:8px;color:var(--faint);letter-spacing:.08em;margin-top:1px}
+.sim37 .s37md{font-size:8.5px;color:var(--dim);line-height:1.55;margin-top:6px}
+.sim37 .s37m.step .s37mk{color:var(--s37green)}
+.sim37 .s37m.slope .s37mk{color:var(--s37amber)}
+.sim37 .s37lab{font-size:8px;color:var(--faint);letter-spacing:.1em;margin:10px 0 6px}
+.sim37 .s37row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;margin-bottom:4px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.sim37 .s37name{font-size:9.5px;color:var(--text);font-weight:600}
+.sim37 .s37sub{font-size:8px;color:var(--faint);font-weight:400;display:block;margin-top:1px}
+.sim37 .s37mag{font-size:12px;font-weight:700;color:var(--s37amber);white-space:nowrap;letter-spacing:-.01em}
+.sim37 .s37row.low .s37mag{color:var(--faint);font-size:11px}
+.sim37 .s37why{display:none;grid-column:1/-1;font-size:9px;color:var(--dim);line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.sim37 .s37why b{color:var(--text);font-weight:500}
+.sim37 .s37row.open .s37why{display:block}
+.sim37 .s37grain{border:1px dashed var(--line);border-radius:8px;padding:9px 11px;margin-top:9px}
+.sim37 .s37g{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;color:var(--dim);padding:3px 0;border-bottom:1px dotted var(--line)}
+.sim37 .s37g:last-child{border-bottom:none}
+.sim37 .s37g b{color:var(--text);font-weight:600}
+.sim37 .s37ok{color:var(--s37green);font-weight:600;white-space:nowrap}
+.sim37 .s37part{color:var(--s37amber);font-weight:600;white-space:nowrap}
+.sim37 .s37no{color:var(--s37red);font-weight:600;white-space:nowrap}
+.sim37 .s37foot{font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.55}
+.sim37 .s37foot b{color:var(--text);font-weight:500}
+@media(max-width:560px){.sim37 .s37meters{grid-template-columns:1fr}.sim37 .s37g{flex-direction:column;gap:1px}}
 .sim36{--s36green:#3E9A6B;--s36amber:#c99a3a;--s36red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim36{--s36green:#2d7350;--s36amber:#976f16;--s36red:#B0503C}
 .sim36 .s36head{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -5708,6 +5739,55 @@ const MODS = [
       {q:'When do you build the audit trail, and how deep?',
        options:['Afterwards, when an auditor asks &mdash; the data will be in the logs','<b>Before you need it</b>, because almost none of it is captured by default &mdash; and with depth following <b>blast radius</b>, so a disposable spike carries none and a change to who gets auto-approved carries all of it','Uniformly for every change, to be safe','Only for changes an AI was involved in'], answer:1}
     ]
+  },
+  {
+    id:'L-4.1', path:'lead', track:'L-04', title:'Seats vs tokens', minutes:35,
+    lastVerified:'2026-07-29',
+    concept:{
+      analogy:'Capitation versus fee-for-service &mdash; your own payer&rsquo;s cost structure. A seat is capitation: a fixed amount per person per month, forecastable from headcount, and you absorb all the variance in how heavily each person actually uses it. Tokens are fee-for-service: you pay per unit of activity, and <em>utilization</em> drives the bill. Every health-plan leader knows these two carry completely different risk, and that a hybrid arrangement means being clear about which side you are holding. Agent tooling is exactly that hybrid &mdash; and as of this year, every major vendor bills it that way.',
+      body:
+        '<p><strong>The unit you buy is not the unit you consume.</strong> You purchase seats; your teams consume tokens. Seats are a step function &mdash; predictable, tied to headcount, and they move only when you hire. Usage is a slope, driven entirely by behavior and invisible until the invoice arrives. Most organizations budget the step, get surprised by the slope, and then reach for the one lever that cannot fix it: cutting seats. That removes people, not consumption. This is not a framing device, it is now the literal market structure &mdash; GitHub moved Copilot to usage-based billing in <b>June 2026</b>, replacing premium requests with AI credits metered on tokens (a mechanic worth noting precisely because the one it replaced was barely a year old); Cursor bills seat tiers plus included usage pools and then per-million-token rates; Claude Code either draws on a per-seat allowance or bills per token outright.</p>' +
+        '<p><strong>What moves the slope is not what people assume.</strong> It is not prompt length: in a metered run here, a typed prompt of <b>7 tokens</b> sat against <b>124,358 carried</b> &mdash; a ratio of <b>1 to 17,765</b>. You pay for the conversation the agent has with itself, which Anthropic&rsquo;s own docs put plainly: a one-line question in a session that has been open all day &ldquo;uses tokens for the whole conversation, not just the one line.&rdquo; The two dominant levers are both about <em>how work is fed in</em>. <b>Delivery method</b>: the same question, pasting a 193KB file cost <b>$1.2525</b> against <b>$0.1292</b> for referencing the path &mdash; <b>9.7&times;</b>, and the cheap run used <em>more</em> turns. <b>Turn count</b>: one turn $0.0134 against ten turns $0.2834, <b>21.1&times;</b>, about $0.028 a turn. Scoping a request cut one run to <b>19%</b> of baseline.</p>' +
+        '<p><strong>Three intuitions that feel like savings and are not, each disproved by a real run in this course.</strong> &ldquo;Switch to a cheaper model&rdquo; &mdash; in a metered invocation using two models, the cheap one accounted for <b>0.22%</b> of the bill; on grind work it was only 1.8&times; cheaper because carried context does not get cheaper when the model does; and on judgment work it was cheap <em>and wrong</em>. &ldquo;Run more agents in parallel&rdquo; &mdash; a three-way fan-out delivered a genuine <b>2.1&times;</b> speedup, and cost <b>$0.6989</b>, because every child is billed; Anthropic puts agent teams at roughly <b>7&times;</b> the tokens of a standard session. Parallelism buys latency, not savings. And &ldquo;re-anchor the agent to save money&rdquo; &mdash; that was my hypothesis when building the token-economy track, and the run <b>disproved it</b>: re-anchoring buys accuracy, <em>scoping</em> buys economy. Most people pull the first lever and wonder why the bill went up.</p>' +
+        '<p><strong>Your governance decisions are budget decisions, and this is the part that gets missed.</strong> Everything L-03 settled has a meter attached. Turning on PR review for every push multiplies a per-review cost &mdash; vendor-stated at $15&ndash;25 at the time of writing &mdash; by the number of pushes. Permission modes change how many turns run unattended. Every connector you approve adds context to every session that loads it. And the same control that fixed your data posture fixes your billing path: Anthropic states that &ldquo;if your organization mixes sign-in methods, <b>each developer is metered according to the one they authenticated with</b>&rdquo; &mdash; so a developer on the wrong account is both outside your data agreement and outside your billing arrangement. Budget and policy are one conversation.</p>' +
+        '<p><strong>Finally, know the grain you can actually charge back at.</strong> Per user and per team is billing-grade &mdash; spend reports, analytics APIs, and OpenTelemetry, which the docs call the only option that streams per-user cost into your own stack in near real time. Per session and per model is precise, straight from the usage envelope. Within a session, usage can now be attributed to individual skills, subagents and MCP servers &mdash; genuinely useful, and worth knowing that this changed <em>while this course was being written</em>, since an earlier module here tested and reported that it did not exist. But read the caveat: those figures are approximate, computed locally, and priced at list rates, so they are a <b>diagnostic tool, not an invoice</b>. &ldquo;What did that agent cost us&rdquo; is a question you can answer directionally and not contractually. Budget the slope, not just the step; a useful public anchor is Anthropic&rsquo;s stated <b>$13 per developer per active day</b>, though the honest method is theirs too &mdash; pilot a small group and measure your own baseline first. L-4.2 turns that into a real team budget.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-37'},
+    labA:{
+      title:'Model your bill as two meters',
+      steps:[
+        'Split your current or planned spend into the <b>step</b> (seats &times; headcount) and the <b>slope</b> (usage). If you cannot see the slope at all today, that is your first finding &mdash; and the fix is a reporting surface, not a spreadsheet estimate.',
+        'Rank your slope drivers and attach <b>one number you measured yourself</b> &mdash; meter the same real task twice, once with a file pasted in and once referenced by path, and see whether your own ratio looks like the 9.7&times; measured here. A borrowed number will not survive a finance conversation; yours will.',
+        'Find the governance decisions already setting your meter: review triggers, permission modes, approved connectors, and which accounts developers are actually signed into. Then set a <b>spend cap</b> and decide, explicitly, what happens at the ceiling &mdash; keep working at published rates, or block until the next cycle. That is a policy choice, not a default.',
+        'Success: a two-meter model of your spend, a ranked driver list with at least one number you measured, the governance-to-budget links written down, a cap in place with the at-ceiling behavior chosen, and a stated chargeback grain (team or repo &mdash; not per agent).'
+      ]
+    },
+    labB:{
+      title:'Meter one task three ways',
+      steps:[
+        'Watch a single task metered end to end &mdash; cost, turns, and the per-model split &mdash; and note the ratio of what was typed to what was carried. This is the number that reframes the whole cost conversation for a team that thinks it is being billed for prompts.',
+        'Now watch the same question answered two ways: the file <b>pasted in</b>, then <b>referenced by path</b>. Watch the cost gap open to roughly 9.7&times;, and look specifically at cache creation (103,192 versus 6,465) to see where it comes from &mdash; it is not the raw input size, which differs by only 3.4&times;.',
+        'Then look at what the envelope does and does not tell you: session total and per-model split are real; the within-session breakdown by subagent and MCP server is approximate and local. Decide which of your own cost questions each one can honestly answer.',
+        'Success: you can read a cost envelope out loud, name the driver behind a number, and say precisely which cost questions your tooling can answer contractually versus only directionally.'
+      ]
+    },
+    checklist:[
+      'I budget <b>both meters</b> &mdash; the seat step and the usage slope &mdash; and know seats do not control usage.',
+      'I know the bill tracks <b>carried context and turns</b>, not prompt length (1 : 17,765).',
+      'I do not treat a cheaper model or more parallel agents as cost savings (0.22%; parallelism pays every child).',
+      'I treat my <b>governance settings as budget settings</b>, including which account developers sign into.',
+      'I charge back at <b>team or repo</b> grain and treat per-agent figures as diagnostic, not invoiceable.'
+    ],
+    quiz:[
+      {q:'You approved 50 more seats. What have you actually budgeted?',
+       options:['The full cost of those 50 developers using the tool','<b>Only the step.</b> Seats are capitation &mdash; fixed and forecastable &mdash; while the usage slope is driven by behavior and billed separately on tokens. Every major vendor now bills both, so a seat-only forecast is half the invoice','Nothing, since usage is included','The slope, since heavier users cost more per seat'], answer:1},
+      {q:'Which change would cut your variable spend the most?',
+       options:['Switching everyone to a cheaper model','<b>Changing how context reaches the agent</b> &mdash; referencing a file by path instead of pasting it measured <b>9.7&times;</b> cheaper on the same question, and scoping a request cut another run to 19%. Model choice barely registers: the cheap model was 0.22% of one metered bill','Reducing how much developers type in their prompts','Running more agents in parallel to finish sooner'], answer:1},
+      {q:'Your team runs a three-way parallel fan-out instead of working sequentially. What did that buy?',
+       options:['Lower cost, because each agent does less work','<b>Wall-clock time, not tokens</b> &mdash; a measured 2.1&times; speedup for $0.6989, because every child agent is billed. Anthropic puts agent teams at roughly 7&times; the tokens of a standard session. Run them for latency, never for savings','Both lower cost and lower latency','No measurable difference'], answer:1},
+      {q:'Finance asks what one particular agent cost last month. What can you honestly give them?',
+       options:['An exact invoiced figure per agent','<b>A directional number only.</b> Per-user and per-team spend is billing-grade, and per-session and per-model is precise &mdash; but within-session attribution to subagents and MCP servers is approximate, computed locally at list rates. Charge back at team or repo grain','Nothing &mdash; no attribution exists at any level','An exact figure, but only on enterprise plans'], answer:1}
+    ]
   }
 ];
 
@@ -7834,6 +7914,57 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-37 · The Two Meters (spec: VISUALS.md) ----------
+   Every agent bill is now a hybrid: a seat you buy (step) + usage you consume (slope).
+   Verified 2026-07-29 across all three vendors (l41-seats-vs-tokens.txt) — incl. Copilot's
+   move to AI Credits on 2026-06-01, which retired premium requests. The slope drivers are
+   ranked by the course's OWN measured ratios (durable) rather than prices (volatile), with
+   "use a cheaper model" ranked LAST on purpose at 0.22%. Foot = the three attribution grains.
+   L-4.1, opens L-04. */
+VISUALS['SIM-37'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DRIVERS = [
+    ['','How context is delivered','pasting a file vs referencing its path','9.7&times;',
+     'The same question, the same repo, the same right answer. Pasting a 193KB file cost <b>$1.2525</b>; pointing at the path cost <b>$0.1292</b>. The gap is <em>cache creation</em> &mdash; 103,192 tokens versus 6,465, about 6% &mdash; because the referenced run never had to hold the file. The detail that stings: the cheap run used <em>more</em> turns. You can spend a dollar to save three cents.'],
+    ['','How many turns it takes','1 turn vs 10 turns of the same session','21.1&times;',
+     'A one-turn answer cost <b>$0.0134</b>; a ten-turn exploration cost <b>$0.2834</b> &mdash; roughly <b>$0.028 per turn</b>. Meanwhile the typed prompts were 2, 4 and 7 tokens. The bill tracks how much work the agent does on its own, not how much you type.'],
+    ['','How much context you carry','a lean instruction file vs a bloated one','+3,584',
+     'A 170-line memory file cost <b>+3,584 tokens every session</b> against a 36-line one that did the same job. Small per session, permanent, and paid again on every cold start and every edit to the file. This is the rent you pay for the context you never trimmed.'],
+    ['','How tightly you scope','anchored-and-unconstrained vs anchored-and-scoped','19%',
+     'Three framings of one question: rediscover <b>$0.3267</b>, anchored but unconstrained <b>$0.4447</b> &mdash; <em>more</em> than rediscovering &mdash; and anchored plus &ldquo;answer from these facts alone&rdquo; <b>$0.0611</b>, or 19% of baseline. This ran against my own hypothesis that re-anchoring saves money, and disproved it: <b>re-anchoring buys accuracy, scoping buys economy.</b> Most people pull only the first lever and are surprised the bill rises.'],
+    ['','How many agents run at once','sequential vs a three-way parallel fan-out','pays each',
+     'The fan-out returned ~186 seconds of review in ~88 seconds of wall-clock &mdash; a real <b>2.1&times;</b> speedup &mdash; for <b>$0.6989</b>. But every child is billed: parallelism buys <em>time</em>, not tokens. Anthropic&rsquo;s own docs put agent teams at roughly <b>7&times;</b> the tokens of a standard session. Run them for latency, never to save money.'],
+    ['low','Which model you pick','the lever everyone reaches for first','0.22%',
+     'Ranked last deliberately. In a metered invocation that used two models, Haiku was <b>0.22%</b> of the bill and Opus was 99.78%. On grind work the cheap model was only 1.8&times; cheaper &mdash; carried context does not get cheaper when the model does. And on judgment work it was cheap <em>and wrong</em>, confidently asserting the inclusive rule while the code said otherwise. Cheap-and-wrong is the expensive outcome.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim37" aria-label="The two meters: seats you buy versus usage you consume">' +
+      '<div class="s37head"><span>SIM-37 &middot; THE TWO METERS</span><span>WHAT MOVES THE BILL</span></div>' +
+      '<div class="s37meters">' +
+        '<div class="s37m step"><div class="s37mt">Seats</div><div class="s37mk">A STEP &mdash; CAPITATION</div>' +
+          '<div class="s37md">Fixed per person per month. Forecastable from headcount, and it moves only when you hire. <b>It is not a usage control</b> &mdash; cutting seats removes people, not consumption.</div></div>' +
+        '<div class="s37m slope"><div class="s37mt">Usage</div><div class="s37mk">A SLOPE &mdash; FEE-FOR-SERVICE</div>' +
+          '<div class="s37md">Metered on tokens &mdash; input, output <em>and cached</em>. Driven entirely by behavior, invisible until the invoice. Every vendor now bills this way alongside the seat.</div></div>' +
+      '</div>' +
+      '<div class="s37lab">WHAT ACTUALLY MOVES THE SLOPE &mdash; RANKED BY MEASURED IMPACT &middot; TAP EACH</div>' +
+      DRIVERS.map((d,i) =>
+        '<div class="s37row ' + d[0] + '" data-d="' + i + '">' +
+          '<div class="s37name">' + d[1] + '<span class="s37sub">' + d[2] + '</span></div>' +
+          '<div class="s37mag">' + d[3] + '</div>' +
+          '<div class="s37why">' + d[4] + '</div>' +
+        '</div>').join('') +
+      '<div class="s37grain"><div class="s37lab" style="margin-top:0">WHAT YOU CAN ACTUALLY CHARGE BACK</div>' +
+        '<div class="s37g"><span><b>Per user / per team</b> &middot; analytics, spend-report CSV, admin API, OpenTelemetry</span><span class="s37ok">&#10003; BILLING-GRADE</span></div>' +
+        '<div class="s37g"><span><b>Per session / per model</b> &middot; straight from the usage envelope</span><span class="s37ok">&#10003; PRECISE</span></div>' +
+        '<div class="s37g"><span><b>Per subagent / skill / MCP server</b> &middot; approximate, local, list-rate</span><span class="s37part">&#9888; DIAGNOSTIC ONLY</span></div>' +
+        '<div class="s37g"><span><b>&ldquo;What did that one agent cost us?&rdquo;</b> as an invoiced number</span><span class="s37no">&#10007; NOT A THING</span></div>' +
+      '</div>' +
+      '<div class="s37foot"><b>Read the ranking, not the prices.</b> The dollar figures on this page are dated measurements and vendor pricing changes often &mdash; Copilot replaced premium requests with credits on 1 June 2026, mid-course. What lasts is the <em>shape</em>: context delivery and turn count dominate, the model you pick barely registers, and parallelism buys latency rather than savings. <b>And your governance settings are budget settings</b> &mdash; PR review on every push multiplies a per-review cost by the number of pushes, and which account a developer signs into decides the billing path as surely as it decides the data policy (L-3.4).</div>' +
+    '</div>';
+  mount.querySelectorAll('.s37row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s37row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-36 · Reconstruct the Change (spec: VISUALS.md) ----------

@@ -1,0 +1,200 @@
+L-4.1 — Seats vs tokens (how the bills actually work; per-agent cost attribution)
+LEADERSHIP L-04 (1/4 — OPENS THE TRACK). Vendor pricing verified against primary docs
+2026-07-29 (fresh). Course-measured figures marked [MEASURED] were metered live during the
+engineer path and RE-READ from their recording sheets before quoting (m81/m82/m95 verified
+line-by-line this session).
+
+*** SOURCING RULE THIS MODULE MUST TEACH AND OBEY ***
+Vendor PRICES are the most volatile claim in the whole course. Every dollar figure from a
+vendor is dated and carries "verify current pricing." The course's OWN measured RATIOS
+(9.7x, 21.1x, 0.22%, 2.1x, 1:17,765) are durable — they are properties of how agents work,
+not of a price list — and they are what the module actually teaches. State this distinction
+to the learner; it is the difference between a module that ages badly and one that doesn't.
+
+=========================================================================
+STALE-FRAMING CATCH #8 — AND IT IS A BIG ONE FOR A PRICING MODULE
+=========================================================================
+GitHub Copilot's "premium requests" model is SUPERSEDED. The premium-request docs page now
+carries a "legacy" label. Writing this module from 2025 knowledge would have taught a
+mechanic retired two months ago.
+  - github.blog + docs.github.com: all Copilot plans transitioned to USAGE-BASED BILLING on
+    2026-06-01; premium request units (PRUs) were REPLACED BY **GitHub AI Credits**.
+  - Prior catches for the log: Composer, Edit mode, @workspace, find_symbol, the # shortcut,
+    the blueprint's Copilot user-path, DORA 2025 (four->five metrics + the finding flip).
+    This is #8, and the first one in the commercial/pricing layer rather than the feature layer.
+
+=========================================================================
+THE CONVERGENCE (the module's spine — and it is now literally the market structure)
+=========================================================================
+ALL THREE TOOLS ARE NOW HYBRID: A SEAT YOU BUY + USAGE YOU CONSUME.
+  - Copilot: was pure per-seat; since 2026-06-01 it is seat + a monthly AI-credit allowance
+    metered on tokens.
+  - Cursor: seat tiers + two included usage pools + per-million-token rates beyond them.
+  - Claude Code: either a per-seat allowance (Teams/Enterprise) or straight per-token
+    (Console/API and cloud providers).
+=> "Seats vs tokens" is not a framing device. It is the actual shape of every bill on the
+   market, and a leader who budgets only the seat line is budgeting half the invoice.
+
+=========================================================================
+GITHUB COPILOT  (docs.github.com/en/copilot/concepts/billing + .../usage-based-billing-for-
+                 organizations-and-enterprises, + github.blog — verified 2026-07-29)
+=========================================================================
+  - "Copilot usage in organizations and enterprises is measured in AI credits."
+    "Your Copilot plan includes a monthly allowance of GitHub AI Credits. If you exhaust your
+     AI credits, you can pay extra to keep working."
+  - "GitHub AI Credits are the billing unit for Copilot usage in Copilot Business and Copilot
+    Enterprise." CONVERSION, verbatim: **"1 AI credit = $0.01 USD."**
+  - METERING, verbatim: consumption is measured through "input tokens (what's sent to the
+    model), output tokens (what the model generates), and cached tokens (context the model
+    reuses or stores)"; priced by "the model used, and the total is converted into AI credits."
+    => NOTE FOR THE MODULE: cached tokens are metered. This is the same cache economics the
+       course measured in M-7.3/M-8.2, now visible directly on a Copilot invoice.
+  - INCLUDED ALLOWANCE (per user per month): Copilot Business **1,900 credits** ($19/user/mo),
+    Copilot Enterprise **3,900 credits** ($39/user/mo). Promotional period 2026-06-01 to
+    2026-09-01 for existing customers: Business 3,000, Enterprise 7,000.
+  - STILL FREE: "Code completions and next edit suggestions are not billed in AI credits.
+    They remain unlimited for all paid plans." => the autocomplete layer (T-04) is NOT what
+    moves a Copilot bill; agentic work is.
+  - EXHAUSTION IS A POLICY CHOICE: either "Usage continues at published per-credit rates" or
+    "Usage is blocked until the next billing cycle."
+  - BUDGET CONTROLS: "Budget controls at the user, organization, cost center, and enterprise
+    levels determine how Copilot usage is served, metered, or blocked."
+  - LEGACY MECHANIC (kept only to name the change, NOT taught as current): premium requests,
+    Pro 300/mo, Pro+ 1500/mo, extra at $0.04/request, and the notable rule that for agentic
+    features "only the prompts you send count as premium requests; actions Copilot takes
+    autonomously to complete your task, such as tool calls, do not." Under AI Credits the
+    meter is TOKENS, so that asymmetry no longer holds — worth flagging as exactly the kind
+    of assumption that silently goes stale.
+
+=========================================================================
+CURSOR  (cursor.com/docs/account/pricing — verified 2026-07-29)
+=========================================================================
+  - SEATS: Pro $20/mo, Pro Plus $60/mo, Ultra $200/mo. Teams: "Two seat types: Standard
+    ($40/user/mo) and Premium ($120/user/mo), where Premium adds 5x the Standard limits on Agent."
+  - TWO INCLUDED POOLS: a Cursor-models pool, and an "Other Models" pool — "Pro, Pro Plus, and
+    Ultra include at least $20 of third-party model usage each month (more on higher tiers)."
+  - BEYOND THE POOLS: "All prices are per million tokens," varying by model (e.g. Claude
+    Sonnet 5 listed at $3/M input and $15/M output, pre-promotion).
+  - TEAMS SURCHARGE, verbatim: "On Teams and Enterprise plans, third-party model requests
+    include a Cursor Token Rate of $0.25 per million tokens."
+  - OVERAGE: "Add on-demand usage: Continue at the same API rates with pay-as-you-go billing";
+    "On-demand usage is billed monthly at the same rates."
+
+=========================================================================
+CLAUDE CODE  (code.claude.com/docs/en/costs.md — verified 2026-07-29)
+=========================================================================
+  - "Claude Code charges by API token consumption."
+  - *** THE BUDGETING ANCHOR, verbatim — the most useful single number in this module ***
+    "Across enterprise deployments, the average cost is around $13 per developer per active
+     day and $150-250 per developer per month, with costs remaining below $30 per active day
+     for 90% of users."
+    And the method, which is L-2.1's pilot + M-11.1's baseline restated by the vendor:
+    "To estimate spend for your own team, start with a small pilot group and use the tracking
+     tools below to establish a baseline before wider rollout."
+  - TWO BILLING PATHS: Teams/Enterprise — "usage draws from each member's seat allowance"
+    (rolling five-hour + weekly windows, shared with Claude chat and Cowork, size depends on
+    Standard vs Premium seat tier); "Usage inside the seat allowance isn't metered in dollars."
+    Console/API and cloud providers — "usage is billed per token to your organization."
+  - *** THE PER-LOGIN CALLBACK (ties L-3.4 exactly), verbatim: "If your organization mixes
+    sign-in methods, each developer is metered according to the one they authenticated with."
+    => Login determines BOTH your data policy (L-3.4) AND your billing path. Same control
+       (enforced login) fixes both. Strong continuity beat. ***
+  - SEAT vs CHAT SEAT, verbatim: "Budget more for a coding seat than a chat seat: each Claude
+    Code turn carries file contents, tool calls, and multi-step reasoning, so one debugging
+    session can consume more than a day of chat."
+  - AGENT TEAMS, vendor-stated: teams "use approximately 7x more tokens than standard sessions
+    when teammates run in plan mode, because each teammate maintains its own context window
+    and runs as a separate Claude instance." => INDEPENDENTLY CONFIRMS M-9.5's measured
+    "parallel buys wall-clock, not tokens — you pay for every child."
+  - CACHE LIFETIME (why long gaps cost): "an hour on a subscription and drops to five minutes
+    once you're drawing on usage credits; on an API key or cloud provider, it's five minutes
+    by default." Plus: "your first message after a break longer than the cache lifetime misses
+    the cache and reprocesses your full context."
+  - WHY LONG SESSIONS COST: "Claude Code sends your full conversation with every message, so a
+    one-line question in a session that has been open all day uses tokens for the whole
+    conversation, not just the one line." (= M-8.1's 1:17,765, in the vendor's own words.)
+  - BACKGROUND USAGE: "typically under $0.04 per session" even when idle.
+  - RATE-LIMIT PLANNING TABLE (per-user TPM/RPM by org size, 1-5 users 200k-300k TPM down to
+    500+ users 10k-15k) — hand this to L-4.2, it is a budget-lab input.
+
+=========================================================================
+ATTRIBUTION — AND A COURSE FINDING THAT HAS AGED (report it honestly)
+=========================================================================
+M-9.5 (2026-07-25) TESTED and reported: no per-subagent cost attribution, only total_cost_usd.
+**THAT IS NOW OUT OF DATE.** Per costs.md (2026-07-29), `/usage` "attributes recent usage to
+skills, subagents, plugins, and individual MCP servers, with each shown as a percentage of the
+total. It also flags behaviors such as long context or cache misses when one accounts for 10%
+or more of recent usage."
+  BUT READ THE CAVEAT BEFORE CALLING IT CHARGEBACK, verbatim: "The figures are approximate and
+  computed from local session history on this machine, so usage from other devices or
+  claude.ai is not included." Also: Claude Code "computes the dollar figure locally from token
+  counts priced at standard list rates, so it doesn't reflect promotional pricing or contracted
+  discounts and may differ from your actual bill. For authoritative billing, see the Usage page
+  in the Claude Console."
+=> SO THERE ARE THREE GRAINS, and a leader must not confuse them:
+   1. ORG / PER-USER  — billing-grade. Teams/Enterprise spend report CSV + org analytics;
+      Enterprise Analytics API (`read:analytics` scope); Console dashboard + Claude Code
+      Analytics API; and OpenTelemetry, which per the docs "is the only option that streams
+      per-user token and cost metrics into your own observability stack in near real time."
+      Copilot: budget controls + reporting at user/org/cost-center/enterprise.
+   2. SESSION / MODEL — real and precise from the usage envelope [MEASURED: M-8.1's
+      per-model split came straight from `modelUsage`].
+   3. WITHIN-SESSION by skill / subagent / plugin / MCP server — NEW, but approximate,
+      local-only, list-rate. Good for DIAGNOSIS ("what is eating my context"), NOT for
+      chargeback or invoicing.
+   Chargeback by team or repo: realistic. Chargeback per agent: still no.
+
+=========================================================================
+THE COURSE'S OWN MEASURED RATIOS  [MEASURED — re-read from sheets 2026-07-29]
+=========================================================================
+These are the durable teaching content. All from live metered runs on the real PA repos.
+  CONTEXT IS THE BILL (m81-anatomy-of-a-turn.txt):
+   - typed prompt 7 tokens vs 124,358 carried = **1 : 17,765**. "You pay for the conversation
+     the agent has with itself."
+   - turns are the multiplier: 1 turn $0.0134 -> 10 turns $0.2834 = **21.1x**, ~$0.0283/turn.
+   - per-model split in ONE invocation: haiku $0.000616 = **0.22%** vs opus = **99.78%**.
+  DELIVERY METHOD DOMINATES (m82-context-pollution.txt) — same question, same answer (13):
+   - PASTE 193KB file: 3 turns, cache_creation 103,192 + cache_read 261,017, **$1.2525**
+   - REFERENCE BY PATH: 4 turns, cache_creation 6,465 + cache_read 101,786, **$0.1292**
+   - **COST RATIO 9.7x** (input-token ratio only 3.4x — the gap is cache CREATION, ~6%).
+   - The cheap run used MORE turns. "You spent a dollar to save three cents."
+  SCOPING BUYS ECONOMY, RE-ANCHORING BUYS ACCURACY (m83):
+   - A rediscover $0.3267 · B anchored-unconstrained **$0.4447 (MORE)** · C anchored+scoped
+     $0.0611 = **19% of A**. My hypothesis that re-anchoring saves money was DISPROVED live
+     and is taught as the corrected lesson.
+  THE CHEAP MODEL ISN'T THE LEVER (m84):
+   - grind: small $0.0912 vs large $0.1612 = only **1.8x** (same 4 turns; carried context
+     doesn't get cheaper when the model does).
+   - judgment: small model $0.0368 and **WRONG** — confidently asserted the inclusive rule
+     while line 99 was strict `>`. Cheap and wrong is the expensive outcome.
+  PARALLEL BUYS TIME, NOT TOKENS (m95):
+   - fan-out total_cost_usd **$0.6989**; duration_api_ms 185,890 vs wall 87,981 = **2.1x**.
+     ~186s of review delivered in ~88s — but you pay for every child.
+  OTHER REAL DATA POINTS: M-9.7 gate run $0.4429 · M-10.4 background agent $0.2320 (9 turns,
+   24s) · M-7.3 bloat rent **+3,584 tokens every session** for a 170-line vs 36-line memory
+   file, with the honest cache-creation caveat.
+  L-3.3 (verified 2026-07-28): Claude Code's managed Code Review averages **$15-25 per review**
+   and "After every push" multiplies that by the number of pushes => A GOVERNANCE SETTING IS
+   A BUDGET SETTING.
+
+=========================================================================
+MODULE FRAMING
+=========================================================================
+Analogy: capitation vs fee-for-service, the payer's own cost structure. A seat is capitation —
+  fixed per person per month, forecastable from headcount, and you absorb the variance in how
+  heavily each person uses it. Tokens are fee-for-service — you pay per unit of activity and
+  UTILIZATION drives the bill. Every health-plan leader knows these carry different risk and
+  that a hybrid arrangement means knowing which side you hold. Agent tooling is exactly that
+  hybrid, and since 2026-06-01 all three vendors bill it that way.
+Spine: you buy seats, you consume tokens, and everything that actually moves the variable half
+  is a BEHAVIOR — carried context, turns, delivery method, governance settings — not headcount,
+  not model choice, not prompt length.
+Four moves: (1) split the bill into the step and the slope, and stop using seat count as a
+  usage control; (2) rank the real slope drivers by measured impact (delivery 9.7x, turns
+  21.1x, context size, scoping 19%) and note the one everyone reaches for first — the cheaper
+  model — ranks last at 0.22%; (3) recognize that your L-03 governance decisions already set
+  the meter (review-on-every-push, permission modes, approved connectors) and that login
+  determines the billing path as well as the data policy; (4) know your attribution grain —
+  per-user billing-grade yes, per-agent diagnostic-only — and set caps deliberately.
+Hands to L-4.2 (the team budget lab), which can use the $13/active-day anchor, the TPM/RPM
+  table, and the measured ratios as its inputs.
