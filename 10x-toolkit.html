@@ -1279,6 +1279,27 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim44{--s44green:#3E9A6B;--s44amber:#c99a3a;--s44red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim44{--s44green:#2d7350;--s44amber:#976f16;--s44red:#B0503C}
+.sim44 .s44head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim44 .s44std{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim44 .s44std b{color:var(--text);font-weight:500}
+.sim44 .s44card{border:1px solid var(--line);border-left:3px solid var(--s44amber);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px;cursor:pointer}
+.sim44 .s44card.worst{border-left-color:var(--s44red)}
+.sim44 .s44n{font-size:10px;color:var(--text);font-weight:600}
+.sim44 .s44flag{font-size:7px;letter-spacing:.07em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--s44red);color:var(--s44red);margin-left:6px;white-space:nowrap}
+.sim44 .s44body{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim44 .s44card.open .s44body{display:block}
+.sim44 .s44f{font-size:8.5px;color:var(--dim);line-height:1.55;margin-bottom:6px}
+.sim44 .s44k{color:var(--faint);letter-spacing:.06em;font-size:7.5px;font-weight:700;display:block;margin-bottom:1px}
+.sim44 .s44f b{color:var(--text);font-weight:600}
+.sim44 .s44move{border:1px solid var(--s44green);border-radius:7px;padding:7px 9px;margin-top:7px;font-size:8.5px;color:var(--dim);line-height:1.55}
+.sim44 .s44move .s44k{color:var(--s44green)}
+.sim44 .s44move b{color:var(--text);font-weight:600}
+.sim44 .s44good{border:1px solid var(--s44green);border-radius:8px;padding:9px 11px;margin-top:9px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim44 .s44good b{color:var(--s44green);font-weight:600}
+.sim44 .s44foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim44 .s44foot b{color:var(--text);font-weight:500}
 .sim43{--s43green:#3E9A6B;--s43amber:#c99a3a;--s43red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim43{--s43green:#2d7350;--s43amber:#976f16;--s43red:#B0503C}
 .sim43 .s43head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -6287,6 +6308,56 @@ const MODS = [
       {q:'How should you treat the &ldquo;hours or days rather than weeks&rdquo; claim?',
        options:['As the headline benefit to put in your rollout business case','<b>As AWS&rsquo;s original July 2025 framing</b> &mdash; it, and the &ldquo;bolts&rdquo; vocabulary, had gone from the November material. Adopt <em>units of work</em> as the durable part, and note that Operations is still marked &ldquo;future&rdquo;','As a conservative estimate, since agents have improved since','As applying only to greenfield work'], answer:1}
     ]
+  },
+  {
+    id:'L-6.2', path:'lead', track:'L-06', title:'Facilitating the ceremonies', minutes:35,
+    lastVerified:'2026-07-30',
+    concept:{
+      analogy:'The safety huddle. Short, structured, and its entire purpose is getting a concern raised early enough to matter. Everyone also knows how it fails: it degrades quietly into a status readout where nobody says the uncomfortable thing, attendance stays perfect throughout, and the first anyone hears of the problem is the incident review. The chair&rsquo;s job was never to get through the list &mdash; it was to make it <em>safe and expected</em> to say &ldquo;I don&rsquo;t think this is right&rdquo;, and then to make sure that concern leaves the room with a name and a date attached to it.',
+      body:
+        '<p><strong>Start from what the ceremonies are actually defined as, because both definitions are about humans supplying judgment.</strong> AWS describes Mob Elaboration as where the <b>&ldquo;entire team actively validates AI&rsquo;s questions and proposals&rdquo;</b>, and Mob Construction as where the <b>&ldquo;team provides clarification on technical decisions and architectural choices in real time.&rdquo;</b> Read those carefully and the failure mode is already visible: <b>a ceremony in which nobody validates or clarifies anything has kept the format and lost the function</b> &mdash; and it will look completely healthy from the outside, because attendance and output are both unaffected.</p>' +
+        '<p><strong>So be clear about what an elaboration is for: the questions, not the plan.</strong> The live run in this course produced six units of work, and that was not its most valuable output. Its most valuable outputs were <b>three clarifying questions</b> &mdash; &ldquo;20% of <em>what</em>?&rdquo;, &ldquo;what false-approve rate buys it?&rdquo;, &ldquo;which threshold contract is authoritative?&rdquo; &mdash; and the honest conclusion that <b>the intent could not be met by engineering judgment alone</b>. A facilitator optimizing to leave the room with a plan will trample exactly that. You are not there to unblock the agent. <b>You are there to find out what nobody knows yet</b>, while finding out is still cheap.</p>' +
+        '<p><strong>Which makes the attendee list the real facilitation work.</strong> Not one of those three questions is answerable by engineers &mdash; they are about business definitions, clinical risk tolerance, and which contract governs. If the people who own them are not in the room, the ceremony does not surface an unknown; it <em>manufactures a guess that looks like a decision</em>. This is where L-6.1&rsquo;s decision latency stops being a scheduling annoyance and becomes an unrecorded assumption you will inherit later. Getting the right people into the room is most of the job; running the meeting is the easy part.</p>' +
+        '<p><strong>Then the five ways it goes wrong, and one of them is far worse than the others.</strong> <b>Routing around a refusal</b> is the most damaging thing a facilitator can do. When Construction stopped at the unit that crossed into medical-necessity policy, the tempting move is to find someone who will simply build it &mdash; and the cost is not one ungoverned change, it is that <b>you have taught the entire organization that gates are negotiable</b>, which quietly converts every control you built in L-03 into a suggestion. The other four are more ordinary and still expensive. <b>Answering to keep momentum</b> turns an open decision into an unrecorded assumption. <b>Rubber-stamping the decomposition</b> skips the validation that is the ceremony&rsquo;s entire purpose &mdash; if you have never reshaped or rejected a unit, you are attending rather than validating. <b>Taking the keyboard</b> ends the ceremony the moment the facilitator becomes a participant &mdash; it is L-1.1&rsquo;s <em>watch, don&rsquo;t type</em> failing at room scale; your leverage in that room is that you can <em>decide</em>, which nobody else present can. And <b>status-meeting drift</b> is the one that catches good teams, because it produces a comfortable artifact and gives no signal that anything has failed until an initiative misses badly.</p>' +
+        '<p><strong>What good looks like is four moves, and none of them are complicated.</strong> Prepare the intent rather than the solution. Bring the decision-makers. <b>Make &ldquo;we don&rsquo;t know&rdquo; a legitimate answer</b> and record it as an open decision with an owner and a date &mdash; an honest unknown with a name attached beats a confident guess every time, and costs about twenty seconds. Let refusals stand and escalate them properly: the live run named a clinical lead for the rule, compliance and legal for payer contracts, CMS and state prior-auth rules and <b>disparate-impact exposure</b>, plus a shadow dry-run to produce the yield nobody knew. Then end with <b>decisions recorded, not tasks assigned</b>. Two honest notes to close. The five anti-patterns above are <b>this course&rsquo;s synthesis</b> from the runs and its own governance material &mdash; observations, not published methodology. And the ceremonies themselves remain young, with Operations still marked &ldquo;future&rdquo;, so run them as experiments against your own baseline rather than adopting them on faith. The durable core is small: <b>state the intent, decompose into gated units, protect the questions, honour the refusals.</b> L-6.3 closes the course with what all of this does to the org chart.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-44'},
+    labA:{
+      title:'Facilitate one elaboration',
+      steps:[
+        'Prepare a real <b>intent</b> &mdash; the outcome you want, not the solution you have in mind. Then apply the test to your own sentence before anyone else does: what is the &ldquo;X% of <em>what</em>?&rdquo; hiding in it?',
+        '<b>Pre-write the three questions you expect nobody in the room can answer.</b> Predicting them is most of the preparation, and it is what tells you who actually needs to attend &mdash; build the invite list from the decisions, not from the org chart.',
+        'Agree the mechanism for unknowns <em>before</em> you start: where an open decision gets recorded, who owns it, and by when. Decide this in advance because you will not want to stop and invent it in the moment, which is precisely how guesses get made.',
+        'Run it, and hold one rule above the others: <b>you may not answer a question just to keep the room moving.</b> If it stalls, that is the ceremony doing its job &mdash; record the unknown and move to the next unit.',
+        'Success: an intent, an attendee list where you can say which decision each person owns, three anticipated questions, and a recording mechanism you would be willing to use in front of your own boss.'
+      ]
+    },
+    labB:{
+      title:'Watch the two runs as a facilitator',
+      steps:[
+        'Watch the elaboration <b>reshape the intent</b> before decomposing it &mdash; no queue entity, no baseline, nothing that drains the queue via the API &mdash; and then ask its three questions. Pause at each and ask yourself honestly: would you have answered, or recorded it?',
+        'Watch Construction build the low-risk slice and then <b>stop</b> at the policy unit. This is the moment the module is really about: notice how reasonable &ldquo;let&rsquo;s just get it built&rdquo; would sound out loud, and how little resistance it would meet in most rooms.',
+        'Go through both runs marking <b>which of the five anti-patterns would have been tempting at each beat</b>, and what each would have cost. The rubber-stamp moment and the refusal moment are the two worth dwelling on.',
+        'Success: you can point to the specific moments where momentum would have won, name the anti-pattern in each case, and say what you would do instead &mdash; including who you would have had to call.'
+      ]
+    },
+    checklist:[
+      'I know the ceremony&rsquo;s real output is the <b>questions and unknowns</b>, not the plan.',
+      'I build the attendee list from <b>who owns which decision</b>, because unanswerable questions become guesses.',
+      'I never answer to keep momentum &mdash; &ldquo;we don&rsquo;t know&rdquo; gets <b>recorded</b> with an owner and a date.',
+      'I treat a refusal as the ceremony <b>working</b>, and escalate it rather than routing around it.',
+      'I end with <b>decisions recorded, not tasks assigned</b> &mdash; and I never take the keyboard.'
+    ],
+    quiz:[
+      {q:'What is the real output of a Mob Elaboration?',
+       options:['A validated decomposition into units of work, ready to schedule','<b>The questions and unknowns it surfaces.</b> The live run&rsquo;s most valuable products were three clarifying questions and the finding that the intent could not be met by engineering judgment alone. A facilitator optimizing to leave with a plan tramples exactly that','An agreed estimate for the initiative','A record of what the agent completed since last time'], answer:1},
+      {q:'Which anti-pattern is the most damaging, and why?',
+       options:['Rubber-stamping the decomposition, because it skips the validation step','<b>Routing around a refusal.</b> The cost is not one ungoverned change &mdash; it is that you teach the organization gates are negotiable, which converts every control you built into a suggestion','Taking the keyboard, because it undermines the team&rsquo;s ownership','Status-meeting drift, because it wastes the most time'], answer:1},
+      {q:'The agent asks a clarifying question and nobody in the room can answer it. What do you do?',
+       options:['Make the most reasonable assumption and flag it in the notes','<b>Record it as an open decision with an owner and a date, and move on.</b> Guessing to keep momentum converts an open decision into an unrecorded assumption that resurfaces later as a missed initiative nobody can trace','Postpone the ceremony until the right people are available','Ask the agent to proceed with its own recommended default'], answer:1},
+      {q:'How should a ceremony end?',
+       options:['With tasks assigned to named owners and dates','<b>With decisions recorded.</b> The tasks follow from them &mdash; but a ceremony that produced assignments and no recorded decisions has kept the format and lost the function it exists for','With a demo of what the agent built during the session','With an updated estimate for the remaining work'], answer:1}
+    ]
   }
 ];
 
@@ -8413,6 +8484,62 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-44 · Five Ways a Ceremony Becomes Theatre (spec: VISUALS.md) ----------
+   Anti-patterns ordered by damage, each with WHAT IT LOOKS LIKE / WHY IT'S TEMPTING / WHAT IT
+   COSTS / green FACILITATOR MOVE. The anti-patterns are the COURSE'S synthesis from the two
+   live runs and its own governance material — NOT published AI-DLC methodology; stated in the
+   course's voice, same discipline as L-5.3's acceptance-rate reading. AWS's two mob definitions
+   sit above as the standard being failed (Jul-2025 post per M-12.1's hedge). L-6.2. */
+VISUALS['SIM-44'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const A = [
+    ['worst','Routing around a refusal','MOST DAMAGING',
+     'Construction stops at a unit that needs a policy decision. Someone says &ldquo;let me just find an engineer who&rsquo;ll build it&rdquo; &mdash; and the work resumes within the hour.',
+     'It feels like unblocking. The refusal reads as an obstacle rather than a finding, and everyone in the room has a delivery date in their head.',
+     'You do not just ship one ungoverned change. <b>You teach the entire system that gates are negotiable</b> &mdash; and every gate you built in L-03 becomes advisory from that day forward. This is the most expensive thing a facilitator can do, and it is almost never recorded as a decision.',
+     'Treat the refusal as <b>the ceremony working</b>, and say so out loud in the room. Then escalate it properly &mdash; the live run named a <b>clinical lead</b> for the rule itself, <b>compliance and legal</b> for payer contracts, CMS and state rules and <b>disparate-impact exposure</b>, and a <b>shadow dry-run</b> to produce the yield nobody actually knew. That is a week of real work, and it is the right week.'],
+    ['','Answering to keep momentum','',
+     'The agent asks &ldquo;20% of <em>what</em>?&rdquo; Someone senior says &ldquo;backlog depth, let&rsquo;s say&rdquo; &mdash; and the room moves on, relieved.',
+     'A stalled ceremony feels like a failed one, especially if you called it. Guessing restores the sense of progress instantly.',
+     'You have converted an <b>open decision</b> into an <b>unrecorded assumption</b>. It does not disappear; it resurfaces a quarter later as an initiative that missed its target, with nobody able to say when the denominator was chosen or by whom.',
+     'Make <b>&ldquo;we don&rsquo;t know&rdquo; a legitimate, recordable answer.</b> Write it as an open decision with an owner and a date before the room moves on. An honest unknown with a name attached beats a confident guess in every case, and it takes about twenty seconds.'],
+    ['','Rubber-stamping the decomposition','',
+     'The agent proposes six units of work. They look sensible. The room agrees to all six in under two minutes and moves to scheduling.',
+     'The decomposition is genuinely good, and disagreeing feels like obstruction when you cannot immediately articulate why.',
+     'The <b>validation gate is the entire point</b> of the ceremony &mdash; AWS&rsquo;s own definition is that the team &ldquo;actively validates&rdquo;. <b>If you have never rejected or reshaped a unit, you are not validating; you are attending.</b>',
+     'Ask of each unit: <em>what would make this the wrong unit of work?</em> and <em>who validates that it is done?</em> A unit whose gate has no named owner is not ready, however well-written it is. Expect to reshape at least one &mdash; if you never do, examine the ceremony rather than congratulating the agent.'],
+    ['','Taking the keyboard','',
+     'Something is slightly wrong, you know exactly how to fix it, and it would take ninety seconds. You start typing.',
+     'You are probably the fastest person in the room at this specific thing, and the fix is genuinely small.',
+     'The ceremony stops being a ceremony the moment the facilitator becomes a participant &mdash; and the room learns that the way to resolve ambiguity is to wait for you. It is L-1.1&rsquo;s <em>watch, don&rsquo;t type</em> failing at room scale, and it scales badly.',
+     'Say what you would do and let someone else do it. Your leverage in that room is not your hands &mdash; it is that you can <b>decide</b>, and nobody else present can.'],
+    ['','Status-meeting drift','',
+     'Six weeks in, the ceremony opens with &ldquo;so what did the agent get through this week?&rdquo; Attendance is still perfect. Nobody has raised a concern in a month.',
+     'It is the meeting shape everyone already knows, and it produces a comfortable, legible artifact: a list of things that happened.',
+     'You keep the format and lose the function. The questions stop surfacing &mdash; and because attendance and output both look healthy, <b>nothing signals the failure</b> until an initiative misses badly and everyone is surprised.',
+     'Open with the decision, not the status: <em>&ldquo;what is blocked on a decision, and whose is it?&rdquo;</em> If a ceremony has surfaced no questions in a month, that is a finding about the ceremony &mdash; not evidence that everything is fine.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim44" aria-label="Five anti-patterns that turn a mob ceremony into theatre">' +
+      '<div class="s44head"><span>SIM-44 &middot; FIVE WAYS IT BECOMES THEATRE</span><span>ORDERED BY DAMAGE</span></div>' +
+      '<div class="s44std"><b>The standard being failed.</b> AWS defines Mob Elaboration as where the <b>&ldquo;entire team actively validates AI&rsquo;s questions and proposals&rdquo;</b>, and Mob Construction as where the <b>&ldquo;team provides clarification on technical decisions and architectural choices in real time&rdquo;</b>. Both definitions are about <em>humans supplying judgment</em> &mdash; so a ceremony where nobody validates or clarifies anything has kept the format and lost the function. Tap each anti-pattern.</div>' +
+      A.map((a,i) =>
+        '<div class="s44card ' + a[0] + '" data-a="' + i + '">' +
+          '<div class="s44n">' + a[1] + (a[2] ? '<span class="s44flag">' + a[2] + '</span>' : '') + '</div>' +
+          '<div class="s44body">' +
+            '<div class="s44f"><span class="s44k">WHAT IT LOOKS LIKE</span>' + a[3] + '</div>' +
+            '<div class="s44f"><span class="s44k">WHY IT&rsquo;S TEMPTING</span>' + a[4] + '</div>' +
+            '<div class="s44f"><span class="s44k">WHAT IT COSTS</span>' + a[5] + '</div>' +
+            '<div class="s44move"><span class="s44k">&#8594; THE FACILITATOR MOVE</span>' + a[6] + '</div>' +
+          '</div>' +
+        '</div>').join('') +
+      '<div class="s44good"><b>&#10003; What good looks like, in four moves.</b> Prepare the <em>intent</em>, not the solution. Bring the people who own the decisions you expect to hit &mdash; that scheduling work <em>is</em> the facilitation. Protect the questions, and record every unknown with an owner and a date. End with <b>decisions recorded, not tasks assigned</b>.</div>' +
+      '<div class="s44foot">Two honest notes. These five anti-patterns are <b>this course&rsquo;s synthesis</b> from the two live runs and its own governance material &mdash; they are not published AI-DLC methodology, and you should treat them as observations rather than doctrine. And the ceremonies themselves are young: Operations is still marked &ldquo;future&rdquo;, and the mob format is a claim rather than a proven practice. So run them as <b>experiments against your own baseline</b> (L-2.1). Whatever happens to the vocabulary, the durable core is small and worth keeping: <b>state the intent, decompose into gated units, protect the questions, honour the refusals.</b></div>' +
+    '</div>';
+  mount.querySelectorAll('.s44card').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s44card').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-43 · The Queue Dashboard (spec: VISUALS.md) ----------
