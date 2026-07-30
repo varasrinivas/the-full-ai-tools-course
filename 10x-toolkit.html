@@ -1279,6 +1279,33 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim45{--s45green:#3E9A6B;--s45amber:#c99a3a;--s45red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim45{--s45green:#2d7350;--s45amber:#976f16;--s45red:#B0503C}
+.sim45 .s45head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim45 .s45lead{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim45 .s45lead b{color:var(--text);font-weight:500}
+.sim45 .s45zt{font-size:9px;font-weight:700;letter-spacing:.05em;margin:10px 0 5px}
+.sim45 .s45zt.obs{color:var(--s45green)}
+.sim45 .s45zt.bet{color:var(--s45amber)}
+.sim45 .s45zs{font-size:8px;color:var(--faint);font-weight:400;display:block;margin-top:1px}
+.sim45 .s45row{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 11px;margin-bottom:4px;cursor:pointer}
+.sim45 .s45row.obs{border-left:3px solid var(--s45green)}
+.sim45 .s45row.bet{border-left:3px solid var(--s45amber)}
+.sim45 .s45n{font-size:9.5px;color:var(--text);font-weight:600}
+.sim45 .s45row.bet .s45n{font-weight:400;font-style:italic}
+.sim45 .s45tag{font-size:7px;letter-spacing:.07em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--s45amber);color:var(--s45amber);margin-left:6px;white-space:nowrap}
+.sim45 .s45d{display:none;font-size:8.5px;color:var(--dim);line-height:1.55;margin-top:6px;padding-top:6px;border-top:1px dotted var(--line)}
+.sim45 .s45d b{color:var(--text);font-weight:600}
+.sim45 .s45k{color:var(--faint);letter-spacing:.06em;font-size:7.5px;font-weight:700;display:block;margin-bottom:1px;margin-top:5px}
+.sim45 .s45row.open .s45d{display:block}
+.sim45 .s45uns{border:1px solid var(--s45red);border-radius:8px;padding:9px 11px;margin-top:11px}
+.sim45 .s45ut{font-size:9px;color:var(--s45red);font-weight:700;letter-spacing:.04em;margin-bottom:5px}
+.sim45 .s45ub{font-size:8.5px;color:var(--dim);line-height:1.6}
+.sim45 .s45ub b{color:var(--text);font-weight:600}
+.sim45 .s45exp{border-top:1px dotted var(--line);margin-top:7px;padding-top:6px;font-size:8.5px;color:var(--dim);line-height:1.55;display:flex;gap:7px}
+.sim45 .s45xt{font-size:7px;letter-spacing:.07em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--line);color:var(--faint);flex:0 0 auto;height:fit-content}
+.sim45 .s45foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.55}
+.sim45 .s45foot b{color:var(--text);font-weight:500}
 .sim44{--s44green:#3E9A6B;--s44amber:#c99a3a;--s44red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim44{--s44green:#2d7350;--s44amber:#976f16;--s44red:#B0503C}
 .sim44 .s44head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -6358,6 +6385,56 @@ const MODS = [
       {q:'How should a ceremony end?',
        options:['With tasks assigned to named owners and dates','<b>With decisions recorded.</b> The tasks follow from them &mdash; but a ceremony that produced assignments and no recorded decisions has kept the format and lost the function it exists for','With a demo of what the agent built during the session','With an updated estimate for the remaining work'], answer:1}
     ]
+  },
+  {
+    id:'L-6.3', path:'lead', track:'L-06', title:'Restructuring the team', minutes:35,
+    lastVerified:'2026-07-31',
+    concept:{
+      analogy:'The teaching hospital. Its entire purpose is turning junior clinicians into people who can make unsupervised decisions, by handing them graduated responsibility on real cases with someone watching. Every attending knows the daily tension &mdash; <em>I could do this faster myself</em> &mdash; and every teaching hospital knows what happens if you resolve it the efficient way every single time: you get one excellent generation, and nobody behind them. Automate away the cases residents learn on and the wards still run beautifully for about a decade.',
+      body:
+        '<p><strong>Before anything else, be clear about what you actually know.</strong> Organizational design under a technology this young is mostly confident guessing, and the industry is full of it &mdash; roles disappearing, headcount falling, new titles emerging. None of that is evidence, and you have spent this whole path learning to tell the difference. So restructure from <b>what has demonstrably moved</b>, hold the predictions without acting on them, and be honest about the parts nobody has solved. Three things moved, and all three are visible in this course&rsquo;s own runs.</p>' +
+        '<p><strong>First, the unit of output changed:</strong> it is a <b>reviewable pull request</b>, not lines typed or tickets closed &mdash; the capstone shipped an entire feature, API through screen through tests, as one diff you could accept or reject. A role definition written around &ldquo;writes code&rdquo; is measuring the wrong thing now, and so is the promotion rubric built on top of it. <strong>Second, the bottleneck moved twice.</strong> First to <b>review capacity</b>, when agents began producing more diff than anyone could actually judge &mdash; the same shape as the manual-review queue itself, where the constraint was never how fast requests arrived but how fast a human could rule on them. Then to <b>decision latency</b>, when an elaboration stalled on &ldquo;20% of what?&rdquo; and a fleet of agents sat idle waiting for a human answer. Both new bottlenecks are human, and neither is typing. <strong>Third, and underneath both, judgment became the scarce input.</strong> The cheap model answered a threshold question for <b>$0.0368</b> and was confidently wrong; a run shipped <b>25 of 25</b> tests green against an endpoint that did not exist; an agent refused to build a medical-necessity policy change and was <em>right</em> to. Every one of those needed a human who could tell.</p>' +
+        '<p><strong>Which tells you what got scarce, and therefore what to organize around.</strong> The roles that gained value are the ones this path kept quietly depending on: people who can <b>review well</b> &mdash; L-3.3&rsquo;s tiers are worthless without someone who can judge blast radius &mdash; people who can <b>decide quickly</b>, because the alternative is idle agents and a stalled method, and the <b>champion who teaches</b>, whose job per L-2.2 is to make themselves unnecessary. Notice that two of those three are teaching roles, and most organizations have a title for neither. The rituals shift accordingly: standup <b>inverts</b> to &ldquo;what is blocked on a decision, and whose?&rdquo;; the sprint boundary <b>weakens</b> when units finish in hours; code review gets <em>more</em> important and needs tiering rather than uniform application; and the retro gains one question worth more than the rest &mdash; <b>what did we ship that we could not defend?</b> Estimation, honestly, is unsettled, and I am not going to pretend otherwise at the end of a course that spent twenty-one modules refusing to do that.</p>' +
+        '<p><strong>Now the problem that actually matters, and the one nobody has solved.</strong> The classic path into senior engineering was: do the mechanical work, build judgment by doing it, become someone who can review. <b>That mechanical work is precisely what agents now do.</b> Set that beside L-2.4&rsquo;s finding &mdash; over-reliance is <em>silent</em> and looks exactly like productivity &mdash; and the failure mode becomes specific rather than vague: <b>you get people with senior titles who cannot review</b>, while every governance surface you built assumes people who can. You are spending down a stock of judgment you are not replenishing, and the bill arrives about five years late, long after the quarter in which it looked like efficiency. Three things plausibly help, and I offer them as experiments rather than answers: <b>deliberate struggle time</b> on work the agent could have done (expensive on purpose, and the first thing cut under delivery pressure &mdash; which is what makes it a real decision rather than a policy); <b>review-first apprenticeship</b>, learning by reviewing agent output beside a senior and explaining the diff back, which inverts the classic order and may or may not build the same depth; and <b>rotation through the gates</b>, so people meet real consequences while someone experienced is still watching. Run them with a baseline and a date to check. Anyone selling you a confident answer here is selling.</p>' +
+        '<p><strong>One thing to carry out of this whole path.</strong> Look back at what you built: permission architecture, data boundaries, a review policy, an audit trail, a budget, an ROI submission, a dashboard. <b>Every single one assumed a human who could judge.</b> Approving a permission you do not understand is not approval. A review tier is worthless without someone who can tell a real defect from a plausible diff. An ROI number needs someone who can tell a measurement from a borrowed claim, and a dashboard needs someone willing to put the uncomfortable metric on it. So when you restructure &mdash; and you will, more than once &mdash; <b>the thing to protect is the supply of judgment</b>. That is why this path opened with &ldquo;watch, don&rsquo;t type&rdquo; rather than with a tool, and it is why it ends here rather than with a prediction. The tools will keep converging and the vocabulary will keep aging; you have already watched both happen mid-course. What travels is the portable layer, the habit of verifying before you teach, and people who can still tell when the confident answer is wrong.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-45'},
+    labA:{
+      title:'Audit roles and rituals against what moved',
+      steps:[
+        'Find the job description or promotion rubric that still measures <b>typing</b> &mdash; output volume, tickets closed, lines shipped. Rewrite one of them around the unit that actually ships: a reviewable change someone can defend.',
+        'Name your real scarce resources, as people rather than roles: <b>who can review at each tier</b> (L-3.3), and <b>who can decide</b>, with the latency you measured in L-6.1. Write the list out properly &mdash; the gaps are the point, and they are usually uncomfortable to see written down.',
+        'Run each ritual against that list. Invert standup to &ldquo;what is blocked on a decision, and whose?&rdquo;, tier your review rather than applying it uniformly, and add the retro question: <b>what did we ship that we could not defend?</b>',
+        'Success: one rewritten role definition, a named reviewer-and-decider list with the gaps visible, and <b>one ritual actually changed this month</b> rather than a proposal for next quarter.'
+      ]
+    },
+    labB:{
+      title:'Trace one junior&rsquo;s path',
+      steps:[
+        'Pick a specific person, not a persona. Write down what they <b>would have learned on</b> eighteen months ago &mdash; the concrete work, the debugging, the small changes that built instinct.',
+        'Now write what an agent does instead today. Be exact rather than generous; most of that list has genuinely moved.',
+        'Then the honest question: <b>what is replacing that learning?</b> Write &ldquo;nothing&rdquo; if that is the true answer &mdash; it frequently is, and an accurate gap is worth more than a comfortable plan.',
+        'Design one deliberate experiment against the gap, with a baseline and <b>a date in your calendar to check whether it worked</b>. Six months from now you will either have evidence or you will have intentions, and the difference is the appointment.',
+        'Success: an honest gap statement for a real person, one experiment running, and a scheduled check rather than an intention.'
+      ]
+    },
+    checklist:[
+      'I restructure from <b>what moved</b> &mdash; unit of output, bottleneck, scarcity of judgment &mdash; not from forecasts.',
+      'I treat headcount, role-disappearance and new-title claims as <b>bets</b>, with a test attached.',
+      'I know my scarce people by name: who can <b>review</b> at each tier, and who can <b>decide</b>.',
+      'I take the <b>apprenticeship problem</b> seriously, and run repairs as experiments with a date to check.',
+      'I protect the <b>supply of judgment</b>, because every control I built assumes a human who can exercise it.'
+    ],
+    quiz:[
+      {q:'What should you actually restructure around?',
+       options:['The emerging consensus about which engineering roles AI replaces','<b>What has demonstrably moved:</b> the unit of output is a reviewable PR, the bottleneck shifted to review capacity and then decision latency, and judgment became the scarce input. Everything beyond that is a bet, and bets belong in experiments rather than org charts','Headcount projections from your tooling spend','The vendor&rsquo;s recommended team topology'], answer:1},
+      {q:'What became the scarce input?',
+       options:['Engineering capacity, since agents still need close supervision','<b>Judgment.</b> Both new bottlenecks are human &mdash; review capacity, then decision latency &mdash; and the course&rsquo;s own runs show why: a confidently wrong cheap answer, a green suite against a non-existent endpoint, a refusal that was correct. Each needed someone who could tell','Context window size across the tools you have licensed','Available seats and licences'], answer:1},
+      {q:'What is the apprenticeship problem?',
+       options:['Juniors adopt AI tools faster than seniors, inverting the mentoring relationship','<b>Juniors built judgment by doing the mechanical work that agents now do</b> &mdash; and because over-reliance is silent and looks like productivity, you can end up with senior titles and no senior judgment, while every governance surface assumes people who can review','Training budgets are being redirected to tooling spend','Juniors are more expensive to onboard onto agentic workflows'], answer:1},
+      {q:'What is the honest status of career paths under AI-assisted development?',
+       options:['Broadly settled &mdash; review-first apprenticeship is the emerging standard','<b>Unsolved.</b> Deliberate struggle time, review-first apprenticeship and rotation through the gates all plausibly help, but none is proven &mdash; run them as experiments with a baseline and a date to check. Anyone offering you a confident answer here is selling','Solved for large organizations, unclear for small ones','Unchanged &mdash; the traditional path still works as it always did'], answer:1}
+    ]
   }
 ];
 
@@ -8484,6 +8561,48 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-45 · Restructure From What Moved (spec: VISUALS.md) ----------
+   The course's FINAL visual, and its design is the argument: OBSERVED changes (green, each
+   with the course's own evidence) are separated from BETS (amber, the confident industry
+   predictions — each with what would have to be true and how to test it) and from an UNSOLVED
+   panel (red) for the apprenticeship problem, whose candidate repairs are tagged EXPERIMENT.
+   No borrowed industry figures by design — importing one here would undercut L-4.3. L-6.3. */
+VISUALS['SIM-45'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const OBS = [
+    ['The unit of output is a reviewable PR','Not lines typed, and not tickets closed. The capstone shipped a whole feature &mdash; API, screen, tests &mdash; as one reviewable diff you could accept or reject. <b>A role definition written around &ldquo;writes code&rdquo; is now measuring the wrong thing</b>, and so is the promotion rubric built on it.'],
+    ['The bottleneck moved &mdash; twice','First to <b>review capacity</b>, when agents began producing more diff than anyone could judge (L-3.3). Then to <b>decision latency</b>, when elaboration stalled on &ldquo;20% of what?&rdquo; and a fleet of agents idled waiting for a human answer (L-6.1). <b>Both new bottlenecks are human, and neither is typing.</b>'],
+    ['Judgment became the scarce input','The evidence is throughout this course: the cheap model answered a threshold question for $0.0368 and was confidently wrong; a run shipped 25 of 25 tests green against an endpoint that did not exist; and the agent that refused a policy unit was <em>right</em> to. <b>Every one of those needed a human who could tell.</b>'],
+  ];
+  const BETS = [
+    ['&ldquo;Headcount shrinks.&rdquo;','A sustained throughput gain <em>with quality holding</em>, and no new work created by the capacity you freed. Both halves are load-bearing and the second is usually ignored.','Your own before/after panel including the quality condition (M-11.3), over more than one quarter. If churn rose, you measured the amplifier, not a saving.'],
+    ['&ldquo;Whole roles disappear.&rdquo;','That the tasks <em>vanish</em> rather than move somewhere less visible &mdash; into review, into decisions, into the gaps between agents.','Track where the work went, not whether the title still exists. Most &ldquo;disappeared&rdquo; work reappears as review load nobody budgeted for.'],
+    ['&ldquo;New titles are emerging.&rdquo;','A durable set of responsibilities that genuinely does not fit an existing role &mdash; as opposed to a rebranding of work someone already does.','Let the responsibilities persist for a year before you print the title. Renaming a job is cheap and it is not a restructure.'],
+  ];
+  const REPAIRS = [
+    ['Deliberate struggle time','Protected work the agent could have done, given to someone who needs to build the judgment. Expensive on purpose &mdash; and the first thing cut under delivery pressure, which is what makes it a real decision rather than a policy.'],
+    ['Review-first apprenticeship','Learn by reviewing agent output beside a senior, explaining the diff back. It inverts the classic order &mdash; judgment before authorship &mdash; and nobody yet knows whether that produces the same depth.'],
+    ['Rotation through the gates','Put people on the review and approval surfaces early, so they meet real consequences while someone experienced is still watching.'],
+  ];
+  mount.innerHTML =
+    '<div class="sim45" aria-label="What actually moved, what is a bet, and what remains unsolved">' +
+      '<div class="s45head"><span>SIM-45 &middot; RESTRUCTURE FROM WHAT MOVED</span><span>EVIDENCE &middot; BETS &middot; UNSOLVED</span></div>' +
+      '<div class="s45lead">Org design under a technology this young is mostly confident guessing. So the columns below are separated on purpose: <b>act on the first, hold the second, and be honest about the third.</b> Tap any row.</div>' +
+      '<div class="s45zt obs">OBSERVED &mdash; act on these<span class="s45zs">each carries evidence from this course&rsquo;s own runs</span></div>' +
+      OBS.map((o,i) => '<div class="s45row obs" data-o="' + i + '"><div class="s45n">' + o[0] + '</div><div class="s45d">' + o[1] + '</div></div>').join('') +
+      '<div class="s45zt bet">COMMONLY PREDICTED &mdash; hold, do not reorganize on<span class="s45zs">what would have to be true, and how you would actually test it</span></div>' +
+      BETS.map((b,i) => '<div class="s45row bet" data-b="' + i + '"><div class="s45n">' + b[0] + '<span class="s45tag">BET</span></div>' +
+        '<div class="s45d"><span class="s45k">WHAT WOULD HAVE TO BE TRUE</span>' + b[1] + '<span class="s45k">HOW YOU WOULD TEST IT</span>' + b[2] + '</div></div>').join('') +
+      '<div class="s45uns"><div class="s45ut">&#9888; UNSOLVED &mdash; the apprenticeship problem</div>' +
+        '<div class="s45ub">The classic path was: a junior does the mechanical work, builds judgment by doing it, and becomes someone who can review. <b>That mechanical work is exactly what agents now do.</b> Pair it with the finding that over-reliance is <em>silent</em> and looks like productivity (L-2.4), and the failure mode is precise: <b>you get people with senior titles who cannot review</b> &mdash; while every governance surface in this path assumes people who can. You are spending down a stock of judgment you are not replenishing, and the bill arrives about five years late. Three candidate repairs, offered as experiments rather than answers:</div>' +
+        REPAIRS.map(r => '<div class="s45exp"><span class="s45xt">EXPERIMENT</span><span><b>' + r[0] + '.</b> ' + r[1] + '</span></div>').join('') +
+      '</div>' +
+      '<div class="s45foot">One thing worth carrying out of this whole path: every surface in it &mdash; the permission architecture, the data boundaries, the review policy, the ROI submission, the dashboard &mdash; <b>assumed a human who could judge.</b> Approving a permission you do not understand is not approval. A review policy needs someone who can tell a real defect from a plausible diff. An ROI number needs someone who can tell a measurement from a borrowed claim. <b>So the thing to protect while you restructure is the supply of judgment</b> &mdash; which is the same reason this path opened with &ldquo;watch, don&rsquo;t type&rdquo; rather than with a tool. And note what is missing from this page: no industry headcount figure, no analyst forecast. Importing one to make the last module feel authoritative would be the borrowed number you were taught to refuse.</div>' +
+    '</div>';
+  mount.querySelectorAll('.s45row').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
+  if(reduce){ mount.querySelectorAll('.s45row').forEach(el => el.classList.add('open')); }
 };
 
 /* ---------- SIM-44 · Five Ways a Ceremony Becomes Theatre (spec: VISUALS.md) ----------
