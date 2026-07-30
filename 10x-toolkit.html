@@ -1279,6 +1279,32 @@ h1 .ten{background:linear-gradient(115deg,var(--gold) 20%,#ffdf9e 45%,var(--cyan
 .sim32 .s32becomes b{color:var(--s32green)}
 .sim32 .s32foot{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.5}
 .sim32 .s32foot b{color:var(--text);font-weight:500}
+.sim43{--s43green:#3E9A6B;--s43amber:#c99a3a;--s43red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
+[data-theme="light"] .sim43{--s43green:#2d7350;--s43amber:#976f16;--s43red:#B0503C}
+.sim43 .s43head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
+.sim43 .s43intent{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--dim);line-height:1.6}
+.sim43 .s43intent b{color:var(--text);font-weight:500}
+.sim43 .s43zone{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:9px 11px;margin-bottom:5px}
+.sim43 .s43zone.out{border-left:3px solid var(--s43amber)}
+.sim43 .s43zone.lead{border-left:3px solid var(--s43green)}
+.sim43 .s43zone.guard{border-left:3px solid var(--s43red)}
+.sim43 .s43zone.ref{border-left:3px solid var(--line);opacity:.72}
+.sim43 .s43zt{font-size:9px;font-weight:700;letter-spacing:.05em}
+.sim43 .s43zone.out .s43zt{color:var(--s43amber)}
+.sim43 .s43zone.lead .s43zt{color:var(--s43green)}
+.sim43 .s43zone.guard .s43zt{color:var(--s43red)}
+.sim43 .s43zone.ref .s43zt{color:var(--faint)}
+.sim43 .s43zs{font-size:8px;color:var(--faint);font-weight:400;display:block;margin-top:1px}
+.sim43 .s43row{border-top:1px dotted var(--line);margin-top:7px;padding-top:6px}
+.sim43 .s43mn{font-size:9px;color:var(--text);font-weight:600}
+.sim43 .s43tag{font-size:7px;letter-spacing:.07em;font-weight:700;padding:1px 5px;border-radius:999px;border:1px solid var(--line);color:var(--faint);margin-left:5px;white-space:nowrap}
+.sim43 .s43tag.meas{color:var(--s43green);border-color:var(--s43green)}
+.sim43 .s43then{font-size:8.5px;color:var(--dim);line-height:1.55;margin-top:3px}
+.sim43 .s43then b{color:var(--text);font-weight:600}
+.sim43 .s43if{color:var(--s43amber);font-weight:700}
+.sim43 .s43zone.ref .s43mn{text-decoration:line-through;color:var(--faint);font-weight:400}
+.sim43 .s43foot{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.55}
+.sim43 .s43foot b{color:var(--text);font-weight:500}
 .sim42{--s42green:#3E9A6B;--s42amber:#c99a3a;--s42red:#d0705a;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--panel2);font-family:var(--mono)}
 [data-theme="light"] .sim42{--s42green:#2d7350;--s42amber:#976f16;--s42red:#B0503C}
 .sim42 .s42head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--faint);letter-spacing:.12em;margin-bottom:8px}
@@ -6161,6 +6187,56 @@ const MODS = [
       {q:'A senior exec asks you for lines-of-AI-code generated. What do you do?',
        options:['Explain that it is a discredited metric and decline to report it','<b>Answer the question underneath it.</b> They want to know the investment is working, so offer the known cost, your measured delta on a task class you own, and the business outcome. A refusal attached to a better answer is a contribution; a bare refusal is an obstacle','Report it with a written caveat about its limitations','Report it alongside several other metrics for balance'], answer:1}
     ]
+  },
+  {
+    id:'L-5.4', path:'lead', track:'L-05', title:'The dashboard that changes behavior', minutes:35,
+    lastVerified:'2026-07-30',
+    concept:{
+      analogy:'The clinical early-warning score. Lagging: the patient arrested. Leading: respiratory rate drifting and lactate climbing, hours earlier, while intervention is still cheap. And every hospital knows the two ways these systems fail, neither of which is about the mathematics &mdash; an early-warning score with <b>no pre-agreed response protocol</b> becomes noise that staff learn to tune out, and one too big to read at the bedside simply does not get read. Leading versus lagging, the agreed action, and small enough to actually use: that is the whole design problem.',
+      body:
+        '<p><strong>Start with why most dashboards change nothing.</strong> They report outcomes &mdash; which is to say they tell you about decisions you can no longer influence. By the time queue depth moves, the choices that moved it are months old. There is also a quieter reason these dashboards persist: <b>they are comfortable</b>. A lagging chart lets everyone in the room agree that there is nothing to do yet. <b>Leading indicators are uncomfortable precisely because they are actionable</b>, and that discomfort is a large part of why they so often do not get built.</p>' +
+        '<p><strong>So build for one initiative, in four zones.</strong> Not a metrics catalogue &mdash; a dashboard for a single promise. The <b>outcome</b> is the lagging thing you committed to. The <b>leading</b> zone is what moves weeks earlier and predicts it, and it is where behavior actually changes. The <b>guardrails</b> are the metrics that must <em>not</em> move &mdash; the quality condition made operational, so that a speed gain with rising churn cannot be written up as a success. And the fourth zone is the one almost nobody builds: <b>refused</b>, written down explicitly. If you do not record which metrics you rejected and why, they reappear in six months via a well-meaning contributor who thought usage percentage looked useful, and you will have the L-5.3 argument all over again from a weaker position.</p>' +
+        '<p><strong>Then the rule that separates a dashboard from decoration: every metric carries a decision agreed before you collect it.</strong> Write the sentence &mdash; <em>&ldquo;if this crosses X, we will do Y&rdquo;</em> &mdash; and if you cannot write it, the metric is not ready to be on the wall. This is the highest-leverage discipline in the module, because it converts a number from something you <em>discuss</em> into something that <b>fires</b>. It also settles arguments in advance, while nobody is defensive yet: agreeing the response to a bad number is dramatically easier before you are looking at one with a name attached to it.</p>' +
+        '<p><strong>The case study is the queue this course has been working on all along, and the numbers are measured rather than illustrative.</strong> The intent was to cut the manual-review queue by 20%. The live elaboration run found there was <b>no baseline at all</b> &mdash; you cannot prove a 20% reduction against a number nobody measured &mdash; and then pulled the real one from the data: <b>179 requests in manual review, 35.8% of intake</b>, with <b>23.5% of the queue sitting between 0.75 and 0.85</b> &mdash; that is, requests scoring just below the line, since a score of <b>0.85 or above auto-approves</b>. That band is the whole lever: drop the threshold and those are the requests that drain. It also asked the question that reframes the whole initiative before a line is written: <b>&ldquo;20% of what?&rdquo;</b> &mdash; backlog depth, arrival rate, or reviewer hours, which are three different projects wearing one sentence. And it reached the finding that matters most for your guardrail zone: the only lever with a known yield, the threshold itself, <b>does not reach &minus;20% until roughly 0.75</b>. That is not an engineering task. It is a decision about how many false approvals you are willing to buy, which is exactly the kind of thing a guardrail metric exists to keep visible while the initiative is running.</p>' +
+        '<p><strong>Finally, the three disciplines and the closing thought for the whole track.</strong> Give every metric an <b>owner</b>. Review it on a <b>cadence where action is still possible</b> &mdash; a quarterly review of a weekly signal is theatre. Keep it <b>small enough to be read</b>, because a dashboard nobody reads has the same effect as no dashboard, at greater cost. And <b>never rank anything on it</b>, which is L-5.3&rsquo;s law applied to your own artifact rather than to someone else&rsquo;s request. Which brings the point this track has been building toward: <b>a dashboard is not a reporting instrument, it is an intervention</b> &mdash; the same thing L-5.2 said about the survey. What you choose to display tells people what you reward, whether or not you meant it to, and they will optimize for it long before they tell you they are doing so. That is the whole of measuring honestly: choose the few numbers you would be content to see people chase. L-06 closes the course with the method that ties it together &mdash; leading AI-DLC.</p>'
+    },
+    visual:{type:'sim', componentId:'SIM-43'},
+    labA:{
+      title:'Build the four zones for one initiative',
+      steps:[
+        'Pick <b>one</b> real initiative with a promise attached, and write its outcome metric &mdash; then immediately settle the &ldquo;20% of <em>what</em>?&rdquo; question for your own case. An unresolved denominator is the single most common way an initiative becomes unfalsifiable.',
+        'Fill the <b>leading</b> zone with indicators that move weeks earlier, and for each write the <em>&ldquo;if X then Y&rdquo;</em> sentence plus an owner. <b>Delete anything you cannot write that sentence for</b> &mdash; that deletion is the exercise, not a failure of it.',
+        'Fill the <b>guardrail</b> zone with what must not move, and be specific about the bound. If your initiative trades quality for speed anywhere, this is the zone that has to catch it &mdash; a guardrail that cannot block a false win is decoration with a serious face.',
+        'Write the <b>refused</b> zone explicitly, with a one-line reason each. Then check the whole thing against the size test: could someone read this in under a minute and know whether to act?',
+        'Success: a four-zone dashboard where every metric has an owner and a pre-agreed decision, the guardrails would genuinely stop a speed-bought-with-quality win from being reported, the refusals are documented, and the whole thing fits on one screen.'
+      ]
+    },
+    labB:{
+      title:'Trace the warning backwards',
+      steps:[
+        'Take a past initiative whose outcome disappointed &mdash; yours or the queue case &mdash; and work <b>backwards</b>: which leading indicator moved first, and how many weeks before the outcome did it move? That interval is the lead time your dashboard would have bought you.',
+        'Ask the harder follow-up honestly: <b>would anyone have acted on it?</b> A leading indicator with no pre-agreed decision attached produces exactly the same outcome as no indicator at all, which is why the sentence matters more than the metric.',
+        'Now stress-test one guardrail. In the queue case the threshold-only route does not reach &minus;20% until roughly 0.75 &mdash; so work out what false-approve rate your own promised reduction actually requires, and whether anyone has agreed to it.',
+        'Success: you can state in weeks the lead time your dashboard buys, and name one guardrail that would have stopped a win you would otherwise have reported &mdash; along with who would have had to act on it.'
+      ]
+    },
+    checklist:[
+      'I build for <b>one initiative</b> in four zones &mdash; outcome, leading, guardrail, refused.',
+      'Every metric carries a <b>pre-agreed decision</b> (&ldquo;if X then Y&rdquo;) and an owner, written before collection.',
+      'My <b>guardrails</b> could actually block a speed win bought with quality.',
+      'I write the <b>refused</b> list down so rejected metrics cannot creep back.',
+      'I treat the dashboard as an <b>intervention</b> &mdash; what I display is what gets optimized.'
+    ],
+    quiz:[
+      {q:'Why do most dashboards fail to change behavior?',
+       options:['They contain too many metrics for anyone to read carefully','<b>They report lagging outcomes</b> &mdash; decisions you can no longer influence &mdash; and that is comfortable, because everyone can agree there is nothing to do yet. Leading indicators are uncomfortable precisely because they are actionable','They are reviewed too infrequently to be useful','The data quality is rarely good enough to trust'], answer:1},
+      {q:'What is the test for whether a metric belongs on the wall?',
+       options:['That it can be collected reliably and automatically','<b>That you can write &ldquo;if this crosses X, we will do Y&rdquo; before you collect it.</b> A metric with no pre-agreed decision is decoration &mdash; and agreeing the response is far easier before you are staring at a bad number with a name attached','That it appears in DORA, SPACE or DX Core 4','That an executive has asked to see it'], answer:1},
+      {q:'What is the guardrail zone for?',
+       options:['Catching data-quality problems before they mislead the team','<b>Making the quality condition operational</b> &mdash; so that a speed gain arriving with rising churn or a climbing false-approve rate cannot be reported as a win. A guardrail that could not block a false win is decoration','Tracking metrics that are interesting but not actionable','Recording the initiative&rsquo;s dependencies and risks'], answer:1},
+      {q:'Why write the refused metrics down rather than simply not showing them?',
+       options:['To document the decision for audit purposes','<b>Because otherwise they creep back</b> &mdash; in six months a well-meaning contributor adds usage % because it looked useful, and you re-run the whole argument from a weaker position. Recording the rejection and its reason is what makes it durable','To show stakeholders that alternatives were considered','To make the dashboard look more rigorous'], answer:1}
+    ]
   }
 ];
 
@@ -8287,6 +8363,51 @@ VISUALS['SIM-05'] = function(mount, opts){
   }
   mount.querySelectorAll('.s5mb').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   setMode('delegate');
+};
+
+/* ---------- SIM-43 · The Queue Dashboard (spec: VISUALS.md) ----------
+   A WORKED four-zone dashboard for the course's own running initiative, not an abstract
+   template: OUTCOME (lagging) / LEADING (act now) / GUARDRAIL (must not move) / REFUSED
+   (struck through). Every row carries its pre-agreed IF -> THEN, which is the module's whole
+   argument made visible. Baseline figures are MEASURED (m122-mob-elaboration.txt, live run:
+   179 in manual review = 35.8%, 23.5% in [0.75,0.85), threshold-only doesn't reach -20% until
+   ~0.75) and tagged as such; no threshold bounds are invented — the text says "the bound you
+   agreed". L-5.4, closes L-05. */
+VISUALS['SIM-43'] = function(mount, opts){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ZONES = [
+    ['out','OUTCOME','what you promised &mdash; and it lags',[
+      ['Manual-review queue depth','MEASURED BASELINE','Baseline: <b>179 requests in manual review, 35.8% of intake</b>, with 23.5% of the queue sitting in [0.75, 0.85). <span class="s43if">Unresolved:</span> &ldquo;20% of <em>what</em>?&rdquo; &mdash; backlog depth, arrival rate, or reviewer hours. <b>Settle the denominator before the first review, not after.</b>'],
+    ]],
+    ['lead','LEADING','moves weeks earlier &mdash; this is where you act',[
+      ['Drain rate vs arrival rate','','<span class="s43if">IF</span> drain stays below arrival for two consecutive weeks <b>&rarr; THEN</b> the initiative is not working regardless of what shipped &mdash; escalate the un-built lever rather than adding scope.'],
+      ['Code churn on the tiered work','','<span class="s43if">IF</span> churn rises while throughput rises <b>&rarr; THEN</b> stop and read the panel &mdash; that shape is the amplifier, not a win, and it is the earliest signal you will get.'],
+      ['Gate failures on the review path','','<span class="s43if">IF</span> gate failures spike <b>&rarr; THEN</b> change volume is outrunning your control systems &mdash; invest in tests and feedback loops before pushing more volume through.'],
+    ]],
+    ['guard','GUARDRAIL','must NOT move &mdash; the quality condition, operationalized',[
+      ['False-approve rate at the threshold','','<span class="s43if">IF</span> it crosses the bound you agreed up front <b>&rarr; THEN</b> the queue reduction is being bought with wrong approvals &mdash; and the run found the only known-yield lever <b>does not reach &minus;20% until roughly 0.75</b>, which is a decision about false approvals, not an engineering task.'],
+      ['Change fail rate','','<span class="s43if">IF</span> it rises while throughput improves <b>&rarr; THEN</b> you have bought speed with instability &mdash; report both halves or neither.'],
+      ['Escaped defects','','<span class="s43if">IF</span> these move at all <b>&rarr; THEN</b> the win was never real. Lagging by nature, which is exactly why churn sits in the zone above it.'],
+    ]],
+    ['ref','REFUSED','written down so it cannot creep back',[
+      ['Lines generated / % AI-written','','Measures volume of text. Would have scored the course&rsquo;s own 220-wrong-line run as excellent.'],
+      ['Acceptance rate','','Measures keystrokes, not whether the change survived.'],
+      ['AI usage %','','Measures adoption. Adoption is not delivery &mdash; and a high number can be a risk flag.'],
+      ['Seat count &amp; logins','','Measures intake. Counting seats is counting arrivals.'],
+    ]],
+  ];
+  mount.innerHTML =
+    '<div class="sim43" aria-label="A worked four-zone dashboard for the manual-review-queue initiative">' +
+      '<div class="s43head"><span>SIM-43 &middot; THE QUEUE DASHBOARD</span><span>ONE INITIATIVE &middot; FOUR ZONES</span></div>' +
+      '<div class="s43intent"><b>The intent:</b> cut the manual-review queue by 20%. <b>The rule that makes this a dashboard rather than decoration:</b> every row carries a decision agreed <em>before</em> the number was collected &mdash; if you cannot write &ldquo;if this crosses X, we will do Y&rdquo;, the metric is not ready to be on the wall.</div>' +
+      ZONES.map(z =>
+        '<div class="s43zone ' + z[0] + '"><div class="s43zt">' + z[1] + '<span class="s43zs">' + z[2] + '</span></div>' +
+        z[3].map(m => '<div class="s43row"><div class="s43mn">' + m[0] +
+          (m[1] ? '<span class="s43tag meas">' + m[1] + '</span>' : '') + '</div>' +
+          '<div class="s43then">' + m[2] + '</div></div>').join('') +
+        '</div>').join('') +
+      '<div class="s43foot"><b>Read the shape, not just the rows.</b> The outcome zone is the promise and it lags &mdash; by the time it moves, the decisions that moved it are months old. The leading zone is where behavior actually changes, and it is uncomfortable precisely <em>because</em> it is actionable: a lagging dashboard lets everyone agree there is nothing to do yet. The guardrails exist so a speed win with rising churn cannot be reported as success. And the refused zone is written down on purpose, so the metrics you rejected cannot reappear via a well-meaning contributor six months from now. Then the three disciplines: <b>every metric has an owner</b>, it is reviewed <b>on a cadence where action is still possible</b>, and <b>nothing on it is ever ranked</b>. One closing thought for the whole track &mdash; a dashboard is not a reporting instrument, it is an <b>intervention</b>, exactly like the survey. What you choose to display tells people what you reward, whether or not you meant it to.</div>' +
+    '</div>';
 };
 
 /* ---------- SIM-42 · Not That — This (spec: VISUALS.md) ----------
