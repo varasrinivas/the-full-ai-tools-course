@@ -6237,6 +6237,56 @@ const MODS = [
       {q:'Why write the refused metrics down rather than simply not showing them?',
        options:['To document the decision for audit purposes','<b>Because otherwise they creep back</b> &mdash; in six months a well-meaning contributor adds usage % because it looked useful, and you re-run the whole argument from a weaker position. Recording the rejection and its reason is what makes it durable','To show stakeholders that alternatives were considered','To make the dashboard look more rigorous'], answer:1}
     ]
+  },
+  {
+    id:'L-6.1', path:'lead', track:'L-06', title:'The method for managers', minutes:35,
+    lastVerified:'2026-07-30',
+    concept:{
+      analogy:'The multidisciplinary case conference. Clinicians do not allocate tasks in an MDT &mdash; they bring a case, surface what is genuinely unknown, and make the calls only humans can make, with the right people in the room so the decision does not get re-litigated next week. The preparation is done beforehand; the meeting exists for <em>judgment</em>. And the chair&rsquo;s job is not to do the clinical work: it is to make sure the right decisions get made, by the right people, and recorded. That is what a mob ceremony is, and it is precisely how your own role changes.',
+      body:
+        '<p><strong>AI-DLC is a method, not a tool &mdash; and that is the first thing worth knowing as a buyer.</strong> AWS positions it as <b>&ldquo;a new methodology designed to fully ingrain AI capabilities into the very fabric of software development,&rdquo;</b> in contrast to &ldquo;retrofitting AI as an assistant.&rdquo; It is explicitly <b>tool-agnostic</b> &mdash; <b>&ldquo;the methodology works with any IDE, agent, or model&rdquo;</b> &mdash; which matters directly to you, because it means the method survives your procurement decision. That is L-1.4&rsquo;s portable layer stated by someone other than me. One honest note before you build a plan on it: the vivid <em>&ldquo;hours or days rather than weeks&rdquo;</em> speed claim comes from the original July 2025 announcement and had disappeared from the November posts, so treat it as AWS&rsquo;s original framing rather than a durable promise.</p>' +
+        '<p><strong>Three phases, each with a human gate.</strong> Inception determines <em>what</em> to build and <em>why</em>; Construction determines <em>how</em>; Operations covers deployment and monitoring &mdash; and AWS&rsquo;s own repository marks that third phase <b>&ldquo;(future)&rdquo;</b>, which you want to know before you promise anyone an end-to-end rollout. The governing rule is a single line, and for a manager it <em>is</em> the method: <b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b> If that sounds familiar, it should &mdash; it is the same discipline L-1.1 introduced as a way of working and L-03 turned into permission, data and review policy. AI-DLC&rsquo;s contribution is not the idea; it is putting the gates in named places in a lifecycle.</p>' +
+        '<p><strong>Then the sentence that breaks your sprint mechanics.</strong> AWS writes it plainly: <b>&ldquo;Traditional &lsquo;sprints&rsquo; are replaced by &lsquo;bolts&rsquo; &ndash; shorter, more intense work cycles measured in hours or days rather than weeks; Epics are replaced by Units of Work.&rdquo;</b> Take the durable half of that seriously and hold the rest loosely &mdash; &ldquo;bolts&rdquo; appears in the July post and not in the November material, so the vocabulary was early; <b>units of work</b> is the part that has stuck. And the consequences land on your calendar rather than an engineer&rsquo;s. <b>Estimation changes</b>, because you are increasingly sizing <em>decisions</em> rather than story points. <b>The sprint boundary stops being the meaningful unit</b> when work completes in hours or days &mdash; a two-week container around something that finishes Tuesday is just latency you added. And <b>standup inverts</b>: the useful question is no longer &ldquo;what did you do yesterday&rdquo; but <em>&ldquo;what is blocked on a decision, and whose decision is it?&rdquo;</em></p>' +
+        '<p><strong>What the ceremonies actually do is the part most write-ups get wrong, and the live runs in this course show it.</strong> Mob Elaboration is not a planning meeting with an AI in the room. In the real run, the agent <b>reshaped the intent before decomposing it</b> &mdash; pointing out there was no queue entity, no baseline, and nothing that could remove a request from the queue via the API &mdash; then asked three genuinely senior clarifying questions, the sharpest being <b>&ldquo;20% of <em>what</em>?&rdquo;</b> (backlog depth, arrival rate, or reviewer hours: three different projects wearing one sentence). It produced six units of work, each with a human validation gate. Mob Construction then built the low-risk slice and <b>stopped</b> at the unit that crossed from a code change into a change of medical-necessity policy, naming the sign-off it needed. <b>That is the management payoff:</b> the ceremonies surface the un-buildable or needs-a-human intent at the point where course-correction is still free, rather than in a review three weeks later.</p>' +
+        '<p><strong>So here is what actually changes for you.</strong> Your job moves from allocating work to <b>facilitating decisions and holding gates</b> &mdash; which is a smaller job in hours and a larger one in consequence. And the bottleneck moves with it: it is no longer engineering capacity, it is <b>decision latency</b>. If nobody can answer &ldquo;20% of what?&rdquo; within a day, the method stalls on <em>you</em>, and a fleet of agents sits idle while you try to get three people into a room. That is a genuinely new failure mode for most managers, and it is worth measuring before it embarrasses you. Adopt the durable parts &mdash; intent, units of work, human gates &mdash; treat the vocabulary as vocabulary, and remember Operations is still thin. L-6.2 goes inside the ceremonies themselves: how to facilitate them, and the anti-patterns that make them theatre.</p>'
+    },
+    visual:{type:'anim', componentId:'ANIM-12', mgr:true},
+    labA:{
+      title:'Map one initiative into units and gates',
+      steps:[
+        'Take a real initiative and write it as an <b>intent</b> &mdash; one sentence stating the outcome, not the solution. Then stop and apply the elaboration test to your own sentence: <b>&ldquo;X% of what?&rdquo;</b> If you cannot answer it immediately, you have found the first decision that belongs to you.',
+        'Decompose it into <b>units of work</b> &mdash; small enough to be independently validated, each with a named <b>human gate</b>: who decides, on what evidence. A unit whose gate has no owner is not ready to start, however well-specified the engineering is.',
+        'Now measure the thing that will actually limit you. For the last three decisions engineering waited on, <b>how long did each take?</b> That is your <b>decision latency</b>, and under this method it becomes the constraint that used to be team capacity.',
+        'Pick one change that would halve it &mdash; a standing slot, a named deputy, a pre-agreed threshold that removes the need to ask at all &mdash; and put it in place before your next initiative rather than after.',
+        'Success: an intent, units with named gate-owners, a measured decision-latency figure, and one committed change to shorten it.'
+      ]
+    },
+    labB:{
+      title:'Watch a ceremony refuse',
+      steps:[
+        'Watch the Construction run build the low-risk slice and then <b>stop</b> at the unit that crossed into policy &mdash; and read what it escalated to: a clinical lead for the rule itself, compliance and legal for the contractual and regulatory exposure, and a shadow dry-run to produce the yield nobody actually knew.',
+        'Notice what makes that a <em>good</em> outcome rather than a failure to deliver. The alternative was not a faster build &mdash; it was shipping a medical-necessity policy change that no clinician had approved, discovered later by someone who was not in this room.',
+        'Now go through your own backlog and find the items that would trigger the same stop. Anything that changes who gets approved, what gets paid, or which patients are affected qualifies &mdash; and for each one, name who would have to be in the room.',
+        'Success: you can name the backlog items that would halt at a human gate, who owns each of those decisions, and roughly how long it would take you to convene them today.'
+      ]
+    },
+    checklist:[
+      'I know AI-DLC is <b>tool-agnostic</b> &mdash; the method survives my procurement decision.',
+      'I can state the governing rule: <b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b>',
+      'I plan in <b>units of work</b> with named gates, not epics inside a fixed sprint boundary.',
+      'I treat &ldquo;bolts&rdquo; and the hours-not-weeks claim as <b>early vocabulary</b>, and Operations as still thin.',
+      'I measure <b>decision latency</b>, because it &mdash; not engineering capacity &mdash; is now my bottleneck.'
+    ],
+    quiz:[
+      {q:'What replaces epics under AI-DLC, and why should a manager care?',
+       options:['Smaller epics, sized to fit within a single sprint','<b>Units of work</b> &mdash; independently validatable and each carrying a human gate. It matters because it breaks sprint mechanics: you size decisions rather than story points, and a two-week boundary around work that finishes Tuesday is latency you added','User stories with AI-generated acceptance criteria','Nothing changes structurally; only the tooling differs'], answer:1},
+      {q:'What is AI-DLC&rsquo;s governing rule?',
+       options:['AI proposes the plan and executes it; humans review the final output','<b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b> The gate is not a final review &mdash; it sits at named points in every phase, which is the same discipline the permission, data and review modules enforced','Humans and AI pair continuously throughout each phase','AI handles Construction; humans own Inception and Operations'], answer:1},
+      {q:'Under this method, what becomes your bottleneck?',
+       options:['Engineering capacity, since agents still need supervision','<b>Decision latency.</b> If nobody can answer &ldquo;20% of what?&rdquo; within a day, the method stalls on you while agents sit idle. Capacity was the old constraint; how fast you can convene a decision is the new one','Review throughput on pull requests','The number of tool licences you have provisioned'], answer:1},
+      {q:'How should you treat the &ldquo;hours or days rather than weeks&rdquo; claim?',
+       options:['As the headline benefit to put in your rollout business case','<b>As AWS&rsquo;s original July 2025 framing</b> &mdash; it, and the &ldquo;bolts&rdquo; vocabulary, had gone from the November material. Adopt <em>units of work</em> as the durable part, and note that Operations is still marked &ldquo;future&rdquo;','As a conservative estimate, since agents have improved since','As applying only to greenfield work'], answer:1}
+    ]
   }
 ];
 
@@ -9632,12 +9682,24 @@ VISUALS['ANIM-33'] = function(mount, opts){
    Shared M-12.1-12.4 + L-6.1. */
 VISUALS['ANIM-12'] = function(mount, opts){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const ELAB = [
+  /* mgr:true (L-6.1) reads the SAME lifecycle as a DECISION map rather than a slot map:
+     per-unit tags become who-decides / what's-gated, and the caption carries the planning
+     consequences. Default (M-12.1) path is untouched. Precedent: SIM-05 `fanout` (M-9.5). */
+  const MGR = !!(opts && opts.mgr);
+  const ELAB = MGR ? [
+    ['<code>queue-depth</code> metric + endpoint', 'gate: YOU &mdash; &ldquo;20% of what?&rdquo;'],
+    ['SLA-breach reviewer notification', 'gate: ops lead &mdash; whose SLA?'],
+    ['reviewer-assist ranking of the queue', 'gate: clinical + compliance'],
+  ] : [
     ['<code>queue-depth</code> metric + endpoint', 'Plan Mode · T-03'],
     ['SLA-breach reviewer notification', 'spec-first · T-02'],
     ['reviewer-assist ranking of the queue', 'constitution · T-07'],
   ];
-  const CONS = [
+  const CONS = MGR ? [
+    ['three subagents build the units in parallel', 'no gate &mdash; runs unattended'],
+    ['each commit gated: tests + pre-commit hook', 'gate: automated, fires without you'],
+    ['coverage answered by the payer-policy MCP', 'gate: data boundary, pre-approved'],
+  ] : [
     ['three subagents build the units in parallel', 'subagents / fan-out · T-09'],
     ['each commit gated: tests + pre-commit hook', 'hooks / testing · T-06,T-10'],
     ['coverage answered by the payer-policy MCP', 'MCP · T-10'],
@@ -9656,7 +9718,9 @@ VISUALS['ANIM-12'] = function(mount, opts){
         '<div class="a12lane">' + CONS.map(u => '<div class="a12unit"><span class="a12uname">&bull; ' + u[0] + '</span><span class="a12slot">' + u[1] + '</span></div>').join('') + '</div></div>' +
       '<div class="a12node pr"><div class="a12ntop"><span class="a12ntitle green">CONVERGE &rarr; PR</span><span class="a12human">human: approves</span></div>' +
         '<div class="a12ndesc">one reviewable pull request (M-10.5&rsquo;s pipeline) &rarr; Operations: deploy &amp; <b>measure the delta</b> (T-11). <span style="color:var(--faint)">[Operations: &ldquo;future&rdquo;]</span></div></div>' +
-      '<div class="a12cap">What to notice: AI-DLC is a <b>method, not a tool</b> &mdash; AWS: it &ldquo;works with any IDE, agent, or model.&rdquo; Every course skill slots into a phase, and every phase has a human gate: <b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b></div>' +
+      (MGR
+        ? '<div class="a12cap">Read the right-hand column: it is a <b>decision map</b>, not a task list. AWS states the rule as <b>&ldquo;Humans decide and validate, AI plans and executes&rdquo;</b> &mdash; so what you are looking at is every point where the work stops until a named human answers. Three consequences for planning: <b>&ldquo;Epics are replaced by Units of Work&rdquo;</b>, so you size decisions rather than story points; units finish in hours or days, so the <b>sprint boundary stops being the meaningful unit</b>; and standup inverts from &ldquo;what did you do&rdquo; to <b>&ldquo;what is blocked on a decision, and whose?&rdquo;</b> Your capacity is no longer the constraint &mdash; <b>your decision latency is</b>.</div>'
+        : '<div class="a12cap">What to notice: AI-DLC is a <b>method, not a tool</b> &mdash; AWS: it &ldquo;works with any IDE, agent, or model.&rdquo; Every course skill slots into a phase, and every phase has a human gate: <b>&ldquo;Humans decide and validate, AI plans and executes.&rdquo;</b></div>') +
     '</div>';
   const steps = [...mount.querySelectorAll('.a12node, .a12unit')];
   let timers = [];
