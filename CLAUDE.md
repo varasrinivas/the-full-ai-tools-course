@@ -15,7 +15,8 @@ Single-file HTML course player + kickoff specs for "The 10x Toolkit" (Claude Cod
 
 ## Commands
 - Preview: open 10x-toolkit.html directly (no build step)
-- Validate: /validate-module <id> (checks schema, links, all labs, visual mount, theme pass)
+- Validate (one module): /validate-module <id> (checks schema, links, all labs, visual mount, theme pass)
+- Validate (whole course): `npm i --no-save jsdom && node validate.mjs` — or `JSDOM_DIR=<dir with node_modules> node validate.mjs`. Add a module id (`node validate.mjs L-3.2`) for a focused report; `COURSE_FILE=<path>` validates a copy. Exits 1 on failure. Covers census, schema, tri-path/reduced-path lab counts, domain rules, every visual mounting, player render of all modules, and standalone integrity. **Run it after any module edit** — it catches the regressions that are invisible in a diff.
 - Deploy: .\deploy.ps1 (uploads 10x-toolkit.html + index.html copy to the learning.varasrinivas.com S3 bucket; add -DryRun to preview). NO credentials in the repo — AWS auth is local CLI config; per-machine overrides go in deploy.config.json (gitignored, see deploy.config.example.json)
 
 ## Style
